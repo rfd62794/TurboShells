@@ -9,14 +9,18 @@ class BreedingManager:
         self.parents = []
 
     def handle_click(self, pos):
-        # Check Navigation (Back to Menu is implicit or we need a button)
-        # The UI Layout doesn't explicitly define a Back button for Breeding, 
-        # but we should probably add one or check for a specific area.
-        # For now, let's assume clicking outside or a specific key returns, 
-        # but wait, the user wants MOUSE support.
-        # Let's add a "Back" check if we had a button, but layout doesn't have one yet.
-        # We'll rely on 'M' key for now unless we add a button to layout.
-        # Actually, let's check if we can click the parents.
+        # Check navigation buttons first
+        if layout.BREED_BACK_BTN_RECT.collidepoint(pos):
+            return "GOTO_MENU"
+
+        # Check Breed button (mouse equivalent of pressing Enter)
+        if layout.BREED_BTN_RECT.collidepoint(pos):
+            if len(self.parents) == 2:
+                if self.breed():
+                    return "GOTO_MENU"
+            return None
+
+        # Otherwise, treat clicks as parent selection rows
         
         for i, turtle in enumerate(self.game_state.retired_roster):
             y_pos = layout.BREEDING_LIST_START_Y + (i * layout.BREEDING_SLOT_HEIGHT)
@@ -30,11 +34,6 @@ class BreedingManager:
             if row_rect.collidepoint(pos):
                 self.toggle_parent(i)
                 return None
-        
-        # Check Breed Button (We need to add one to layout or hardcode it for now)
-        # Let's assume a Breed button exists or we use the "Enter" key logic.
-        # For MVP mouse support, let's add a virtual rect for "Breed" if 2 parents selected.
-        # Or better, let's just support parent selection for now.
         
         return None
 

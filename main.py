@@ -136,7 +136,9 @@ class TurboShellsGame:
                 self.state = STATE_MENU
         
         elif self.state == STATE_BREEDING:
-            self.breeding_manager.handle_click(pos)
+            action = self.breeding_manager.handle_click(pos)
+            if action == "GOTO_MENU":
+                self.state = STATE_MENU
 
         elif self.state == STATE_RACE:
             self.race_manager.handle_click(pos)

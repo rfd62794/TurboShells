@@ -40,13 +40,12 @@ In this game, you don't control the racer—you manage the *racer*. Balance your
 5.  **Breed:** Retire old turtles to the "Breeding Pool." Combine two retirees to create a generic superior baby.
 
 ### Controls
-* **Mouse:** Navigate menus, select turtles, and interact with buttons.
-* **Keyboard (Race Mode):**
-    * `1`: Normal Speed (1x)
-    * `2`: Fast Forward (2x)
-    * `3`: Turbo Speed (4x)
-* **Keyboard (Global):**
-    * `ESC`: Quit Game.
+* **Mouse (Primary):** Navigate menus, select turtles, and interact with buttons (Stable, Shop, Breeding, Race HUD speed controls).
+* **Keyboard (Shortcuts, current MVP):**
+    * **Race Speed:** `1`, `2`, `3` to set 1x / 2x / 4x.
+    * **Menu Navigation:** `M` (Menu), `R` (Race), `S` (Shop), `B` (Breeding).
+    * **Stable Actions:** `Q/W/E` (Train slots 1–3), `Z/X/C` (Rest slots 1–3), `4/5/6` (Retire slots 1–3).
+    * **Breeding:** Number keys select parents, `Enter` breeds (if 2 selected and space in roster).
 
 ## 📊 The Stats System
 
