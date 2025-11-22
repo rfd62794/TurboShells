@@ -56,7 +56,7 @@ class RosterManager:
                                       layout.SLOT_BTN_RETIRE_RECT.width, layout.SLOT_BTN_RETIRE_RECT.height)
 
             # Check if this slot is the active racer
-            is_active_racer = idx == getattr(self.game_state, "active_racer_index", 0)
+            is_active_racer = i == getattr(self.game_state, "active_racer_index", 0)
             
             if not getattr(self.game_state, "show_retired_view", False):
                 # First check for slot selection
