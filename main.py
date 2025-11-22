@@ -163,8 +163,11 @@ class TurboShellsGame:
         elif self.state == STATE_MENU:
             action = self.roster_manager.handle_click(pos)
             if action == "GOTO_RACE":
-                self.race_manager.start_race()
-                self.state = STATE_RACE
+                # Check if we have a selected racer and bet
+                active_racer = self.roster[getattr(self, "active_racer_index", 0)]
+                if active_racer:
+                    self.race_manager.start_race()
+                    self.state = STATE_RACE
             elif action == "GOTO_SHOP":
                 self.state = STATE_SHOP
             elif action == "GOTO_BREEDING":
