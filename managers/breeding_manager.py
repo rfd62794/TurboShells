@@ -19,9 +19,14 @@ class BreedingManager:
         # Actually, let's check if we can click the parents.
         
         for i, turtle in enumerate(self.game_state.retired_roster):
-            y_pos = 120 + (i * 80)
-            # We need a rect for the row
-            row_rect = pygame.Rect(50, y_pos, 600, 60)
+            y_pos = layout.BREEDING_LIST_START_Y + (i * layout.BREEDING_SLOT_HEIGHT)
+            # We need a rect for the row; use layout constants to avoid magic numbers
+            row_rect = pygame.Rect(
+                layout.BREEDING_ROW_X,
+                y_pos,
+                layout.BREEDING_ROW_WIDTH,
+                layout.BREEDING_SLOT_HEIGHT,
+            )
             if row_rect.collidepoint(pos):
                 self.toggle_parent(i)
                 return None

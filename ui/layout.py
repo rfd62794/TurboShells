@@ -59,3 +59,5 @@ SHOP_BTN_BACK_RECT = pygame.Rect(300, 520, 200, 50)
 # 5. Breeding Screen (Custom addition based on need)
 BREEDING_LIST_START_Y = 120
 BREEDING_SLOT_HEIGHT = 60
+BREEDING_ROW_X = 50
+BREEDING_ROW_WIDTH = 600
