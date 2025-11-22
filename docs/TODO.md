@@ -14,10 +14,10 @@
 - [ ] **Test:** Render a single white square moving across the screen that stops when energy dies and starts again after recovery.
 
 ## Phase 3: The Race Track 🏁
-- [ ] **Terrain:** Create `RaceTrack` class that generates a list of segments (Grass, Water, Rock).
-- [ ] **Visuals:** Draw different colors for terrain segments on the Race Screen.
-- [ ] **Interaction:** Connect Turtle logic to Track logic (e.g., Slow down on Water if swim stat is low).
-- [ ] **Controls:** Add keyboard inputs (1, 2, 3) to change game speed multiplier.
+- [x] **Terrain:** Implement shared `race_track` helper that generates a list of segments (Grass, Water, Rock) used by both `simulation.py` and the in-game Race.
+- [ ] **Visuals:** Draw different colors for terrain segments on the Race Screen (currently lanes are uniform; terrain is logical only).
+- [x] **Interaction:** Connect Turtle physics to track terrain (e.g., Swim/Climb stats affect Water/Rock via `update_physics`).
+- [x] **Controls:** Add keyboard inputs (1, 2, 3) to change game speed multiplier.
 
 ## Phase 4: The Manager (UI) 📋
 - [ ] **Roster Data:** Create a global list to hold 3 Turtle objects.
