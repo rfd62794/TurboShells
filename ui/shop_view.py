@@ -1,6 +1,7 @@
 import pygame
 from settings import *
 import ui.layout as layout
+from ui.turtle_card import format_turtle_label_basic
 
 
 def draw_shop(screen, font, game_state):
@@ -31,7 +32,7 @@ def draw_shop(screen, font, game_state):
         pygame.draw.rect(screen, GRAY, card_rect, 2)
 
         name_txt = font.render(turtle.name, True, WHITE)
-        stats_txt = font.render(f"Spd: {turtle.stats['speed']}", True, WHITE)
+        stats_txt = font.render(format_turtle_label_basic(turtle), True, WHITE)
         # Expect cost to be computed in ShopManager when needed; fall back to 50.
         cost_val = getattr(turtle, "shop_cost", 50)
         cost_txt = font.render(f"${cost_val}", True, GREEN)

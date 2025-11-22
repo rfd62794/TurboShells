@@ -1,6 +1,7 @@
 import pygame
 from settings import *
 import ui.layout as layout
+from ui.turtle_card import format_turtle_label_basic
 
 
 def draw_breeding(screen, font, game_state):
@@ -33,7 +34,6 @@ def draw_breeding(screen, font, game_state):
         )
         pygame.draw.rect(screen, color, row_rect, 2)
 
-        status_tag = "[RET]" if is_retired else "[ACT]"
-        label = f"{i+1}. {turtle.name} {status_tag} (Spd:{turtle.stats['speed']})"
+        label = f"{i+1}. " + format_turtle_label_basic(turtle)
         txt = font.render(label, True, WHITE)
         screen.blit(txt, (row_rect.x + 20, row_rect.y + 15))
