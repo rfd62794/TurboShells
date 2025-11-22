@@ -54,10 +54,6 @@ class RosterManager:
                         self.train_turtle(i)
                     elif retire_rect.collidepoint(pos):
                         self.retire_turtle(i)
-                    # Check for individual race button
-                    race_btn = pygame.Rect(slot_rect.x + 550, slot_rect.y + 15, 80, 28)
-                    if race_btn.collidepoint(pos):
-                        return "GOTO_RACE"
         
         return None
 
