@@ -19,10 +19,11 @@ def draw_shop(screen, font, game_state):
         screen.blit(feedback, (layout.PADDING, layout.HEADER_RECT.bottom + 30))
 
     for i, turtle in enumerate(game_state.shop_inventory):
-        x_pos = 50 + (i * 250)
-        y_pos = 120
-
-        card_rect = pygame.Rect(x_pos, y_pos, 220, 300)
+        if i >= len(layout.SHOP_SLOT_RECTS):
+            break
+            
+        slot_rect = layout.SHOP_SLOT_RECTS[i]
+        card_rect = slot_rect
 
         # Draw Card
         pygame.draw.rect(screen, GRAY, card_rect, 2)
@@ -33,9 +34,9 @@ def draw_shop(screen, font, game_state):
         cost_val = getattr(turtle, "shop_cost", 50)
         cost_txt = font.render(f"${cost_val}", True, GREEN)
 
-        screen.blit(name_txt, (x_pos + 20, y_pos + 20))
-        screen.blit(stats_txt, (x_pos + 20, y_pos + 60))
-        screen.blit(cost_txt, (x_pos + 20, y_pos + 250))
+        screen.blit(name_txt, (card_rect.x + 20, card_rect.y + 20))
+        screen.blit(stats_txt, (card_rect.x + 20, card_rect.y + 60))
+        screen.blit(cost_txt, (card_rect.x + 20, card_rect.y + 250))
 
         # BUY button (visual) using layout.SHOP_BTN_BUY_RECT (relative to card)
         buy_rel = layout.SHOP_BTN_BUY_RECT
