@@ -1,5 +1,6 @@
 from game_state import generate_random_turtle
 from settings import *
+import ui.layout as layout
 
 class RaceManager:
     def __init__(self, game_state):
@@ -23,6 +24,15 @@ class RaceManager:
         for t in self.game_state.roster:
             if t:
                 t.reset_for_race()
+
+    def handle_click(self, pos):
+        """Handle mouse clicks on the Race HUD (speed controls)."""
+        if layout.SPEED_1X_RECT.collidepoint(pos):
+            self.game_state.race_speed_multiplier = 1
+        elif layout.SPEED_2X_RECT.collidepoint(pos):
+            self.game_state.race_speed_multiplier = 2
+        elif layout.SPEED_4X_RECT.collidepoint(pos):
+            self.game_state.race_speed_multiplier = 4
 
     def update(self):
         active_turtles = [t for t in self.game_state.roster if t is not None]

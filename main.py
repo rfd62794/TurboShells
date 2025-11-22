@@ -138,6 +138,9 @@ class TurboShellsGame:
         elif self.state == STATE_BREEDING:
             self.breeding_manager.handle_click(pos)
 
+        elif self.state == STATE_RACE:
+            self.race_manager.handle_click(pos)
+
     def update(self):
         if self.state == STATE_SHOP:
             self.shop_manager.update()
