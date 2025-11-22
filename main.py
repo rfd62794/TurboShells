@@ -6,6 +6,7 @@ from ui.renderer import Renderer
 from managers.shop_manager import ShopManager
 from managers.race_manager import RaceManager
 from managers.breeding_manager import BreedingManager
+from managers.roster_manager import RosterManager
 from game_state import generate_random_turtle
 
 # --- MAIN GAME CLASS ---
@@ -41,6 +42,7 @@ class TurboShellsGame:
 
         # --- MANAGERS ---
         self.renderer = Renderer(self.screen, self.font)
+        self.roster_manager = RosterManager(self)
         self.shop_manager = ShopManager(self)
         self.race_manager = RaceManager(self)
         self.breeding_manager = BreedingManager(self)
@@ -51,6 +53,11 @@ class TurboShellsGame:
                 pygame.quit()
                 sys.exit()
             
+            # Mouse Handling
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1: # Left Click
+                    self.handle_click(event.pos)
+
             if event.type == pygame.KEYDOWN:
                 # Global Navigation
                 if event.key == pygame.K_m: 
@@ -70,19 +77,19 @@ class TurboShellsGame:
                     if event.key == pygame.K_b: self.state = STATE_BREEDING
 
                     # Retire Logic (4, 5, 6)
-                    if event.key == pygame.K_4: self.retire_turtle(0)
-                    if event.key == pygame.K_5: self.retire_turtle(1)
-                    if event.key == pygame.K_6: self.retire_turtle(2)
+                    if event.key == pygame.K_4: self.roster_manager.retire_turtle(0)
+                    if event.key == pygame.K_5: self.roster_manager.retire_turtle(1)
+                    if event.key == pygame.K_6: self.roster_manager.retire_turtle(2)
                     
                     # Training Logic (Q, W, E)
-                    if event.key == pygame.K_q: self.train_turtle(0)
-                    if event.key == pygame.K_w: self.train_turtle(1)
-                    if event.key == pygame.K_e: self.train_turtle(2)
+                    if event.key == pygame.K_q: self.roster_manager.train_turtle(0)
+                    if event.key == pygame.K_w: self.roster_manager.train_turtle(1)
+                    if event.key == pygame.K_e: self.roster_manager.train_turtle(2)
                     
                     # Resting Logic (Z, X, C)
-                    if event.key == pygame.K_z: self.rest_turtle(0)
-                    if event.key == pygame.K_x: self.rest_turtle(1)
-                    if event.key == pygame.K_c: self.rest_turtle(2)
+                    if event.key == pygame.K_z: self.roster_manager.rest_turtle(0)
+                    if event.key == pygame.K_x: self.roster_manager.rest_turtle(1)
+                    if event.key == pygame.K_c: self.roster_manager.rest_turtle(2)
 
                 elif self.state == STATE_SHOP:
                     if event.key == pygame.K_r: self.shop_manager.refresh_stock()
@@ -112,6 +119,25 @@ class TurboShellsGame:
                         if self.breeding_manager.breed():
                             self.state = STATE_MENU
 
+    def handle_click(self, pos):
+        if self.state == STATE_MENU:
+            action = self.roster_manager.handle_click(pos)
+            if action == "GOTO_RACE":
+                self.race_manager.start_race()
+                self.state = STATE_RACE
+            elif action == "GOTO_SHOP":
+                self.state = STATE_SHOP
+            elif action == "GOTO_BREEDING":
+                self.state = STATE_BREEDING
+        
+        elif self.state == STATE_SHOP:
+            action = self.shop_manager.handle_click(pos)
+            if action == "GOTO_MENU":
+                self.state = STATE_MENU
+        
+        elif self.state == STATE_BREEDING:
+            self.breeding_manager.handle_click(pos)
+
     def update(self):
         if self.state == STATE_SHOP:
             self.shop_manager.update()
@@ -135,29 +161,6 @@ class TurboShellsGame:
             self.renderer.draw_breeding(self)
             
         pygame.display.flip()
-
-    # --- DIRECT LOGIC (To be moved to RosterManager later) ---
-    def retire_turtle(self, index):
-        if self.roster[index] is not None:
-            t = self.roster[index]
-            self.roster[index] = None
-            self.retired_roster.append(t)
-            print(f"Retired {t.name}")
-
-    def train_turtle(self, index):
-        if self.roster[index]:
-            t = self.roster[index]
-            # Train Speed for now
-            if t.train("speed"):
-                print(f"Trained {t.name}! Speed is now {t.stats['speed']}")
-            else:
-                print(f"{t.name} is too tired to train!")
-
-    def rest_turtle(self, index):
-        if self.roster[index]:
-            t = self.roster[index]
-            t.current_energy = t.stats["max_energy"]
-            print(f"{t.name} rested and recovered full energy.")
 
 # --- ENTRY POINT ---
 if __name__ == "__main__":
