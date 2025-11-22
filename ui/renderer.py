@@ -12,6 +12,9 @@ class Renderer:
         self.screen = screen
         self.font = font
 
+    def draw_main_menu(self, game_state):
+        draw_main_menu(self.screen, self.font, game_state)
+
     def draw_menu(self, game_state):
         draw_menu_view(self.screen, self.font, game_state)
 
