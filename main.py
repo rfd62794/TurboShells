@@ -94,8 +94,6 @@ class TurboShellsGame:
     def draw(self):
         self.screen.fill(BLACK)
         
-        print(f"Drawing state: {self.state}")  # Debug output
-        
         if self.state == STATE_MENU:
             self.renderer.draw_main_menu(self)
         elif self.state == STATE_ROSTER:
