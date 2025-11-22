@@ -14,6 +14,8 @@ from managers.race_manager import RaceManager
 from managers.breeding_manager import BreedingManager
 from managers.roster_manager import RosterManager
 from core.game_state import generate_random_turtle
+from core.state_handler import StateHandler
+from core.keyboard_handler import KeyboardHandler
 
 # --- MAIN GAME CLASS ---
 class TurboShellsGame:
@@ -59,6 +61,10 @@ class TurboShellsGame:
         self.shop_manager = ShopManager(self)
         self.race_manager = RaceManager(self)
         self.breeding_manager = BreedingManager(self)
+        
+        # --- HANDLERS ---
+        self.state_handler = StateHandler(self)
+        self.keyboard_handler = KeyboardHandler(self)
 
     def handle_input(self):
         for event in pygame.event.get():
