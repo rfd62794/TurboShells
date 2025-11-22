@@ -1,7 +1,7 @@
 import pygame
 import sys
 from entities import Turtle  # <--- IMPORT THE SHARED CLASS
-from game_state import generate_random_turtle # <--- IMPORT HELPER
+from game_state import generate_random_turtle, breed_turtles # <--- IMPORT HELPER
 
 # --- CONSTANTS ---
 SCREEN_WIDTH = 800
@@ -21,6 +21,7 @@ STATE_MENU = "MENU"
 STATE_RACE = "RACE"
 STATE_RACE_RESULT = "RACE_RESULT"
 STATE_SHOP = "SHOP"
+STATE_BREEDING = "BREEDING"
 
 # --- MAIN GAME CLASS ---
 class TurboShellsGame:
@@ -39,6 +40,10 @@ class TurboShellsGame:
             None, 
             None 
         ]
+        self.retired_roster = [] # Turtles moved here for breeding
+        
+        # Breeding State Variables
+        self.breeding_parents = [] # List of 2 turtles selected for breeding
         
         # Race Variables
         self.track_length_logic = 1500 # The logical distance (matches simulation)
@@ -68,10 +73,17 @@ class TurboShellsGame:
                 if event.key == pygame.K_r: 
                     if self.state == STATE_SHOP:
                         self.refresh_shop()
-                    else:
+                    elif self.state == STATE_MENU:
                         self.reset_race()
                         self.state = STATE_RACE
                 if event.key == pygame.K_s: self.state = STATE_SHOP
+                if event.key == pygame.K_b: self.state = STATE_BREEDING # B for Breeding
+
+                if self.state == STATE_MENU:
+                    # Simple Retire Logic (4, 5, 6 keys for slots 1, 2, 3)
+                    if event.key == pygame.K_4: self.retire_turtle(0)
+                    if event.key == pygame.K_5: self.retire_turtle(1)
+                    if event.key == pygame.K_6: self.retire_turtle(2)
                 
                 if self.state == STATE_SHOP:
                     # Simple Shop Buying Logic (1, 2, 3 keys)
@@ -90,6 +102,15 @@ class TurboShellsGame:
                         # Clear opponents
                         self.roster[1] = None
                         self.roster[2] = None
+
+                if self.state == STATE_BREEDING:
+                    if event.key == pygame.K_m: self.state = STATE_MENU
+                    # Select Parents (1, 2, 3... based on retired list)
+                    # For MVP, just press 1, 2 to select first two retired
+                    if event.key == pygame.K_1: self.toggle_breeding_parent(0)
+                    if event.key == pygame.K_2: self.toggle_breeding_parent(1)
+                    if event.key == pygame.K_3: self.toggle_breeding_parent(2)
+                    if event.key == pygame.K_RETURN: self.breed()
 
     def reset_race(self):
         """Prepares shared entities for a new race"""
@@ -167,12 +188,17 @@ class TurboShellsGame:
             self.draw_race_result()
         elif self.state == STATE_SHOP:
             self.draw_shop()
+        elif self.state == STATE_BREEDING:
+            self.draw_breeding()
             
         pygame.display.flip()
 
     def draw_menu(self):
-        title = self.font.render(f"STABLE MENU (Press R to Race, S to Shop) | Money: ${self.money}", True, WHITE)
+        title = self.font.render(f"STABLE MENU (R=Race, S=Shop, B=Breed) | Money: ${self.money}", True, WHITE)
         self.screen.blit(title, (20, 20))
+        
+        msg = self.font.render("Press 4, 5, 6 to Retire a Turtle (Permanent!)", True, RED)
+        self.screen.blit(msg, (50, 60))
         
         for i, turtle in enumerate(self.roster):
             y_pos = 100 + (i * 120)
@@ -190,6 +216,10 @@ class TurboShellsGame:
                 
                 self.screen.blit(name_txt, (60, y_pos + 10))
                 self.screen.blit(stats_txt, (60, y_pos + 70))
+                
+                # Retire Hint
+                retire_txt = self.font.render(f"[Press {4+i} to Retire]", True, GRAY)
+                self.screen.blit(retire_txt, (580, y_pos + 40))
             else:
                 empty_txt = self.font.render("[ EMPTY SLOT ]", True, GRAY)
                 self.screen.blit(empty_txt, (60, y_pos + 40))
@@ -285,6 +315,65 @@ class TurboShellsGame:
             else:
                 self.shop_message = "Not enough money!"
                 self.shop_message_timer = 60
+
+    def retire_turtle(self, index):
+        if self.roster[index] is not None:
+            t = self.roster[index]
+            self.roster[index] = None
+            self.retired_roster.append(t)
+            print(f"Retired {t.name}")
+
+    def draw_breeding(self):
+        title = self.font.render("BREEDING CENTER (Press M for Menu)", True, WHITE)
+        self.screen.blit(title, (20, 20))
+        
+        msg = self.font.render("Select 2 Parents (Press 1, 2, 3...) then ENTER to Breed", True, GREEN)
+        self.screen.blit(msg, (50, 60))
+        
+        # Draw Retired Roster
+        for i, turtle in enumerate(self.retired_roster):
+            y_pos = 120 + (i * 80)
+            color = GRAY
+            if turtle in self.breeding_parents: color = GREEN # Highlight Selected
+            
+            pygame.draw.rect(self.screen, color, (50, y_pos, 600, 60), 2)
+            txt = self.font.render(f"{i+1}. {turtle.name} (Spd:{turtle.stats['speed']})", True, WHITE)
+            self.screen.blit(txt, (70, y_pos + 15))
+
+    def toggle_breeding_parent(self, index):
+        if index < len(self.retired_roster):
+            t = self.retired_roster[index]
+            if t in self.breeding_parents:
+                self.breeding_parents.remove(t)
+            else:
+                if len(self.breeding_parents) < 2:
+                    self.breeding_parents.append(t)
+
+    def breed(self):
+        if len(self.breeding_parents) == 2:
+            # Check for empty slot
+            slot_idx = -1
+            for i in range(len(self.roster)):
+                if self.roster[i] is None:
+                    slot_idx = i
+                    break
+            
+            if slot_idx != -1:
+                parent_a = self.breeding_parents[0]
+                parent_b = self.breeding_parents[1]
+                
+                child = breed_turtles(parent_a, parent_b)
+                self.roster[slot_idx] = child
+                
+                # Remove parents from retired roster
+                self.retired_roster.remove(parent_a)
+                self.retired_roster.remove(parent_b)
+                self.breeding_parents = []
+                
+                print(f"Bred {child.name}!")
+                self.state = STATE_MENU
+            else:
+                print("No Roster Space!")
 
     # --- HELPER: Draw the shared entity using PyGame ---
     def draw_turtle_sprite(self, turtle, y_pos):
