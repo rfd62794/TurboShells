@@ -13,10 +13,6 @@ def draw_shop(screen, font, game_state):
     money_txt = font.render(f"$ {game_state.money}", True, WHITE)
     screen.blit(money_txt, layout.HEADER_MONEY_POS)
 
-    # Debug: Show inventory count
-    debug_txt = font.render(f"Inventory: {len(game_state.shop_inventory)}", True, WHITE)
-    screen.blit(debug_txt, (20, 80))
-
     # Feedback Message
     if game_state.shop_message:
         feedback = font.render(game_state.shop_message, True, (255, 255, 0))
