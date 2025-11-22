@@ -1,0 +1,73 @@
+import pygame
+from settings import *
+import ui.layout as layout
+
+class RosterManager:
+    def __init__(self, game_state):
+        self.game_state = game_state
+
+    def handle_click(self, pos):
+        # Check Navigation Buttons
+        if layout.NAV_RACE_RECT.collidepoint(pos):
+            # Start Race Logic
+            # We need to trigger the race manager, but we are in RosterManager.
+            # Ideally, Main Game handles state changes, but we can set a flag or return an action.
+            return "GOTO_RACE"
+        
+        if layout.NAV_SHOP_RECT.collidepoint(pos):
+            return "GOTO_SHOP"
+        
+        if layout.NAV_BREED_RECT.collidepoint(pos):
+            return "GOTO_BREEDING"
+
+        # Check Roster Slots
+        for i, slot_rect in enumerate(layout.SLOT_RECTS):
+            # We need absolute positions for buttons which are defined relative in layout.py?
+            # Wait, layout.py defines them as absolute Rects if I recall correctly?
+            # Let's check layout.py content.
+            # Actually, looking at layout.py, the buttons are defined relative to the slot or absolute?
+            # SLOT_BTN_TRAIN_RECT = pygame.Rect(580, 15, 100, 30) -> This looks like relative Y?
+            # No, Y is 15. That's definitely relative to the slot.
+            
+            # We need to calculate absolute rects for buttons
+            slot_y = slot_rect.y
+            
+            train_rect = pygame.Rect(layout.SLOT_BTN_TRAIN_RECT.x, slot_y + layout.SLOT_BTN_TRAIN_RECT.y, 
+                                     layout.SLOT_BTN_TRAIN_RECT.width, layout.SLOT_BTN_TRAIN_RECT.height)
+            
+            rest_rect = pygame.Rect(layout.SLOT_BTN_REST_RECT.x, slot_y + layout.SLOT_BTN_REST_RECT.y, 
+                                    layout.SLOT_BTN_REST_RECT.width, layout.SLOT_BTN_REST_RECT.height)
+            
+            retire_rect = pygame.Rect(layout.SLOT_BTN_RETIRE_RECT.x, slot_y + layout.SLOT_BTN_RETIRE_RECT.y, 
+                                      layout.SLOT_BTN_RETIRE_RECT.width, layout.SLOT_BTN_RETIRE_RECT.height)
+
+            if train_rect.collidepoint(pos):
+                self.train_turtle(i)
+            elif rest_rect.collidepoint(pos):
+                self.rest_turtle(i)
+            elif retire_rect.collidepoint(pos):
+                self.retire_turtle(i)
+        
+        return None
+
+    def train_turtle(self, index):
+        if self.game_state.roster[index]:
+            t = self.game_state.roster[index]
+            # Train Speed for now
+            if t.train("speed"):
+                print(f"Trained {t.name}! Speed is now {t.stats['speed']}")
+            else:
+                print(f"{t.name} is too tired to train!")
+
+    def rest_turtle(self, index):
+        if self.game_state.roster[index]:
+            t = self.game_state.roster[index]
+            t.current_energy = t.stats["max_energy"]
+            print(f"{t.name} rested and recovered full energy.")
+
+    def retire_turtle(self, index):
+        if self.game_state.roster[index] is not None:
+            t = self.game_state.roster[index]
+            self.game_state.roster[index] = None
+            self.game_state.retired_roster.append(t)
+            print(f"Retired {t.name}")
