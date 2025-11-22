@@ -24,7 +24,7 @@ class TurboShellsGame:
         self.clock = pygame.time.Clock()
         self.font = pygame.font.SysFont("Arial", 24)
         
-        self.state = STATE_MAIN_MENU
+        self.state = STATE_MENU
         
         # --- SHARED STATE ---
         # This object will be passed to renderers and managers
@@ -87,7 +87,7 @@ class TurboShellsGame:
                 # State Specific Inputs
                 if self.state == STATE_MAIN_MENU:
                     if event.key == pygame.K_r: 
-                        self.state = STATE_MENU
+                        self.state = STATE_ROSTER
                     if event.key == pygame.K_s: 
                         self.state = STATE_SHOP
                         self.shop_manager.refresh_stock()
@@ -96,8 +96,7 @@ class TurboShellsGame:
                 
                 elif self.state == STATE_MENU:
                     if event.key == pygame.K_r: 
-                        self.race_manager.start_race()
-                        self.state = STATE_RACE
+                        self.state = STATE_ROSTER
                     if event.key == pygame.K_s: self.state = STATE_SHOP
                     if event.key == pygame.K_b: self.state = STATE_BREEDING
 
@@ -148,7 +147,7 @@ class TurboShellsGame:
         if self.state == STATE_MAIN_MENU:
             # Check main menu button clicks
             menu_rects = [
-                (pygame.Rect(200, 150, 400, 80), STATE_MENU),  # ROSTER
+                (pygame.Rect(200, 150, 400, 80), STATE_ROSTER),  # ROSTER
                 (pygame.Rect(200, 250, 400, 80), STATE_SHOP),  # SHOP
                 (pygame.Rect(200, 350, 400, 80), STATE_BREEDING),  # BREEDING
             ]
@@ -160,7 +159,7 @@ class TurboShellsGame:
                     self.state = new_state
                     break
         
-        elif self.state == STATE_MENU:
+        elif self.state == STATE_ROSTER:
             action = self.roster_manager.handle_click(pos)
             if action == "GOTO_RACE":
                 # Check if we have a selected racer and bet
@@ -178,12 +177,12 @@ class TurboShellsGame:
         elif self.state == STATE_SHOP:
             action = self.shop_manager.handle_click(pos)
             if action == "GOTO_MENU":
-                self.state = STATE_MENU
+                self.state = STATE_MAIN_MENU
         
         elif self.state == STATE_BREEDING:
             action = self.breeding_manager.handle_click(pos)
             if action == "GOTO_MENU":
-                self.state = STATE_MENU
+                self.state = STATE_MAIN_MENU
 
         elif self.state == STATE_RACE:
             self.race_manager.handle_click(pos)
@@ -191,7 +190,7 @@ class TurboShellsGame:
         elif self.state == STATE_RACE_RESULT:
             action = self.race_manager.handle_result_click(pos)
             if action == "GOTO_MENU":
-                self.state = STATE_MENU
+                self.state = STATE_MAIN_MENU
                 if self.roster[1] and getattr(self.roster[1], 'is_temp', False):
                     self.roster[1] = None
                 if self.roster[2] and getattr(self.roster[2], 'is_temp', False):
@@ -212,7 +211,7 @@ class TurboShellsGame:
         
         if self.state == STATE_MAIN_MENU:
             self.renderer.draw_main_menu(self)
-        elif self.state == STATE_MENU:
+        elif self.state == STATE_ROSTER:
             self.renderer.draw_menu(self)
         elif self.state == STATE_RACE:
             self.renderer.draw_race(self)
