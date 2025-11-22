@@ -86,11 +86,22 @@ class Turtle:
 
     def train(self, stat_name):
         """
-        Training Logic: Costs Time (Age), Gains Stat.
+        Training Logic: Costs Time (Age), Gains Stats.
+        Primary stat always improves, other stats have small chance to improve.
         Does NOT cost Energy.
         """
+        import random
+        
         self.age += 1
+        # Primary stat always improves
         self.stats[stat_name] += 1
+        
+        # Small chance (20%) to improve each other stat
+        other_stats = [s for s in self.stats.keys() if s != stat_name]
+        for stat in other_stats:
+            if random.random() < 0.2:  # 20% chance
+                self.stats[stat] += 1
+        
         return True
 
     def __repr__(self):
