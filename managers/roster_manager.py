@@ -7,29 +7,21 @@ class RosterManager:
         self.game_state = game_state
 
     def handle_click(self, pos):
-        # Check Navigation Buttons
-        if layout.NAV_MENU_RECT.collidepoint(pos):
-            return "GOTO_MENU"
-        
-        if layout.NAV_SHOP_RECT.collidepoint(pos):
-            return "GOTO_SHOP"
-        
-        if layout.NAV_BREED_RECT.collidepoint(pos):
-            return "GOTO_BREEDING"
-
         # View toggle buttons: Active vs Retired
         if layout.VIEW_ACTIVE_RECT.collidepoint(pos):
             self.game_state.show_retired_view = False
         elif layout.VIEW_RETIRED_RECT.collidepoint(pos):
             self.game_state.show_retired_view = True
 
-        # Betting Buttons (set current bet amount)
-        if layout.BET_BTN_NONE_RECT.collidepoint(pos):
-            self.game_state.current_bet = 0
-        elif layout.BET_BTN_5_RECT.collidepoint(pos):
-            self.game_state.current_bet = 5
-        elif layout.BET_BTN_10_RECT.collidepoint(pos):
-            self.game_state.current_bet = 10
+        # Betting Buttons (set current bet amount) - only in select racer mode
+        select_racer_mode = getattr(self.game_state, "select_racer_mode", False)
+        if select_racer_mode:
+            if layout.BET_BTN_NONE_RECT.collidepoint(pos):
+                self.game_state.current_bet = 0
+            elif layout.BET_BTN_5_RECT.collidepoint(pos):
+                self.game_state.current_bet = 5
+            elif layout.BET_BTN_10_RECT.collidepoint(pos):
+                self.game_state.current_bet = 10
 
         # Check Roster Slots (only actionable in Active view)
         for i, slot_rect in enumerate(layout.SLOT_RECTS):
