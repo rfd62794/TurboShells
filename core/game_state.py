@@ -1,3 +1,10 @@
+"""Core domain helpers: turtle generation, breeding, and pricing.
+
+This module encapsulates high-level game math that operates on
+`entities.Turtle` instances (generation, breeding, shop cost).
+It must remain UI-agnostic (no PyGame imports).
+"""
+
 import random
 from entities import Turtle
 

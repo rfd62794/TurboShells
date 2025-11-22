@@ -1,11 +1,8 @@
-import random
-import uuid
+"""Core domain: Turtle stats and shared race physics.
 
-# --- SHARED PHYSICS CONSTANTS ---
-# These are the "Balanced" values found in your simulation
-TERRAIN_DIFFICULTY = 0.8
-RECOVERY_RATE = 0.1
-RECOVERY_THRESHOLD = 0.5
+This module is the single source of truth for turtle DNA and
+movement/energy logic. It must not import or depend on any UI code.
+"""
 
 class Turtle:
     def __init__(self, name, speed, energy, recovery, swim, climb):

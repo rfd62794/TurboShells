@@ -1,7 +1,7 @@
-from game_state import generate_random_turtle
+from core.game_state import generate_random_turtle
 from settings import *
 import ui.layout as layout
-from race_track import generate_track, get_terrain_at
+from core.race_track import generate_track, get_terrain_at
 
 class RaceManager:
     def __init__(self, game_state):
