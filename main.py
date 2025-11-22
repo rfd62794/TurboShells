@@ -24,7 +24,7 @@ class TurboShellsGame:
         self.clock = pygame.time.Clock()
         self.font = pygame.font.SysFont("Arial", 24)
         
-        self.state = STATE_MENU
+        self.state = STATE_MAIN_MENU
         
         # --- SHARED STATE ---
         # This object will be passed to renderers and managers
