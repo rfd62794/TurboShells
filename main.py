@@ -50,6 +50,8 @@ class TurboShellsGame:
         # Economy & Shop
         self.money = 100
         self.shop_inventory = []
+        self.shop_message = "" # Feedback message
+        self.shop_message_timer = 0
 
     def handle_input(self):
         for event in pygame.event.get():
@@ -64,8 +66,11 @@ class TurboShellsGame:
                     self.roster[1] = None
                     self.roster[2] = None
                 if event.key == pygame.K_r: 
-                    self.reset_race()
-                    self.state = STATE_RACE
+                    if self.state == STATE_SHOP:
+                        self.refresh_shop()
+                    else:
+                        self.reset_race()
+                        self.state = STATE_RACE
                 if event.key == pygame.K_s: self.state = STATE_SHOP
                 
                 if self.state == STATE_SHOP:
@@ -104,11 +109,13 @@ class TurboShellsGame:
         if self.state == STATE_SHOP:
             # Refill Shop if empty
             if not self.shop_inventory:
-                self.shop_inventory = [
-                    generate_random_turtle(level=1),
-                    generate_random_turtle(level=2),
-                    generate_random_turtle(level=3)
-                ]
+                self.refresh_shop(free=True)
+            
+            # Message Timer
+            if self.shop_message_timer > 0:
+                self.shop_message_timer -= 1
+                if self.shop_message_timer <= 0:
+                    self.shop_message = ""
 
         if self.state == STATE_RACE:
             active_turtles = [t for t in self.roster if t is not None]
@@ -223,8 +230,13 @@ class TurboShellsGame:
         title = self.font.render(f"TURTLE SHOP (Press M for Menu) | Money: ${self.money}", True, WHITE)
         self.screen.blit(title, (20, 20))
         
-        msg = self.font.render("Press 1, 2, or 3 to Buy ($50 each)", True, GREEN)
+        msg = self.font.render("Press 1, 2, 3 to Buy ($50) | Press R to Refresh ($5)", True, GREEN)
         self.screen.blit(msg, (50, 60))
+        
+        # Feedback Message
+        if self.shop_message:
+            feedback = self.font.render(self.shop_message, True, (255, 255, 0))
+            self.screen.blit(feedback, (400, 60))
 
         for i, turtle in enumerate(self.shop_inventory):
             x_pos = 50 + (i * 250)
@@ -241,6 +253,21 @@ class TurboShellsGame:
             self.screen.blit(stats_txt, (x_pos + 20, y_pos + 60))
             self.screen.blit(cost_txt, (x_pos + 20, y_pos + 250))
 
+    def refresh_shop(self, free=False):
+        cost = 5
+        if free or self.money >= cost:
+            if not free: self.money -= cost
+            self.shop_inventory = [
+                generate_random_turtle(level=1),
+                generate_random_turtle(level=2),
+                generate_random_turtle(level=3)
+            ]
+            self.shop_message = "Shop Refreshed!"
+            self.shop_message_timer = 60
+        else:
+            self.shop_message = "Not enough money!"
+            self.shop_message_timer = 60
+
     def buy_turtle(self, index):
         if index < len(self.shop_inventory):
             cost = 50
@@ -250,11 +277,14 @@ class TurboShellsGame:
                     if self.roster[i] is None:
                         self.roster[i] = self.shop_inventory.pop(index)
                         self.money -= cost
-                        print("Bought turtle!")
+                        self.shop_message = "Bought turtle!"
+                        self.shop_message_timer = 60
                         return
-                print("Roster Full!")
+                self.shop_message = "Roster Full!"
+                self.shop_message_timer = 60
             else:
-                print("Not enough money!")
+                self.shop_message = "Not enough money!"
+                self.shop_message_timer = 60
 
     # --- HELPER: Draw the shared entity using PyGame ---
     def draw_turtle_sprite(self, turtle, y_pos):
