@@ -1,7 +1,7 @@
 import pygame
 import sys
-from entities import Turtle  # <--- IMPORT THE SHARED CLASS
-from game_state import generate_random_turtle, breed_turtles # <--- IMPORT HELPER
+from entities import Turtle
+from game_state import generate_random_turtle, breed_turtles
 
 # --- CONSTANTS ---
 SCREEN_WIDTH = 800
@@ -65,48 +65,54 @@ class TurboShellsGame:
                 sys.exit()
             
             if event.type == pygame.KEYDOWN:
+                # Global Navigation
                 if event.key == pygame.K_m: 
                     self.state = STATE_MENU
                     # Clear opponents when returning to stable
                     self.roster[1] = None
                     self.roster[2] = None
-                if event.key == pygame.K_r: 
-                    if self.state == STATE_SHOP:
-                        self.refresh_shop()
-                    elif self.state == STATE_MENU:
+                
+                # State Specific Inputs
+                if self.state == STATE_MENU:
+                    if event.key == pygame.K_r: 
                         self.reset_race()
                         self.state = STATE_RACE
-                if event.key == pygame.K_s: self.state = STATE_SHOP
-                if event.key == pygame.K_b: self.state = STATE_BREEDING # B for Breeding
+                    if event.key == pygame.K_s: self.state = STATE_SHOP
+                    if event.key == pygame.K_b: self.state = STATE_BREEDING
 
-                if self.state == STATE_MENU:
-                    # Simple Retire Logic (4, 5, 6 keys for slots 1, 2, 3)
+                    # Retire Logic (4, 5, 6)
                     if event.key == pygame.K_4: self.retire_turtle(0)
                     if event.key == pygame.K_5: self.retire_turtle(1)
                     if event.key == pygame.K_6: self.retire_turtle(2)
-                
-                if self.state == STATE_SHOP:
-                    # Simple Shop Buying Logic (1, 2, 3 keys)
+                    
+                    # Training Logic (Q, W, E)
+                    if event.key == pygame.K_q: self.train_turtle(0)
+                    if event.key == pygame.K_w: self.train_turtle(1)
+                    if event.key == pygame.K_e: self.train_turtle(2)
+                    
+                    # Resting Logic (Z, X, C)
+                    if event.key == pygame.K_z: self.rest_turtle(0)
+                    if event.key == pygame.K_x: self.rest_turtle(1)
+                    if event.key == pygame.K_c: self.rest_turtle(2)
+
+                elif self.state == STATE_SHOP:
+                    if event.key == pygame.K_r: self.refresh_shop()
                     if event.key == pygame.K_1: self.buy_turtle(0)
                     if event.key == pygame.K_2: self.buy_turtle(1)
                     if event.key == pygame.K_3: self.buy_turtle(2)
                 
-                if self.state == STATE_RACE:
+                elif self.state == STATE_RACE:
                     if event.key == pygame.K_1: self.race_speed_multiplier = 1
                     if event.key == pygame.K_2: self.race_speed_multiplier = 2
                     if event.key == pygame.K_3: self.race_speed_multiplier = 4
                     
-                if self.state == STATE_RACE_RESULT:
+                elif self.state == STATE_RACE_RESULT:
                     if event.key == pygame.K_m:
                         self.state = STATE_MENU
-                        # Clear opponents
                         self.roster[1] = None
                         self.roster[2] = None
 
-                if self.state == STATE_BREEDING:
-                    if event.key == pygame.K_m: self.state = STATE_MENU
-                    # Select Parents (1, 2, 3... based on retired list)
-                    # For MVP, just press 1, 2 to select first two retired
+                elif self.state == STATE_BREEDING:
                     if event.key == pygame.K_1: self.toggle_breeding_parent(0)
                     if event.key == pygame.K_2: self.toggle_breeding_parent(1)
                     if event.key == pygame.K_3: self.toggle_breeding_parent(2)
@@ -144,7 +150,6 @@ class TurboShellsGame:
             for _ in range(self.race_speed_multiplier):
                 for t in active_turtles:
                     # 1. Determine Terrain (Placeholder for Track Logic)
-                    # Example: Water patch between 500 and 700 units
                     terrain = "grass"
                     if 500 < t.race_distance < 700:
                         terrain = "water"
@@ -197,7 +202,7 @@ class TurboShellsGame:
         title = self.font.render(f"STABLE MENU (R=Race, S=Shop, B=Breed) | Money: ${self.money}", True, WHITE)
         self.screen.blit(title, (20, 20))
         
-        msg = self.font.render("Press 4, 5, 6 to Retire a Turtle (Permanent!)", True, RED)
+        msg = self.font.render("Press 4-6 to Retire | Q-E to Train | Z-C to Rest", True, GRAY)
         self.screen.blit(msg, (50, 60))
         
         for i, turtle in enumerate(self.roster):
@@ -212,14 +217,16 @@ class TurboShellsGame:
                 
                 # Draw Energy Bar (Static View)
                 pygame.draw.rect(self.screen, RED, (300, y_pos + 40, 100, 10))
-                pygame.draw.rect(self.screen, GREEN, (300, y_pos + 40, 100, 10)) # Full in menu
+                # Calculate width based on current energy
+                pct = turtle.current_energy / turtle.stats['max_energy']
+                pygame.draw.rect(self.screen, GREEN, (300, y_pos + 40, int(100 * pct), 10))
                 
                 self.screen.blit(name_txt, (60, y_pos + 10))
                 self.screen.blit(stats_txt, (60, y_pos + 70))
                 
-                # Retire Hint
-                retire_txt = self.font.render(f"[Press {4+i} to Retire]", True, GRAY)
-                self.screen.blit(retire_txt, (580, y_pos + 40))
+                # Controls Hint
+                controls_txt = self.font.render(f"[Q: Train] [Z: Rest] [{4+i}: Retire]", True, GRAY)
+                self.screen.blit(controls_txt, (450, y_pos + 40))
             else:
                 empty_txt = self.font.render("[ EMPTY SLOT ]", True, GRAY)
                 self.screen.blit(empty_txt, (60, y_pos + 40))
@@ -322,6 +329,21 @@ class TurboShellsGame:
             self.roster[index] = None
             self.retired_roster.append(t)
             print(f"Retired {t.name}")
+
+    def train_turtle(self, index):
+        if self.roster[index]:
+            t = self.roster[index]
+            # Train Speed for now
+            if t.train("speed"):
+                print(f"Trained {t.name}! Speed is now {t.stats['speed']}")
+            else:
+                print(f"{t.name} is too tired to train!")
+
+    def rest_turtle(self, index):
+        if self.roster[index]:
+            t = self.roster[index]
+            t.current_energy = t.stats["max_energy"]
+            print(f"{t.name} rested and recovered full energy.")
 
     def draw_breeding(self):
         title = self.font.render("BREEDING CENTER (Press M for Menu)", True, WHITE)
