@@ -62,6 +62,9 @@ class TurboShellsGame:
         self.race_manager = RaceManager(self)
         self.breeding_manager = BreedingManager(self)
         
+        # Initialize shop with stock
+        self.shop_manager.refresh_stock(free=True)
+        
         # --- HANDLERS ---
         self.state_handler = StateHandler(self)
         self.keyboard_handler = KeyboardHandler(self)
