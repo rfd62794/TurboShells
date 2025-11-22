@@ -12,9 +12,13 @@ class RaceManager:
         
         # Fill empty slots with opponents
         if self.game_state.roster[1] is None:
-            self.game_state.roster[1] = generate_random_turtle(level=1)
+            t = generate_random_turtle(level=1)
+            t.is_temp = True
+            self.game_state.roster[1] = t
         if self.game_state.roster[2] is None:
-            self.game_state.roster[2] = generate_random_turtle(level=1)
+            t = generate_random_turtle(level=1)
+            t.is_temp = True
+            self.game_state.roster[2] = t
 
         for t in self.game_state.roster:
             if t:
