@@ -33,10 +33,10 @@ class StateHandler:
         """Handle clicks in main menu state."""
         # Check main menu button clicks
         menu_rects = [
-            (pygame.Rect(200, 150, 400, 80), STATE_ROSTER),  # ROSTER
-            (pygame.Rect(200, 250, 400, 80), STATE_SHOP),  # SHOP
-            (pygame.Rect(200, 350, 400, 80), STATE_BREEDING),  # BREEDING
-            (pygame.Rect(200, 450, 400, 80), STATE_RACE),  # RACE
+            (layout.MENU_ROSTER_RECT, STATE_ROSTER),  # ROSTER
+            (layout.MENU_SHOP_RECT, STATE_SHOP),  # SHOP
+            (layout.MENU_BREEDING_RECT, STATE_BREEDING),  # BREEDING
+            (layout.MENU_RACE_RECT, STATE_RACE),  # RACE
         ]
         
         for rect, new_state in menu_rects:
