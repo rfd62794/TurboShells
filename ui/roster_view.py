@@ -7,7 +7,14 @@ from ui.turtle_card import draw_stable_turtle_slot
 def draw_roster(screen, font, game_state):
     # Header bar
     pygame.draw.rect(screen, DARK_GREY, layout.HEADER_RECT)
-    title = font.render("ROSTER", True, WHITE)
+    
+    # Check if we're in select racer mode
+    select_racer_mode = getattr(game_state, "select_racer_mode", False)
+    
+    if select_racer_mode:
+        title = font.render("SELECT RACER", True, WHITE)
+    else:
+        title = font.render("ROSTER", True, WHITE)
     screen.blit(title, layout.HEADER_TITLE_POS)
 
     money_txt = font.render(f"$ {game_state.money}", True, WHITE)

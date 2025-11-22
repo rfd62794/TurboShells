@@ -5,6 +5,7 @@ Handles all game state transitions and logic in a centralized way.
 
 import pygame
 from settings import *
+import ui.layout as layout
 
 
 class StateHandler:
@@ -56,8 +57,28 @@ class StateHandler:
         menu_rect = pygame.Rect(700, 5, 80, 30)
         if menu_rect.collidepoint(pos):
             self.game.state = STATE_MENU
+            # Reset select racer mode when leaving
+            self.game.select_racer_mode = False
             return
         
+        # Check if we're in select racer mode
+        select_racer_mode = getattr(self.game, "select_racer_mode", False)
+        if select_racer_mode:
+            # Check for turtle slot clicks to select racer
+            for i, slot_rect in enumerate(layout.SLOT_RECTS):
+                if slot_rect.collidepoint(pos):
+                    turtle = self.game.roster[i]
+                    if turtle:  # Only select if there's a turtle
+                        # Set this turtle as the active racer
+                        self.game.active_racer_index = i
+                        # Start the race immediately
+                        self.game.race_manager.start_race()
+                        self.game.state = STATE_RACE
+                        # Reset select racer mode
+                        self.game.select_racer_mode = False
+                    return
+        
+        # Normal roster handling
         action = self.game.roster_manager.handle_click(pos)
         if action == "GOTO_RACE":
             # Check if we have a selected racer and bet
