@@ -63,8 +63,6 @@ class RosterManager:
                 elif is_active_racer and self.game_state.roster[i]:
                     if train_rect.collidepoint(pos):
                         self.train_turtle(i)
-                    elif rest_rect.collidepoint(pos):
-                        self.rest_turtle(i)
                     elif retire_rect.collidepoint(pos):
                         self.retire_turtle(i)
         
