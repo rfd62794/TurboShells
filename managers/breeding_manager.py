@@ -79,9 +79,18 @@ class BreedingManager:
                 child = breed_turtles(parent_a, parent_b)
                 self.game_state.roster[slot_idx] = child
                 
-                # Remove parents from retired roster
-                self.game_state.retired_roster.remove(parent_a)
-                self.game_state.retired_roster.remove(parent_b)
+                # Remove parents from their respective pools (active roster or retired_roster)
+                for parent in (parent_a, parent_b):
+                    # If parent is currently in the active roster, clear that slot
+                    if parent in self.game_state.roster:
+                        for i, t in enumerate(self.game_state.roster):
+                            if t is parent:
+                                self.game_state.roster[i] = None
+                                break
+                    # If parent is in the retired roster, remove it from there
+                    if parent in self.game_state.retired_roster:
+                        self.game_state.retired_roster.remove(parent)
+
                 self.parents = []
                 self.game_state.breeding_parents = []
                 
