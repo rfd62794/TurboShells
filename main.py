@@ -55,9 +55,11 @@ class TurboShellsGame:
                 # Global Navigation
                 if event.key == pygame.K_m: 
                     self.state = STATE_MENU
-                    # Clear opponents when returning to stable
-                    self.roster[1] = None
-                    self.roster[2] = None
+                    # Clear ONLY temporary opponents when returning to stable
+                    if self.roster[1] and getattr(self.roster[1], 'is_temp', False):
+                        self.roster[1] = None
+                    if self.roster[2] and getattr(self.roster[2], 'is_temp', False):
+                        self.roster[2] = None
                 
                 # State Specific Inputs
                 if self.state == STATE_MENU:
@@ -96,8 +98,11 @@ class TurboShellsGame:
                 elif self.state == STATE_RACE_RESULT:
                     if event.key == pygame.K_m:
                         self.state = STATE_MENU
-                        self.roster[1] = None
-                        self.roster[2] = None
+                        # Clear ONLY temporary opponents when returning to stable
+                        if self.roster[1] and getattr(self.roster[1], 'is_temp', False):
+                            self.roster[1] = None
+                        if self.roster[2] and getattr(self.roster[2], 'is_temp', False):
+                            self.roster[2] = None
 
                 elif self.state == STATE_BREEDING:
                     if event.key == pygame.K_1: self.breeding_manager.toggle_parent(0)
