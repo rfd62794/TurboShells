@@ -1,0 +1,51 @@
+import pygame
+from settings import *
+import ui.layout as layout
+
+
+def draw_main_menu(screen, font, game_state):
+    """Draw the main menu with game options"""
+    # Header bar
+    pygame.draw.rect(screen, DARK_GREY, layout.HEADER_RECT)
+    title = font.render("TURBO SHELLS", True, WHITE)
+    screen.blit(title, layout.HEADER_TITLE_POS)
+
+    money_txt = font.render(f"$ {game_state.money}", True, WHITE)
+    screen.blit(money_txt, layout.HEADER_MONEY_POS)
+
+    mouse_pos = getattr(game_state, "mouse_pos", None)
+
+    # Main menu options
+    menu_options = [
+        ("ROSTER", "Manage your turtles", layout.NAV_RACE_RECT),
+        ("SHOP", "Buy new turtles", layout.NAV_SHOP_RECT),
+        ("BREEDING", "Breed turtles", layout.NAV_BREED_RECT),
+    ]
+
+    for i, (title, desc, rect) in enumerate(menu_options):
+        y_pos = 150 + (i * 100)
+        menu_rect = pygame.Rect(200, y_pos, 400, 80)
+        
+        # Hover effect
+        color = GRAY
+        if mouse_pos and menu_rect.collidepoint(mouse_pos):
+            color = WHITE
+        
+        pygame.draw.rect(screen, color, menu_rect, 2)
+        
+        # Title
+        title_txt = font.render(title, True, WHITE)
+        title_x = menu_rect.x + (menu_rect.width - title_txt.get_width()) // 2
+        screen.blit(title_txt, (title_x, menu_rect.y + 20))
+        
+        # Description
+        desc_font = pygame.font.SysFont("Arial", 18)
+        desc_txt = desc_font.render(desc, True, GRAY)
+        desc_x = menu_rect.x + (menu_rect.width - desc_txt.get_width()) // 2
+        screen.blit(desc_txt, (desc_x, menu_rect.y + 45))
+
+    # Instructions
+    inst_font = pygame.font.SysFont("Arial", 16)
+    inst_txt = inst_font.render("Click an option or use keyboard shortcuts", True, GRAY)
+    inst_x = (SCREEN_WIDTH - inst_txt.get_width()) // 2
+    screen.blit(inst_txt, (inst_x, SCREEN_HEIGHT - 50))
