@@ -1,3 +1,9 @@
+"""Core domain helper: procedural race track generation and terrain lookup.
+
+Shared by both the headless simulation and the visual game to ensure
+consistent Grass/Water/Rock distribution and behavior.
+"""
+
 import random
 from settings import TRACK_LENGTH_LOGIC
 

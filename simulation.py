@@ -1,3 +1,9 @@
+"""Headless simulation harness for balancing Turtle physics.
+
+Runs races between real `entities.Turtle` instances using the shared
+`race_track` helper, without any PyGame window or UI.
+"""
+
 from entities import Turtle # <--- IMPORT THE SHARED CLASS
 import random
 from race_track import generate_track, get_terrain_at

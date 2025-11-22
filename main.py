@@ -1,3 +1,9 @@
+"""Game orchestration: main loop and shared state container.
+
+Defines the `TurboShellsGame` class, which owns global game state,
+routes input to managers, and delegates drawing to the UI layer.
+"""
+
 import pygame
 import sys
 from settings import *
