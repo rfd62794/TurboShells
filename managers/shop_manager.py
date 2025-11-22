@@ -1,4 +1,4 @@
-from game_state import generate_random_turtle
+from game_state import generate_random_turtle, compute_turtle_cost
 from settings import *
 import pygame
 import ui.layout as layout
@@ -65,13 +65,15 @@ class ShopManager:
 
     def buy_turtle(self, index):
         if index < len(self.inventory):
-            if self.game_state.money >= COST_TURTLE:
+            turtle = self.inventory[index]
+            cost = compute_turtle_cost(turtle)
+            if self.game_state.money >= cost:
                 # Find empty slot in roster
                 for i in range(len(self.game_state.roster)):
                     if self.game_state.roster[i] is None:
                         self.game_state.roster[i] = self.inventory.pop(index)
-                        self.game_state.money -= COST_TURTLE
-                        self.message = "Bought turtle!"
+                        self.game_state.money -= cost
+                        self.message = f"Bought turtle for ${cost}!"
                         self.message_timer = 60
                         return
                 self.message = "Roster Full!"

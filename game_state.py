@@ -8,6 +8,27 @@ TURTLE_NAMES = [
     "Dash", "Sprint", "Marathon", "Iron"
 ]
 
+
+def compute_turtle_cost(turtle: Turtle) -> int:
+    """Compute a simple cost for a turtle based on its stats.
+
+    Currently: base cost + a small factor times the sum of core stats.
+    This is intentionally simple and easy to tune.
+    """
+    stats = turtle.stats
+    # Normalize energy down so it doesn't dominate cost
+    normalized_energy = stats["max_energy"] / 10.0
+    total = (
+        stats["speed"]
+        + normalized_energy
+        + stats["recovery"]
+        + stats["swim"]
+        + stats["climb"]
+    )
+    base_cost = 20
+    scale = 2.0
+    return int(base_cost + total * scale)
+
 def generate_random_turtle(level=1):
     """
     Generates a random turtle based on a level budget.

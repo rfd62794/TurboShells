@@ -32,7 +32,9 @@ def draw_shop(screen, font, game_state):
 
         name_txt = font.render(turtle.name, True, WHITE)
         stats_txt = font.render(f"Spd: {turtle.stats['speed']}", True, WHITE)
-        cost_txt = font.render("$50", True, GREEN)
+        # Expect cost to be computed in ShopManager when needed; fall back to 50.
+        cost_val = getattr(turtle, "shop_cost", 50)
+        cost_txt = font.render(f"${cost_val}", True, GREEN)
 
         screen.blit(name_txt, (x_pos + 20, y_pos + 20))
         screen.blit(stats_txt, (x_pos + 20, y_pos + 60))
