@@ -1,39 +1,65 @@
 import pygame
 from settings import *
 import ui.layout as layout
-from ui.turtle_card import format_turtle_label_basic
+from ui.turtle_card import draw_stable_turtle_slot
 
 
 def draw_breeding(screen, font, game_state):
-    title = font.render("BREEDING CENTER (Press M for Menu)", True, WHITE)
+    # Header bar
+    pygame.draw.rect(screen, DARK_GREY, layout.HEADER_RECT)
+    title = font.render("BREEDING CENTER", True, WHITE)
     screen.blit(title, layout.HEADER_TITLE_POS)
 
+    money_txt = font.render(f"$ {game_state.money}", True, WHITE)
+    screen.blit(money_txt, layout.HEADER_MONEY_POS)
+
+    mouse_pos = getattr(game_state, "mouse_pos", None)
+
+    # Instructions
     msg = font.render("Select 2 Parents (Press 1, 2, 3...) then ENTER to Breed", True, GREEN)
     screen.blit(msg, (50, 60))
 
     # Combined breeding pool: active + retired
     candidates = [t for t in game_state.roster if t is not None] + list(game_state.retired_roster)
 
+    # Draw turtle cards for breeding candidates
     for i, turtle in enumerate(candidates):
-        y_pos = layout.BREEDING_LIST_START_Y + (i * layout.BREEDING_SLOT_HEIGHT)
+        if i >= 6:  # Limit to 6 candidates for display
+            break
+            
+        # Create a card position
+        card_x = 50 + (i % 3) * 250
+        card_y = 120 + (i // 3) * 150
+        card_rect = pygame.Rect(card_x, card_y, 220, 120)
 
-        is_retired = not getattr(turtle, "is_active", True)
-        base_color = RED if is_retired else GRAY
+        # Determine if this turtle is selected
+        is_selected = turtle in game_state.breeding_parents
+        is_retired = turtle in game_state.retired_roster
 
-        # Selected parents stand out in green (active) or red (retired)
-        if turtle in game_state.breeding_parents:
-            color = GREEN if not is_retired else RED
-        else:
-            color = base_color
+        # Draw the turtle card
+        draw_stable_turtle_slot(screen, font, game_state, turtle, card_rect, is_selected, mouse_pos)
 
-        row_rect = pygame.Rect(
-            layout.BREEDING_ROW_X,
-            y_pos,
-            layout.BREEDING_ROW_WIDTH,
-            layout.BREEDING_SLOT_HEIGHT,
-        )
-        pygame.draw.rect(screen, color, row_rect, 2)
+        # Add selection indicator
+        if is_selected:
+            pygame.draw.rect(screen, GREEN, card_rect, 4)
+            select_txt = font.render("SELECTED", True, GREEN)
+            screen.blit(select_txt, (card_rect.x + 5, card_rect.y + 5))
 
-        label = f"{i+1}. " + format_turtle_label_basic(turtle)
-        txt = font.render(label, True, WHITE)
-        screen.blit(txt, (row_rect.x + 20, row_rect.y + 15))
+    # Menu button
+    menu_color = GREEN
+    if mouse_pos and layout.BREED_BACK_BTN_RECT.collidepoint(mouse_pos):
+        menu_color = WHITE
+    pygame.draw.rect(screen, menu_color, layout.BREED_BACK_BTN_RECT, 2)
+    menu_txt = font.render("MENU", True, WHITE)
+    menu_x = layout.BREED_BACK_BTN_RECT.x + (layout.BREED_BACK_BTN_RECT.width - menu_txt.get_width()) // 2
+    screen.blit(menu_txt, (menu_x, layout.BREED_BACK_BTN_RECT.y + 15))
+
+    # Breed button (only if 2 parents selected)
+    if len(game_state.breeding_parents) == 2:
+        breed_color = GREEN
+        if mouse_pos and layout.BREED_BTN_RECT.collidepoint(mouse_pos):
+            breed_color = WHITE
+        pygame.draw.rect(screen, breed_color, layout.BREED_BTN_RECT, 2)
+        breed_txt = font.render("BREED", True, WHITE)
+        breed_x = layout.BREED_BTN_RECT.x + (layout.BREED_BTN_RECT.width - breed_txt.get_width()) // 2
+        screen.blit(breed_txt, (breed_x, layout.BREED_BTN_RECT.y + 15))

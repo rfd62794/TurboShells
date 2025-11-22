@@ -13,10 +13,6 @@ def draw_shop(screen, font, game_state):
     money_txt = font.render(f"$ {game_state.money}", True, WHITE)
     screen.blit(money_txt, layout.HEADER_MONEY_POS)
 
-    # Small debug hint for keyboard shortcuts
-    msg = font.render("[DBG] 1-3: Buy | R: Refresh | M: Menu", True, GRAY)
-    screen.blit(msg, (layout.PADDING, layout.HEADER_RECT.bottom + 5))
-
     # Feedback Message
     if game_state.shop_message:
         feedback = font.render(game_state.shop_message, True, (255, 255, 0))
@@ -52,7 +48,9 @@ def draw_shop(screen, font, game_state):
         pygame.draw.rect(screen, GREEN, buy_rect, 2)
 
         buy_txt = font.render("BUY", True, WHITE)
-        screen.blit(buy_txt, (buy_rect.x + 40, buy_rect.y + 8))
+        # Move Buy text to right side of button
+        buy_x = buy_rect.x + buy_rect.width - buy_txt.get_width() - 10
+        screen.blit(buy_txt, (buy_x, buy_rect.y + 8))
 
     # Shop controls: Refresh and Back to Menu buttons
     pygame.draw.rect(screen, BLUE, layout.SHOP_BTN_REFRESH_RECT, 2)

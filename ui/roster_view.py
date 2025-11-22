@@ -31,42 +31,6 @@ def draw_roster(screen, font, game_state):
         is_active_racer = (not show_retired) and idx == getattr(game_state, "active_racer_index", 0)
         draw_stable_turtle_slot(screen, font, game_state, turtle, slot_rect, is_active_racer, mouse_pos)
 
-        # Action buttons (visual only; click handling is in RosterManager)
-        # Only show action buttons if this slot is selected and has a turtle
-        if turtle and is_active_racer:
-            train_btn = layout.SLOT_BTN_TRAIN_RECT
-            retire_btn = layout.SLOT_BTN_RETIRE_RECT
-
-            train_rect = pygame.Rect(slot_rect.x + train_btn.x, slot_rect.y + train_btn.y, train_btn.width, train_btn.height)
-            retire_rect = pygame.Rect(slot_rect.x + retire_btn.x, slot_rect.y + retire_btn.y, retire_btn.width, retire_btn.height)
-
-            # Hover highlight for action buttons
-            train_color = GRAY
-            retire_color = GRAY
-            if mouse_pos:
-                if train_rect.collidepoint(mouse_pos):
-                    train_color = WHITE
-                if retire_rect.collidepoint(mouse_pos):
-                    retire_color = WHITE
-
-            pygame.draw.rect(screen, train_color, train_rect, 2)
-            pygame.draw.rect(screen, retire_color, retire_rect, 2)
-
-            train_txt = font.render("TRAIN", True, WHITE)
-            retire_txt = font.render("RETIRE", True, WHITE)
-
-            screen.blit(train_txt, (train_rect.x + 15, train_rect.y + 5))
-            screen.blit(retire_txt, (retire_rect.x + 10, retire_rect.y + 5))
-            
-            # Race button for selected turtle
-            race_btn = pygame.Rect(slot_rect.x + 550, slot_rect.y + 15, 80, 28)
-            race_color = GREEN
-            if mouse_pos and race_btn.collidepoint(mouse_pos):
-                race_color = WHITE
-            pygame.draw.rect(screen, race_color, race_btn, 2)
-            race_txt = font.render("RACE", True, WHITE)
-            screen.blit(race_txt, (race_btn.x + 15, race_btn.y + 5))
-
     # Bottom navigation buttons with hover
     nav_menu_color = GREEN
     nav_shop_color = BLUE
