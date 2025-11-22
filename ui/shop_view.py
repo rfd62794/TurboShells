@@ -1,6 +1,6 @@
 import pygame
 from settings import *
-import ui.layout as layout
+import ui.layouts.positions as layout
 from ui.turtle_card import format_turtle_label_basic
 
 

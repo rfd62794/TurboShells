@@ -5,7 +5,7 @@ Handles all game state transitions and logic in a centralized way.
 
 import pygame
 from settings import *
-import ui.layout as layout
+import ui.layouts.positions as layout
 
 
 class StateHandler:

@@ -1,7 +1,7 @@
 from core.game_state import generate_random_turtle, compute_turtle_cost
 from settings import *
 import pygame
-import ui.layout as layout
+import ui.layouts.positions as layout
 
 class ShopManager:
     def __init__(self, game_state):

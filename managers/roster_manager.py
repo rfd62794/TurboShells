@@ -1,6 +1,6 @@
 import pygame
 from settings import *
-import ui.layout as layout
+import ui.layouts.positions as layout
 
 class RosterManager:
     def __init__(self, game_state):

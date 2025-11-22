@@ -1,6 +1,6 @@
 import pygame
 from settings import *
-import ui.layout as layout
+import ui.layouts.positions as layout
 
 
 def draw_menu(screen, font, game_state):
