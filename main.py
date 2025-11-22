@@ -220,16 +220,21 @@ class TurboShellsGame:
             self.renderer.draw_race_result(self)
         elif self.state == STATE_SHOP:
             self.renderer.draw_shop(self)
-        elif self.state == STATE_BREEDING:
-            self.renderer.draw_breeding(self)
-            
-        pygame.display.flip()
 
 # --- ENTRY POINT ---
 if __name__ == "__main__":
-    game = TurboShellsGame()
-    while True:
-        game.handle_input()
-        game.update()
-        game.draw()
-        game.clock.tick(FPS)
+    try:
+        game = TurboShellsGame()
+        while True:
+            game.handle_input()
+            game.update()
+            game.draw()
+            game.clock.tick(FPS)
+    except KeyboardInterrupt:
+        print("\nGame closed by user.")
+        pygame.quit()
+        sys.exit(0)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        pygame.quit()
+        sys.exit(1)
