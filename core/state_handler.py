@@ -41,10 +41,7 @@ class StateHandler:
         
         for rect, new_state in menu_rects:
             if rect.collidepoint(pos):
-                if new_state == STATE_SHOP:
-                    # Don't auto-refresh when entering shop - it should already have stock
-                    pass
-                elif new_state == STATE_RACE:
+                if new_state == STATE_RACE:
                     # Go to roster with select racer mode
                     self.game.state = STATE_ROSTER
                     self.game.select_racer_mode = True
