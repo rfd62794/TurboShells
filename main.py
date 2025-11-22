@@ -168,6 +168,8 @@ class TurboShellsGame:
                 if active_racer:
                     self.race_manager.start_race()
                     self.state = STATE_RACE
+            elif action == "GOTO_MAIN_MENU":
+                self.state = STATE_MAIN_MENU
             elif action == "GOTO_SHOP":
                 self.state = STATE_SHOP
             elif action == "GOTO_BREEDING":
