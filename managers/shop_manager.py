@@ -57,6 +57,13 @@ class ShopManager:
                 generate_random_turtle(level=2),
                 generate_random_turtle(level=3)
             ]
+
+            # Precompute and attach shop_cost for UI display
+            for t in self.inventory:
+                try:
+                    t.shop_cost = compute_turtle_cost(t)
+                except Exception:
+                    t.shop_cost = COST_TURTLE
             self.message = "Shop Refreshed!"
             self.message_timer = 60
         else:

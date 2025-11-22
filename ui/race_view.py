@@ -64,7 +64,9 @@ def draw_race_result(screen, font, game_state):
         if turtle == player_turtle:
             color = GREEN
 
-        txt = font.render(f"{i+1}. {turtle.name}", True, color)
+        status_tag = "[ACT]" if getattr(turtle, "is_active", True) else "[RET]"
+        label = f"{i+1}. {turtle.name} {status_tag} (Age:{turtle.age})"
+        txt = font.render(label, True, color)
         screen.blit(txt, (100, y_pos))
 
     # Show Reward info if player finished

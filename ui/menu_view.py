@@ -38,6 +38,7 @@ def draw_menu(screen, font, game_state):
             status_tag = "[ACT]" if getattr(turtle, "is_active", True) else "[RET]"
             stats_str = (
                 f"{status_tag} "
+                f"Age:{turtle.age} "
                 f"Spd:{turtle.stats['speed']} "
                 f"Nrg:{turtle.stats['max_energy']} "
                 f"Rec:{turtle.stats['recovery']} "
