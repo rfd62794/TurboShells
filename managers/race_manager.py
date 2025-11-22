@@ -1,6 +1,7 @@
 from game_state import generate_random_turtle
 from settings import *
 import ui.layout as layout
+from race_track import generate_track, get_terrain_at
 
 class RaceManager:
     def __init__(self, game_state):
@@ -10,6 +11,8 @@ class RaceManager:
     def start_race(self):
         self.results = []
         self.game_state.race_results = []
+        # Generate a new track for this race
+        self.track = generate_track(TRACK_LENGTH_LOGIC)
         
         # Fill empty slots with opponents
         if self.game_state.roster[1] is None:
@@ -39,11 +42,9 @@ class RaceManager:
         
         for _ in range(self.game_state.race_speed_multiplier):
             for t in active_turtles:
-                # 1. Determine Terrain (Placeholder for Track Logic)
-                terrain = "grass"
-                if 500 < t.race_distance < 700:
-                    terrain = "water"
-                
+                # 1. Determine Terrain using shared RaceTrack helper
+                terrain = get_terrain_at(self.track, t.race_distance)
+
                 # 2. UPDATE PHYSICS (Using the Shared Class)
                 move_amt = t.update_physics(terrain)
                 t.race_distance += move_amt

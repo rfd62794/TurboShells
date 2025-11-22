@@ -1,5 +1,6 @@
 from entities import Turtle # <--- IMPORT THE SHARED CLASS
 import random
+from race_track import generate_track, get_terrain_at
 
 TRACK_LENGTH = 1500
 
@@ -8,13 +9,8 @@ def run_race(turtle_a, turtle_b):
     turtle_a.reset_for_race()
     turtle_b.reset_for_race()
     
-    # Generate Track
-    track = []
-    for _ in range(int(TRACK_LENGTH / 10) + 100):
-        r = random.random()
-        if r < 0.6: track.append("grass")
-        elif r < 0.8: track.append("water")
-        else: track.append("rock")
+    # Generate Track using shared helper
+    track = generate_track(TRACK_LENGTH)
         
     finished = False
     ticks = 0
@@ -23,12 +19,12 @@ def run_race(turtle_a, turtle_b):
         ticks += 1
         
         # Get current terrain
-        idx_a = min(int(turtle_a.race_distance / 10), len(track)-1)
-        idx_b = min(int(turtle_b.race_distance / 10), len(track)-1)
-        
+        terrain_a = get_terrain_at(track, turtle_a.race_distance)
+        terrain_b = get_terrain_at(track, turtle_b.race_distance)
+
         # Update Physics using the Shared Logic
-        dist_a = turtle_a.update_physics(track[idx_a])
-        dist_b = turtle_b.update_physics(track[idx_b])
+        dist_a = turtle_a.update_physics(terrain_a)
+        dist_b = turtle_b.update_physics(terrain_b)
         
         turtle_a.race_distance += dist_a
         turtle_b.race_distance += dist_b
