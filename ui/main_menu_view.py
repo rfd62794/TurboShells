@@ -17,9 +17,9 @@ def draw_main_menu(screen, font, game_state):
 
     # Main menu options
     menu_options = [
-        ("ROSTER", "Manage your turtles", layout.NAV_RACE_RECT),
-        ("SHOP", "Buy new turtles", layout.NAV_SHOP_RECT),
-        ("BREEDING", "Breed turtles", layout.NAV_BREED_RECT),
+        ("ROSTER", "Manage your turtles", None),
+        ("SHOP", "Buy new turtles", None),
+        ("BREEDING", "Breed turtles", None),
     ]
 
     for i, (title, desc, rect) in enumerate(menu_options):
