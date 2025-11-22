@@ -1,13 +1,13 @@
 import pygame
 from settings import *
 import ui.layout as layout
-from ui.turtle_card import draw_stable_turtle_slot
 
 
 def draw_menu(screen, font, game_state):
+    """Draw the main menu with game options"""
     # Header bar
     pygame.draw.rect(screen, DARK_GREY, layout.HEADER_RECT)
-    title = font.render("STABLE MENU", True, WHITE)
+    title = font.render("TURBO SHELLS", True, WHITE)
     screen.blit(title, layout.HEADER_TITLE_POS)
 
     money_txt = font.render(f"$ {game_state.money}", True, WHITE)
@@ -15,109 +15,37 @@ def draw_menu(screen, font, game_state):
 
     mouse_pos = getattr(game_state, "mouse_pos", None)
 
-    # Determine which turtles to show: Active roster or Retired pool
-    show_retired = getattr(game_state, "show_retired_view", False)
-    if show_retired:
-        turtles_to_show = list(game_state.retired_roster[:3])
-        # Pad to length 3 for consistent UI
-        while len(turtles_to_show) < 3:
-            turtles_to_show.append(None)
-    else:
-        turtles_to_show = list(game_state.roster)
+    # Main menu options
+    menu_options = [
+        ("ROSTER", "Manage your turtles", None),
+        ("SHOP", "Buy new turtles", None),
+        ("BREEDING", "Breed turtles", None),
+    ]
 
-    # Roster slots
-    for idx, slot_rect in enumerate(layout.SLOT_RECTS):
-        turtle = turtles_to_show[idx]
-        is_active_racer = (not show_retired) and idx == getattr(game_state, "active_racer_index", 0)
-        draw_stable_turtle_slot(screen, font, game_state, turtle, slot_rect, is_active_racer, mouse_pos)
+    for i, (title, desc, rect) in enumerate(menu_options):
+        y_pos = 150 + (i * 100)
+        menu_rect = pygame.Rect(200, y_pos, 400, 80)
+        
+        # Hover effect
+        color = GRAY
+        if mouse_pos and menu_rect.collidepoint(mouse_pos):
+            color = WHITE
+        
+        pygame.draw.rect(screen, color, menu_rect, 2)
+        
+        # Title
+        title_txt = font.render(title, True, WHITE)
+        title_x = menu_rect.x + (menu_rect.width - title_txt.get_width()) // 2
+        screen.blit(title_txt, (title_x, menu_rect.y + 20))
+        
+        # Description
+        desc_font = pygame.font.SysFont("Arial", 18)
+        desc_txt = desc_font.render(desc, True, GRAY)
+        desc_x = menu_rect.x + (menu_rect.width - desc_txt.get_width()) // 2
+        screen.blit(desc_txt, (desc_x, menu_rect.y + 45))
 
-        # Action buttons (visual only; click handling is in RosterManager)
-        # Only show action buttons if this slot is selected and has a turtle
-        if turtle and is_active_racer:
-            train_btn = layout.SLOT_BTN_TRAIN_RECT
-            retire_btn = layout.SLOT_BTN_RETIRE_RECT
-
-            train_rect = pygame.Rect(slot_rect.x + train_btn.x, slot_rect.y + train_btn.y, train_btn.width, train_btn.height)
-            retire_rect = pygame.Rect(slot_rect.x + retire_btn.x, slot_rect.y + retire_btn.y, retire_btn.width, retire_btn.height)
-
-            # Hover highlight for action buttons
-            train_color = GRAY
-            retire_color = GRAY
-            if mouse_pos:
-                if train_rect.collidepoint(mouse_pos):
-                    train_color = WHITE
-                if retire_rect.collidepoint(mouse_pos):
-                    retire_color = WHITE
-
-            pygame.draw.rect(screen, train_color, train_rect, 2)
-            pygame.draw.rect(screen, retire_color, retire_rect, 2)
-
-            train_txt = font.render("TRAIN", True, WHITE)
-            retire_txt = font.render("RETIRE", True, WHITE)
-
-            screen.blit(train_txt, (train_rect.x + 15, train_rect.y + 5))
-            screen.blit(retire_txt, (retire_rect.x + 10, retire_rect.y + 5))
-            
-            # Race button for selected turtle
-            race_btn = pygame.Rect(slot_rect.x + 550, slot_rect.y + 15, 80, 28)
-            race_color = GREEN
-            if mouse_pos and race_btn.collidepoint(mouse_pos):
-                race_color = WHITE
-            pygame.draw.rect(screen, race_color, race_btn, 2)
-            race_txt = font.render("RACE", True, WHITE)
-            screen.blit(race_txt, (race_btn.x + 15, race_btn.y + 5))
-
-    # Bottom navigation buttons with hover
-    nav_menu_color = GREEN
-    nav_shop_color = BLUE
-    nav_breed_color = (200, 100, 200)
-    if mouse_pos:
-        if layout.NAV_MENU_RECT.collidepoint(mouse_pos):
-            nav_menu_color = WHITE
-        if layout.NAV_SHOP_RECT.collidepoint(mouse_pos):
-            nav_shop_color = WHITE
-        if layout.NAV_BREED_RECT.collidepoint(mouse_pos):
-            nav_breed_color = WHITE
-
-    pygame.draw.rect(screen, nav_menu_color, layout.NAV_MENU_RECT, 2)
-    pygame.draw.rect(screen, nav_shop_color, layout.NAV_SHOP_RECT, 2)
-    pygame.draw.rect(screen, nav_breed_color, layout.NAV_BREED_RECT, 2)
-
-    menu_txt = font.render("MENU", True, WHITE)
-    shop_txt = font.render("SHOP", True, WHITE)
-    breed_txt = font.render("BREEDING", True, WHITE)
-
-    screen.blit(menu_txt, (layout.NAV_MENU_RECT.x + 60, layout.NAV_MENU_RECT.y + 15))
-    screen.blit(shop_txt, (layout.NAV_SHOP_RECT.x + 60, layout.NAV_SHOP_RECT.y + 15))
-    screen.blit(breed_txt, (layout.NAV_BREED_RECT.x + 35, layout.NAV_BREED_RECT.y + 15))
-
-    # View toggle buttons: Active vs Retired
-    show_retired = getattr(game_state, "show_retired_view", False)
-
-    def draw_view_button(rect, label, selected):
-        base_color = GREEN if selected else GRAY
-        if mouse_pos and rect.collidepoint(mouse_pos):
-            base_color = WHITE
-        pygame.draw.rect(screen, base_color, rect, 2)
-        txt = font.render(label, True, WHITE)
-        screen.blit(txt, (rect.x + 10, rect.y + 10))
-
-    draw_view_button(layout.VIEW_ACTIVE_RECT, "ACTIVE", not show_retired)
-    draw_view_button(layout.VIEW_RETIRED_RECT, "RETIRED", show_retired)
-
-    # Betting buttons (MVP): None, $5, $10
-    current_bet = getattr(game_state, "current_bet", 0)
-
-    def draw_bet_button(rect, label, amount):
-        base_color = GRAY
-        if current_bet == amount:
-            base_color = GREEN
-        if mouse_pos and rect.collidepoint(mouse_pos):
-            base_color = WHITE
-        pygame.draw.rect(screen, base_color, rect, 2)
-        txt = font.render(label, True, WHITE)
-        screen.blit(txt, (rect.x + 10, rect.y + 10))
-
-    draw_bet_button(layout.BET_BTN_NONE_RECT, "BET: $0", 0)
-    draw_bet_button(layout.BET_BTN_5_RECT, "BET: $5", 5)
-    draw_bet_button(layout.BET_BTN_10_RECT, "BET: $10", 10)
+    # Instructions
+    inst_font = pygame.font.SysFont("Arial", 16)
+    inst_txt = inst_font.render("Click an option or use keyboard shortcuts", True, GRAY)
+    inst_x = (SCREEN_WIDTH - inst_txt.get_width()) // 2
+    screen.blit(inst_txt, (inst_x, SCREEN_HEIGHT - 50))
