@@ -35,12 +35,16 @@ class StateHandler:
             (pygame.Rect(200, 150, 400, 80), STATE_ROSTER),  # ROSTER
             (pygame.Rect(200, 250, 400, 80), STATE_SHOP),  # SHOP
             (pygame.Rect(200, 350, 400, 80), STATE_BREEDING),  # BREEDING
+            (pygame.Rect(200, 450, 400, 80), STATE_RACE),  # RACE
         ]
         
         for rect, new_state in menu_rects:
             if rect.collidepoint(pos):
                 if new_state == STATE_SHOP:
                     self.game.shop_manager.refresh_stock()
+                elif new_state == STATE_RACE:
+                    # Start race directly from main menu
+                    self.game.race_manager.start_race()
                 self.game.state = new_state
                 break
     

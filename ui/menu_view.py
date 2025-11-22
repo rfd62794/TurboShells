@@ -20,6 +20,7 @@ def draw_menu(screen, font, game_state):
         ("ROSTER", "Manage your turtles", None),
         ("SHOP", "Buy new turtles", None),
         ("BREEDING", "Breed turtles", None),
+        ("RACE", "Start a race", None),
     ]
 
     for i, (title, desc, rect) in enumerate(menu_options):
