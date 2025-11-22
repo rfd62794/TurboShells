@@ -6,7 +6,7 @@ It must remain UI-agnostic (no PyGame imports).
 """
 
 import random
-from entities import Turtle
+from .entities import Turtle
 
 # --- DATA ---
 TURTLE_NAMES = [
