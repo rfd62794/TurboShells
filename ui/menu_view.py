@@ -17,15 +17,14 @@ def draw_menu(screen, font, game_state):
 
     # Main menu options
     menu_options = [
-        ("ROSTER", "Manage your turtles", None),
-        ("SHOP", "Buy new turtles", None),
-        ("BREEDING", "Breed turtles", None),
-        ("RACE", "Start a race", None),
+        ("ROSTER", "Manage your turtles", layout.MENU_ROSTER_RECT),
+        ("SHOP", "Buy new turtles", layout.MENU_SHOP_RECT),
+        ("BREEDING", "Breed turtles", layout.MENU_BREEDING_RECT),
+        ("RACE", "Start a race", layout.MENU_RACE_RECT),
     ]
 
     for i, (title, desc, rect) in enumerate(menu_options):
-        y_pos = 150 + (i * 100)
-        menu_rect = pygame.Rect(200, y_pos, 400, 80)
+        menu_rect = rect
         
         # Hover effect
         color = GRAY
