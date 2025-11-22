@@ -33,9 +33,9 @@ BET_BTN_5_RECT = pygame.Rect(380, 440, 90, 35)
 BET_BTN_10_RECT = pygame.Rect(480, 440, 90, 35)
 
 # Bottom Navigation
-NAV_RACE_RECT = pygame.Rect(50, 500, 180, 50)
-NAV_BREED_RECT = pygame.Rect(250, 500, 180, 50)
-NAV_SHOP_RECT = pygame.Rect(450, 500, 180, 50)
+NAV_MENU_RECT = pygame.Rect(300, 500, 200, 60)
+NAV_SHOP_RECT = pygame.Rect(50, 500, 200, 60)
+NAV_BREED_RECT = pygame.Rect(550, 500, 200, 60)
 
 # 3. The Race Screen
 LANE_1_RECT = pygame.Rect(0, 100, 800, 100)

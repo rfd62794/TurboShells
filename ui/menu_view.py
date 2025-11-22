@@ -57,30 +57,39 @@ def draw_menu(screen, font, game_state):
 
             screen.blit(train_txt, (train_rect.x + 15, train_rect.y + 5))
             screen.blit(retire_txt, (retire_rect.x + 10, retire_rect.y + 5))
+            
+            # Race button for selected turtle
+            race_btn = pygame.Rect(slot_rect.x + 550, slot_rect.y + 15, 80, 28)
+            race_color = GREEN
+            if mouse_pos and race_btn.collidepoint(mouse_pos):
+                race_color = WHITE
+            pygame.draw.rect(screen, race_color, race_btn, 2)
+            race_txt = font.render("RACE", True, WHITE)
+            screen.blit(race_txt, (race_btn.x + 15, race_btn.y + 5))
 
     # Bottom navigation buttons with hover
-    nav_race_color = GREEN
-    nav_breed_color = (200, 100, 200)
+    nav_menu_color = GREEN
     nav_shop_color = BLUE
+    nav_breed_color = (200, 100, 200)
     if mouse_pos:
-        if layout.NAV_RACE_RECT.collidepoint(mouse_pos):
-            nav_race_color = WHITE
-        if layout.NAV_BREED_RECT.collidepoint(mouse_pos):
-            nav_breed_color = WHITE
+        if layout.NAV_MENU_RECT.collidepoint(mouse_pos):
+            nav_menu_color = WHITE
         if layout.NAV_SHOP_RECT.collidepoint(mouse_pos):
             nav_shop_color = WHITE
+        if layout.NAV_BREED_RECT.collidepoint(mouse_pos):
+            nav_breed_color = WHITE
 
-    pygame.draw.rect(screen, nav_race_color, layout.NAV_RACE_RECT, 2)
-    pygame.draw.rect(screen, nav_breed_color, layout.NAV_BREED_RECT, 2)
+    pygame.draw.rect(screen, nav_menu_color, layout.NAV_MENU_RECT, 2)
     pygame.draw.rect(screen, nav_shop_color, layout.NAV_SHOP_RECT, 2)
+    pygame.draw.rect(screen, nav_breed_color, layout.NAV_BREED_RECT, 2)
 
-    race_txt = font.render("RACE", True, WHITE)
-    breed_txt = font.render("BREEDING", True, WHITE)
+    menu_txt = font.render("MENU", True, WHITE)
     shop_txt = font.render("SHOP", True, WHITE)
+    breed_txt = font.render("BREEDING", True, WHITE)
 
-    screen.blit(race_txt, (layout.NAV_RACE_RECT.x + 60, layout.NAV_RACE_RECT.y + 15))
-    screen.blit(breed_txt, (layout.NAV_BREED_RECT.x + 35, layout.NAV_BREED_RECT.y + 15))
+    screen.blit(menu_txt, (layout.NAV_MENU_RECT.x + 60, layout.NAV_MENU_RECT.y + 15))
     screen.blit(shop_txt, (layout.NAV_SHOP_RECT.x + 60, layout.NAV_SHOP_RECT.y + 15))
+    screen.blit(breed_txt, (layout.NAV_BREED_RECT.x + 35, layout.NAV_BREED_RECT.y + 15))
 
     # View toggle buttons: Active vs Retired
     show_retired = getattr(game_state, "show_retired_view", False)

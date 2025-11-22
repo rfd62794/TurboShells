@@ -8,13 +8,8 @@ class RosterManager:
 
     def handle_click(self, pos):
         # Check Navigation Buttons
-        if layout.NAV_RACE_RECT.collidepoint(pos):
-            # Check if we have a selected racer and bet setup
-            active_racer = self.game_state.roster[getattr(self.game_state, "active_racer_index", 0)]
-            if active_racer:
-                return "GOTO_RACE"
-            # If no racer selected, do nothing
-            return None
+        if layout.NAV_MENU_RECT.collidepoint(pos):
+            return "GOTO_MAIN_MENU"
         
         if layout.NAV_SHOP_RECT.collidepoint(pos):
             return "GOTO_SHOP"
@@ -67,6 +62,10 @@ class RosterManager:
                         self.train_turtle(i)
                     elif retire_rect.collidepoint(pos):
                         self.retire_turtle(i)
+                    # Check for individual race button
+                    race_btn = pygame.Rect(slot_rect.x + 550, slot_rect.y + 15, 80, 28)
+                    if race_btn.collidepoint(pos):
+                        return "GOTO_RACE"
         
         return None
 
