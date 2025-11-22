@@ -43,23 +43,3 @@ def draw_stable_turtle_slot(screen, font, game_state, turtle, slot_rect, is_acti
     stats_str = format_turtle_label_basic(turtle)
     stats_txt = font.render(stats_str, True, WHITE)
     screen.blit(stats_txt, stats_pos)
-
-    # Energy bar
-    energy_bg = layout.SLOT_ENERGY_BG_RECT
-    energy_bg_rect = pygame.Rect(
-        slot_rect.x + energy_bg.x,
-        slot_rect.y + energy_bg.y,
-        energy_bg.width,
-        energy_bg.height,
-    )
-    pygame.draw.rect(screen, RED, energy_bg_rect)
-
-    pct = turtle.current_energy / turtle.stats["max_energy"] if turtle.stats["max_energy"] > 0 else 0
-    fill_width = int(energy_bg.width * max(0.0, min(1.0, pct)))
-    energy_fill_rect = pygame.Rect(
-        energy_bg_rect.x + 2,
-        energy_bg_rect.y + 2,
-        max(0, fill_width - 4),
-        energy_bg.height - 4,
-    )
-    pygame.draw.rect(screen, GREEN, energy_fill_rect)
