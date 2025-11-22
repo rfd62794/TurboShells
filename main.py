@@ -104,6 +104,8 @@ class TurboShellsGame:
             self.renderer.draw_race_result(self)
         elif self.state == STATE_SHOP:
             self.renderer.draw_shop(self)
+        elif self.state == STATE_BREEDING:
+            self.renderer.draw_breeding(self)
 
 # --- ENTRY POINT ---
 if __name__ == "__main__":
