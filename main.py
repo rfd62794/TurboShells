@@ -40,6 +40,8 @@ class TurboShellsGame:
         self.active_racer_index = 0
         
         self.breeding_parents = []
+        self.current_bet = 0
+
         self.mouse_pos = (0, 0)
 
         # --- MANAGERS ---

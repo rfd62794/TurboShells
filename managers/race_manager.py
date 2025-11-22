@@ -11,6 +11,15 @@ class RaceManager:
     def start_race(self):
         self.results = []
         self.game_state.race_results = []
+        # Handle betting: deduct current bet upfront if affordable
+        self.bet_amount = 0
+        bet = getattr(self.game_state, "current_bet", 0)
+        if bet > 0 and self.game_state.money >= bet:
+            self.bet_amount = bet
+            self.game_state.money -= bet
+        elif bet > 0 and self.game_state.money < bet:
+            # Not enough money; clear the bet
+            self.game_state.current_bet = 0
         # Generate a new track for this race
         self.track = generate_track(TRACK_LENGTH_LOGIC)
         
@@ -77,8 +86,13 @@ class RaceManager:
             elif rank == 2: reward = REWARD_2ND
             elif rank == 3: reward = REWARD_3RD
             
-            self.game_state.money += reward
-            print(f"Player finished {rank}. Reward: ${reward}")
+            # Betting payout: simple 2x on win if first place
+            payout = 0
+            if rank == 1 and self.bet_amount > 0:
+                payout = self.bet_amount * 2
+
+            self.game_state.money += reward + payout
+            print(f"Player finished {rank}. Reward: ${reward} | Bet Payout: ${payout}")
 
         # Post-race cleanup: recover energy and age turtles
         for i, t in enumerate(self.game_state.roster):

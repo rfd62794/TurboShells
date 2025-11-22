@@ -29,6 +29,11 @@ NAV_RACE_RECT = pygame.Rect(50, 500, 200, 60)
 NAV_BREED_RECT = pygame.Rect(300, 500, 200, 60)
 NAV_SHOP_RECT = pygame.Rect(550, 500, 200, 60)
 
+# Stable Betting Buttons (MVP)
+BET_BTN_NONE_RECT = pygame.Rect(50, 450, 120, 40)
+BET_BTN_5_RECT = pygame.Rect(190, 450, 120, 40)
+BET_BTN_10_RECT = pygame.Rect(330, 450, 120, 40)
+
 # 3. The Race Screen
 LANE_1_RECT = pygame.Rect(0, 100, 800, 100)
 LANE_2_RECT = pygame.Rect(0, 220, 800, 100)

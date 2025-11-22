@@ -4,7 +4,11 @@ import ui.layout as layout
 
 
 def draw_race(screen, font, game_state):
-    header = font.render(f"RACE (Speed: {game_state.race_speed_multiplier}x)", True, WHITE)
+    header = font.render(
+        f"RACE (Speed: {game_state.race_speed_multiplier}x | Bet: ${getattr(game_state, 'current_bet', 0)} )",
+        True,
+        WHITE,
+    )
     screen.blit(header, layout.HEADER_TITLE_POS)
 
     # Draw Finish Line

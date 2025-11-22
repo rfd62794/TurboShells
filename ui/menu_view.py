@@ -127,3 +127,20 @@ def draw_menu(screen, font, game_state):
     screen.blit(race_txt, (layout.NAV_RACE_RECT.x + 40, layout.NAV_RACE_RECT.y + 15))
     screen.blit(breed_txt, (layout.NAV_BREED_RECT.x + 20, layout.NAV_BREED_RECT.y + 15))
     screen.blit(shop_txt, (layout.NAV_SHOP_RECT.x + 50, layout.NAV_SHOP_RECT.y + 15))
+
+    # Betting buttons (MVP): None, $5, $10
+    current_bet = getattr(game_state, "current_bet", 0)
+
+    def draw_bet_button(rect, label, amount):
+        base_color = GRAY
+        if current_bet == amount:
+            base_color = GREEN
+        if mouse_pos and rect.collidepoint(mouse_pos):
+            base_color = WHITE
+        pygame.draw.rect(screen, base_color, rect, 2)
+        txt = font.render(label, True, WHITE)
+        screen.blit(txt, (rect.x + 10, rect.y + 10))
+
+    draw_bet_button(layout.BET_BTN_NONE_RECT, "BET: $0", 0)
+    draw_bet_button(layout.BET_BTN_5_RECT, "BET: $5", 5)
+    draw_bet_button(layout.BET_BTN_10_RECT, "BET: $10", 10)

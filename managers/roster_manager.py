@@ -20,6 +20,14 @@ class RosterManager:
         if layout.NAV_BREED_RECT.collidepoint(pos):
             return "GOTO_BREEDING"
 
+        # Betting Buttons (set current bet amount)
+        if layout.BET_BTN_NONE_RECT.collidepoint(pos):
+            self.game_state.current_bet = 0
+        elif layout.BET_BTN_5_RECT.collidepoint(pos):
+            self.game_state.current_bet = 5
+        elif layout.BET_BTN_10_RECT.collidepoint(pos):
+            self.game_state.current_bet = 10
+
         # Check Roster Slots
         for i, slot_rect in enumerate(layout.SLOT_RECTS):
             # We need absolute positions for buttons which are defined relative in layout.py?
