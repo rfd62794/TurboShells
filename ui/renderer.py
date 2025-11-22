@@ -165,16 +165,22 @@ class Renderer:
             self.screen.blit(reward_txt, (100, 350))
 
     def draw_shop(self, game_state):
-        title = self.font.render(f"TURTLE SHOP (Press M for Menu) | Money: ${game_state.money}", True, WHITE)
+        # Header
+        pygame.draw.rect(self.screen, DARK_GREY, layout.HEADER_RECT)
+        title = self.font.render(f"TURTLE SHOP", True, WHITE)
         self.screen.blit(title, layout.HEADER_TITLE_POS)
-        
-        msg = self.font.render("Press 1, 2, 3 to Buy ($50) | Press R to Refresh ($5)", True, GREEN)
-        self.screen.blit(msg, (50, 60))
+
+        money_txt = self.font.render(f"$ {game_state.money}", True, WHITE)
+        self.screen.blit(money_txt, layout.HEADER_MONEY_POS)
+
+        # Small debug hint for keyboard shortcuts
+        msg = self.font.render("[DBG] 1-3: Buy | R: Refresh | M: Menu", True, GRAY)
+        self.screen.blit(msg, (layout.PADDING, layout.HEADER_RECT.bottom + 5))
         
         # Feedback Message
         if game_state.shop_message:
             feedback = self.font.render(game_state.shop_message, True, (255, 255, 0))
-            self.screen.blit(feedback, (400, 60))
+            self.screen.blit(feedback, (layout.PADDING, layout.HEADER_RECT.bottom + 30))
 
         for i, turtle in enumerate(game_state.shop_inventory):
             x_pos = 50 + (i * 250)
@@ -205,6 +211,16 @@ class Renderer:
 
             buy_txt = self.font.render("BUY", True, WHITE)
             self.screen.blit(buy_txt, (buy_rect.x + 40, buy_rect.y + 8))
+
+        # Shop controls: Refresh and Back to Menu buttons
+        pygame.draw.rect(self.screen, BLUE, layout.SHOP_BTN_REFRESH_RECT, 2)
+        pygame.draw.rect(self.screen, GREEN, layout.SHOP_BTN_BACK_RECT, 2)
+
+        refresh_txt = self.font.render("REFRESH ($5)", True, WHITE)
+        back_txt = self.font.render("MENU", True, WHITE)
+
+        self.screen.blit(refresh_txt, (layout.SHOP_BTN_REFRESH_RECT.x + 15, layout.SHOP_BTN_REFRESH_RECT.y + 15))
+        self.screen.blit(back_txt, (layout.SHOP_BTN_BACK_RECT.x + 70, layout.SHOP_BTN_BACK_RECT.y + 15))
 
     def draw_breeding(self, game_state):
         title = self.font.render("BREEDING CENTER (Press M for Menu)", True, WHITE)
