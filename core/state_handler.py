@@ -3,6 +3,7 @@
 Handles all game state transitions and logic in a centralized way.
 """
 
+import pygame
 from settings import *
 
 
