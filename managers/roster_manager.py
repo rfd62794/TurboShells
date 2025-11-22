@@ -70,6 +70,7 @@ class RosterManager:
     def retire_turtle(self, index):
         if self.game_state.roster[index] is not None:
             t = self.game_state.roster[index]
+            t.is_active = False
             self.game_state.roster[index] = None
             self.game_state.retired_roster.append(t)
             print(f"Retired {t.name}")

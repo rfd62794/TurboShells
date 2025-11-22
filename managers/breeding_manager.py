@@ -20,11 +20,11 @@ class BreedingManager:
                     return "GOTO_MENU"
             return None
 
-        # Otherwise, treat clicks as parent selection rows
-        
-        for i, turtle in enumerate(self.game_state.retired_roster):
+        # Otherwise, treat clicks as parent selection rows from the combined pool
+        candidates = self._get_breeding_candidates()
+
+        for i, turtle in enumerate(candidates):
             y_pos = layout.BREEDING_LIST_START_Y + (i * layout.BREEDING_SLOT_HEIGHT)
-            # We need a rect for the row; use layout constants to avoid magic numbers
             row_rect = pygame.Rect(
                 layout.BREEDING_ROW_X,
                 y_pos,
@@ -32,12 +32,13 @@ class BreedingManager:
                 layout.BREEDING_SLOT_HEIGHT,
             )
             if row_rect.collidepoint(pos):
-                self.toggle_parent(i)
+                self._toggle_parent_by_turtle(turtle)
                 return None
         
         return None
 
     def toggle_parent(self, index):
+        """Keyboard-based toggle (debug): indexes into retired_roster only."""
         if index < len(self.game_state.retired_roster):
             t = self.game_state.retired_roster[index]
             if t in self.parents:
@@ -45,9 +46,22 @@ class BreedingManager:
             else:
                 if len(self.parents) < 2:
                     self.parents.append(t)
-        
+        self.game_state.breeding_parents = self.parents
+
+    def _toggle_parent_by_turtle(self, turtle):
+        if turtle in self.parents:
+            self.parents.remove(turtle)
+        else:
+            if len(self.parents) < 2:
+                self.parents.append(turtle)
         # Sync with game state for UI
         self.game_state.breeding_parents = self.parents
+
+    def _get_breeding_candidates(self):
+        """Return combined breeding pool: active roster + retired turtles."""
+        active = [t for t in self.game_state.roster if t is not None]
+        retired = list(self.game_state.retired_roster)
+        return active + retired
 
     def breed(self):
         if len(self.parents) == 2:

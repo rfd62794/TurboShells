@@ -244,15 +244,33 @@ class Renderer:
         msg = self.font.render("Select 2 Parents (Press 1, 2, 3...) then ENTER to Breed", True, GREEN)
         self.screen.blit(msg, (50, 60))
         
-        # Draw Retired Roster
-        for i, turtle in enumerate(game_state.retired_roster):
-            y_pos = 120 + (i * 80)
-            color = GRAY
-            if turtle in game_state.breeding_parents: color = GREEN # Highlight Selected
-            
-            pygame.draw.rect(self.screen, color, (50, y_pos, 600, 60), 2)
-            txt = self.font.render(f"{i+1}. {turtle.name} (Spd:{turtle.stats['speed']})", True, WHITE)
-            self.screen.blit(txt, (70, y_pos + 15))
+        # Combined breeding pool: active + retired
+        candidates = [t for t in game_state.roster if t is not None] + list(game_state.retired_roster)
+
+        for i, turtle in enumerate(candidates):
+            y_pos = layout.BREEDING_LIST_START_Y + (i * layout.BREEDING_SLOT_HEIGHT)
+
+            is_retired = not getattr(turtle, "is_active", True)
+            base_color = RED if is_retired else GRAY
+
+            # Selected parents stand out in green (active) or red (retired)
+            if turtle in game_state.breeding_parents:
+                color = GREEN if not is_retired else RED
+            else:
+                color = base_color
+
+            row_rect = pygame.Rect(
+                layout.BREEDING_ROW_X,
+                y_pos,
+                layout.BREEDING_ROW_WIDTH,
+                layout.BREEDING_SLOT_HEIGHT,
+            )
+            pygame.draw.rect(self.screen, color, row_rect, 2)
+
+            status_tag = "[RET]" if is_retired else "[ACT]"
+            label = f"{i+1}. {turtle.name} {status_tag} (Spd:{turtle.stats['speed']})"
+            txt = self.font.render(label, True, WHITE)
+            self.screen.blit(txt, (row_rect.x + 20, row_rect.y + 15))
 
     # --- HELPER: Draw the shared entity using PyGame ---
     def draw_turtle_sprite(self, turtle, y_pos):
