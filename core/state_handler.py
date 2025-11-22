@@ -64,6 +64,17 @@ class StateHandler:
         # Check if we're in select racer mode
         select_racer_mode = getattr(self.game, "select_racer_mode", False)
         if select_racer_mode:
+            # Check for bet button clicks
+            if layout.BET_BTN_NONE_RECT.collidepoint(pos):
+                self.game.current_bet = 0
+                return
+            elif layout.BET_BTN_5_RECT.collidepoint(pos):
+                self.game.current_bet = 5
+                return
+            elif layout.BET_BTN_10_RECT.collidepoint(pos):
+                self.game.current_bet = 10
+                return
+            
             # Check for turtle slot clicks to select racer
             for i, slot_rect in enumerate(layout.SLOT_RECTS):
                 if slot_rect.collidepoint(pos):

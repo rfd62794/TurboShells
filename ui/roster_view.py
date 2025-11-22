@@ -62,33 +62,38 @@ def draw_roster(screen, font, game_state):
             train_txt = font.render("TRAIN", True, WHITE)
             screen.blit(train_txt, (train_rect.x + 15, train_rect.y + 5))
 
-    # View toggle buttons: Active vs Retired
-    show_retired = getattr(game_state, "show_retired_view", False)
+    # View toggle buttons: Active vs Retired (only show in normal mode)
+    if not select_racer_mode:
+        show_retired = getattr(game_state, "show_retired_view", False)
 
-    def draw_view_button(rect, label, selected):
-        base_color = GREEN if selected else GRAY
-        if mouse_pos and rect.collidepoint(mouse_pos):
-            base_color = WHITE
-        pygame.draw.rect(screen, base_color, rect, 2)
-        txt = font.render(label, True, WHITE)
-        screen.blit(txt, (rect.x + 10, rect.y + 10))
+        def draw_view_button(rect, label, selected):
+            base_color = GREEN if selected else GRAY
+            if mouse_pos and rect.collidepoint(mouse_pos):
+                base_color = WHITE
+            pygame.draw.rect(screen, base_color, rect, 2)
+            txt = font.render(label, True, WHITE)
+            screen.blit(txt, (rect.x + 10, rect.y + 10))
 
-    draw_view_button(layout.VIEW_ACTIVE_RECT, "ACTIVE", not show_retired)
-    draw_view_button(layout.VIEW_RETIRED_RECT, "RETIRED", show_retired)
+        draw_view_button(layout.VIEW_ACTIVE_RECT, "ACTIVE", not show_retired)
+        draw_view_button(layout.VIEW_RETIRED_RECT, "RETIRED", show_retired)
+    else:
+        # In select racer mode, always show active roster
+        show_retired = False
 
-    # Betting buttons (MVP): None, $5, $10
-    current_bet = getattr(game_state, "current_bet", 0)
+    # Betting buttons (only show in select racer mode)
+    if select_racer_mode:
+        current_bet = getattr(game_state, "current_bet", 0)
 
-    def draw_bet_button(rect, label, amount):
-        base_color = GRAY
-        if current_bet == amount:
-            base_color = GREEN
-        if mouse_pos and rect.collidepoint(mouse_pos):
-            base_color = WHITE
-        pygame.draw.rect(screen, base_color, rect, 2)
-        txt = font.render(label, True, WHITE)
-        screen.blit(txt, (rect.x + 10, rect.y + 10))
+        def draw_bet_button(rect, label, amount):
+            base_color = GRAY
+            if current_bet == amount:
+                base_color = GREEN
+            if mouse_pos and rect.collidepoint(mouse_pos):
+                base_color = WHITE
+            pygame.draw.rect(screen, base_color, rect, 2)
+            txt = font.render(label, True, WHITE)
+            screen.blit(txt, (rect.x + 10, rect.y + 10))
 
-    draw_bet_button(layout.BET_BTN_NONE_RECT, "BET: $0", 0)
-    draw_bet_button(layout.BET_BTN_5_RECT, "BET: $5", 5)
-    draw_bet_button(layout.BET_BTN_10_RECT, "BET: $10", 10)
+        draw_bet_button(layout.BET_BTN_NONE_RECT, "BET: $0", 0)
+        draw_bet_button(layout.BET_BTN_5_RECT, "BET: $5", 5)
+        draw_bet_button(layout.BET_BTN_10_RECT, "BET: $10", 10)
