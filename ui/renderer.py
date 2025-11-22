@@ -8,37 +8,98 @@ class Renderer:
         self.font = font
 
     def draw_menu(self, game_state):
-        title = self.font.render(f"STABLE MENU (R=Race, S=Shop, B=Breed) | Money: ${game_state.money}", True, WHITE)
+        # Header bar
+        pygame.draw.rect(self.screen, DARK_GREY, layout.HEADER_RECT)
+        title = self.font.render("STABLE MENU", True, WHITE)
         self.screen.blit(title, layout.HEADER_TITLE_POS)
-        
-        msg = self.font.render("Press 4-6 to Retire | Q-E to Train | Z-C to Rest", True, GRAY)
-        self.screen.blit(msg, (50, 60))
-        
-        for i, turtle in enumerate(game_state.roster):
-            y_pos = 100 + (i * 120)
-            pygame.draw.rect(self.screen, GRAY, (50, y_pos, 200, 100), 2)
-            
+
+        money_txt = self.font.render(f"$ {game_state.money}", True, WHITE)
+        self.screen.blit(money_txt, layout.HEADER_MONEY_POS)
+
+        # Keyboard hint (kept for now, but UI is primary)
+        msg = self.font.render("Q/W/E: Train | Z/X/C: Rest | 4/5/6: Retire", True, GRAY)
+        self.screen.blit(msg, (layout.PADDING, layout.HEADER_RECT.bottom + 5))
+
+        # Roster slots
+        for idx, slot_rect in enumerate(layout.SLOT_RECTS):
+            pygame.draw.rect(self.screen, GRAY, slot_rect, 2)
+
+            turtle = game_state.roster[idx]
+
             if turtle:
-                name_txt = self.font.render(f"{turtle.name}", True, WHITE)
-                # Accessing the stats dictionary from the shared class
-                stats_str = f"Spd:{turtle.stats['speed']} Nrg:{turtle.stats['max_energy']} Rec:{turtle.stats['recovery']}"
+                # Name
+                name_pos = (slot_rect.x + layout.SLOT_NAME_POS[0], slot_rect.y + layout.SLOT_NAME_POS[1])
+                name_txt = self.font.render(turtle.name, True, WHITE)
+                self.screen.blit(name_txt, name_pos)
+
+                # Stats text
+                stats_pos = (slot_rect.x + layout.SLOT_STATS_POS[0], slot_rect.y + layout.SLOT_STATS_POS[1])
+                stats_str = (
+                    f"Spd:{turtle.stats['speed']} "
+                    f"Nrg:{turtle.stats['max_energy']} "
+                    f"Rec:{turtle.stats['recovery']} "
+                    f"Swm:{turtle.stats['swim']} "
+                    f"Clm:{turtle.stats['climb']}"
+                )
                 stats_txt = self.font.render(stats_str, True, WHITE)
-                
-                # Draw Energy Bar (Static View)
-                pygame.draw.rect(self.screen, RED, (300, y_pos + 40, 100, 10))
-                # Calculate width based on current energy
-                pct = turtle.current_energy / turtle.stats['max_energy']
-                pygame.draw.rect(self.screen, GREEN, (300, y_pos + 40, int(100 * pct), 10))
-                
-                self.screen.blit(name_txt, (60, y_pos + 10))
-                self.screen.blit(stats_txt, (60, y_pos + 70))
-                
-                # Controls Hint
-                controls_txt = self.font.render(f"[Q: Train] [Z: Rest] [{4+i}: Retire]", True, GRAY)
-                self.screen.blit(controls_txt, (450, y_pos + 40))
+                self.screen.blit(stats_txt, stats_pos)
+
+                # Energy bar
+                energy_bg = layout.SLOT_ENERGY_BG_RECT
+                energy_bg_rect = pygame.Rect(
+                    slot_rect.x + energy_bg.x,
+                    slot_rect.y + energy_bg.y,
+                    energy_bg.width,
+                    energy_bg.height,
+                )
+                pygame.draw.rect(self.screen, RED, energy_bg_rect)
+
+                pct = turtle.current_energy / turtle.stats["max_energy"] if turtle.stats["max_energy"] > 0 else 0
+                fill_width = int(energy_bg.width * max(0.0, min(1.0, pct)))
+                energy_fill_rect = pygame.Rect(
+                    energy_bg_rect.x + 2,
+                    energy_bg_rect.y + 2,
+                    max(0, fill_width - 4),
+                    energy_bg.height - 4,
+                )
+                pygame.draw.rect(self.screen, GREEN, energy_fill_rect)
             else:
                 empty_txt = self.font.render("[ EMPTY SLOT ]", True, GRAY)
-                self.screen.blit(empty_txt, (60, y_pos + 40))
+                self.screen.blit(empty_txt, (slot_rect.x + 20, slot_rect.y + 40))
+
+            # Action buttons (visual only; click handling is in RosterManager)
+            train_btn = layout.SLOT_BTN_TRAIN_RECT
+            rest_btn = layout.SLOT_BTN_REST_RECT
+            retire_btn = layout.SLOT_BTN_RETIRE_RECT
+
+            train_rect = pygame.Rect(slot_rect.x + train_btn.x, slot_rect.y + train_btn.y, train_btn.width, train_btn.height)
+            rest_rect = pygame.Rect(slot_rect.x + rest_btn.x, slot_rect.y + rest_btn.y, rest_btn.width, rest_btn.height)
+            retire_rect = pygame.Rect(slot_rect.x + retire_btn.x, slot_rect.y + retire_btn.y, retire_btn.width, retire_btn.height)
+
+            pygame.draw.rect(self.screen, GRAY, train_rect, 2)
+            pygame.draw.rect(self.screen, GRAY, rest_rect, 2)
+            pygame.draw.rect(self.screen, GRAY, retire_rect, 2)
+
+            train_txt = self.font.render("TRAIN", True, WHITE)
+            rest_txt = self.font.render("REST", True, WHITE)
+            retire_txt = self.font.render("RETIRE", True, WHITE)
+
+            self.screen.blit(train_txt, (train_rect.x + 10, train_rect.y + 5))
+            self.screen.blit(rest_txt, (rest_rect.x + 10, rest_rect.y + 5))
+            self.screen.blit(retire_txt, (retire_rect.x + 10, retire_rect.y + 5))
+
+        # Bottom navigation buttons
+        pygame.draw.rect(self.screen, GREEN, layout.NAV_RACE_RECT, 2)
+        pygame.draw.rect(self.screen, (200, 100, 200), layout.NAV_BREED_RECT, 2)
+        pygame.draw.rect(self.screen, BLUE, layout.NAV_SHOP_RECT, 2)
+
+        race_txt = self.font.render("RACE", True, WHITE)
+        breed_txt = self.font.render("BREEDING", True, WHITE)
+        shop_txt = self.font.render("SHOP", True, WHITE)
+
+        self.screen.blit(race_txt, (layout.NAV_RACE_RECT.x + 40, layout.NAV_RACE_RECT.y + 15))
+        self.screen.blit(breed_txt, (layout.NAV_BREED_RECT.x + 20, layout.NAV_BREED_RECT.y + 15))
+        self.screen.blit(shop_txt, (layout.NAV_SHOP_RECT.x + 50, layout.NAV_SHOP_RECT.y + 15))
 
     def draw_race(self, game_state):
         header = self.font.render(f"RACE (Speed: {game_state.race_speed_multiplier}x)", True, WHITE)
