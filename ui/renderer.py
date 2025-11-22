@@ -43,16 +43,47 @@ class Renderer:
     def draw_race(self, game_state):
         header = self.font.render(f"RACE (Speed: {game_state.race_speed_multiplier}x)", True, WHITE)
         self.screen.blit(header, layout.HEADER_TITLE_POS)
-        
+
         # Draw Finish Line
         pygame.draw.line(self.screen, WHITE, (TRACK_LENGTH_PIXELS + 40, 50), (TRACK_LENGTH_PIXELS + 40, 500), 5)
-        
+
+        # Draw lanes and turtles
         for i, turtle in enumerate(game_state.roster):
             lane_y = 150 + (i * 100)
             pygame.draw.rect(self.screen, (30, 30, 30), (0, lane_y - 20, SCREEN_WIDTH, 80))
-            
+
             if turtle:
                 self.draw_turtle_sprite(turtle, lane_y)
+
+        # Draw Race HUD panel
+        pygame.draw.rect(self.screen, (0, 0, 0), layout.RACE_HUD_RECT)
+
+        # Speed buttons
+        pygame.draw.rect(self.screen, GRAY, layout.SPEED_1X_RECT, 2)
+        pygame.draw.rect(self.screen, GRAY, layout.SPEED_2X_RECT, 2)
+        pygame.draw.rect(self.screen, GRAY, layout.SPEED_4X_RECT, 2)
+
+        one_txt = self.font.render("1x", True, WHITE)
+        two_txt = self.font.render("2x", True, WHITE)
+        four_txt = self.font.render("4x", True, WHITE)
+
+        self.screen.blit(one_txt, (layout.SPEED_1X_RECT.x + 10, layout.SPEED_1X_RECT.y + 10))
+        self.screen.blit(two_txt, (layout.SPEED_2X_RECT.x + 10, layout.SPEED_2X_RECT.y + 10))
+        self.screen.blit(four_txt, (layout.SPEED_4X_RECT.x + 10, layout.SPEED_4X_RECT.y + 10))
+
+        # Progress bar (simple overall race progress for player turtle)
+        player = game_state.roster[0]
+        pygame.draw.rect(self.screen, GRAY, layout.PROGRESS_BAR_RECT, 1)
+        if player:
+            pct = min(1.0, player.race_distance / TRACK_LENGTH_LOGIC)
+            fill_width = int(layout.PROGRESS_BAR_RECT.width * pct)
+            fill_rect = pygame.Rect(
+                layout.PROGRESS_BAR_RECT.x,
+                layout.PROGRESS_BAR_RECT.y,
+                fill_width,
+                layout.PROGRESS_BAR_RECT.height,
+            )
+            pygame.draw.rect(self.screen, GREEN, fill_rect)
 
     def draw_race_result(self, game_state):
         title = self.font.render("RACE RESULTS (Press M for Menu)", True, WHITE)
