@@ -79,6 +79,21 @@ class RaceManager:
             self.game_state.money += reward
             print(f"Player finished {rank}. Reward: ${reward}")
 
+        # Post-race cleanup: recover energy and age turtles
+        for i, t in enumerate(self.game_state.roster):
+            if not t:
+                continue
+            # Energy is only used for the race; recover fully afterwards
+            t.current_energy = t.stats["max_energy"]
+
+            # Aging: each completed race counts as 1 day
+            t.age += 1
+            if t.age >= 100 and t.is_active:
+                # Auto-retire to retired_roster
+                t.is_active = False
+                self.game_state.roster[i] = None
+                self.game_state.retired_roster.append(t)
+
     def handle_result_click(self, pos):
         if layout.RACE_RESULT_MENU_BTN_RECT.collidepoint(pos):
             return "GOTO_MENU"

@@ -57,15 +57,30 @@ def breed_turtles(parent_a, parent_b):
     name_b_part = parent_b.name[len(parent_b.name)//2:]
     child_name = name_a_part + name_b_part
     
-    # Mutation factor: -2 to +2
-    def mutate(val):
-        return max(1, int(val + random.randint(-2, 2)))
+    # Mutation: small non-negative boost, so children never get worse
+    # Base stat is the best (max) of both parents; mutation can only add.
+    def mutate(base_val):
+        # Small chance of +1 or +2, otherwise no change
+        roll = random.random()
+        if roll < 0.1:
+            delta = 2
+        elif roll < 0.3:
+            delta = 1
+        else:
+            delta = 0
+        return max(1, int(base_val + delta))
     
-    # Stat Inheritance
-    child_speed = mutate((parent_a.stats["speed"] + parent_b.stats["speed"]) / 2)
-    child_energy = mutate((parent_a.stats["max_energy"] + parent_b.stats["max_energy"]) / 2)
-    child_recovery = mutate((parent_a.stats["recovery"] + parent_b.stats["recovery"]) / 2)
-    child_swim = mutate((parent_a.stats["swim"] + parent_b.stats["swim"]) / 2)
-    child_climb = mutate((parent_a.stats["climb"] + parent_b.stats["climb"]) / 2)
+    # Stat Inheritance: take the better of each stat from the parents
+    base_speed = max(parent_a.stats["speed"], parent_b.stats["speed"])
+    base_energy = max(parent_a.stats["max_energy"], parent_b.stats["max_energy"])
+    base_recovery = max(parent_a.stats["recovery"], parent_b.stats["recovery"])
+    base_swim = max(parent_a.stats["swim"], parent_b.stats["swim"])
+    base_climb = max(parent_a.stats["climb"], parent_b.stats["climb"])
+
+    child_speed = mutate(base_speed)
+    child_energy = mutate(base_energy)
+    child_recovery = mutate(base_recovery)
+    child_swim = mutate(base_swim)
+    child_climb = mutate(base_climb)
     
     return Turtle(child_name, child_speed, child_energy, child_recovery, child_swim, child_climb)
