@@ -36,3 +36,33 @@
 - [ ] **Retirement:** Add button to move Active Turtle to `retired_list`.
 - [ ] **Breeding Logic:** Function that takes 2 Retired parents, deletes them, and returns 1 Baby.
 - [ ] **Integration:** Add "Breeding Center" screen to select parents.
+
+## Phase 7: Module Organization & SRP 🧱
+- [x] **Per-screen UI Views:** Split rendering into `ui/menu_view.py`, `ui/race_view.py`, `ui/shop_view.py`, `ui/breeding_view.py`, and keep `ui/renderer.py` as a thin delegator.
+- [x] **Shared Components:** Introduce shared turtle UI helpers in `ui/turtle_card.py` (basic label + Stable card).
+- [ ] **Further Decomposition:** Consider extracting small shared button/label helpers for consistent UI styling.
+- [ ] **Filesystem Cleanup:** Revisit top-level layout (e.g., group gameplay modules vs. infrastructure) once MVP stabilizes.
+
+## Phase 8: Main Menu & Navigation UX 🧭
+- [ ] **Main Menu Screen:** Design a dedicated "Main Menu" separate from the Stable, with clear buttons to:
+  - [ ] Start Game / Continue
+  - [ ] Go to Stable (Roster)
+  - [ ] Go to Races
+  - [ ] Open Shop
+  - [ ] Open Breeding Center
+- [ ] **In-Game Navigation:** Simplify keyboard shortcuts and rely on visible buttons for all major state transitions.
+
+## Phase 9: Roster Tabs & Profile View 📇
+- [x] **View Toggle:** Add Active/Retired toggle in Stable to switch which turtles are shown.
+- [ ] **Tabbed Roster UI:** Replace simple toggle with a proper tabbed interface (e.g., [ACTIVE], [RETIRED]) that looks and behaves like tabs.
+- [ ] **Profile View:** Add a dedicated Profile panel for a selected turtle:
+  - [ ] Full stat breakdown.
+  - [ ] Age, status, race history summary.
+  - [ ] Lineage view (parents / children) once ancestry data is tracked.
+- [ ] **Lineage Data Model:** Extend `Turtle` or `game_state` to optionally track parent IDs and children for lineage visualization.
+
+## Phase 10: Pond / Glade Screen 🌿
+- [ ] **Pond Overview:** Add a "Glade" or "Pond" screen where all current (active + retired) turtles wander passively.
+- [ ] **Ambient Behavior:** Simple idle movement/animation for turtles in the pond.
+- [ ] **Clickable Turtles:** Allow clicking a turtle in the pond to bring up a tooltip-style overlay with key stats (name, age, status, core stats).
+- [ ] **Profile Shortcut:** From the pond tooltip, provide a way to open the full Profile view for that turtle.
