@@ -47,6 +47,8 @@ class RosterManager:
                 self.rest_turtle(i)
             elif retire_rect.collidepoint(pos):
                 self.retire_turtle(i)
+            elif slot_rect.collidepoint(pos):
+                self.game_state.active_racer_index = i
         
         return None
 

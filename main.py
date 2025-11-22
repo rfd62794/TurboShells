@@ -37,6 +37,7 @@ class TurboShellsGame:
         
         self.race_results = []
         self.race_speed_multiplier = 1
+        self.active_racer_index = 0
         
         self.breeding_parents = []
 
@@ -142,6 +143,17 @@ class TurboShellsGame:
 
         elif self.state == STATE_RACE:
             self.race_manager.handle_click(pos)
+
+        elif self.state == STATE_RACE_RESULT:
+            action = self.race_manager.handle_result_click(pos)
+            if action == "GOTO_MENU":
+                self.state = STATE_MENU
+                if self.roster[1] and getattr(self.roster[1], 'is_temp', False):
+                    self.roster[1] = None
+                if self.roster[2] and getattr(self.roster[2], 'is_temp', False):
+                    self.roster[2] = None
+            elif action == "RERUN":
+                self.state = STATE_RACE
 
     def update(self):
         if self.state == STATE_SHOP:

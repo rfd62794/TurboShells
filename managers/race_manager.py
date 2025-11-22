@@ -64,8 +64,11 @@ class RaceManager:
         return False
 
     def process_rewards(self):
-        # Find player rank
-        player_turtle = self.game_state.roster[0]
+        # Find player rank based on selected active racer
+        idx = getattr(self.game_state, "active_racer_index", 0)
+        player_turtle = None
+        if 0 <= idx < len(self.game_state.roster):
+            player_turtle = self.game_state.roster[idx]
         if player_turtle in self.results:
             rank = player_turtle.rank
             reward = 0
@@ -75,3 +78,11 @@ class RaceManager:
             
             self.game_state.money += reward
             print(f"Player finished {rank}. Reward: ${reward}")
+
+    def handle_result_click(self, pos):
+        if layout.RACE_RESULT_MENU_BTN_RECT.collidepoint(pos):
+            return "GOTO_MENU"
+        if layout.RACE_RESULT_RERUN_BTN_RECT.collidepoint(pos):
+            self.start_race()
+            return "RERUN"
+        return None

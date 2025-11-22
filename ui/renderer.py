@@ -22,7 +22,8 @@ class Renderer:
 
         # Roster slots
         for idx, slot_rect in enumerate(layout.SLOT_RECTS):
-            pygame.draw.rect(self.screen, GRAY, slot_rect, 2)
+            border_color = GREEN if idx == getattr(game_state, "active_racer_index", 0) else GRAY
+            pygame.draw.rect(self.screen, border_color, slot_rect, 2)
 
             turtle = game_state.roster[idx]
 
@@ -147,22 +148,36 @@ class Renderer:
             pygame.draw.rect(self.screen, GREEN, fill_rect)
 
     def draw_race_result(self, game_state):
-        title = self.font.render("RACE RESULTS (Press M for Menu)", True, WHITE)
+        title = self.font.render("RACE RESULTS", True, WHITE)
         self.screen.blit(title, layout.HEADER_TITLE_POS)
         
+        active_idx = getattr(game_state, "active_racer_index", 0)
+        player_turtle = None
+        if 0 <= active_idx < len(game_state.roster):
+            player_turtle = game_state.roster[active_idx]
+
         for i, turtle in enumerate(game_state.race_results):
             y_pos = 100 + (i * 60)
             color = WHITE
-            if turtle == game_state.roster[0]: color = GREEN # Highlight Player
+            if turtle == player_turtle: color = GREEN
             
             txt = self.font.render(f"{i+1}. {turtle.name}", True, color)
             self.screen.blit(txt, (100, y_pos))
             
         # Show Reward info if player finished
-        player = game_state.roster[0]
-        if player and player.rank:
-            reward_txt = self.font.render(f"You finished #{player.rank}!", True, GREEN)
+        if player_turtle and player_turtle.rank:
+            reward_txt = self.font.render(f"You finished #{player_turtle.rank}!", True, GREEN)
             self.screen.blit(reward_txt, (100, 350))
+
+        # Buttons: Menu and Race Again
+        pygame.draw.rect(self.screen, GREEN, layout.RACE_RESULT_MENU_BTN_RECT, 2)
+        pygame.draw.rect(self.screen, BLUE, layout.RACE_RESULT_RERUN_BTN_RECT, 2)
+
+        menu_txt = self.font.render("MENU", True, WHITE)
+        rerun_txt = self.font.render("RACE AGAIN", True, WHITE)
+
+        self.screen.blit(menu_txt, (layout.RACE_RESULT_MENU_BTN_RECT.x + 60, layout.RACE_RESULT_MENU_BTN_RECT.y + 15))
+        self.screen.blit(rerun_txt, (layout.RACE_RESULT_RERUN_BTN_RECT.x + 25, layout.RACE_RESULT_RERUN_BTN_RECT.y + 15))
 
     def draw_shop(self, game_state):
         # Header

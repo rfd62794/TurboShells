@@ -41,6 +41,10 @@ SPEED_2X_RECT = pygame.Rect(360, 520, 50, 40)
 SPEED_4X_RECT = pygame.Rect(420, 520, 50, 40)
 PROGRESS_BAR_RECT = pygame.Rect(50, 570, 700, 10)
 
+# Race Result Screen buttons
+RACE_RESULT_MENU_BTN_RECT = pygame.Rect(300, 450, 200, 50)
+RACE_RESULT_RERUN_BTN_RECT = pygame.Rect(300, 520, 200, 50)
+
 # 4. The Shop Screen
 SHOP_SLOT_1_RECT = pygame.Rect(50, 100, 200, 300)
 SHOP_SLOT_2_RECT = pygame.Rect(300, 100, 200, 300)
