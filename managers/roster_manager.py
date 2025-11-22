@@ -49,9 +49,6 @@ class RosterManager:
             train_rect = pygame.Rect(layout.SLOT_BTN_TRAIN_RECT.x, slot_y + layout.SLOT_BTN_TRAIN_RECT.y, 
                                      layout.SLOT_BTN_TRAIN_RECT.width, layout.SLOT_BTN_TRAIN_RECT.height)
             
-            rest_rect = pygame.Rect(layout.SLOT_BTN_REST_RECT.x, slot_y + layout.SLOT_BTN_REST_RECT.y, 
-                                    layout.SLOT_BTN_REST_RECT.width, layout.SLOT_BTN_REST_RECT.height)
-            
             retire_rect = pygame.Rect(layout.SLOT_BTN_RETIRE_RECT.x, slot_y + layout.SLOT_BTN_RETIRE_RECT.y, 
                                       layout.SLOT_BTN_RETIRE_RECT.width, layout.SLOT_BTN_RETIRE_RECT.height)
 
