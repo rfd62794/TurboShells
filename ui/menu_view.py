@@ -13,10 +13,6 @@ def draw_menu(screen, font, game_state):
     money_txt = font.render(f"$ {game_state.money}", True, WHITE)
     screen.blit(money_txt, layout.HEADER_MONEY_POS)
 
-    # Keyboard hint (debug/legacy)
-    msg = font.render("Q/W/E: Train | Z/X/C: Rest | 4/5/6: Retire", True, GRAY)
-    screen.blit(msg, (layout.PADDING, layout.HEADER_RECT.bottom + 5))
-
     mouse_pos = getattr(game_state, "mouse_pos", None)
 
     # Determine which turtles to show: Active roster or Retired pool
