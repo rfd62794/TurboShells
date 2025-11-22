@@ -167,8 +167,8 @@ class TurboShellsGame:
                 if active_racer:
                     self.race_manager.start_race()
                     self.state = STATE_RACE
-            elif action == "GOTO_MAIN_MENU":
-                self.state = STATE_MAIN_MENU
+            elif action == "GOTO_MENU":
+                self.state = STATE_MENU
             elif action == "GOTO_SHOP":
                 self.state = STATE_SHOP
             elif action == "GOTO_BREEDING":
@@ -209,7 +209,7 @@ class TurboShellsGame:
     def draw(self):
         self.screen.fill(BLACK)
         
-        if self.state == STATE_MAIN_MENU:
+        if self.state == STATE_MENU:
             self.renderer.draw_main_menu(self)
         elif self.state == STATE_ROSTER:
             self.renderer.draw_menu(self)

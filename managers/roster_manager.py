@@ -9,7 +9,7 @@ class RosterManager:
     def handle_click(self, pos):
         # Check Navigation Buttons
         if layout.NAV_MENU_RECT.collidepoint(pos):
-            return "GOTO_MAIN_MENU"
+            return "GOTO_MENU"
         
         if layout.NAV_SHOP_RECT.collidepoint(pos):
             return "GOTO_SHOP"
