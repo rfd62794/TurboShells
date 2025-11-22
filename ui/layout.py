@@ -4,15 +4,15 @@ import pygame
 PADDING = 20
 
 # 1. Global Header
-HEADER_RECT = pygame.Rect(0, 0, 800, 60)
-HEADER_TITLE_POS = (20, 15)
-HEADER_MONEY_POS = (650, 15)
+HEADER_RECT = pygame.Rect(0, 0, 800, 40)
+HEADER_TITLE_POS = (20, 10)
+HEADER_MONEY_POS = (650, 10)
 
 # 2. Main Menu (The Stable)
 # Roster Slots
-SLOT_1_RECT = pygame.Rect(50, 80, 700, 120)
-SLOT_2_RECT = pygame.Rect(50, 220, 700, 120)
-SLOT_3_RECT = pygame.Rect(50, 360, 700, 120)
+SLOT_1_RECT = pygame.Rect(50, 60, 700, 120)
+SLOT_2_RECT = pygame.Rect(50, 200, 700, 120)
+SLOT_3_RECT = pygame.Rect(50, 340, 700, 120)
 SLOT_RECTS = [SLOT_1_RECT, SLOT_2_RECT, SLOT_3_RECT]
 
 # Inside Slot (Relative to Slot Rect)
@@ -24,13 +24,13 @@ SLOT_BTN_TRAIN_RECT = pygame.Rect(550, 15, 80, 28)
 SLOT_BTN_RETIRE_RECT = pygame.Rect(550, 48, 80, 28)
 
 # View toggles (Active vs Retired) on Stable
-VIEW_ACTIVE_RECT = pygame.Rect(50, 440, 100, 35)
-VIEW_RETIRED_RECT = pygame.Rect(160, 440, 100, 35)
+VIEW_ACTIVE_RECT = pygame.Rect(50, 480, 100, 35)
+VIEW_RETIRED_RECT = pygame.Rect(160, 480, 100, 35)
 
-# Stable Betting Buttons (MVP)
-BET_BTN_NONE_RECT = pygame.Rect(280, 440, 90, 35)
-BET_BTN_5_RECT = pygame.Rect(380, 440, 90, 35)
-BET_BTN_10_RECT = pygame.Rect(480, 440, 90, 35)
+# Stable Betting Buttons (MVP) - moved below 3rd roster slot
+BET_BTN_NONE_RECT = pygame.Rect(280, 480, 90, 35)
+BET_BTN_5_RECT = pygame.Rect(380, 480, 90, 35)
+BET_BTN_10_RECT = pygame.Rect(480, 480, 90, 35)
 
 # Bottom Navigation
 NAV_MENU_RECT = pygame.Rect(300, 500, 200, 60)
