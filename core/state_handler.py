@@ -50,6 +50,12 @@ class StateHandler:
     
     def _handle_roster_clicks(self, pos):
         """Handle clicks in roster state."""
+        # Check for Menu button in header
+        menu_rect = pygame.Rect(700, 5, 80, 30)
+        if menu_rect.collidepoint(pos):
+            self.game.state = STATE_MENU
+            return
+        
         action = self.game.roster_manager.handle_click(pos)
         if action == "GOTO_RACE":
             # Check if we have a selected racer and bet
