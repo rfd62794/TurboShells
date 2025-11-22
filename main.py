@@ -94,6 +94,8 @@ class TurboShellsGame:
     def draw(self):
         self.screen.fill(BLACK)
         
+        print(f"Drawing state: {self.state}")  # Debug output
+        
         if self.state == STATE_MENU:
             self.renderer.draw_main_menu(self)
         elif self.state == STATE_ROSTER:
@@ -106,6 +108,8 @@ class TurboShellsGame:
             self.renderer.draw_shop(self)
         elif self.state == STATE_BREEDING:
             self.renderer.draw_breeding(self)
+        
+        pygame.display.flip()  # Make sure we update the display
 
 # --- ENTRY POINT ---
 if __name__ == "__main__":
