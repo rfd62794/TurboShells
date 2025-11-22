@@ -4,15 +4,31 @@
 The project follows a flat structure for the MVP to minimize import complexity.
 
 ```text
-/turbo_shells
+/TurboShells
 ├── main.py             # Entry point. Handles the Game Loop and State Machine.
-├── settings.py         # Global constants (Screen dims, Colors, Game Settings).
-├── sprites.py          # Class definitions for Turtle and visual elements.
-├── game_state.py       # Logic for managing the Save Data/Roster state.
-├── assets/             # Folder for images and fonts.
-│   └── (placeholder)
-├── GDD.md              # Game Design Concept.
-└── README.md           # Setup instructions.
+├── settings.py         # Global constants (screen dims, colors, game settings).
+├── entities.py         # Shared Turtle class and physics logic.
+├── game_state.py       # Generation and breeding helpers (no PyGame).
+├── managers/           # State/feature managers (roster, race, shop, breeding).
+│   ├── roster_manager.py
+│   ├── race_manager.py
+│   ├── shop_manager.py
+│   └── breeding_manager.py
+├── ui/
+│   ├── layout.py       # All UI rects and positions (from UI_LAYOUT spec).
+│   ├── menu_view.py    # Stable/Main Menu rendering.
+│   ├── race_view.py    # Race and Race Results rendering.
+│   ├── shop_view.py    # Shop rendering.
+│   ├── breeding_view.py# Breeding rendering.
+│   └── renderer.py     # Thin delegator that calls per-screen views.
+├── simulation.py       # Headless race simulator using entities.Turtle.
+├── docs/
+│   ├── ARCHITECTURE.md # This file.
+│   ├── GDD.md          # Full Game Design Document.
+│   ├── GDD_Lite.md     # Condensed design doc.
+│   ├── TODO.md         # Roadmap & checklist.
+│   └── UI_LAYOUT.md    # UI layout coordinates and design notes.
+└── README.md           # Setup and high-level overview.
 
 2. Global Constants (settings.py)
 Centralized variables to avoid "Magic Numbers" in the code.

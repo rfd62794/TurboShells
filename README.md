@@ -63,7 +63,27 @@ Every turtle has unique DNA that affects performance:
 
 ```text
 TurboShells/
-├── main.py           # The entry point and game loop
-├── README.md         # This file
-├── GDD.md            # The Game Design Document
-└── assets/           # (Future) Images and sounds
+├── main.py            # Entry point and game loop (TurboShellsGame)
+├── settings.py        # Global constants (screen, colors, rewards, costs)
+├── entities.py        # Shared Turtle class + physics/energy logic
+├── game_state.py      # Turtle generation & breeding helpers (no PyGame)
+├── managers/          # Game logic managers
+│   ├── roster_manager.py    # Stable actions (train, rest, retire)
+│   ├── race_manager.py      # Race loop, track terrain, rewards
+│   ├── shop_manager.py      # Shop inventory, buying, refreshing
+│   └── breeding_manager.py  # Breeding selection and child creation
+├── ui/
+│   ├── layout.py      # All UI rects and positions
+│   ├── menu_view.py   # Stable/Main Menu rendering
+│   ├── race_view.py   # Race and Race Results rendering
+│   ├── shop_view.py   # Shop rendering
+│   ├── breeding_view.py # Breeding rendering
+│   └── renderer.py    # Thin delegator that calls the views
+├── simulation.py      # Headless race simulator using entities.Turtle
+├── docs/
+│   ├── ARCHITECTURE.md # Technical architecture
+│   ├── GDD.md          # Full Game Design Document
+│   ├── GDD_Lite.md     # Condensed GDD
+│   ├── TODO.md         # Roadmap & checklist
+│   └── UI_LAYOUT.md    # UI layout coordinates
+└── README.md          # This file
