@@ -2,6 +2,7 @@ import pygame
 from settings import *
 import ui.layout as layout
 from ui.menu_view import draw_menu as draw_menu_view
+from ui.race_view import draw_race as draw_race_view, draw_race_result as draw_race_result_view
 
 class Renderer:
     def __init__(self, screen, font):
@@ -12,81 +13,10 @@ class Renderer:
         draw_menu_view(self.screen, self.font, game_state)
 
     def draw_race(self, game_state):
-        header = self.font.render(f"RACE (Speed: {game_state.race_speed_multiplier}x)", True, WHITE)
-        self.screen.blit(header, layout.HEADER_TITLE_POS)
-
-        # Draw Finish Line
-        pygame.draw.line(self.screen, WHITE, (TRACK_LENGTH_PIXELS + 40, 50), (TRACK_LENGTH_PIXELS + 40, 500), 5)
-
-        # Draw lanes and turtles
-        for i, turtle in enumerate(game_state.roster):
-            lane_y = 150 + (i * 100)
-            pygame.draw.rect(self.screen, (30, 30, 30), (0, lane_y - 20, SCREEN_WIDTH, 80))
-
-            if turtle:
-                self.draw_turtle_sprite(turtle, lane_y)
-
-        # Draw Race HUD panel
-        pygame.draw.rect(self.screen, (0, 0, 0), layout.RACE_HUD_RECT)
-
-        # Speed buttons
-        pygame.draw.rect(self.screen, GRAY, layout.SPEED_1X_RECT, 2)
-        pygame.draw.rect(self.screen, GRAY, layout.SPEED_2X_RECT, 2)
-        pygame.draw.rect(self.screen, GRAY, layout.SPEED_4X_RECT, 2)
-
-        one_txt = self.font.render("1x", True, WHITE)
-        two_txt = self.font.render("2x", True, WHITE)
-        four_txt = self.font.render("4x", True, WHITE)
-
-        self.screen.blit(one_txt, (layout.SPEED_1X_RECT.x + 10, layout.SPEED_1X_RECT.y + 10))
-        self.screen.blit(two_txt, (layout.SPEED_2X_RECT.x + 10, layout.SPEED_2X_RECT.y + 10))
-        self.screen.blit(four_txt, (layout.SPEED_4X_RECT.x + 10, layout.SPEED_4X_RECT.y + 10))
-
-        # Progress bar (simple overall race progress for player turtle)
-        player = game_state.roster[0]
-        pygame.draw.rect(self.screen, GRAY, layout.PROGRESS_BAR_RECT, 1)
-        if player:
-            pct = min(1.0, player.race_distance / TRACK_LENGTH_LOGIC)
-            fill_width = int(layout.PROGRESS_BAR_RECT.width * pct)
-            fill_rect = pygame.Rect(
-                layout.PROGRESS_BAR_RECT.x,
-                layout.PROGRESS_BAR_RECT.y,
-                fill_width,
-                layout.PROGRESS_BAR_RECT.height,
-            )
-            pygame.draw.rect(self.screen, GREEN, fill_rect)
+        draw_race_view(self.screen, self.font, game_state)
 
     def draw_race_result(self, game_state):
-        title = self.font.render("RACE RESULTS", True, WHITE)
-        self.screen.blit(title, layout.HEADER_TITLE_POS)
-        
-        active_idx = getattr(game_state, "active_racer_index", 0)
-        player_turtle = None
-        if 0 <= active_idx < len(game_state.roster):
-            player_turtle = game_state.roster[active_idx]
-
-        for i, turtle in enumerate(game_state.race_results):
-            y_pos = 100 + (i * 60)
-            color = WHITE
-            if turtle == player_turtle: color = GREEN
-            
-            txt = self.font.render(f"{i+1}. {turtle.name}", True, color)
-            self.screen.blit(txt, (100, y_pos))
-            
-        # Show Reward info if player finished
-        if player_turtle and player_turtle.rank:
-            reward_txt = self.font.render(f"You finished #{player_turtle.rank}!", True, GREEN)
-            self.screen.blit(reward_txt, (100, 350))
-
-        # Buttons: Menu and Race Again
-        pygame.draw.rect(self.screen, GREEN, layout.RACE_RESULT_MENU_BTN_RECT, 2)
-        pygame.draw.rect(self.screen, BLUE, layout.RACE_RESULT_RERUN_BTN_RECT, 2)
-
-        menu_txt = self.font.render("MENU", True, WHITE)
-        rerun_txt = self.font.render("RACE AGAIN", True, WHITE)
-
-        self.screen.blit(menu_txt, (layout.RACE_RESULT_MENU_BTN_RECT.x + 60, layout.RACE_RESULT_MENU_BTN_RECT.y + 15))
-        self.screen.blit(rerun_txt, (layout.RACE_RESULT_RERUN_BTN_RECT.x + 25, layout.RACE_RESULT_RERUN_BTN_RECT.y + 15))
+        draw_race_result_view(self.screen, self.font, game_state)
 
     def draw_shop(self, game_state):
         # Header
