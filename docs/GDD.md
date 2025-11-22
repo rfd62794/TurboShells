@@ -334,6 +334,3 @@ Potential directions beyond the current scope:
 - **Equipment:** Hats or shells that boost specific stats or modify behavior.
 - **Personalities:** Hidden traits (e.g., “Lazy” = recovers fast but drains energy fast).
 - **Save System:** JSON or similar persistence for the player’s stable and progression.
-    # Handles the main loop, input events, and state switching
-    def run(self): ...
-7. Future Expansion (Post-MVP)Triathlons: Multi-stage races that require a generalist turtle.Visual Polish: Animated sprites for running/swimming/climbing.Gym Upgrades: Spend money to increase the stat gain per training session.Save System: JSON or Pickle serialization to save the stable.
