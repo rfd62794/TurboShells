@@ -19,6 +19,7 @@ GRAY = (100, 100, 100)
 # Game States
 STATE_MENU = "MENU"
 STATE_RACE = "RACE"
+STATE_RACE_RESULT = "RACE_RESULT"
 STATE_SHOP = "SHOP"
 
 # --- MAIN GAME CLASS ---
@@ -43,6 +44,8 @@ class TurboShellsGame:
         self.track_length_logic = 1500 # The logical distance (matches simulation)
         self.track_length_pixels = 700 # The visual distance on screen
         self.race_speed_multiplier = 1
+        
+        self.race_results = [] # List of turtles in finish order
 
         # Economy & Shop
         self.money = 100
@@ -75,9 +78,18 @@ class TurboShellsGame:
                     if event.key == pygame.K_1: self.race_speed_multiplier = 1
                     if event.key == pygame.K_2: self.race_speed_multiplier = 2
                     if event.key == pygame.K_3: self.race_speed_multiplier = 4
+                    
+                if self.state == STATE_RACE_RESULT:
+                    if event.key == pygame.K_m:
+                        self.state = STATE_MENU
+                        # Clear opponents
+                        self.roster[1] = None
+                        self.roster[2] = None
 
     def reset_race(self):
         """Prepares shared entities for a new race"""
+        self.race_results = []
+        
         # Fill empty slots with opponents
         if self.roster[1] is None:
             self.roster[1] = generate_random_turtle(level=1)
@@ -114,8 +126,28 @@ class TurboShellsGame:
                     t.race_distance += move_amt
                     
                     # 3. Check Finish
-                    if t.race_distance >= self.track_length_logic:
+                    if t.race_distance >= self.track_length_logic and not t.finished:
                         t.finished = True
+                        t.rank = len(self.race_results) + 1
+                        self.race_results.append(t)
+            
+            # Check if Race Over (All finished)
+            if len(self.race_results) == len(active_turtles):
+                self.process_race_rewards()
+                self.state = STATE_RACE_RESULT
+
+    def process_race_rewards(self):
+        # Find player rank
+        player_turtle = self.roster[0]
+        if player_turtle in self.race_results:
+            rank = player_turtle.rank
+            reward = 0
+            if rank == 1: reward = 50
+            elif rank == 2: reward = 25
+            elif rank == 3: reward = 10
+            
+            self.money += reward
+            print(f"Player finished {rank}. Reward: ${reward}")
 
     def draw(self):
         self.screen.fill(BLACK)
@@ -124,6 +156,8 @@ class TurboShellsGame:
             self.draw_menu()
         elif self.state == STATE_RACE:
             self.draw_race()
+        elif self.state == STATE_RACE_RESULT:
+            self.draw_race_result()
         elif self.state == STATE_SHOP:
             self.draw_shop()
             
@@ -166,6 +200,24 @@ class TurboShellsGame:
             
             if turtle:
                 self.draw_turtle_sprite(turtle, lane_y)
+
+    def draw_race_result(self):
+        title = self.font.render("RACE RESULTS (Press M for Menu)", True, WHITE)
+        self.screen.blit(title, (20, 20))
+        
+        for i, turtle in enumerate(self.race_results):
+            y_pos = 100 + (i * 60)
+            color = WHITE
+            if turtle == self.roster[0]: color = GREEN # Highlight Player
+            
+            txt = self.font.render(f"{i+1}. {turtle.name}", True, color)
+            self.screen.blit(txt, (100, y_pos))
+            
+        # Show Reward info if player finished
+        player = self.roster[0]
+        if player and player.rank:
+            reward_txt = self.font.render(f"You finished #{player.rank}!", True, GREEN)
+            self.screen.blit(reward_txt, (100, 350))
 
     def draw_shop(self):
         title = self.font.render(f"TURTLE SHOP (Press M for Menu) | Money: ${self.money}", True, WHITE)
