@@ -20,9 +20,13 @@ class Renderer:
         msg = self.font.render("Q/W/E: Train | Z/X/C: Rest | 4/5/6: Retire", True, GRAY)
         self.screen.blit(msg, (layout.PADDING, layout.HEADER_RECT.bottom + 5))
 
+        mouse_pos = getattr(game_state, "mouse_pos", None)
+
         # Roster slots
         for idx, slot_rect in enumerate(layout.SLOT_RECTS):
             border_color = GREEN if idx == getattr(game_state, "active_racer_index", 0) else GRAY
+            if mouse_pos and slot_rect.collidepoint(mouse_pos):
+                border_color = WHITE
             pygame.draw.rect(self.screen, border_color, slot_rect, 2)
 
             turtle = game_state.roster[idx]
@@ -77,9 +81,21 @@ class Renderer:
             rest_rect = pygame.Rect(slot_rect.x + rest_btn.x, slot_rect.y + rest_btn.y, rest_btn.width, rest_btn.height)
             retire_rect = pygame.Rect(slot_rect.x + retire_btn.x, slot_rect.y + retire_btn.y, retire_btn.width, retire_btn.height)
 
-            pygame.draw.rect(self.screen, GRAY, train_rect, 2)
-            pygame.draw.rect(self.screen, GRAY, rest_rect, 2)
-            pygame.draw.rect(self.screen, GRAY, retire_rect, 2)
+            # Hover highlight for action buttons
+            train_color = GRAY
+            rest_color = GRAY
+            retire_color = GRAY
+            if mouse_pos:
+                if train_rect.collidepoint(mouse_pos):
+                    train_color = WHITE
+                if rest_rect.collidepoint(mouse_pos):
+                    rest_color = WHITE
+                if retire_rect.collidepoint(mouse_pos):
+                    retire_color = WHITE
+
+            pygame.draw.rect(self.screen, train_color, train_rect, 2)
+            pygame.draw.rect(self.screen, rest_color, rest_rect, 2)
+            pygame.draw.rect(self.screen, retire_color, retire_rect, 2)
 
             train_txt = self.font.render("TRAIN", True, WHITE)
             rest_txt = self.font.render("REST", True, WHITE)
@@ -89,10 +105,21 @@ class Renderer:
             self.screen.blit(rest_txt, (rest_rect.x + 10, rest_rect.y + 5))
             self.screen.blit(retire_txt, (retire_rect.x + 10, retire_rect.y + 5))
 
-        # Bottom navigation buttons
-        pygame.draw.rect(self.screen, GREEN, layout.NAV_RACE_RECT, 2)
-        pygame.draw.rect(self.screen, (200, 100, 200), layout.NAV_BREED_RECT, 2)
-        pygame.draw.rect(self.screen, BLUE, layout.NAV_SHOP_RECT, 2)
+        # Bottom navigation buttons with hover
+        nav_race_color = GREEN
+        nav_breed_color = (200, 100, 200)
+        nav_shop_color = BLUE
+        if mouse_pos:
+            if layout.NAV_RACE_RECT.collidepoint(mouse_pos):
+                nav_race_color = WHITE
+            if layout.NAV_BREED_RECT.collidepoint(mouse_pos):
+                nav_breed_color = WHITE
+            if layout.NAV_SHOP_RECT.collidepoint(mouse_pos):
+                nav_shop_color = WHITE
+
+        pygame.draw.rect(self.screen, nav_race_color, layout.NAV_RACE_RECT, 2)
+        pygame.draw.rect(self.screen, nav_breed_color, layout.NAV_BREED_RECT, 2)
+        pygame.draw.rect(self.screen, nav_shop_color, layout.NAV_SHOP_RECT, 2)
 
         race_txt = self.font.render("RACE", True, WHITE)
         breed_txt = self.font.render("BREEDING", True, WHITE)
