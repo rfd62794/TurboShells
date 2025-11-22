@@ -1,16 +1,16 @@
 # Project Roadmap
 
 ## Phase 1: The Skeleton 🦴
-- [ ] **Setup:** Create `main.py`, `settings.py`, and `sprites.py`.
-- [ ] **Window:** Initialize PyGame window (800x600) and Main Loop.
-- [ ] **State Machine:** Create simple `STATE` variables (MENU, RACE, SHOP) and generic draw functions for each to verify switching works.
+- [ X] **Setup:** Create `main.py`, `settings.py`, and `sprites.py`.
+- [ X] **Window:** Initialize PyGame window (800x600) and Main Loop.
+- [ X] **State Machine:** Create simple `STATE` variables (MENU, RACE, SHOP) and generic draw functions for each to verify switching works.
 
 ## Phase 2: The Turtle & Physics 🐢
 - [ ] **Class:** Define `Turtle` class with `speed`, `energy`, `recovery`, `swim`, `climb`.
 - [ ] **Logic:** Implement `update_race()` method:
-    - [ ] Forward movement.
-    - [ ] Energy drain logic.
-    - [ ] Resting/Recovery logic.
+- [ ] Forward movement.
+- [ ] Energy drain logic.
+- [ ] Resting/Recovery logic.
 - [ ] **Test:** Render a single white square moving across the screen that stops when energy dies and starts again after recovery.
 
 ## Phase 3: The Race Track 🏁
