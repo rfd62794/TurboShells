@@ -4,3 +4,4 @@
 /pycache
 ui/__pycache__
 *.pyc
+.pyc
