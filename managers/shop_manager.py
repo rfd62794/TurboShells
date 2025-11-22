@@ -1,5 +1,6 @@
 from game_state import generate_random_turtle
 from settings import *
+import ui.layout as layout
 
 class ShopManager:
     def __init__(self, game_state):
@@ -7,6 +8,28 @@ class ShopManager:
         self.inventory = []
         self.message = ""
         self.message_timer = 0
+
+    def handle_click(self, pos):
+        # Check Navigation
+        if layout.SHOP_BTN_BACK_RECT.collidepoint(pos):
+            return "GOTO_MENU"
+        
+        if layout.SHOP_BTN_REFRESH_RECT.collidepoint(pos):
+            self.refresh_stock()
+            return None
+
+        # Check Shop Slots
+        for i, slot_rect in enumerate(layout.SHOP_SLOT_RECTS):
+            # Calculate absolute button position
+            # SHOP_BTN_BUY_RECT is relative to slot
+            buy_rect = pygame.Rect(slot_rect.x + layout.SHOP_BTN_BUY_RECT.x, 
+                                   slot_rect.y + layout.SHOP_BTN_BUY_RECT.y,
+                                   layout.SHOP_BTN_BUY_RECT.width, layout.SHOP_BTN_BUY_RECT.height)
+            
+            if buy_rect.collidepoint(pos):
+                self.buy_turtle(i)
+        
+        return None
 
     def update(self):
         # Refill Shop if empty
