@@ -85,7 +85,16 @@ class TurboShellsGame:
                         self.roster[2] = None
                 
                 # State Specific Inputs
-                if self.state == STATE_MENU:
+                if self.state == STATE_MAIN_MENU:
+                    if event.key == pygame.K_r: 
+                        self.state = STATE_MENU
+                    if event.key == pygame.K_s: 
+                        self.state = STATE_SHOP
+                        self.shop_manager.refresh_stock()
+                    if event.key == pygame.K_b: 
+                        self.state = STATE_BREEDING
+                
+                elif self.state == STATE_MENU:
                     if event.key == pygame.K_r: 
                         self.race_manager.start_race()
                         self.state = STATE_RACE
@@ -136,7 +145,22 @@ class TurboShellsGame:
                             self.state = STATE_MENU
 
     def handle_click(self, pos):
-        if self.state == STATE_MENU:
+        if self.state == STATE_MAIN_MENU:
+            # Check main menu button clicks
+            menu_rects = [
+                (pygame.Rect(200, 150, 400, 80), STATE_MENU),  # ROSTER
+                (pygame.Rect(200, 250, 400, 80), STATE_SHOP),  # SHOP
+                (pygame.Rect(200, 350, 400, 80), STATE_BREEDING),  # BREEDING
+            ]
+            
+            for rect, new_state in menu_rects:
+                if rect.collidepoint(pos):
+                    if new_state == STATE_SHOP:
+                        self.shop_manager.refresh_stock()
+                    self.state = new_state
+                    break
+        
+        elif self.state == STATE_MENU:
             action = self.roster_manager.handle_click(pos)
             if action == "GOTO_RACE":
                 self.race_manager.start_race()
@@ -181,7 +205,9 @@ class TurboShellsGame:
     def draw(self):
         self.screen.fill(BLACK)
         
-        if self.state == STATE_MENU:
+        if self.state == STATE_MAIN_MENU:
+            self.renderer.draw_main_menu(self)
+        elif self.state == STATE_MENU:
             self.renderer.draw_menu(self)
         elif self.state == STATE_RACE:
             self.renderer.draw_race(self)
