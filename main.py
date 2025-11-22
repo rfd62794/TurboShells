@@ -42,6 +42,9 @@ class TurboShellsGame:
         self.breeding_parents = []
         self.current_bet = 0
 
+        # Stable view mode: False = Active roster, True = Retired view
+        self.show_retired_view = False
+
         self.mouse_pos = (0, 0)
 
         # --- MANAGERS ---

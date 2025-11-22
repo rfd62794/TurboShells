@@ -20,6 +20,12 @@ class RosterManager:
         if layout.NAV_BREED_RECT.collidepoint(pos):
             return "GOTO_BREEDING"
 
+        # View toggle buttons: Active vs Retired
+        if layout.VIEW_ACTIVE_RECT.collidepoint(pos):
+            self.game_state.show_retired_view = False
+        elif layout.VIEW_RETIRED_RECT.collidepoint(pos):
+            self.game_state.show_retired_view = True
+
         # Betting Buttons (set current bet amount)
         if layout.BET_BTN_NONE_RECT.collidepoint(pos):
             self.game_state.current_bet = 0
@@ -28,7 +34,7 @@ class RosterManager:
         elif layout.BET_BTN_10_RECT.collidepoint(pos):
             self.game_state.current_bet = 10
 
-        # Check Roster Slots
+        # Check Roster Slots (only actionable in Active view)
         for i, slot_rect in enumerate(layout.SLOT_RECTS):
             # We need absolute positions for buttons which are defined relative in layout.py?
             # Wait, layout.py defines them as absolute Rects if I recall correctly?
@@ -49,14 +55,15 @@ class RosterManager:
             retire_rect = pygame.Rect(layout.SLOT_BTN_RETIRE_RECT.x, slot_y + layout.SLOT_BTN_RETIRE_RECT.y, 
                                       layout.SLOT_BTN_RETIRE_RECT.width, layout.SLOT_BTN_RETIRE_RECT.height)
 
-            if train_rect.collidepoint(pos):
-                self.train_turtle(i)
-            elif rest_rect.collidepoint(pos):
-                self.rest_turtle(i)
-            elif retire_rect.collidepoint(pos):
-                self.retire_turtle(i)
-            elif slot_rect.collidepoint(pos):
-                self.game_state.active_racer_index = i
+            if not getattr(self.game_state, "show_retired_view", False):
+                if train_rect.collidepoint(pos):
+                    self.train_turtle(i)
+                elif rest_rect.collidepoint(pos):
+                    self.rest_turtle(i)
+                elif retire_rect.collidepoint(pos):
+                    self.retire_turtle(i)
+                elif slot_rect.collidepoint(pos):
+                    self.game_state.active_racer_index = i
         
         return None
 
@@ -66,6 +73,9 @@ class RosterManager:
             # Train Speed for now
             if t.train("speed"):
                 print(f"Trained {t.name}! Speed is now {t.stats['speed']}")
+                # Auto-retire turtles that reach age 100 via training
+                if t.age >= 100:
+                    self.retire_turtle(index)
             else:
                 print(f"{t.name} is too tired to train!")
 
