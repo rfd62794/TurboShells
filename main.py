@@ -177,12 +177,12 @@ class TurboShellsGame:
         elif self.state == STATE_SHOP:
             action = self.shop_manager.handle_click(pos)
             if action == "GOTO_MENU":
-                self.state = STATE_MAIN_MENU
+                self.state = STATE_MENU
         
         elif self.state == STATE_BREEDING:
             action = self.breeding_manager.handle_click(pos)
             if action == "GOTO_MENU":
-                self.state = STATE_MAIN_MENU
+                self.state = STATE_MENU
 
         elif self.state == STATE_RACE:
             self.race_manager.handle_click(pos)
@@ -190,7 +190,7 @@ class TurboShellsGame:
         elif self.state == STATE_RACE_RESULT:
             action = self.race_manager.handle_result_click(pos)
             if action == "GOTO_MENU":
-                self.state = STATE_MAIN_MENU
+                self.state = STATE_MENU
                 if self.roster[1] and getattr(self.roster[1], 'is_temp', False):
                     self.roster[1] = None
                 if self.roster[2] and getattr(self.roster[2], 'is_temp', False):
