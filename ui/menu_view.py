@@ -1,6 +1,7 @@
 import pygame
 from settings import *
 import ui.layout as layout
+from ui.turtle_card import draw_stable_turtle_slot
 
 
 def draw_menu(screen, font, game_state):
@@ -20,56 +21,9 @@ def draw_menu(screen, font, game_state):
 
     # Roster slots
     for idx, slot_rect in enumerate(layout.SLOT_RECTS):
-        border_color = GREEN if idx == getattr(game_state, "active_racer_index", 0) else GRAY
-        if mouse_pos and slot_rect.collidepoint(mouse_pos):
-            border_color = WHITE
-        pygame.draw.rect(screen, border_color, slot_rect, 2)
-
         turtle = game_state.roster[idx]
-
-        if turtle:
-            # Name
-            name_pos = (slot_rect.x + layout.SLOT_NAME_POS[0], slot_rect.y + layout.SLOT_NAME_POS[1])
-            name_txt = font.render(turtle.name, True, WHITE)
-            screen.blit(name_txt, name_pos)
-
-            # Stats text with simple tags
-            stats_pos = (slot_rect.x + layout.SLOT_STATS_POS[0], slot_rect.y + layout.SLOT_STATS_POS[1])
-            status_tag = "[ACT]" if getattr(turtle, "is_active", True) else "[RET]"
-            stats_str = (
-                f"{status_tag} "
-                f"Age:{turtle.age} "
-                f"Spd:{turtle.stats['speed']} "
-                f"Nrg:{turtle.stats['max_energy']} "
-                f"Rec:{turtle.stats['recovery']} "
-                f"Swm:{turtle.stats['swim']} "
-                f"Clm:{turtle.stats['climb']}"
-            )
-            stats_txt = font.render(stats_str, True, WHITE)
-            screen.blit(stats_txt, stats_pos)
-
-            # Energy bar
-            energy_bg = layout.SLOT_ENERGY_BG_RECT
-            energy_bg_rect = pygame.Rect(
-                slot_rect.x + energy_bg.x,
-                slot_rect.y + energy_bg.y,
-                energy_bg.width,
-                energy_bg.height,
-            )
-            pygame.draw.rect(screen, RED, energy_bg_rect)
-
-            pct = turtle.current_energy / turtle.stats["max_energy"] if turtle.stats["max_energy"] > 0 else 0
-            fill_width = int(energy_bg.width * max(0.0, min(1.0, pct)))
-            energy_fill_rect = pygame.Rect(
-                energy_bg_rect.x + 2,
-                energy_bg_rect.y + 2,
-                max(0, fill_width - 4),
-                energy_bg.height - 4,
-            )
-            pygame.draw.rect(screen, GREEN, energy_fill_rect)
-        else:
-            empty_txt = font.render("[ EMPTY SLOT ]", True, GRAY)
-            screen.blit(empty_txt, (slot_rect.x + 20, slot_rect.y + 40))
+        is_active_racer = idx == getattr(game_state, "active_racer_index", 0)
+        draw_stable_turtle_slot(screen, font, game_state, turtle, slot_rect, is_active_racer, mouse_pos)
 
         # Action buttons (visual only; click handling is in RosterManager)
         train_btn = layout.SLOT_BTN_TRAIN_RECT
