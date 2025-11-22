@@ -43,9 +43,11 @@ class StateHandler:
                 if new_state == STATE_SHOP:
                     self.game.shop_manager.refresh_stock()
                 elif new_state == STATE_RACE:
-                    # Start race directly from main menu
-                    self.game.race_manager.start_race()
-                self.game.state = new_state
+                    # Go to roster with select racer mode
+                    self.game.state = STATE_ROSTER
+                    self.game.select_racer_mode = True
+                else:
+                    self.game.state = new_state
                 break
     
     def _handle_roster_clicks(self, pos):
