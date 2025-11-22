@@ -9,10 +9,12 @@ class RosterManager:
     def handle_click(self, pos):
         # Check Navigation Buttons
         if layout.NAV_RACE_RECT.collidepoint(pos):
-            # Start Race Logic
-            # We need to trigger the race manager, but we are in RosterManager.
-            # Ideally, Main Game handles state changes, but we can set a flag or return an action.
-            return "GOTO_RACE"
+            # Check if we have a selected racer and bet setup
+            active_racer = self.game_state.roster[getattr(self.game_state, "active_racer_index", 0)]
+            if active_racer:
+                return "GOTO_RACE"
+            # If no racer selected, do nothing
+            return None
         
         if layout.NAV_SHOP_RECT.collidepoint(pos):
             return "GOTO_SHOP"
