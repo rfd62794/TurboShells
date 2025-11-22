@@ -55,15 +55,21 @@ class RosterManager:
             retire_rect = pygame.Rect(layout.SLOT_BTN_RETIRE_RECT.x, slot_y + layout.SLOT_BTN_RETIRE_RECT.y, 
                                       layout.SLOT_BTN_RETIRE_RECT.width, layout.SLOT_BTN_RETIRE_RECT.height)
 
+            # Check if this slot is the active racer
+            is_active_racer = idx == getattr(self.game_state, "active_racer_index", 0)
+            
             if not getattr(self.game_state, "show_retired_view", False):
-                if train_rect.collidepoint(pos):
-                    self.train_turtle(i)
-                elif rest_rect.collidepoint(pos):
-                    self.rest_turtle(i)
-                elif retire_rect.collidepoint(pos):
-                    self.retire_turtle(i)
-                elif slot_rect.collidepoint(pos):
+                # First check for slot selection
+                if slot_rect.collidepoint(pos):
                     self.game_state.active_racer_index = i
+                # Then check for action buttons (only if this slot is selected and has a turtle)
+                elif is_active_racer and self.game_state.roster[i]:
+                    if train_rect.collidepoint(pos):
+                        self.train_turtle(i)
+                    elif rest_rect.collidepoint(pos):
+                        self.rest_turtle(i)
+                    elif retire_rect.collidepoint(pos):
+                        self.retire_turtle(i)
         
         return None
 
