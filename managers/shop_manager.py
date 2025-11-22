@@ -1,5 +1,6 @@
 from game_state import generate_random_turtle
 from settings import *
+import pygame
 import ui.layout as layout
 
 class ShopManager:
