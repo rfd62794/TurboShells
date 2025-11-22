@@ -40,6 +40,7 @@ class TurboShellsGame:
         self.active_racer_index = 0
         
         self.breeding_parents = []
+        self.mouse_pos = (0, 0)
 
         # --- MANAGERS ---
         self.renderer = Renderer(self.screen, self.font)
@@ -55,6 +56,9 @@ class TurboShellsGame:
                 sys.exit()
             
             # Mouse Handling
+            if event.type == pygame.MOUSEMOTION:
+                self.mouse_pos = event.pos
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1: # Left Click
                     self.handle_click(event.pos)
