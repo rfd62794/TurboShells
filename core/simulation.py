@@ -4,9 +4,9 @@ Runs races between real `entities.Turtle` instances using the shared
 `race_track` helper, without any PyGame window or UI.
 """
 
-from entities import Turtle # <--- IMPORT THE SHARED CLASS
+from core.entities import Turtle # <--- IMPORT THE SHARED CLASS
 import random
-from race_track import generate_track, get_terrain_at
+from core.race_track import generate_track, get_terrain_at
 
 TRACK_LENGTH = 1500
 

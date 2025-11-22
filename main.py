@@ -7,13 +7,13 @@ routes input to managers, and delegates drawing to the UI layer.
 import pygame
 import sys
 from settings import *
-from entities import Turtle
+from core.entities import Turtle
 from ui.renderer import Renderer
 from managers.shop_manager import ShopManager
 from managers.race_manager import RaceManager
 from managers.breeding_manager import BreedingManager
 from managers.roster_manager import RosterManager
-from game_state import generate_random_turtle
+from core.game_state import generate_random_turtle
 
 # --- MAIN GAME CLASS ---
 class TurboShellsGame:
