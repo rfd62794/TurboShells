@@ -17,26 +17,26 @@ SLOT_RECTS = [SLOT_1_RECT, SLOT_2_RECT, SLOT_3_RECT]
 
 # Inside Slot (Relative to Slot Rect)
 SLOT_NAME_POS = (20, 10)
-SLOT_STATS_POS = (20, 40)
-SLOT_ENERGY_BG_RECT = pygame.Rect(250, 20, 300, 20)
-SLOT_ENERGY_FILL_POS = (252, 22) # Width is variable, Height is 16
-SLOT_BTN_TRAIN_RECT = pygame.Rect(580, 15, 100, 30)
-SLOT_BTN_REST_RECT = pygame.Rect(580, 50, 100, 30)
-SLOT_BTN_RETIRE_RECT = pygame.Rect(580, 85, 100, 30)
+SLOT_STATS_POS = (20, 35)
+SLOT_ENERGY_BG_RECT = pygame.Rect(20, 65, 400, 15)
+SLOT_ENERGY_FILL_POS = (22, 67) # Width is variable, Height is 11
+SLOT_BTN_TRAIN_RECT = pygame.Rect(450, 15, 80, 28)
+SLOT_BTN_REST_RECT = pygame.Rect(450, 48, 80, 28)
+SLOT_BTN_RETIRE_RECT = pygame.Rect(450, 81, 80, 28)
 
 # View toggles (Active vs Retired) on Stable
-VIEW_ACTIVE_RECT = pygame.Rect(50, 450, 120, 40)
-VIEW_RETIRED_RECT = pygame.Rect(190, 450, 120, 40)
+VIEW_ACTIVE_RECT = pygame.Rect(50, 440, 100, 35)
+VIEW_RETIRED_RECT = pygame.Rect(160, 440, 100, 35)
 
 # Stable Betting Buttons (MVP)
-BET_BTN_NONE_RECT = pygame.Rect(350, 450, 120, 40)
-BET_BTN_5_RECT = pygame.Rect(490, 450, 120, 40)
-BET_BTN_10_RECT = pygame.Rect(630, 450, 120, 40)
+BET_BTN_NONE_RECT = pygame.Rect(280, 440, 90, 35)
+BET_BTN_5_RECT = pygame.Rect(380, 440, 90, 35)
+BET_BTN_10_RECT = pygame.Rect(480, 440, 90, 35)
 
 # Bottom Navigation
-NAV_RACE_RECT = pygame.Rect(50, 500, 200, 60)
-NAV_BREED_RECT = pygame.Rect(300, 500, 200, 60)
-NAV_SHOP_RECT = pygame.Rect(550, 500, 200, 60)
+NAV_RACE_RECT = pygame.Rect(50, 500, 180, 50)
+NAV_BREED_RECT = pygame.Rect(250, 500, 180, 50)
+NAV_SHOP_RECT = pygame.Rect(450, 500, 180, 50)
 
 # 3. The Race Screen
 LANE_1_RECT = pygame.Rect(0, 100, 800, 100)

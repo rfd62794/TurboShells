@@ -64,8 +64,8 @@ def draw_menu(screen, font, game_state):
         rest_txt = font.render("REST", True, WHITE)
         retire_txt = font.render("RETIRE", True, WHITE)
 
-        screen.blit(train_txt, (train_rect.x + 10, train_rect.y + 5))
-        screen.blit(rest_txt, (rest_rect.x + 10, rest_rect.y + 5))
+        screen.blit(train_txt, (train_rect.x + 15, train_rect.y + 5))
+        screen.blit(rest_txt, (rest_rect.x + 15, rest_rect.y + 5))
         screen.blit(retire_txt, (retire_rect.x + 10, retire_rect.y + 5))
 
     # Bottom navigation buttons with hover
@@ -88,9 +88,9 @@ def draw_menu(screen, font, game_state):
     breed_txt = font.render("BREEDING", True, WHITE)
     shop_txt = font.render("SHOP", True, WHITE)
 
-    screen.blit(race_txt, (layout.NAV_RACE_RECT.x + 40, layout.NAV_RACE_RECT.y + 15))
-    screen.blit(breed_txt, (layout.NAV_BREED_RECT.x + 20, layout.NAV_BREED_RECT.y + 15))
-    screen.blit(shop_txt, (layout.NAV_SHOP_RECT.x + 50, layout.NAV_SHOP_RECT.y + 15))
+    screen.blit(race_txt, (layout.NAV_RACE_RECT.x + 60, layout.NAV_RACE_RECT.y + 15))
+    screen.blit(breed_txt, (layout.NAV_BREED_RECT.x + 35, layout.NAV_BREED_RECT.y + 15))
+    screen.blit(shop_txt, (layout.NAV_SHOP_RECT.x + 60, layout.NAV_SHOP_RECT.y + 15))
 
     # View toggle buttons: Active vs Retired
     show_retired = getattr(game_state, "show_retired_view", False)
