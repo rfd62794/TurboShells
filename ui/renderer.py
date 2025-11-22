@@ -179,17 +179,32 @@ class Renderer:
         for i, turtle in enumerate(game_state.shop_inventory):
             x_pos = 50 + (i * 250)
             y_pos = 120
-            
+
+            card_rect = pygame.Rect(x_pos, y_pos, 220, 300)
+
             # Draw Card
-            pygame.draw.rect(self.screen, GRAY, (x_pos, y_pos, 220, 300), 2)
-            
+            pygame.draw.rect(self.screen, GRAY, card_rect, 2)
+
             name_txt = self.font.render(turtle.name, True, WHITE)
             stats_txt = self.font.render(f"Spd: {turtle.stats['speed']}", True, WHITE)
             cost_txt = self.font.render("$50", True, GREEN)
-            
+
             self.screen.blit(name_txt, (x_pos + 20, y_pos + 20))
             self.screen.blit(stats_txt, (x_pos + 20, y_pos + 60))
             self.screen.blit(cost_txt, (x_pos + 20, y_pos + 250))
+
+            # BUY button (visual) using layout.SHOP_BTN_BUY_RECT (relative to card)
+            buy_rel = layout.SHOP_BTN_BUY_RECT
+            buy_rect = pygame.Rect(
+                card_rect.x + buy_rel.x,
+                card_rect.y + buy_rel.y,
+                buy_rel.width,
+                buy_rel.height,
+            )
+            pygame.draw.rect(self.screen, GREEN, buy_rect, 2)
+
+            buy_txt = self.font.render("BUY", True, WHITE)
+            self.screen.blit(buy_txt, (buy_rect.x + 40, buy_rect.y + 8))
 
     def draw_breeding(self, game_state):
         title = self.font.render("BREEDING CENTER (Press M for Menu)", True, WHITE)
