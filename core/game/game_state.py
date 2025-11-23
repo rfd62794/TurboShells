@@ -59,8 +59,8 @@ def generate_balanced_opponent(player_turtle):
     swim = 1
     climb = 1
     
-    # Use player's total points as budget
-    budget = player_points - 5  # Subtract base points (1+1+1+1+5=5)
+    # Use player's total points as budget (include base points in calculation)
+    budget = player_points  # Use full player points, no subtraction
     
     # Randomly distribute points
     while budget > 0:
@@ -80,6 +80,19 @@ def generate_balanced_opponent(player_turtle):
         elif choice == 4: # Climb
             climb += 1
             budget -= 1
+    
+    # Calculate opponent's total points for debugging
+    opponent_points = speed + recovery + swim + climb + (energy // 10)
+    
+    # Debug output
+    print(f"=== OPPONENT GENERATION DEBUG ===")
+    print(f"Player: {player_turtle.name}")
+    print(f"  Player stats: S{player_turtle.stats['speed']} E{player_turtle.stats['max_energy']} R{player_turtle.stats['recovery']} Sw{player_turtle.stats['swim']} C{player_turtle.stats['climb']}")
+    print(f"  Player points: {player_points}")
+    print(f"Opponent: {name}")
+    print(f"  Opponent stats: S{speed} E{energy} R{recovery} Sw{swim} C{climb}")
+    print(f"  Opponent points: {opponent_points}")
+    print(f"================================")
     
     return Turtle(name, speed, energy, recovery, swim, climb)
 
