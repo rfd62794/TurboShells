@@ -1,0 +1,21 @@
+2025-11-23 10:20:14,646 - core.config - INFO - Configuration loaded successfully
+2025-11-23 10:20:14,649 - core.graphics_manager - INFO - Loaded graphics settings: 1024x768
+2025-11-23 10:20:14,742 - core.graphics_manager - INFO - Display initialized: (1024, 768), Fullscreen: False
+2025-11-23 10:20:14,744 - core.audio_manager - INFO - Loaded audio settings: Master Volume 1.0, Enabled True
+2025-11-23 10:20:14,815 - core.audio_manager - INFO - Audio system initialized successfully
+2025-11-23 10:20:14,875 - ui.settings_view - INFO - Settings view initialized
+2025-11-23 10:20:14,876 - managers.settings_manager - INFO - Settings manager initialized
+2025-11-23 10:20:14,877 - ui.settings_view - INFO - Settings layout updated to 900x700
+2025-11-23 10:20:14,877 - managers.settings_manager - INFO - Settings manager updated for screen size 900x700
+2025-11-23 10:20:14,891 - ui.settings_view - INFO - Settings view initialized
+2025-11-23 10:20:14,892 - managers.settings_manager - INFO - Settings manager initialized
+2025-11-23 10:20:14,893 - ui.settings_view - INFO - Settings layout updated to 1124x868
+2025-11-23 10:20:14,893 - managers.settings_manager - INFO - Settings manager updated for screen size 1124x868
+2025-11-23 10:20:14,903 - ui.settings_view - INFO - Settings view initialized
+2025-11-23 10:20:14,904 - managers.settings_manager - INFO - Settings manager initialized
+2025-11-23 10:20:14,906 - ui.settings_view - INFO - Settings layout updated to 1380x820
+2025-11-23 10:20:14,906 - managers.settings_manager - INFO - Settings manager updated for screen size 1380x820
+2025-11-23 10:20:14,926 - ui.settings_view - INFO - Settings view initialized
+2025-11-23 10:20:14,927 - managers.settings_manager - INFO - Settings manager initialized
+2025-11-23 10:20:14,928 - ui.settings_view - INFO - Settings layout updated to 2020x1180
+2025-11-23 10:20:14,928 - managers.settings_manager - INFO - Settings manager updated for screen size 2020x1180
