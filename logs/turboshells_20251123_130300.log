@@ -1,0 +1,26 @@
+2025-11-23 13:03:00,149 - monitoring_system - INFO - Integrated monitoring system initialized
+2025-11-23 13:03:01,132 - managers.save_manager - INFO - SaveManager initialized with directory: C:\Users\cheat\AppData\Roaming\TurboShells
+2025-11-23 13:03:01,133 - managers.save_manager - INFO - SaveManager initialized with directory: C:\Users\cheat\AppData\Roaming\TurboShells
+2025-11-23 13:03:01,153 - core.config - INFO - Configuration loaded successfully
+2025-11-23 13:03:01,155 - core.graphics_manager - INFO - Loaded graphics settings: 1024x768
+2025-11-23 13:03:01,232 - core.graphics_manager - INFO - Display initialized: (1024, 768), Fullscreen: False
+2025-11-23 13:03:01,235 - core.audio_manager - INFO - Loaded audio settings: Master Volume 0.5, Enabled True
+2025-11-23 13:03:01,772 - core.audio_manager - INFO - Audio system initialized successfully
+2025-11-23 13:03:01,787 - overlay - ERROR - Failed to initialize overlay: font not initialized
+2025-11-23 13:03:01,925 - main - INFO - Initializing TurboShells game...
+2025-11-23 13:03:01,926 - monitoring - WARNING - Low FPS: 0.0
+2025-11-23 13:03:01,926 - monitoring - INFO - Real-time monitoring started
+2025-11-23 13:03:01,926 - statistics - INFO - New gaming session started
+2025-11-23 13:03:01,927 - monitoring_system - INFO - Monitoring system started
+2025-11-23 13:03:01,927 - main - INFO - Monitoring system started
+2025-11-23 13:03:01,940 - ui.settings_view - INFO - Settings view initialized
+2025-11-23 13:03:01,940 - managers.settings_manager - INFO - Settings manager initialized
+2025-11-23 13:03:01,941 - managers.save_manager - INFO - SaveManager initialized with directory: C:\Users\cheat\AppData\Roaming\TurboShells
+2025-11-23 13:03:01,951 - core.auto_load_system - INFO - Save file found at C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 13:03:01,951 - core.auto_load_system - INFO - Attempting to restore game state from save file
+2025-11-23 13:03:01,966 - managers.save_manager - INFO - Game loaded successfully from C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 13:03:01,967 - core.auto_load_system - INFO - Successfully restored game state for player player_20251123_112134
+2025-11-23 13:03:01,972 - error_monitor - ERROR - NameError in game_update: name 'AUTO_SAVE_INTERVAL' is not defined
+2025-11-23 13:03:01,972 - main - ERROR - Error in game update: name 'AUTO_SAVE_INTERVAL' is not defined
+2025-11-23 13:03:01,978 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 13:03:01,979 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json

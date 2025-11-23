@@ -6,7 +6,29 @@ routes input to managers, and delegates drawing to the UI layer.
 
 import pygame
 import sys
-from settings import *
+
+# Import settings with fallback
+try:
+    from settings import *
+except ImportError:
+    try:
+        from src.settings import *
+    except ImportError:
+        # Define basic settings if import fails
+        SCREEN_WIDTH = 1024
+        SCREEN_HEIGHT = 768
+        FPS = 60
+        BLACK = (0, 0, 0)
+        STATE_MENU = "menu"
+        STATE_ROSTER = "roster"
+        STATE_RACE = "race"
+        STATE_RACE_RESULT = "race_result"
+        STATE_SHOP = "shop"
+        STATE_BREEDING = "breeding"
+        STATE_PROFILE = "profile"
+        STATE_VOTING = "voting"
+        AUTO_SAVE_INTERVAL = 300  # 5 minutes in seconds
+
 from core.game.entities import Turtle
 from ui.renderer import Renderer
 from managers.shop_manager import ShopManager
