@@ -93,6 +93,10 @@ class RaceManager:
 
             self.game_state.money += reward + payout
             print(f"Player finished {rank}. Reward: ${reward} | Bet Payout: ${payout}")
+            
+            # Record race result in player's history
+            total_earnings = reward + payout
+            player_turtle.add_race_result(rank, total_earnings)
 
         # Post-race cleanup: recover energy and age turtles
         for i, t in enumerate(self.game_state.roster):
