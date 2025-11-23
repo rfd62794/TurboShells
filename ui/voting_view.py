@@ -143,23 +143,12 @@ class VotingView:
         pygame.draw.rect(self.screen, self.card_color, card_rect, border_radius=10)
         pygame.draw.rect(self.screen, self.accent_color, card_rect, 3, border_radius=10)
         
-        # Draw turtle using direct renderer
+        # Draw turtle placeholder (using simple shape for now)
         try:
-            genetics = current_design.genetics
-            if genetics:
-                turtle_surface = self.turtle_renderer.render_turtle_to_photoimage(
-                    genetics, self.design_size
-                )
-                
-                if turtle_surface:
-                    # Center the turtle in the card
-                    turtle_x = card_x + (card_width - self.design_size) // 2
-                    turtle_y = card_y + 30
-                    self.screen.blit(turtle_surface, (turtle_x, turtle_y))
-                else:
-                    self._draw_placeholder_turtle(card_x + card_width // 2, card_y + 80)
-            else:
-                self._draw_placeholder_turtle(card_x + card_width // 2, card_y + 80)
+            # Draw a simple turtle placeholder
+            turtle_x = card_x + card_width // 2
+            turtle_y = card_y + 80
+            self._draw_placeholder_turtle(turtle_x, turtle_y)
                 
         except Exception as e:
             print(f"Error rendering turtle: {e}")
