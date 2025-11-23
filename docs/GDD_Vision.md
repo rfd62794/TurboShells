@@ -329,51 +329,214 @@ class PlayerStore:
 
 ### 4.2 Single-Player Genetic Democracy
 
-#### **AI Community Voting System**
-The player influences simulated community preferences that affect genetic output:
+#### **Player-Exclusive Voting System**
+The player is the ONLY one who can vote on designs, directly influencing the genetic pool:
 
-- **Daily Design Showcase**: 5 AI-generated designs with community voting simulation
-- **Player Influence**: Player's vote has extra weight in community preferences
-- **AI Voting Patterns**: Different AI personality types vote differently
-- **Trend Evolution**: Community preferences evolve over time based on player influence
+- **Daily Design Showcase**: 5 AI-generated designs presented for player voting
+- **Player-Only Voting**: Only the human player can vote, no AI voting
+- **$1 Reward Per Vote**: Player earns $1 game money for each design they rate
+- **Direct Genetic Impact**: Player votes directly and immediately affect the genetic pool
+- **Clear Feedback**: System shows exactly how player votes influence future genetics
 
-#### **Player Influence Mechanics**
+#### **Player Incentive System**
 ```python
-class SinglePlayerGeneticInfluence:
-    def __init__(self, ai_community):
-        self.ai_community = ai_community
-        self.player_influence_weight = 2.0  # Player vote counts as 2 AI votes
-        self.influence_history = []
-        self.community_trends = {}
+class PlayerVotingSystem:
+    def __init__(self):
+        self.daily_designs = []
+        self.player_votes = {}
+        self.genetic_weights = {}
+        self.voting_rewards = 0
     
-    def vote_for_design(self, design_id, player_rating):
-        # Record player vote with extra influence
-        self.influence_history.append({
-            'design_id': design_id,
-            'player_rating': player_rating,
-            'date': datetime.now()
-        })
-        
-        # Update community preferences based on player influence
-        self.update_community_trends(design_id, player_rating)
-        
-        # Apply to genetic weight system
-        self.update_genetic_weights(design_id, player_rating)
+    def generate_daily_designs(self):
+        # Generate 5 random visual genetics combinations for player voting
+        self.daily_designs = []
+        for i in range(5):
+            design = self.generate_random_visual_genetics()
+            self.daily_designs.append({
+                'id': design['id'],
+                'genetics': design,
+                'player_voted': False,
+                'player_rating': None,
+                'reward_earned': 0
+            })
+        return self.daily_designs
     
-    def update_community_trends(self, design_id, player_rating):
-        # Player vote influences AI community preferences
+    def submit_player_vote(self, design_id, rating):
+        # Validate player hasn't voted yet today
+        if self.daily_designs[design_id]['player_voted']:
+            return {"error": "Already voted on this design today"}
+        
+        # Record player vote
         design = self.find_design(design_id)
+        design['player_voted'] = True
+        design['player_rating'] = rating
+        design['reward_earned'] = 1  # $1 reward
         
-        # Gradually shift AI preferences toward player choices
-        for trait in design['genetics']:
-            current_preference = self.community_trends.get(trait, 0.5)
-            player_preference = self.extract_trait_preference(design['genetics'], trait)
+        # Award money to player
+        self.award_voting_reward(1)
+        
+        # Update genetic weights with immediate impact
+        self.update_genetic_weights(design_id, rating)
+        
+        # Apply to genetic pool immediately
+        self.apply_to_genetic_pool(design_id, rating)
+        
+        return {
+            "success": True,
+            "reward": 1,
+            "genetic_impact": self.calculate_genetic_impact(design_id, rating)
+        }
+```
+
+#### **Direct Genetic Pool Impact**
+```python
+class GeneticPoolInfluence:
+    def __init__(self):
+        self.genetic_pool = self.load_base_genetic_pool()
+        self.player_influence_history = []
+        self.immediate_effects = {}
+    
+    def apply_to_genetic_pool(self, design_id, rating):
+        # Player vote immediately affects the genetic pool
+        design = self.find_design(design_id)
+        influence_strength = rating / 5.0  # Normalize to 0-1
+        
+        # Track immediate effects
+        effects_applied = []
+        
+        for trait, value in design['genetics'].items():
+            if trait in self.genetic_pool:
+                # Calculate new weighted average in genetic pool
+                current_weight = self.genetic_pool[trait]['weight']
+                player_influence = value * influence_strength * 0.2  # 20% immediate influence
+                
+                # Update genetic pool weight
+                new_weight = (current_weight * 0.8) + (player_influence * 0.2)
+                self.genetic_pool[trait]['weight'] = new_weight
+                
+                # Track effect for feedback
+                effects_applied.append({
+                    'trait': trait,
+                    'old_weight': current_weight,
+                    'new_weight': new_weight,
+                    'change': new_weight - current_weight
+                })
+        
+        # Store for player feedback
+        self.immediate_effects[design_id] = {
+            'rating': rating,
+            'effects': effects_applied,
+            'timestamp': datetime.now()
+        }
+        
+        return effects_applied
+    
+    def get_genetic_impact_summary(self, design_id):
+        if design_id not in self.immediate_effects:
+            return None
+        
+        effect = self.immediate_effects[design_id]
+        return {
+            'design_rating': effect['rating'],
+            'total_traits_affected': len(effect['effects']),
+            'average_impact': sum(abs(e['change']) for e in effect['effects']) / len(effect['effects']),
+            'significant_changes': [e for e in effect['effects'] if abs(e['change']) > 0.05]
+        }
+```
+
+#### **Player Feedback System**
+```python
+class VotingFeedbackSystem:
+    def __init__(self, genetic_pool):
+        self.genetic_pool = genetic_pool
+        self.feedback_history = []
+    
+    def generate_voting_feedback(self, design_id, rating):
+        # Show player exactly how their vote affected the genetic pool
+        impact = self.genetic_pool.get_genetic_impact_summary(design_id)
+        
+        feedback = {
+            'reward_earned': 1,
+            'design_rated': rating,
+            'genetic_impact': impact,
+            'future_turtles_affected': self.estimate_future_impact(impact),
+            'pool_changes': self.summarize_pool_changes(impact)
+        }
+        
+        self.feedback_history.append(feedback)
+        return feedback
+    
+    def estimate_future_impact(self, impact):
+        # Estimate how many future turtles will be affected
+        if impact['average_impact'] > 0.1:
+            return "High - Many future turtles will show these traits"
+        elif impact['average_impact'] > 0.05:
+            return "Medium - Some future turtles will show these traits"
+        else:
+            return "Low - Few future turtles will show these traits"
+    
+    def summarize_pool_changes(self, impact):
+        changes = []
+        for effect in impact['significant_changes']:
+            direction = "increased" if effect['change'] > 0 else "decreased"
+            changes.append(f"{effect['trait']} {direction} by {abs(effect['change']):.1%}")
+        
+        return changes
+```
+
+#### **Voting Interface Design**
+```python
+class PlayerVotingInterface:
+    def __init__(self, voting_system, feedback_system):
+        self.voting_system = voting_system
+        self.feedback_system = feedback_system
+        self.current_designs = []
+    
+    def display_daily_voting(self):
+        # Show 5 designs with clear voting incentives
+        interface = {
+            'title': "Daily Design Voting - Shape the Future!",
+            'subtitle': "Rate each design to earn $1 and directly influence future turtle genetics",
+            'instructions': [
+                "Your vote directly affects the genetic pool",
+                "Higher ratings = More likely to appear in future turtles",
+                "Earn $1 for each design you rate",
+                "See immediate impact of your choices"
+            ],
+            'designs': []
+        }
+        
+        for i, design in enumerate(self.current_designs):
+            design_display = {
+                'id': design['id'],
+                'visual_preview': self.generate_design_preview(design),
+                'genetics_summary': self.summarize_genetics(design['genetics']),
+                'voting_status': design['player_voted'],
+                'reward_available': not design['player_voted'],
+                'rating_options': [1, 2, 3, 4, 5],
+                'impact_preview': self.show_potential_impact(design)
+            }
+            interface['designs'].append(design_display)
+        
+        return interface
+    
+    def submit_vote_with_feedback(self, design_id, rating):
+        # Submit vote and show immediate feedback
+        result = self.voting_system.submit_player_vote(design_id, rating)
+        
+        if result['success']:
+            feedback = self.feedback_system.generate_voting_feedback(design_id, rating)
             
-            # Player influence gradually shifts community preference
-            shift = (player_preference - current_preference) * 0.1  # 10% shift per vote
-            new_preference = current_preference + shift
-            
-            self.community_trends[trait] = max(0.1, min(0.9, new_preference))
+            return {
+                'success': True,
+                'reward_earned': feedback['reward_earned'],
+                'genetic_impact': feedback['genetic_impact'],
+                'future_impact': feedback['future_turtles_affected'],
+                'pool_changes': feedback['pool_changes'],
+                'message': f"You earned $1 and influenced future turtle genetics!"
+            }
+        
+        return result
 ```
 
 #### **Community-Generated Designs**

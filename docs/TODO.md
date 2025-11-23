@@ -89,8 +89,8 @@
 - [ ] **AI Community Simulation:** Create 50+ AI traders with personalities and preferences
 - [ ] **Player Store System:** Sell turtles to AI buyers with dynamic pricing
 - [ ] **AI-Driven Market:** Simulated supply/demand and market trends
-- [ ] **Design Voting System:** Daily AI-generated designs with player influence
-- [ ] **Single-Player Genetic Democracy:** Player votes influence AI community preferences
+- [ ] **Player-Exclusive Voting System:** Only player can vote on designs, $1 reward per vote
+- [ ] **Direct Genetic Pool Impact:** Player votes immediately affect future turtle genetics
 - [ ] **AI Trader Personalities:** Aggressive, conservative, trendy, specialist behaviors
 - [ ] **Market Analytics:** AI-generated market reports and trend analysis
 - [ ] **AI Communication System:** Simulated messages and community news
@@ -100,9 +100,9 @@
 - [ ] **AI Community Engine:** Simulated community of 50+ AI traders
 - [ ] **Market Simulation:** Dynamic pricing and trend evolution
 - [ ] **Personality System:** Diverse AI behaviors and preferences
-- [ ] **Player Influence Mechanics:** Weighted voting system (player vote = 2 AI votes)
-- [ ] **Analytics Dashboard:** Market intelligence and opportunity identification
-- [ ] **Communication Templates**: Personality-based AI message generation
+- [ ] **Player Voting Interface:** Daily design showcase with $1 rewards
+- [ ] **Genetic Pool System:** Immediate impact of player votes on future genetics
+- [ ] **Feedback System:** Clear display of voting impact and rewards
 
 ### **Economic Features:**
 - [ ] **AI-Driven Pricing:** Multi-factor valuation (stats, age, race history, visual rarity)
@@ -113,7 +113,9 @@
 
 ### **Community Features (Single-Player):**
 - [ ] **AI Community Feel:** 50+ simulated traders with distinct personalities
-- [ ] **Daily Design Voting:** AI-generated designs with player influence
+- [ ] **Player-Exclusive Voting:** Only human player can vote on designs
+- [ ] **$1 Reward System:** Earn money for each design rating
+- [ ] **Direct Genetic Impact:** Player votes immediately affect future turtle genetics
 - [ ] **Community News:** Simulated events and announcements
 - [ ] **Market Reports:** AI-generated analysis and insights
 - [ ] **Trader Interactions**: AI inquiries, offers, and communications
