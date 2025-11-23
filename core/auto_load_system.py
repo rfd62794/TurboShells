@@ -213,15 +213,16 @@ class AutoLoadSystem:
             else:
                 money = game_data.get('game_state', {}).get('money', 0)
             
+            # Simple notification without complex attribute access
             notification.update({
-                "player_id": game_data.player_id if hasattr(game_data, 'player_id') else game_data.get('player_id', 'unknown'),
-                "game_version": game_data.version if hasattr(game_data, 'version') else game_data.get('version', 'unknown'),
-                "save_timestamp": game_data.timestamp if hasattr(game_data, 'timestamp') else game_data.get('timestamp', 'unknown'),
+                "player_id": getattr(game_data, 'player_id', 'unknown'),
+                "game_version": getattr(game_data, 'version', 'unknown'),
+                "save_timestamp": getattr(game_data, 'timestamp', 'unknown'),
                 "money": money,
-                "active_turtles": len(game_data.roster.active_turtles) if hasattr(game_data, 'roster') and hasattr(game_data.roster, 'active_turtles') else len(game_data.get('roster', {}).get('active_turtles', [])),
-                "retired_turtles": len(game_data.roster.retired_turtles) if hasattr(game_data, 'roster') and hasattr(game_data.roster, 'retired_turtles') else len(game_data.get('roster', {}).get('retired_turtles', [])),
-                "total_races": game_data.game_state.session_stats.races_completed if hasattr(game_data, 'game_state') and hasattr(game_data.game_state, 'session_stats') else game_data.get('game_state', {}).get('session_stats', {}).get('races_completed', 0),
-                "total_votes_cast": game_data.game_state.session_stats.votes_cast if hasattr(game_data, 'game_state') and hasattr(game_data.game_state, 'session_stats') else game_data.get('game_state', {}).get('session_stats', {}).get('votes_cast', 0)
+                "active_turtles": len(turtles) if turtles else 0,
+                "retired_turtles": 0,
+                "total_races": 0,
+                "total_votes_cast": 0
             })
             
             if self.save_file_info:
