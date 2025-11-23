@@ -23,7 +23,7 @@ class DirectTurtleRenderer:
         self.max_cache_size = 100
         self.cache_hits = 0
         self.cache_misses = 0
-        self.current_genetics = {} # Store for helper access
+        self.current_genetics = {} 
         print("Direct Turtle Renderer: Initialized Procedural Engine")
     
     # --- Color Utilities ---
@@ -35,32 +35,55 @@ class DirectTurtleRenderer:
         """Adjust brightness safely"""
         return tuple(max(0, min(255, int(c * factor))) for c in rgb)
 
-    def generate_noise_color(self, base_rgb: Tuple[int, int, int], variance: int = 20) -> Tuple[int, int, int]:
-        """Adds slight randomness to color for organic texture"""
-        r, g, b = base_rgb
-        var = random.randint(-variance, variance)
-        return (max(0, min(255, r + var)), 
-                max(0, min(255, g + var)), 
-                max(0, min(255, b + var)))
+    # --- TEXTURE ENGINES (Fixed for strict bounds) ---
+    
+    def _draw_triangle_texture(self, draw, points, color, density=0.4):
+        """
+        Draws scales strictly inside a triangle using Barycentric coordinates.
+        This prevents dots from floating in the empty space outside the flipper.
+        """
+        p1, p2, p3 = points
+        
+        # Calculate area to determine how many dots to draw
+        area = 0.5 * abs((p1[0]*(p2[1]-p3[1]) + p2[0]*(p3[1]-p1[1]) + p3[0]*(p1[1]-p2[1])))
+        num_dots = int(area * 0.005 * density)
+        
+        scale_color = self.get_variant_color(color, 1.1)
+        
+        for _ in range(num_dots):
+            # Barycentric coordinate generation (guarantees point is inside triangle)
+            r1 = random.random()
+            r2 = random.random()
+            sqrt_r1 = math.sqrt(r1)
+            
+            x = (1 - sqrt_r1) * p1[0] + (sqrt_r1 * (1 - r2)) * p2[0] + (sqrt_r1 * r2) * p3[0]
+            y = (1 - sqrt_r1) * p1[1] + (sqrt_r1 * (1 - r2)) * p2[1] + (sqrt_r1 * r2) * p3[1]
+            
+            size = random.randint(1, 2)
+            draw.ellipse([x, y, x+size, y+size], fill=scale_color)
 
-    # --- Drawing Primitives ---
-    def draw_organic_scales(self, draw: ImageDraw.Draw, bbox: List[int], color: Tuple[int, int, int], density: float = 0.4):
-        """Draws small random scales inside a bounding box area to simulate skin texture"""
+    def _draw_ellipse_texture(self, draw, bbox, color, density=0.6):
+        """Draws scales inside an ellipse using rejection sampling"""
         x1, y1, x2, y2 = bbox
-        width = x2 - x1
-        height = y2 - y1
-        num_scales = int((width * height) * 0.005 * density)
+        w, h = x2 - x1, y2 - y1
+        cx, cy = (x1 + x2) / 2, (y1 + y2) / 2
         
-        scale_color = self.get_variant_color(color, 1.1) # Lighter scales
+        num_dots = int((w * h) * 0.005 * density)
+        scale_color = self.get_variant_color(color, 1.1)
         
-        for _ in range(num_scales):
-            sx = random.randint(x1 + 2, x2 - 2)
-            sy = random.randint(y1 + 2, y2 - 2)
-            # Simple distance check to keep scales roughly inside an ellipse
-            cx, cy = (x1 + x2) // 2, (y1 + y2) // 2
-            if ((sx - cx) / (width/2))**2 + ((sy - cy) / (height/2))**2 <= 0.8:
-                size = random.randint(1, 3)
-                draw.ellipse([sx, sy, sx+size, sy+size], fill=scale_color)
+        count = 0
+        attempts = 0
+        while count < num_dots and attempts < num_dots * 3:
+            attempts += 1
+            # Pick random point in box
+            rx = random.randint(int(x1), int(x2))
+            ry = random.randint(int(y1), int(y2))
+            
+            # Check if inside ellipse equation
+            if ((rx - cx) / (w/2))**2 + ((ry - cy) / (h/2))**2 <= 0.8:
+                size = random.randint(1, 2)
+                draw.ellipse([rx, ry, rx+size, ry+size], fill=scale_color)
+                count += 1
 
     # --- Main Rendering Logic ---
     def draw_realistic_turtle(self, draw: ImageDraw.Draw, genetics: Dict[str, Any], size: int):
@@ -68,10 +91,7 @@ class DirectTurtleRenderer:
         center_y = size // 2
         scale = size / 200.0
         
-        # Save genetics for sub-routines
         self.current_genetics = genetics
-
-        # Seed random generator with genetics hash so the texture is consistent per turtle
         gene_seed = hash(str(genetics)) 
         random.seed(gene_seed)
 
@@ -80,7 +100,6 @@ class DirectTurtleRenderer:
         skin_base = genetics.get('head_color', (46, 125, 50))
         pattern_color = genetics.get('pattern_color', self.get_variant_color(shell_base, 0.6))
         
-        # Colors
         skin_shadow = self.get_variant_color(skin_base, 0.7)
         shell_shadow = self.get_variant_color(shell_base, 0.6)
         
@@ -91,14 +110,14 @@ class DirectTurtleRenderer:
             center_x + int(60 * scale), center_y + int(50 * scale) + shadow_y_offset
         ], fill=(0, 0, 0, 60))
 
-        # --- 2. Limbs & Tail (EXTENDED) ---
-        self._draw_limbs(draw, center_x, center_y, scale, skin_base, skin_shadow, genetics)
+        # --- 2. Limbs & Tail (Textured) ---
+        self._draw_limbs(draw, center_x, center_y, scale, skin_base, skin_shadow)
         self._draw_tail(draw, center_x, center_y, scale, skin_base, skin_shadow)
         
-        # --- 3. Head (EXTENDED) ---
+        # --- 3. Head (Textured) ---
         self._draw_head(draw, center_x, center_y, scale, skin_base, skin_shadow, genetics)
 
-        # --- 4. Shell Body (SHRUNK to reveal limbs) ---
+        # --- 4. Shell Body ---
         shell_w = int(65 * scale) 
         shell_h = int(55 * scale)
         
@@ -115,30 +134,14 @@ class DirectTurtleRenderer:
             center_x + shell_w - 3, center_y + shell_h - dome_offset
         ], fill=shell_base)
 
-        # --- 5. Shell Scutes / Pattern ---
+        # --- 5. Shell Pattern ---
         self._draw_shell_pattern(draw, center_x, center_y, shell_w, shell_h, scale, shell_base, pattern_color)
 
-        # --- 6. Shell Highlight (Soft Gloss) ---
-        shine_w = int(shell_w * 0.5)
-        shine_h = int(shell_h * 0.3)
-        shine_x = center_x - int(shell_w * 0.6)
-        shine_y = center_y - int(shell_h * 0.65)
-        
-        # Draw soft shine
-        draw.ellipse([
-            shine_x, shine_y,
-            shine_x + shine_w, shine_y + shine_h
-        ], fill=(255, 255, 255, 30))
-        
-        # Tiny hotspot
-        draw.ellipse([
-            shine_x + int(shine_w*0.2), shine_y + int(shine_h*0.2),
-            shine_x + int(shine_w*0.5), shine_y + int(shine_h*0.6)
-        ], fill=(255, 255, 255, 45))
+        # --- 6. HIGHLIGHT REMOVED (Per User Request) ---
+        # No more circle stamp.
 
-    def _draw_limbs(self, draw, cx, cy, scale, color, outline, genetics):
-        """Draws textured flippers extended for visibility"""
-        # Pushed coordinates outward
+    def _draw_limbs(self, draw, cx, cy, scale, color, outline):
+        """Draws flippers with strict internal texture"""
         offsets = [
             (45, -35, 85, -55, 75, -5),    # Front Right
             (-45, -35, -85, -55, -75, -5), # Front Left
@@ -154,12 +157,8 @@ class DirectTurtleRenderer:
             ]
             draw.polygon(points, fill=color, outline=outline)
             
-            # Draw Texture
-            min_x = min(p[0] for p in points)
-            max_x = max(p[0] for p in points)
-            min_y = min(p[1] for p in points)
-            max_y = max(p[1] for p in points)
-            self.draw_organic_scales(draw, [min_x, min_y, max_x, max_y], color)
+            # USE NEW TRIANGLE TEXTURE LOGIC
+            self._draw_triangle_texture(draw, points, color)
 
     def _draw_tail(self, draw, cx, cy, scale, color, outline):
         tail_len = int(25 * scale)
@@ -169,15 +168,15 @@ class DirectTurtleRenderer:
             (cx, cy + int(50 * scale) + tail_len)
         ]
         draw.polygon(points, fill=color, outline=outline)
+        # Tail is also a triangle, so it gets the fix too
+        self._draw_triangle_texture(draw, points, color)
 
     def _draw_head(self, draw, cx, cy, scale, color, outline, genetics):
         head_w = int(32 * scale)
         head_h = int(35 * scale)
-        
-        # Pushed head UP so it clears the shell
         head_y = cy - int(75 * scale) 
         
-        # Neck connection
+        # Neck
         draw.rectangle([
             cx - int(12 * scale), head_y + int(15 * scale),
             cx + int(12 * scale), cy - int(20 * scale)
@@ -187,8 +186,8 @@ class DirectTurtleRenderer:
         bbox = [cx - head_w//2, head_y, cx + head_w//2, head_y + head_h]
         draw.ellipse(bbox, fill=color, outline=outline)
         
-        # Skin Texture
-        self.draw_organic_scales(draw, bbox, color, density=0.6)
+        # USE ELLIPSE TEXTURE LOGIC
+        self._draw_ellipse_texture(draw, bbox, color)
 
         # Eyes
         eye_color = genetics.get('eye_color', (0, 0, 0))
@@ -202,28 +201,20 @@ class DirectTurtleRenderer:
             draw.ellipse([ex - pupil_s, eye_y - pupil_s, ex + pupil_s, eye_y + pupil_s], fill=eye_color)
 
     def _draw_shell_pattern(self, draw, cx, cy, w, h, scale, base_color, pat_color):
-        """Draws different patterns based on genetics or fallback to seed"""
-        
-        # 1. Determine Style from Genetics
         styles = ['hex', 'spots', 'stripes', 'rings']
-        
-        # Flexible extraction: Handle if it's a string "stripes" or a dict {'type': 'stripes'}
         raw_pattern = self.current_genetics.get('shell_pattern', None)
         
-        style = 'hex' # Default
-        
+        style = 'hex'
         if raw_pattern:
             if isinstance(raw_pattern, dict):
                 style = raw_pattern.get('type', 'hex')
             else:
                 style = str(raw_pattern).lower()
         
-        # If style isn't recognized (or missing), fallback to random seed consistency
         if style not in styles:
             style_idx = hash(str(self.current_genetics)) % len(styles)
             style = styles[style_idx]
 
-        # 2. Draw the specific style
         if style == 'spots':
             self._draw_pattern_spots(draw, cx, cy, w, h, scale, pat_color)
         elif style == 'stripes':
