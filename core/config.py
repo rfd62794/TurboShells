@@ -252,6 +252,9 @@ class ConfigManager:
             # Save to file with backup
             backup_file = self.config_file.with_suffix('.json.bak')
             if self.config_file.exists():
+                # Remove existing backup if it exists
+                if backup_file.exists():
+                    backup_file.unlink()
                 self.config_file.rename(backup_file)
             
             with open(self.config_file, 'w', encoding='utf-8') as f:

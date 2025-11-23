@@ -1,0 +1,12 @@
+2025-11-23 09:41:09,815 - core.config - INFO - Configuration loaded successfully
+2025-11-23 09:41:09,817 - core.graphics_manager - INFO - Loaded graphics settings: 1024x768
+2025-11-23 09:41:09,909 - core.graphics_manager - INFO - Display initialized: (1024, 768), Fullscreen: False
+2025-11-23 09:41:09,920 - core.audio_manager - INFO - Loaded audio settings: Master Volume 1.0, Enabled True
+2025-11-23 09:41:10,469 - core.audio_manager - INFO - Audio system initialized successfully
+2025-11-23 09:41:10,475 - core.config - INFO - Configuration saved successfully
+2025-11-23 09:41:10,475 - core.audio_manager - INFO - Master volume set to 0.50
+2025-11-23 09:41:10,482 - core.save_protection - INFO - Backup registry loaded successfully
+2025-11-23 09:41:10,484 - core.save_protection - INFO - Backup registry loaded successfully
+2025-11-23 09:41:10,488 - core.config - INFO - Configuration saved successfully
+2025-11-23 09:41:10,510 - core.config - INFO - Configuration loaded successfully
+2025-11-23 09:41:10,513 - core.config - INFO - Configuration saved successfully
