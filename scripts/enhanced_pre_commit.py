@@ -2,6 +2,7 @@
 """
 Enhanced Windows-Compatible Pre-commit Hook for TurboShells
 Runs auto-fixes and focused quality checks before commits on Windows systems.
+Version 2.0 - Enhanced with auto-fix and focused testing.
 """
 
 import os
