@@ -187,34 +187,35 @@ class VotingView:
         """Draw navigation controls in left panel"""
         designs = self.voting_system.daily_designs
         
-        # Navigation buttons
-        nav_y = self.image_y + self.design_size + 80
+        # Navigation buttons on the right side of the turtle image
+        nav_x = self.image_x + self.design_size + 40  # Right of the turtle image
+        nav_y_start = self.image_y + 20  # Start at top of turtle image
         
-        # Previous button
+        # Previous button (above)
         if self.current_design_index > 0:
-            self._draw_nav_button("<", self.left_panel_width // 2 - 80, nav_y, "previous")
+            self._draw_nav_button("<", nav_x, nav_y_start, "previous")
         
-        # Next button
+        # Next button (below)
         if self.current_design_index < len(designs) - 1:
-            self._draw_nav_button(">", self.left_panel_width // 2 + 40, nav_y, "next")
+            self._draw_nav_button(">", nav_x, nav_y_start + 60, "next")
         
-        # Design counter
+        # Design counter (below buttons)
         counter_text = f"Design {self.current_design_index + 1} of {len(designs)}"
         text_surface = self.normal_font.render(counter_text, True, self.text_color)
-        text_rect = text_surface.get_rect(centerx=self.left_panel_width // 2, y=nav_y + 10)
+        text_rect = text_surface.get_rect(centerx=nav_x + 25, y=nav_y_start + 120)
         self.screen.blit(text_surface, text_rect)
         
-        # Progress bar
+        # Progress bar (below counter)
         progress = (self.current_design_index + 1) / len(designs)
-        bar_width = 200
-        bar_height = 8
-        bar_x = (self.left_panel_width - bar_width) // 2
-        bar_y = nav_y + 50
+        bar_width = 120
+        bar_height = 6
+        bar_x = nav_x - 10
+        bar_y = nav_y_start + 150
         
         # Background
-        pygame.draw.rect(self.screen, (200, 200, 200), (bar_x, bar_y, bar_width, bar_height), border_radius=4)
+        pygame.draw.rect(self.screen, (200, 200, 200), (bar_x, bar_y, bar_width, bar_height), border_radius=3)
         # Progress
-        pygame.draw.rect(self.screen, self.accent_color, (bar_x, bar_y, int(bar_width * progress), bar_height), border_radius=4)
+        pygame.draw.rect(self.screen, self.accent_color, (bar_x, bar_y, int(bar_width * progress), bar_height), border_radius=3)
     
     def _update_animations(self):
         """Update animation states"""
@@ -870,18 +871,20 @@ class VotingView:
                 if result:
                     return "vote_completed"
         
-        # Check navigation buttons (matching new left panel positions and larger buttons)
+        # Check navigation buttons (matching new right-side positions)
         if self.current_design_index > 0:
-            nav_y = self.image_y + self.design_size + 80
-            prev_rect = pygame.Rect(self.left_panel_width // 2 - 80, nav_y, 50, 40)  # Updated size
+            nav_x = self.image_x + self.design_size + 40
+            nav_y_start = self.image_y + 20
+            prev_rect = pygame.Rect(nav_x, nav_y_start, 50, 40)
             if prev_rect.collidepoint(pos):
                 self.current_design_index -= 1
                 return None
         
         designs = self.voting_system.daily_designs
         if self.current_design_index < len(designs) - 1:
-            nav_y = self.image_y + self.design_size + 80
-            next_rect = pygame.Rect(self.left_panel_width // 2 + 40, nav_y, 50, 40)  # Updated size
+            nav_x = self.image_x + self.design_size + 40
+            nav_y_start = self.image_y + 20
+            next_rect = pygame.Rect(nav_x, nav_y_start + 60, 50, 40)
             if next_rect.collidepoint(pos):
                 self.current_design_index += 1
                 return None

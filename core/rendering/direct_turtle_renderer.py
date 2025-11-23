@@ -238,11 +238,12 @@ class DirectTurtleRenderer:
             dx, dy = x - cx, y - cy
             return (cx + int(dx * len_mod), cy + int(dy * len_mod))
 
+        # Fin coordinates attached closer to the shell body
         coords = [
-             [(cx+35*scale, cy-25*scale), (cx+95*scale, cy-55*scale), (cx+55*scale, cy-5*scale)], # FR
-             [(cx-35*scale, cy-25*scale), (cx-95*scale, cy-55*scale), (cx-55*scale, cy-5*scale)], # FL
-             [(cx+30*scale, cy+40*scale), (cx+65*scale, cy+70*scale), (cx+45*scale, cy+45*scale)], # BR
-             [(cx-30*scale, cy+40*scale), (cx-65*scale, cy+70*scale), (cx-45*scale, cy+45*scale)]  # BL
+             [(cx+25*scale, cy-15*scale), (cx+45*scale, cy-25*scale), (cx+35*scale, cy-5*scale)], # FR
+             [(cx-25*scale, cy-15*scale), (cx-45*scale, cy-25*scale), (cx-35*scale, cy-5*scale)], # FL
+             [(cx+20*scale, cy+20*scale), (cx+35*scale, cy+35*scale), (cx+25*scale, cy+25*scale)], # BR
+             [(cx-20*scale, cy+20*scale), (cx-35*scale, cy+35*scale), (cx-25*scale, cy+25*scale)]  # BL
         ]
 
         for poly_raw in coords:
