@@ -202,7 +202,7 @@ class VisualGeneticsDemo:
         info += f"Shell Size: {genetics['shell_size_modifier']:.2f}\n"
         info += f"Head Size: {genetics['head_size_modifier']:.2f}\n"
         info += f"Eye Size: {genetics['eye_size_modifier']:.2f}\n"
-        info += f"Leg Length: {genetics['leg_length_modifier']:.2f}\n"
+        info += f"Leg Length: {genetics.get('leg_length', 1.0):.2f}\n"
         info += f"Leg Thickness: {genetics['leg_thickness_modifier']:.2f}\n"
         
         # Rarity (using a simple calculation)

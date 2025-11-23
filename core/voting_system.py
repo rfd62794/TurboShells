@@ -197,7 +197,7 @@ class VotingSystem:
                 'value': {
                     'shell_size': genetics.get('shell_size_modifier', 1.0),
                     'head_size': genetics.get('head_size_modifier', 1.0),
-                    'leg_length': genetics.get('leg_length_modifier', 1.0)
+                    'leg_length': genetics.get('leg_length', 1.0)
                 },
                 'type': 'proportions',
                 'description': 'Overall body proportions',
