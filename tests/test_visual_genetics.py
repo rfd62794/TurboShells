@@ -8,7 +8,8 @@ import sys
 import os
 
 # Add the project root to Python path
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, project_root)
 
 def test_all_genetic_traits():
     """Test that all 19 genetic traits are accessible and have valid values"""

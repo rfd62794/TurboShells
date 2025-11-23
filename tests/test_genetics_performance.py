@@ -10,7 +10,8 @@ import time
 import random
 
 # Add the project root to Python path
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, project_root)
 
 def time_operation(operation, *args, **kwargs):
     """Time an operation and return result and duration"""

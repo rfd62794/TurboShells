@@ -8,7 +8,8 @@ import sys
 import os
 
 # Add the project root to Python path
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, project_root)
 
 def test_turtle_creation():
     """Test that turtles can be created with new genetics system"""
