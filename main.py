@@ -17,6 +17,7 @@ from core.game.game_state import generate_random_turtle
 from core.systems.state_handler import StateHandler
 from core.game.keyboard_handler import KeyboardHandler
 from core.auto_load_system import auto_load_system
+from managers.save_manager import SaveManager
 
 # --- MAIN GAME CLASS ---
 class TurboShellsGame:
@@ -72,11 +73,14 @@ class TurboShellsGame:
         
         # --- AUTO-LOAD SYSTEM ---
         self.load_notification = None
+        self.save_manager = SaveManager()
+        self.player_id = None
         self._initialize_game_state()
 
     def handle_input(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                self.save_on_exit()
                 pygame.quit()
                 sys.exit()
             
@@ -135,6 +139,9 @@ class TurboShellsGame:
             if success and loaded_data:
                 game_data, turtles, preferences = loaded_data
                 
+                # Store player_id for save operations
+                self.player_id = game_data.player_id
+                
                 # Restore game state from loaded data
                 self.money = game_data.game_state.money
                 self.state = game_data.game_state.current_phase
@@ -188,6 +195,172 @@ class TurboShellsGame:
                 "timestamp": "2025-11-22T00:00:00Z"
             }
 
+    def _create_save_data(self):
+        """Convert current game state to save data structures"""
+        from core.data import (
+            GameData, TurtleData, PlayerPreferences, create_default_preference_data,
+            GameStateData, EconomicData, SessionStats, RosterData, LastSession,
+            TurtleParents, GeneTrait, BaseStats, GeneticModifiers, TurtleStats,
+            TerrainPerformance, TurtlePerformance, RaceResult
+        )
+        from datetime import datetime, timezone
+        
+        # Ensure we have a player_id
+        if not self.player_id:
+            self.player_id = f"player_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        
+        # Convert game state
+        game_state = GameStateData(
+            money=self.money,
+            current_phase=self.state,
+            unlocked_features=["roster", "racing", "voting"],  # TODO: Track actual unlocked features
+            tutorial_progress={
+                "roster_intro": True,
+                "racing_basics": True,
+                "breeding_intro": False,
+                "voting_system": True
+            },
+            session_stats=SessionStats(
+                total_playtime_minutes=0,  # TODO: Track actual playtime
+                races_completed=len(self.race_results),
+                turtles_bred=0,  # TODO: Track breeding count
+                votes_cast=0  # TODO: Track voting count
+            )
+        )
+        
+        # Convert turtles to data structures
+        active_turtles = []
+        retired_turtles = []
+        turtle_data_list = []
+        
+        # Process active roster
+        for i, turtle in enumerate(self.roster):
+            if turtle:
+                turtle_id = f"turtle_{i:03d}"
+                active_turtles.append(turtle_id)
+                
+                turtle_data = TurtleData(
+                    turtle_id=turtle_id,
+                    name=turtle.name,
+                    generation=0,  # TODO: Track actual generation
+                    created_timestamp="2025-11-22T00:00:00Z",  # TODO: Track actual creation time
+                    parents=None,  # TODO: Track actual parents
+                    genetics={
+                        "shell_pattern": GeneTrait("hex", 1.0, "random"),
+                        "shell_color": GeneTrait("#4A90E2", 1.0, "random"),
+                        "pattern_color": GeneTrait("#E74C3C", 1.0, "random"),
+                        "limb_shape": GeneTrait("flippers", 1.0, "random"),
+                        "limb_length": GeneTrait(1.0, 1.0, "random"),
+                        "head_size": GeneTrait(1.0, 1.0, "random"),
+                        "eye_color": GeneTrait("#2ECC71", 1.0, "random"),
+                        "skin_texture": GeneTrait("smooth", 1.0, "random")
+                    },
+                    stats=TurtleStats(
+                        speed=turtle.speed,
+                        energy=turtle.energy,
+                        recovery=turtle.recovery,
+                        swim=turtle.swim,
+                        climb=turtle.climb,
+                        base_stats=BaseStats(turtle.speed, turtle.energy, turtle.recovery, turtle.swim, turtle.climb),
+                        genetic_modifiers=GeneticModifiers(0, 0, 0, 0, 0)
+                    ),
+                    performance=TurtlePerformance(
+                        race_history=[],
+                        total_races=0,
+                        wins=0,
+                        average_position=0.0,
+                        total_earnings=0
+                    )
+                )
+                turtle_data_list.append(turtle_data)
+        
+        # Process retired roster
+        for i, turtle in enumerate(self.retired_roster):
+            turtle_id = f"turtle_retired_{i:03d}"
+            retired_turtles.append(turtle_id)
+            
+            turtle_data = TurtleData(
+                turtle_id=turtle_id,
+                name=turtle.name,
+                generation=0,
+                created_timestamp="2025-11-22T00:00:00Z",
+                parents=None,
+                genetics={
+                    "shell_pattern": GeneTrait("hex", 1.0, "random"),
+                    "shell_color": GeneTrait("#4A90E2", 1.0, "random"),
+                    "pattern_color": GeneTrait("#E74C3C", 1.0, "random"),
+                    "limb_shape": GeneTrait("flippers", 1.0, "random"),
+                    "limb_length": GeneTrait(1.0, 1.0, "random"),
+                    "head_size": GeneTrait(1.0, 1.0, "random"),
+                    "eye_color": GeneTrait("#2ECC71", 1.0, "random"),
+                    "skin_texture": GeneTrait("smooth", 1.0, "random")
+                },
+                stats=TurtleStats(
+                    speed=turtle.speed,
+                    energy=turtle.energy,
+                    recovery=turtle.recovery,
+                    swim=turtle.swim,
+                    climb=turtle.climb,
+                    base_stats=BaseStats(turtle.speed, turtle.energy, turtle.recovery, turtle.swim, turtle.climb),
+                    genetic_modifiers=GeneticModifiers(0, 0, 0, 0, 0)
+                ),
+                performance=TurtlePerformance(
+                    race_history=[],
+                    total_races=0,
+                    wins=0,
+                    average_position=0.0,
+                    total_earnings=0
+                )
+            )
+            turtle_data_list.append(turtle_data)
+        
+        # Create game data
+        game_data = GameData(
+            version="2.2.0",
+            timestamp=datetime.now(timezone.utc).isoformat(),
+            player_id=self.player_id,
+            game_state=game_state,
+            economy=EconomicData(
+                total_earned=self.money,  # TODO: Track actual earnings
+                total_spent=0,  # TODO: Track actual spending
+                transaction_history=[]
+            ),
+            roster=RosterData(
+                active_slots=3,
+                active_turtles=active_turtles,
+                retired_turtles=retired_turtles,
+                max_retired=20
+            ),
+            last_sessions=[]
+        )
+        
+        # Get or create preferences
+        preferences = create_default_preference_data(self.player_id)
+        
+        return game_data, turtle_data_list, preferences
+    
+    def auto_save(self, trigger="manual"):
+        """Auto-save game state"""
+        try:
+            game_data, turtles, preferences = self._create_save_data()
+            success = self.save_manager.save_game(game_data, turtles, preferences)
+            
+            if success:
+                print(f"Game auto-saved successfully (trigger: {trigger})")
+            else:
+                print(f"Auto-save failed (trigger: {trigger})")
+                
+            return success
+            
+        except Exception as e:
+            print(f"Auto-save error: {e}")
+            return False
+    
+    def save_on_exit(self):
+        """Save game when exiting"""
+        print("Saving game on exit...")
+        self.auto_save("exit")
+
 # --- ENTRY POINT ---
 if __name__ == "__main__":
     try:
@@ -199,9 +372,11 @@ if __name__ == "__main__":
             game.clock.tick(FPS)
     except KeyboardInterrupt:
         print("\nGame closed by user.")
+        game.save_on_exit()
         pygame.quit()
         sys.exit(0)
     except Exception as e:
         print(f"An error occurred: {e}")
+        game.save_on_exit()
         pygame.quit()
         sys.exit(1)

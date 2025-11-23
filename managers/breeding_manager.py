@@ -96,6 +96,10 @@ class BreedingManager:
                 self.game_state.breeding_parents = []
                 
                 print(f"Bred {child.name}!")
+                
+                # Auto-save after breeding
+                self.game_state.auto_save("breeding")
+                
                 return True # Success
             else:
                 print("No Roster Space!")

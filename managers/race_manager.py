@@ -97,6 +97,9 @@ class RaceManager:
             # Record race result in player's history
             total_earnings = reward + payout
             player_turtle.add_race_result(rank, total_earnings)
+            
+            # Auto-save after race completion
+            self.game_state.auto_save("race_completion")
 
         # Post-race cleanup: recover energy and age turtles
         for i, t in enumerate(self.game_state.roster):

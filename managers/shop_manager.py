@@ -82,6 +82,9 @@ class ShopManager:
                         self.game_state.money -= cost
                         self.message = f"Bought turtle for ${cost}!"
                         self.message_timer = 60
+                        
+                        # Auto-save after purchase
+                        self.game_state.auto_save("purchase")
                         return
                 self.message = "Roster Full!"
                 self.message_timer = 60
