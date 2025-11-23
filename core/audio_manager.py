@@ -46,7 +46,9 @@ class AudioManager:
         """
         try:
             if not self.initialized:
-                pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=512)
+                # Check if mixer is already initialized
+                if not pygame.mixer.get_init():
+                    pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=512)
                 self.initialized = True
                 self.logger.info("Audio system initialized successfully")
             

@@ -123,8 +123,8 @@ def test_save_protection():
         save_protection_manager = SaveProtectionManager()
         
         # Test directory structure
-        assert save_protection.save_dir.exists(), "Save directory not created"
-        assert save_protection.backup_dir.exists(), "Backup directory not created"
+        assert save_protection_manager.save_dir.exists(), "Save directory not created"
+        assert save_protection_manager.backup_dir.exists(), "Backup directory not created"
         
         # Create a test save file
         test_save_data = {
@@ -133,7 +133,7 @@ def test_save_protection():
             "preferences": {}
         }
         
-        test_save_file = save_protection.save_dir / "test_save.json"
+        test_save_file = save_protection_manager.save_dir / "test_save.json"
         with open(test_save_file, 'w') as f:
             json.dump(test_save_data, f)
         
@@ -165,7 +165,7 @@ def test_save_protection():
         assert backup_path is not None, "No backup path returned"
         
         # Test export/import
-        export_path = save_protection.save_dir / "exported_save.json"
+        export_path = save_protection_manager.save_dir / "exported_save.json"
         success = save_protection_manager.export_save_file("test_save.json", export_path)
         assert success, "Failed to export save file"
         assert export_path.exists(), "Exported file not created"
