@@ -300,7 +300,7 @@ class VotingView:
             # Draw stars (more space in right panel)
             star_rating = self.selected_ratings.get(category_name, 0)
             self._draw_star_rating(controls_x, controls_y + y_offset + 55, 
-                                  star_rating, category_name, controls_width)
+                                  star_rating, category_name)
             
             y_offset += 120
         
@@ -466,57 +466,13 @@ class VotingView:
             
             y_offset += 22
     
-    def _draw_rating_controls(self):
-        """Draw rating controls for current design"""
-        designs = self.voting_system.daily_designs
-        
-        if not designs or self.current_design_index >= len(designs):
-            return
-        
-        current_design = designs[self.current_design_index]
-        
-        if current_design.voting_status == 'completed':
-            self._draw_completed_ratings(current_design)
-            return
-        
-        categories = current_design.rating_categories
-        
-        # Rating controls area
-        controls_x = 50
-        controls_y = 420
-        controls_width = self.width - 100
-        
-        # Draw category names and star ratings
-        y_offset = 0
-        for category_name, category_data in categories.items():
-            # Category name
-            category_text = category_data['display_name']
-            text_surface = self.normal_font.render(category_text, True, self.text_color)
-            self.screen.blit(text_surface, (controls_x, controls_y + y_offset))
-            
-            # Draw description
-            desc_text = category_data['description']
-            desc_surface = self.small_font.render(desc_text, True, (100, 100, 100))
-            self.screen.blit(desc_surface, (controls_x, controls_y + y_offset + 20))
-            
-            # Draw stars
-            star_rating = self.selected_ratings.get(category_name, 0)
-            self._draw_star_rating(controls_x + 200, controls_y + y_offset, 
-                                  star_rating, category_name)
-            
-            y_offset += 55
-        
-        # Draw submit button if ratings are complete
-        if self._can_submit_ratings():
-            self._draw_submit_button()
-    
     def _draw_completed_ratings(self, design: DesignPackage):
-        """Draw completed ratings display"""
+        """Draw completed ratings display in right panel"""
         if not design.ratings:
             return
         
-        controls_x = 50
-        controls_y = 420
+        controls_x = self.left_panel_width + 30
+        controls_y = 200  # Same as rating controls
         
         # Title
         title_text = "Your Ratings:"
@@ -534,14 +490,14 @@ class VotingView:
             self.screen.blit(text_surface, (controls_x, controls_y + y_offset))
             
             # Stars
-            self._draw_star_rating(controls_x + 200, controls_y + y_offset, rating, category_name, interactive=False)
+            self._draw_star_rating(controls_x, controls_y + y_offset, rating, category_name, interactive=False)
             
             # Rating value
             rating_text = f"{rating:.1f}/5.0"
             rating_surface = self.normal_font.render(rating_text, True, self.text_color)
-            self.screen.blit(rating_surface, (controls_x + 350, controls_y + y_offset))
+            self.screen.blit(rating_surface, (controls_x + 150, controls_y + y_offset))
             
-            y_offset += 30
+            y_offset += 35
     
     def _draw_star_rating(self, x: int, y: int, rating: float, category_name: str, interactive: bool = True):
         """Draw interactive star rating"""
