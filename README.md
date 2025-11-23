@@ -15,20 +15,85 @@ In this game, you don't control the racer—you manage the *racer*. Balance your
 ## 🛠️ Installation & Setup
 
 ### Prerequisites
-* Python 3.x installed.
+* Python 3.8+ installed.
 * `pip` (Python package manager).
 
-### Steps
-1.  **Clone or Download** this repository.
-2.  **Install Dependencies:**
-    This project requires `pygame`.
+### Quick Setup (Recommended)
+
+For the best development experience, use our automated setup script:
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd TurboShells
+
+# Run the setup script
+python setup_dev.py
+```
+
+This will automatically:
+- Create a Python virtual environment
+- Install all dependencies
+- Set up development tools (Black, Pylint, PyTest)
+- Configure pre-commit hooks
+- Run initial tests
+
+### Manual Setup
+
+If you prefer manual setup:
+
+1. **Clone or Download** this repository.
+2. **Create Virtual Environment:**
     ```bash
-    pip install pygame
+    python -m venv venv
+    
+    # Activate (Windows)
+    venv\Scripts\activate
+    
+    # Activate (macOS/Linux)
+    source venv/bin/activate
     ```
-3.  **Run the Game:**
+3. **Install Dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+4. **Install Development Tools:**
+    ```bash
+    pip install -e .[dev]
+    ```
+5. **Set up Pre-commit Hooks:**
+    ```bash
+    pre-commit install
+    ```
+6. **Run the Game:**
     ```bash
     python main.py
     ```
+
+### Development Tools
+
+This project includes several development tools to maintain code quality:
+
+- **Black**: Code formatter for consistent style
+- **Pylint**: Code quality and error checking
+- **PyTest**: Testing framework with coverage
+- **Pre-commit**: Automatic code quality checks before commits
+
+#### Running Development Tools
+
+```bash
+# Format code
+black .
+
+# Lint code
+pylint .
+
+# Run tests
+pytest tests/ -v
+
+# Run tests with coverage
+pytest tests/ --cov=. --cov-report=html
+```
 
 ## 🕹️ How to Play
 
