@@ -28,34 +28,12 @@ def draw_voting(screen, font, game_state):
     money_text = font.render(f"$ {game_state.money}", True, (255, 255, 255))
     screen.blit(money_text, (650, 10))
     
-    # Back button with better styling
-    back_rect = pygame.Rect(700, 5, 80, 30)
-    
-    # Hover effect
-    mouse_pos = getattr(game_state, 'mouse_pos', None)
-    back_color = (150, 50, 50) if mouse_pos and back_rect.collidepoint(mouse_pos) else (100, 100, 100)
-    
-    pygame.draw.rect(screen, back_color, back_rect)
-    pygame.draw.rect(screen, (200, 200, 200), back_rect, 2)  # Border
-    
-    back_text = font.render("BACK", True, (255, 255, 255))
-    text_x = back_rect.x + (back_rect.width - back_text.get_width()) // 2
-    text_y = back_rect.y + (back_rect.height - back_text.get_height()) // 2
-    screen.blit(back_text, (text_x, text_y))
-    
-    # Draw voting content
+    # Draw voting content (back button is now inside voting view)
     game_state.voting_view.draw()
-    
-    # Store back rect for click handling
-    game_state.voting_back_rect = back_rect
 
 def handle_voting_click(game_state, pos):
     """Handle clicks in voting interface"""
-    # Check back button
-    if hasattr(game_state, 'voting_back_rect') and game_state.voting_back_rect.collidepoint(pos):
-        return "back_to_menu"
-    
-    # Handle voting view clicks
+    # Handle voting view clicks (back button is now handled inside voting view)
     if hasattr(game_state, 'voting_view'):
         return game_state.voting_view.handle_click(pos)
     

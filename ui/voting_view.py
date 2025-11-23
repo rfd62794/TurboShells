@@ -246,11 +246,29 @@ class VotingView:
         panel_rect = pygame.Rect(self.left_panel_width, 0, self.right_panel_width, self.height)
         pygame.draw.rect(self.screen, self.bg_color, panel_rect)
         
-        # Draw voting title
+        # Draw voting title with back button
         voting_title = "Rate This Design"
         title_surface = self.header_font.render(voting_title, True, self.text_color)
-        title_rect = title_surface.get_rect(centerx=self.left_panel_width + self.right_panel_width // 2, y=20)
+        title_rect = title_surface.get_rect(centerx=self.left_panel_width + self.right_panel_width // 2 - 40, y=20)
         self.screen.blit(title_surface, title_rect)
+        
+        # Draw back button next to title
+        back_rect = pygame.Rect(title_rect.right + 20, 15, 60, 30)
+        
+        # Hover effect
+        mouse_pos = getattr(self, 'mouse_pos', None)
+        back_color = (150, 50, 50) if mouse_pos and back_rect.collidepoint(mouse_pos) else (100, 100, 100)
+        
+        pygame.draw.rect(self.screen, back_color, back_rect)
+        pygame.draw.rect(self.screen, (200, 200, 200), back_rect, 2)  # Border
+        
+        back_text = self.normal_font.render("BACK", True, (255, 255, 255))
+        text_x = back_rect.x + (back_rect.width - back_text.get_width()) // 2
+        text_y = back_rect.y + (back_rect.height - back_text.get_height()) // 2
+        self.screen.blit(back_text, (text_x, text_y))
+        
+        # Store back rect for click handling
+        self.back_button_rect = back_rect
         
         # Draw subtitle
         subtitle_text = "Rate each category to earn $1 and influence genetics!"
@@ -928,6 +946,10 @@ class VotingView:
     def handle_click(self, pos: Tuple[int, int]):
         """Handle mouse click"""
         x, y = pos
+        
+        # Check back button first
+        if hasattr(self, 'back_button_rect') and self.back_button_rect.collidepoint(pos):
+            return "back_to_menu"
         
         # Check feedback popup
         if self.show_feedback:
