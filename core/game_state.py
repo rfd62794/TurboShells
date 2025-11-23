@@ -6,6 +6,7 @@ Manages game state and configuration.
 from dataclasses import dataclass
 from typing import Dict, Any, Optional
 from enum import Enum
+import random
 
 class GameState(Enum):
     """Game states"""
@@ -89,3 +90,14 @@ class StateManager:
         for key, value in kwargs.items():
             if hasattr(self.config, key):
                 setattr(self.config, key, value)
+
+def generate_random_turtle():
+    """Generate a random turtle for compatibility"""
+    from .entities import TurtleEntity
+    return TurtleEntity(
+        x=random.uniform(100, 700),
+        y=random.uniform(100, 500),
+        angle=random.uniform(0, 360),
+        speed=random.uniform(0.5, 2.0),
+        color=random.choice(["red", "green", "blue", "yellow", "purple", "orange"])
+    )

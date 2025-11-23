@@ -4,7 +4,8 @@ Defines basic game entities.
 """
 
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, List
+import random
 
 @dataclass
 class TurtleEntity:
@@ -29,6 +30,9 @@ class TurtleEntity:
     def __str__(self):
         return f"Turtle(x={self.x:.1f}, y={self.y:.1f}, angle={self.angle:.1f})"
 
+# Alias for compatibility
+Turtle = TurtleEntity
+
 @dataclass
 class RaceTrack:
     """Race track entity"""
@@ -52,3 +56,13 @@ class RaceTrack:
         checkpoint = self.checkpoints[checkpoint_index]
         distance = ((turtle.x - checkpoint["x"])**2 + (turtle.y - checkpoint["y"])**2)**0.5
         return distance <= checkpoint["radius"]
+
+def generate_random_turtle() -> TurtleEntity:
+    """Generate a random turtle"""
+    return TurtleEntity(
+        x=random.uniform(100, 700),
+        y=random.uniform(100, 500),
+        angle=random.uniform(0, 360),
+        speed=random.uniform(0.5, 2.0),
+        color=random.choice(["red", "green", "blue", "yellow", "purple", "orange"])
+    )
