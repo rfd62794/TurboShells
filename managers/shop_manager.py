@@ -53,9 +53,9 @@ class ShopManager:
                 self.game_state.money -= COST_REFRESH
             
             self.inventory = [
-                generate_random_turtle(level=1),
-                generate_random_turtle(level=2),
-                generate_random_turtle(level=3)
+                generate_random_turtle(level=1, use_influenced_genetics=True),
+                generate_random_turtle(level=2, use_influenced_genetics=True),
+                generate_random_turtle(level=3, use_influenced_genetics=True)
             ]
 
             # Precompute and attach shop_cost for UI display

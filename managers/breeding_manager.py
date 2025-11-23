@@ -112,7 +112,7 @@ class BreedingManager:
                 return False
             
             # Create the child and place it in the freed slot
-            child = breed_turtles(parent_a, parent_b)
+            child = breed_turtles(parent_a, parent_b, use_influenced_genetics=True)
             self.game_state.roster[slot_idx] = child
             
             # Clear breeding selection
