@@ -47,6 +47,7 @@ This SDD describes the **enhanced technical design** of **Turbo Shells**, comple
     - `race_manager.py` – Race loop, rewards, betting resolution
     - `shop_manager.py` – Shop inventory and buying
     - `breeding_manager.py` – Parent selection and breeding
+    - `settings_manager.py` – Settings system with responsive UI and window resizing
 
 - **Enhanced Presentation / UI** ✅
   - **NEW:** `ui/layouts/positions.py` – Pure positioning data (enhanced from layout.py)
@@ -57,7 +58,8 @@ This SDD describes the **enhanced technical design** of **Turbo Shells**, comple
     - `menu_view.py` – Main menu and Stable/Roster screen
     - `race_view.py` – Race and Race Results
     - `shop_view.py` – Shop
-    - `breeding_view.py` – Breeding Center
+    - `breeding_view.py` – Breeding center
+    - `settings_view.py` – Settings interface with responsive layout and dynamic updates
   - `ui/renderer.py` – Thin delegator that calls appropriate view
 
 - **Support** ✅

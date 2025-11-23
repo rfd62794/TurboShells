@@ -11,6 +11,8 @@ In this game, you don't control the racer—you manage the *racer*. Balance your
 * **Automated Racing Physics:** Turtles don't just run; they manage **Energy**. If they sprint too hard, they hit exhaustion and must stop to recover.
 * **Procedural Tracks:** Races feature random combinations of Grass, Water (Swim check), and Rocks (Climb check).
 * **Betting System:** Grind for cash by betting on your own turtles.
+* **Responsive UI:** Dynamic layout system with perfect centering and window resizing support.
+* **Settings Interface:** Professional settings menu with adaptive layout for all screen sizes.
 
 ## 🛠️ Installation & Setup
 
@@ -136,13 +138,20 @@ TurboShells/
 │   ├── roster_manager.py    # Stable actions (train, rest, retire)
 │   ├── race_manager.py      # Race loop, track terrain, rewards
 │   ├── shop_manager.py      # Shop inventory, buying, refreshing
-│   └── breeding_manager.py  # Breeding selection and child creation
+│   ├── breeding_manager.py  # Breeding selection and child creation
+│   └── settings_manager.py  # Settings system with responsive UI
 ├── ui/
-│   ├── layout.py      # All UI rects and positions
-│   ├── menu_view.py   # Stable/Main Menu rendering
-│   ├── race_view.py   # Race and Race Results rendering
-│   ├── shop_view.py   # Shop rendering
-│   ├── breeding_view.py # Breeding rendering
+│   ├── layouts/       # UI positioning and layout data
+│   │   └── positions.py     # All UI rects and positions
+│   ├── components/    # Reusable UI components
+│   │   ├── button.py        # Button and ToggleButton classes
+│   │   └── turtle_card.py   # TurtleCard component
+│   ├── views/         # Screen-specific rendering
+│   │   ├── menu_view.py     # Stable/Main Menu rendering
+│   │   ├── race_view.py     # Race and Race Results rendering
+│   │   ├── shop_view.py     # Shop rendering
+│   │   ├── breeding_view.py # Breeding rendering
+│   │   └── settings_view.py # Settings interface with responsive layout
 │   └── renderer.py    # Thin delegator that calls the views
 ├── simulation.py      # Headless race simulator using entities.Turtle
 ├── docs/

@@ -243,6 +243,9 @@ STATE_BREEDING      # Breeding center
 - **Contextual UI** - Only relevant options shown
 - **Responsive Design** - Proper click detection
 - **Polished Interface** - Professional appearance
+- **Flexible Layout System** - Dynamic positioning and scaling for all screen sizes
+- **Window Resizing Support** - Real-time UI adaptation to window size changes
+- **Centered Interface Elements** - Mathematical precision for UI positioning
 
 ---
 
