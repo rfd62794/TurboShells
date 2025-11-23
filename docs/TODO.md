@@ -26,6 +26,7 @@
   - Phase 17: Achievement System → [phases/Phase_17_Achievement_System.md](phases/Phase_17_Achievement_System.md)
   - Phase 18: Statistics & Analytics → [phases/Phase_18_Statistics_Analytics.md](phases/Phase_18_Statistics_Analytics.md)
   - Phase 19: Multiplayer Features → [phases/Phase_19_Multiplayer_Features.md](phases/Phase_19_Multiplayer_Features.md)
+  - Phase 20: Content Creator Tools → [phases/Phase_20_Content_Creator_Tools.md](phases/Phase_20_Content_Creator_Tools.md)
 
 ---
 
@@ -285,11 +286,8 @@
 > Social expansion with local multiplayer, shared saves, tournament hosting, competitive leaderboards, and rich social features
 
 ### **Phase 20: Content Creator Tools** - **0% COMPLETE**
-- Custom turtle designer
-- Race course creator
-- Mod support and custom content
-- Community sharing platform
-- Content validation and curation tools
+> 📋 **Detailed Plan**: See [phases/Phase_20_Content_Creator_Tools.md](phases/Phase_20_Content_Creator_Tools.md)
+> Community engagement with custom turtle designer, race course creator, mod support, content sharing platform, and validation tools
 
 ---
 
