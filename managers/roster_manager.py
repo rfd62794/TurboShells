@@ -45,18 +45,18 @@ class RosterManager:
             is_active_racer = i == getattr(self.game_state, "active_racer_index", 0)
             
             if not getattr(self.game_state, "show_retired_view", False):
-                # First check for slot selection
-                if slot_rect.collidepoint(pos):
-                    # Check for turtle card click (profile view access)
-                    if self.game_state.roster[i]:
-                        return "PROFILE"
-                    self.game_state.active_racer_index = i
-                # Then check for action buttons (only if this slot is selected and has a turtle)
-                elif is_active_racer and self.game_state.roster[i]:
+                # First check for action buttons (only if this slot is selected and has a turtle)
+                if is_active_racer and self.game_state.roster[i]:
                     if train_rect.collidepoint(pos):
                         self.train_turtle(i)
                     elif retire_rect.collidepoint(pos):
                         self.retire_turtle(i)
+                # Then check for slot selection
+                elif slot_rect.collidepoint(pos):
+                    # Check for turtle card click (profile view access)
+                    if self.game_state.roster[i]:
+                        return "PROFILE"
+                    self.game_state.active_racer_index = i
             else:
                 # In retired view, check for profile view access
                 if slot_rect.collidepoint(pos):
