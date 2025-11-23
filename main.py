@@ -16,6 +16,7 @@ from managers.roster_manager import RosterManager
 from core.game.game_state import generate_random_turtle
 from core.systems.state_handler import StateHandler
 from core.game.keyboard_handler import KeyboardHandler
+from core.auto_load_system import auto_load_system
 
 # --- MAIN GAME CLASS ---
 class TurboShellsGame:
@@ -68,6 +69,10 @@ class TurboShellsGame:
         # --- HANDLERS ---
         self.state_handler = StateHandler(self)
         self.keyboard_handler = KeyboardHandler(self)
+        
+        # --- AUTO-LOAD SYSTEM ---
+        self.load_notification = None
+        self._initialize_game_state()
 
     def handle_input(self):
         for event in pygame.event.get():
@@ -117,6 +122,71 @@ class TurboShellsGame:
             self.renderer.draw_voting(self)
         
         pygame.display.flip()  # Make sure we update the display
+    
+    def _initialize_game_state(self):
+        """Initialize game state using auto-load system"""
+        try:
+            # Perform auto-load
+            success, error, loaded_data, notification = auto_load_system.auto_load()
+            
+            # Store notification for display
+            self.load_notification = notification
+            
+            if success and loaded_data:
+                game_data, turtles, preferences = loaded_data
+                
+                # Restore game state from loaded data
+                self.money = game_data.game_state.money
+                self.state = game_data.game_state.current_phase
+                
+                # Convert turtle data to game entities
+                self.roster = [None] * 3  # Initialize empty roster
+                self.retired_roster = []
+                
+                # Load active turtles
+                for i, turtle_id in enumerate(game_data.roster.active_turtles[:3]):
+                    if i < 3:
+                        # Find corresponding turtle data
+                        turtle_data = next((t for t in turtles if t.turtle_id == turtle_id), None)
+                        if turtle_data:
+                            self.roster[i] = Turtle(
+                                turtle_data.name,
+                                speed=turtle_data.stats.speed,
+                                energy=turtle_data.stats.energy,
+                                recovery=turtle_data.stats.recovery,
+                                swim=turtle_data.stats.swim,
+                                climb=turtle_data.stats.climb
+                            )
+                
+                # Load retired turtles
+                for turtle_id in game_data.roster.retired_turtles:
+                    turtle_data = next((t for t in turtles if t.turtle_id == turtle_id), None)
+                    if turtle_data:
+                        self.retired_roster.append(Turtle(
+                            turtle_data.name,
+                            speed=turtle_data.stats.speed,
+                            energy=turtle_data.stats.energy,
+                            recovery=turtle_data.stats.recovery,
+                            swim=turtle_data.stats.swim,
+                            climb=turtle_data.stats.climb
+                        ))
+                
+                print(f"Game loaded successfully for player {game_data.player_id}")
+                print(f"Money: ${self.money}, Active turtles: {len([t for t in self.roster if t])}")
+                
+            else:
+                # Keep default state for new game
+                print(f"Starting new game: {error or 'No save file found'}")
+                
+        except Exception as e:
+            print(f"Error during game state initialization: {e}")
+            # Keep default state
+            self.load_notification = {
+                "type": "load_notification",
+                "success": False,
+                "message": f"Initialization error: {e}",
+                "timestamp": "2025-11-22T00:00:00Z"
+            }
 
 # --- ENTRY POINT ---
 if __name__ == "__main__":
