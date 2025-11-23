@@ -2,7 +2,8 @@
 Data Serialization for TurboShells
 
 This module contains only serialization and deserialization logic,
-following Single Responsibility Principle.
+following Single Responsibility Principle. Enhanced for Phase 4 with complete
+turtle data preservation support.
 """
 
 from core.data.data_structures import (
@@ -28,13 +29,161 @@ from core.data.data_structures import (
     InfluenceDecay,
     GeneticInfluence,
     VotingRecord,
+    # Enhanced structures for Phase 4
+    EnhancedTurtleData,
+    TurtleStaticData,
+    TurtleDynamicData,
+    TurtleIdentity,
+    TurtleLineage,
+    TurtleVisualGenetics,
+    TurtleDynamicState,
+    TurtleRaceResult,
+    TurtleEnhancedPerformance,
 )
-from typing import Optional
+from typing import Optional, Dict, Any, List
 import datetime
 import json
-from typing import Dict, Any
 
 from .data_structures import GameData, TurtleData, PlayerPreferences
+
+
+class EnhancedDataSerializer:
+    """Enhanced serialization with complete turtle data support"""
+    
+    @staticmethod
+    def serialize_enhanced_turtle_data(enhanced_data: EnhancedTurtleData) -> str:
+        """Serialize EnhancedTurtleData to JSON with complete data preservation"""
+        # Convert to dictionary recursively
+        data_dict = EnhancedDataSerializer._convert_to_dict(enhanced_data)
+        return json.dumps(data_dict, indent=2, default=str)
+    
+    @staticmethod
+    def deserialize_enhanced_turtle_data(json_str: str) -> EnhancedTurtleData:
+        """Deserialize EnhancedTurtleData from JSON"""
+        data_dict = json.loads(json_str)
+        return EnhancedDataSerializer._dict_to_enhanced_turtle_data(data_dict)
+    
+    @staticmethod
+    def serialize_turtle_visual_genetics(genetics: TurtleVisualGenetics) -> str:
+        """Serialize TurtleVisualGenetics to JSON"""
+        return json.dumps(genetics.to_dict(), indent=2)
+    
+    @staticmethod
+    def deserialize_turtle_visual_genetics(json_str: str) -> TurtleVisualGenetics:
+        """Deserialize TurtleVisualGenetics from JSON"""
+        data_dict = json.loads(json_str)
+        return TurtleVisualGenetics.from_dict(data_dict)
+    
+    @staticmethod
+    def serialize_turtle_race_result(result: TurtleRaceResult) -> str:
+        """Serialize TurtleRaceResult to JSON"""
+        data_dict = {
+            "number": result.number,
+            "position": result.position,
+            "earnings": result.earnings,
+            "age_at_race": result.age_at_race,
+            "terrain_type": result.terrain_type,
+            "race_timestamp": result.race_timestamp,
+        }
+        return json.dumps(data_dict, indent=2)
+    
+    @staticmethod
+    def deserialize_turtle_race_result(json_str: str) -> TurtleRaceResult:
+        """Deserialize TurtleRaceResult from JSON"""
+        data_dict = json.loads(json_str)
+        return TurtleRaceResult(**data_dict)
+    
+    @staticmethod
+    def _convert_to_dict(obj) -> Dict[str, Any]:
+        """Recursively convert dataclass objects to dictionaries"""
+        if hasattr(obj, '__dict__'):
+            # It's a dataclass or object with __dict__
+            result = {}
+            for key, value in obj.__dict__.items():
+                if hasattr(value, '__dict__'):
+                    # Recursively convert nested dataclass
+                    result[key] = EnhancedDataSerializer._convert_to_dict(value)
+                elif isinstance(value, dict):
+                    # Handle nested dictionaries
+                    result[key] = {
+                        k: EnhancedDataSerializer._convert_to_dict(v) if hasattr(v, '__dict__') else v
+                        for k, v in value.items()
+                    }
+                elif isinstance(value, list):
+                    # Handle lists of objects
+                    result[key] = [
+                        (
+                            EnhancedDataSerializer._convert_to_dict(item)
+                            if hasattr(item, '__dict__')
+                            else item
+                        )
+                        for item in value
+                    ]
+                elif isinstance(value, (datetime.datetime, datetime.date)):
+                    # Handle datetime objects
+                    result[key] = value.isoformat()
+                else:
+                    result[key] = value
+            return result
+        else:
+            # It's already a primitive value
+            return obj
+    
+    @staticmethod
+    def _dict_to_enhanced_turtle_data(data_dict: Dict[str, Any]) -> EnhancedTurtleData:
+        """Convert dictionary back to EnhancedTurtleData"""
+        # Reconstruct static data
+        static_data_dict = data_dict.get('static_data', {})
+        static_data = TurtleStaticData(
+            identity=TurtleIdentity(**static_data_dict.get('identity', {})),
+            lineage=TurtleLineage(**static_data_dict.get('lineage', {})),
+            visual_genetics=TurtleVisualGenetics.from_dict(
+                static_data_dict.get('visual_genetics', {})
+            ),
+            base_stats=BaseStats(**static_data_dict.get('base_stats', {})),
+            created_timestamp=static_data_dict.get('created_timestamp', ''),
+        )
+        
+        # Reconstruct dynamic data
+        dynamic_data_dict = data_dict.get('dynamic_data', {})
+        
+        # Reconstruct race history
+        race_history = []
+        for race_dict in dynamic_data_dict.get('performance', {}).get('race_history', []):
+            race_history.append(TurtleRaceResult(**race_dict))
+        
+        # Reconstruct performance
+        performance_dict = dynamic_data_dict.get('performance', {})
+        performance = TurtleEnhancedPerformance(
+            race_history=race_history,
+            total_races=performance_dict.get('total_races', 0),
+            total_earnings=performance_dict.get('total_earnings', 0),
+            wins=performance_dict.get('wins', 0),
+            average_position=performance_dict.get('average_position', 0.0),
+            best_position=performance_dict.get('best_position', 0),
+            worst_position=performance_dict.get('worst_position', 0),
+            favorite_terrain=performance_dict.get('favorite_terrain', 'grass'),
+            terrain_performance=performance_dict.get('terrain_performance', {}),
+        )
+        
+        # Reconstruct race state (optional)
+        race_state_dict = dynamic_data_dict.get('race_state')
+        race_state = TurtleDynamicState(**race_state_dict) if race_state_dict else None
+        
+        dynamic_data = TurtleDynamicData(
+            current_stats=TurtleStats(**dynamic_data_dict.get('current_stats', {})),
+            performance=performance,
+            race_state=race_state,
+            last_updated=dynamic_data_dict.get('last_updated', ''),
+        )
+        
+        # Reconstruct enhanced turtle data
+        return EnhancedTurtleData(
+            static_data=static_data,
+            dynamic_data=dynamic_data,
+            turtle_id=data_dict.get('turtle_id', ''),
+            name=data_dict.get('name', ''),
+        )
 
 
 class DataSerializer:
@@ -72,6 +221,38 @@ class DataSerializer:
         """Deserialize preference data from JSON"""
         data = json.loads(json_str)
         return PlayerPreferences(**data)
+    
+    @staticmethod
+    def serialize_enhanced_turtle_list(enhanced_turtles: List[EnhancedTurtleData]) -> str:
+        """Serialize list of EnhancedTurtleData objects"""
+        turtle_dicts = [EnhancedDataSerializer._convert_to_dict(turtle) for turtle in enhanced_turtles]
+        return json.dumps(turtle_dicts, indent=2, default=str)
+    
+    @staticmethod
+    def deserialize_enhanced_turtle_list(json_str: str) -> List[EnhancedTurtleData]:
+        """Deserialize list of EnhancedTurtleData objects"""
+        turtle_dicts = json.loads(json_str)
+        return [EnhancedDataSerializer._dict_to_enhanced_turtle_data(turtle_dict) for turtle_dict in turtle_dicts]
+    
+    @staticmethod
+    def convert_legacy_to_enhanced_list(legacy_turtles: List[TurtleData]) -> List[EnhancedTurtleData]:
+        """Convert list of legacy TurtleData to EnhancedTurtleData"""
+        enhanced_turtles = []
+        for legacy_turtle in legacy_turtles:
+            # This is a simplified conversion - in practice you'd use the conversion utilities
+            # For now, create a basic enhanced structure
+            enhanced_turtles.append(EnhancedDataSerializer._dict_to_enhanced_turtle_data(
+                EnhancedDataSerializer._convert_to_dict(legacy_turtle)
+            ))
+        return enhanced_turtles
+    
+    @staticmethod
+    def convert_enhanced_to_legacy_list(enhanced_turtles: List[EnhancedTurtleData]) -> List[TurtleData]:
+        """Convert list of EnhancedTurtleData to legacy TurtleData"""
+        legacy_turtles = []
+        for enhanced_turtle in enhanced_turtles:
+            legacy_turtles.append(TurtleData.from_enhanced(enhanced_turtle))
+        return legacy_turtles
 
 
 # ============================================================================
