@@ -155,7 +155,7 @@ class HybridSVGToPyGameRenderer:
             
             # Convert to PNG using correct svg2png API
             temp_png = os.path.join(self.temp_dir, f"temp_{id(svg_string)}.png")
-            svg2png.svg2png(input_file=temp_svg, output_file=temp_png, 
+            svg2png.svg2png(inputfile=temp_svg, outputfile=temp_png, 
                            output_width=size, output_height=size)
             
             # Load with pygame
