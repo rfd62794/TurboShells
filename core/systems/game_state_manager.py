@@ -92,7 +92,13 @@ class GameStateManager:
         turtles_dict = []
         for turtle in turtles:
             if hasattr(turtle, '__dict__'):
-                turtles_dict.append(turtle.__dict__)
+                turtle_dict = turtle.__dict__
+                # Convert nested dataclass objects to dicts
+                if hasattr(turtle, 'game_state') and hasattr(turtle.game_state, '__dict__'):
+                    turtle_dict['game_state'] = turtle.game_state.__dict__
+                if hasattr(turtle, 'stats') and hasattr(turtle.stats, '__dict__'):
+                    turtle_dict['stats'] = turtle.stats.__dict__
+                turtles_dict.append(turtle_dict)
             else:
                 turtles_dict.append(turtle)
         
@@ -110,7 +116,18 @@ class GameStateManager:
                 # Find corresponding turtle data
                 turtle_data = next((t for t in turtles if t.get("turtle_id") == turtle_id), None)
                 if turtle_data:
+                    # Handle both dict and dataclass turtle stats
                     turtle_stats = turtle_data.get("stats", {})
+                    if hasattr(turtle_stats, '__dict__'):
+                        # Convert dataclass to dict
+                        turtle_stats = {
+                            'speed': getattr(turtle_stats, 'speed', {}).value if hasattr(getattr(turtle_stats, 'speed', None), 'value') else getattr(turtle_stats, 'speed', 5),
+                            'max_energy': getattr(turtle_stats, 'max_energy', {}).value if hasattr(getattr(turtle_stats, 'max_energy', None), 'value') else getattr(turtle_stats, 'max_energy', 100),
+                            'recovery': getattr(turtle_stats, 'recovery', {}).value if hasattr(getattr(turtle_stats, 'recovery', None), 'value') else getattr(turtle_stats, 'recovery', 5),
+                            'swim': getattr(turtle_stats, 'swim', {}).value if hasattr(getattr(turtle_stats, 'swim', None), 'value') else getattr(turtle_stats, 'swim', 5),
+                            'climb': getattr(turtle_stats, 'climb', {}).value if hasattr(getattr(turtle_stats, 'climb', None), 'value') else getattr(turtle_stats, 'climb', 5)
+                        }
+                    
                     roster[i] = Turtle(
                         turtle_data.get("name", "Unknown"),
                         speed=turtle_stats.get("speed", 5),
@@ -125,7 +142,18 @@ class GameStateManager:
         for turtle_id in retired_turtle_ids:
             turtle_data = next((t for t in turtles if t.get("turtle_id") == turtle_id), None)
             if turtle_data:
+                # Handle both dict and dataclass turtle stats
                 turtle_stats = turtle_data.get("stats", {})
+                if hasattr(turtle_stats, '__dict__'):
+                    # Convert dataclass to dict
+                    turtle_stats = {
+                        'speed': getattr(turtle_stats, 'speed', {}).value if hasattr(getattr(turtle_stats, 'speed', None), 'value') else getattr(turtle_stats, 'speed', 5),
+                        'max_energy': getattr(turtle_stats, 'max_energy', {}).value if hasattr(getattr(turtle_stats, 'max_energy', None), 'value') else getattr(turtle_stats, 'max_energy', 100),
+                        'recovery': getattr(turtle_stats, 'recovery', {}).value if hasattr(getattr(turtle_stats, 'recovery', None), 'value') else getattr(turtle_stats, 'recovery', 5),
+                        'swim': getattr(turtle_stats, 'swim', {}).value if hasattr(getattr(turtle_stats, 'swim', None), 'value') else getattr(turtle_stats, 'swim', 5),
+                        'climb': getattr(turtle_stats, 'climb', {}).value if hasattr(getattr(turtle_stats, 'climb', None), 'value') else getattr(turtle_stats, 'climb', 5)
+                    }
+                
                 retired_roster.append(Turtle(
                     turtle_data.get("name", "Unknown"),
                     speed=turtle_stats.get("speed", 5),
@@ -242,9 +270,8 @@ class GameStateManager:
             generation=0,
             created_timestamp="2025-11-22T00:00:00Z",
             parents=TurtleParents(
-                parent1_id=None,
-                parent2_id=None,
-                breeding_timestamp=None
+                mother_id=None,
+                father_id=None
             ),
             genetics={
                 "shell_pattern": GeneTrait(value="hex", dominance=1.0, mutation_source="random"),
@@ -284,18 +311,17 @@ class GameStateManager:
                   money: int, state: str, race_results: List, trigger: str = "manual") -> bool:
         """Auto-save game state"""
         try:
+            print(f"[DEBUG] Starting auto-save with trigger: {trigger}")
             game_data, turtles, preferences = self.create_save_data(
                 roster, retired_roster, money, state, race_results
             )
+            print(f"[DEBUG] Created save data: {type(game_data)}, {len(turtles)} turtles, {type(preferences)}")
             success = self.save_manager.save_game(game_data, turtles, preferences)
-            
-            if success:
-                print(f"Game auto-saved successfully (trigger: {trigger})")
-            else:
-                print(f"Auto-save failed (trigger: {trigger})")
-                
+            print(f"[DEBUG] Save result: {success}")
             return success
             
         except Exception as e:
-            print(f"Auto-save error: {e}")
+            print(f"[DEBUG] Auto-save error: {e}")
+            import traceback
+            traceback.print_exc()
             return False
