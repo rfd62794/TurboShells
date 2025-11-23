@@ -360,13 +360,14 @@ class VotingView:
         hover_star = -1
         if interactive:
             # Stars are drawn on surface at (x + i*45, y)
-            # But surface is blitted to screen at (left_panel + 30, 200)
-            # So screen position is left_panel + 30 + x + i*45
+            # Surface is blitted to screen at (left_panel_width, 200)
+            # But controls_y already includes -scroll_offset
+            # So screen position is left_panel_width + x + i*45, 200 + y
             for i in range(5):
                 star_surface_x = x + i * star_spacing
                 star_surface_y = y
-                star_screen_x = self.left_panel_width + 30 + star_surface_x
-                star_screen_y = 200 + star_surface_y - self.scroll_offset
+                star_screen_x = self.left_panel_width + star_surface_x
+                star_screen_y = 200 + star_surface_y
                 
                 # Match hover padding exactly to click padding
                 hover_padding = 4  # Same as click padding
@@ -946,18 +947,21 @@ class VotingView:
             categories = current_design.rating_categories
             
             # Check if click is in right panel scrollable area
-            right_panel_start = self.left_panel_width + 30
+            right_panel_start = self.left_panel_width
             if x >= right_panel_start and y >= 200:
                 y_offset = 0
                 for category_name in categories:
                     # Calculate screen position for this category's stars
-                    star_y_screen = 200 + y_offset + 55 - self.scroll_offset
+                    # Stars are at surface position (30, -scroll_offset + y_offset + 55)
+                    # Surface is blitted to (left_panel_width, 200)
+                    # So screen position is left_panel_width + 30, 200 + (-scroll_offset + y_offset + 55)
+                    star_y_screen = 200 - self.scroll_offset + y_offset + 55
                     
                     # Check if this star row is visible on screen
                     if star_y_screen + 20 >= 200 and star_y_screen <= self.height:
                         for i in range(5):
-                            star_spacing = 45  # Match drawing spacing
-                            star_x_screen = self.left_panel_width + 30 + 30 + i * star_spacing  # left_panel + 30 + star_start_x
+                            star_spacing = 45
+                            star_x_screen = self.left_panel_width + 30 + i * star_spacing  # left_panel + controls_x + i*spacing
                             
                             # Reduce click padding further for more spacing
                             click_padding = 4  # Reduced from 6 to 4
