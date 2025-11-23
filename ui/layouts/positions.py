@@ -92,7 +92,7 @@ SHOP_SLOT_NAME_POS = (20, 15)
 SHOP_SLOT_STATS_POS = (20, 45)  # Moved down
 SHOP_SLOT_ENERGY_BG_RECT = pygame.Rect(20, 280, 180, 15)  # Moved down
 SHOP_SLOT_ENERGY_FILL_POS = (22, 282)  # Moved down
-SHOP_SLOT_BTN_BUY_RECT = pygame.Rect(20, 320, 180, 40)  # Moved down
+SHOP_BTN_BUY_RECT = pygame.Rect(20, 320, 180, 40)  # Moved down (keep original name for compatibility)
 
 # Bottom buttons - Refresh moved to bottom, back button in header
 SHOP_BTN_REFRESH_RECT = pygame.Rect(300, 480, 200, 50)  # Moved to bottom
