@@ -1,0 +1,16 @@
+2025-11-23 11:21:34,239 - core.config - INFO - Configuration loaded successfully
+2025-11-23 11:21:34,241 - core.graphics_manager - INFO - Loaded graphics settings: 1024x768
+2025-11-23 11:21:34,295 - core.graphics_manager - INFO - Display initialized: (1024, 768), Fullscreen: False
+2025-11-23 11:21:34,297 - core.audio_manager - INFO - Loaded audio settings: Master Volume 1.0, Enabled True
+2025-11-23 11:21:34,710 - core.audio_manager - INFO - Audio system initialized successfully
+2025-11-23 11:21:34,779 - ui.settings_view - INFO - Settings view initialized
+2025-11-23 11:21:34,779 - managers.settings_manager - INFO - Settings manager initialized
+2025-11-23 11:21:34,780 - managers.save_manager - INFO - SaveManager initialized with directory: C:\Users\cheat\AppData\Roaming\TurboShells
+2025-11-23 11:21:34,792 - core.auto_load_system - INFO - No save file found - starting new game
+2025-11-23 11:21:34,792 - core.auto_load_system - INFO - Creating new game
+2025-11-23 11:21:34,793 - core.auto_load_system - INFO - Created new game for player player_20251123_112134
+2025-11-23 11:21:45,622 - ui.settings_view - INFO - Settings layout updated to 1536x841
+2025-11-23 11:21:45,623 - managers.settings_manager - INFO - Settings manager updated for screen size 1536x841
+2025-11-23 11:21:46,705 - ui.settings_view - INFO - Settings layout updated to 800x600
+2025-11-23 11:21:46,705 - managers.settings_manager - INFO - Settings manager updated for screen size 800x600
+2025-11-23 11:21:47,663 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json

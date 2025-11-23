@@ -98,6 +98,9 @@ class RaceManager:
                 reward = REWARD_2ND
             elif rank == 3:
                 reward = REWARD_3RD
+            else:
+                # Participation reward for showing up
+                reward = REWARD_PARTICIPATION
 
             # Betting payout: simple 2x on win if first place
             payout = 0
