@@ -341,9 +341,9 @@ pass
                     content = f.read()
                     
                 # Look for common NameError patterns
-                if 'runner.run_suite' in content and 'def run_all_suites' in content:
+                if 'self.run_suite' in content and 'def run_all_suites' in content:
                     name_error_files.append(py_file)
-                elif 'runner.run_coverage_analysis' in content:
+                elif 'self.run_coverage_analysis' in content:
                     name_error_files.append(py_file)
                     
             except UnicodeDecodeError:
@@ -369,8 +369,8 @@ pass
             original_content = content
             
             # Fix common NameError patterns
-            content = content.replace('runner.run_suite', 'self.run_suite')
-            content = content.replace('runner.run_coverage_analysis', 'self.run_coverage_analysis')
+            content = content.replace('self.run_suite', 'self.run_suite')
+            content = content.replace('self.run_coverage_analysis', 'self.run_coverage_analysis')
             
             if content != original_content:
                 with open(file_path, 'w', encoding='utf-8') as f:

@@ -416,7 +416,7 @@ def main():
             if len(sys.argv) > 2:
                 suite_name = sys.argv[2]
                 if suite_name in runner.suites:
-                    result = runner.run_suite(suite_name)
+                    result = self.run_suite(suite_name)
                     print(f"\n{suite_name} Results:")
                     print(f"Tests Run: {result.tests_run}")
                     print(f"Success Rate: {result.success_rate:.1f}%")
