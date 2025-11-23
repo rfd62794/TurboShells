@@ -359,15 +359,14 @@ class VotingView:
         # Check hover position for preview (adjust for surface position)
         hover_star = -1
         if interactive:
-            # Convert surface coordinates to screen coordinates
-            screen_x = self.left_panel_width + 30 + x
-            screen_y = 200 + y - self.scroll_offset
-            
+            # Stars are drawn on surface at (x + i*45, y)
+            # But surface is blitted to screen at (left_panel + 30, 200)
+            # So screen position is left_panel + 30 + x + i*45
             for i in range(5):
-                # Stars are drawn at surface position (30 + i*45, y)
-                # So screen position is left_panel + 30 + 30 + i*45
-                star_screen_x = self.left_panel_width + 30 + 30 + i * star_spacing
-                star_screen_y = screen_y
+                star_surface_x = x + i * star_spacing
+                star_surface_y = y
+                star_screen_x = self.left_panel_width + 30 + star_surface_x
+                star_screen_y = 200 + star_surface_y - self.scroll_offset
                 
                 # Match hover padding exactly to click padding
                 hover_padding = 4  # Same as click padding
