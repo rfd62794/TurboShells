@@ -322,7 +322,7 @@ class GeneticPoolManager:
     def _calculate_trait_influence(self, trait_name: str, trait_value: Any, 
                                   influence_strength: float) -> float:
         """Calculate how a specific trait value influences the genetic pool"""
-        gene_def = self.visual_genetics.gene_definitions.get(trait_name, {})
+        gene_def = self.visual_genetics.gene_definitions.get_gene_definition(trait_name)
         gene_type = gene_def.get('type', 'continuous')
         
         if gene_type == 'discrete':
