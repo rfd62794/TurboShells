@@ -10,3 +10,5 @@
 2025-11-23 10:16:27,424 - core.auto_load_system - INFO - Attempting to restore game state from save file
 2025-11-23 10:16:27,426 - managers.save_manager - INFO - Game loaded successfully from C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
 2025-11-23 10:16:27,426 - core.auto_load_system - INFO - Successfully restored game state for player player_20251122_235300
+2025-11-23 10:17:27,650 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 10:17:27,653 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
