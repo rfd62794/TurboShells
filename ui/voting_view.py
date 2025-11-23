@@ -126,7 +126,7 @@ class VotingView:
         self.screen.blit(title_surface, title_rect)
         
         # Draw design info
-        design_name = current_design.name
+        design_name = f"Design #{current_design.id}"
         name_surface = self.header_font.render(design_name, True, self.text_color)
         name_rect = name_surface.get_rect(centerx=self.left_panel_width // 2, y=70)
         self.screen.blit(name_surface, name_rect)
