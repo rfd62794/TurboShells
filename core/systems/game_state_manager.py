@@ -92,7 +92,16 @@ class GameStateManager:
         """Convert dataclass objects to dictionaries for compatibility"""
         # Convert game data to dict if needed
         if hasattr(game_data, '__dict__'):
-            game_data = game_data.__dict__
+            game_data_dict = game_data.__dict__
+            # Convert nested dataclass objects
+            if 'game_state' in game_data_dict and hasattr(game_data_dict['game_state'], '__dict__'):
+                game_data_dict['game_state'] = game_data_dict['game_state'].__dict__
+            if 'roster' in game_data_dict and hasattr(game_data_dict['roster'], '__dict__'):
+                game_data_dict['roster'] = game_data_dict['roster'].__dict__
+            if 'economy' in game_data_dict and hasattr(game_data_dict['economy'], '__dict__'):
+                game_data_dict['economy'] = game_data_dict['economy'].__dict__
+        else:
+            game_data_dict = game_data
         
         # Convert turtle dataclasses to dicts if needed
         turtles_dict = []
@@ -104,11 +113,16 @@ class GameStateManager:
                     turtle_dict['game_state'] = turtle.game_state.__dict__
                 if hasattr(turtle, 'stats') and hasattr(turtle.stats, '__dict__'):
                     turtle_dict['stats'] = turtle.stats.__dict__
+                    # Convert nested BaseStats and GeneticModifiers
+                    if 'base_stats' in turtle_dict['stats'] and hasattr(turtle_dict['stats']['base_stats'], '__dict__'):
+                        turtle_dict['stats']['base_stats'] = turtle_dict['stats']['base_stats'].__dict__
+                    if 'genetic_modifiers' in turtle_dict['stats'] and hasattr(turtle_dict['stats']['genetic_modifiers'], '__dict__'):
+                        turtle_dict['stats']['genetic_modifiers'] = turtle_dict['stats']['genetic_modifiers'].__dict__
                 turtles_dict.append(turtle_dict)
             else:
                 turtles_dict.append(turtle)
         
-        return game_data, turtles_dict
+        return game_data_dict, turtles_dict
     
     def _load_turtles_from_data(self, game_data: Dict, turtles: List[Dict]) -> Tuple[List[Optional[Turtle]], List[Turtle]]:
         """Convert turtle data to game entities"""
