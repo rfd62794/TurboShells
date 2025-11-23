@@ -102,7 +102,7 @@ class VotingView:
             self._draw_feedback()
     
     def _draw_left_panel(self):
-        """Draw left panel with turtle image and navigation"""
+        """Draw left panel with turtle image only"""
         designs = self.voting_system.daily_designs
         
         if not designs or self.current_design_index >= len(designs):
@@ -133,9 +133,6 @@ class VotingView:
         
         # Draw turtle image
         self._draw_turtle_image(current_design, self.image_x, self.image_y)
-        
-        # Draw navigation controls
-        self._draw_navigation_controls()
     
     def _draw_turtle_image(self, current_design, x, y):
         """Draw turtle image in the left panel"""
@@ -184,33 +181,33 @@ class VotingView:
             self._draw_placeholder_turtle(x + self.design_size // 2, y + self.design_size // 2)
     
     def _draw_navigation_controls(self):
-        """Draw navigation controls in left panel"""
+        """Draw navigation controls in right panel"""
         designs = self.voting_system.daily_designs
         
-        # Navigation buttons on the right side of the turtle image
-        nav_x = self.image_x + self.design_size + 40  # Right of the turtle image
-        nav_y_start = self.image_y + 20  # Start at top of turtle image
+        # Navigation controls in right panel (below subtitle)
+        nav_center_x = self.left_panel_width + self.right_panel_width // 2
+        nav_y = 90  # Below subtitle
         
-        # Previous button (above)
+        # Previous button (left)
         if self.current_design_index > 0:
-            self._draw_nav_button("<", nav_x, nav_y_start, "previous")
+            self._draw_nav_button("<", nav_center_x - 60, nav_y, "previous")
         
-        # Next button (below)
+        # Next button (right)
         if self.current_design_index < len(designs) - 1:
-            self._draw_nav_button(">", nav_x, nav_y_start + 60, "next")
+            self._draw_nav_button(">", nav_center_x + 20, nav_y, "next")
         
         # Design counter (below buttons)
         counter_text = f"Design {self.current_design_index + 1} of {len(designs)}"
         text_surface = self.normal_font.render(counter_text, True, self.text_color)
-        text_rect = text_surface.get_rect(centerx=nav_x + 25, y=nav_y_start + 120)
+        text_rect = text_surface.get_rect(centerx=nav_center_x, y=nav_y + 50)
         self.screen.blit(text_surface, text_rect)
         
         # Progress bar (below counter)
         progress = (self.current_design_index + 1) / len(designs)
-        bar_width = 120
+        bar_width = 160
         bar_height = 6
-        bar_x = nav_x - 10
-        bar_y = nav_y_start + 150
+        bar_x = nav_center_x - bar_width // 2
+        bar_y = nav_y + 75
         
         # Background
         pygame.draw.rect(self.screen, (200, 200, 200), (bar_x, bar_y, bar_width, bar_height), border_radius=3)
@@ -230,7 +227,7 @@ class VotingView:
                 self.current_feedback = None
     
     def _draw_right_panel(self):
-        """Draw right panel with voting controls"""
+        """Draw right panel with voting controls and navigation"""
         designs = self.voting_system.daily_designs
         
         if not designs or self.current_design_index >= len(designs):
@@ -253,6 +250,9 @@ class VotingView:
         subtitle_surface = self.normal_font.render(subtitle_text, True, (100, 100, 100))
         subtitle_rect = subtitle_surface.get_rect(centerx=self.left_panel_width + self.right_panel_width // 2, y=55)
         self.screen.blit(subtitle_surface, subtitle_rect)
+        
+        # Draw navigation controls at the top of right panel
+        self._draw_navigation_controls()
         
         # Draw voting controls
         if current_design.voting_status == 'completed':
@@ -871,20 +871,20 @@ class VotingView:
                 if result:
                     return "vote_completed"
         
-        # Check navigation buttons (matching new right-side positions)
+        # Check navigation buttons (matching new right panel positions)
         if self.current_design_index > 0:
-            nav_x = self.image_x + self.design_size + 40
-            nav_y_start = self.image_y + 20
-            prev_rect = pygame.Rect(nav_x, nav_y_start, 50, 40)
+            nav_center_x = self.left_panel_width + self.right_panel_width // 2
+            nav_y = 90
+            prev_rect = pygame.Rect(nav_center_x - 60, nav_y, 50, 40)
             if prev_rect.collidepoint(pos):
                 self.current_design_index -= 1
                 return None
         
         designs = self.voting_system.daily_designs
         if self.current_design_index < len(designs) - 1:
-            nav_x = self.image_x + self.design_size + 40
-            nav_y_start = self.image_y + 20
-            next_rect = pygame.Rect(nav_x, nav_y_start + 60, 50, 40)
+            nav_center_x = self.left_panel_width + self.right_panel_width // 2
+            nav_y = 90
+            next_rect = pygame.Rect(nav_center_x + 20, nav_y, 50, 40)
             if next_rect.collidepoint(pos):
                 self.current_design_index += 1
                 return None

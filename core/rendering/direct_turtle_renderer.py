@@ -146,9 +146,9 @@ class DirectTurtleRenderer:
         self._draw_shell_pattern(draw, center_x, center_y, shell_w, shell_h, scale, shell_base, pattern_color)
 
     def _draw_limbs(self, draw, cx, cy, scale, color, outline, pattern_color):
-        """Draws randomized limb shapes with patterns"""
+        """Draws randomized limb shapes with patterns - ALWAYS draws fins for visibility"""
         
-        # 1. Determine Limb Style
+        # 1. Determine Limb Style for main limbs
         styles = ['flippers', 'feet', 'fins']
         keys_to_check = ['limb_shape', 'leg_shape', 'limb_type', 'leg_style']
         style = None
@@ -174,13 +174,15 @@ class DirectTurtleRenderer:
         # 3. Get Pattern Style for cohesion
         pat_style = self._get_pattern_style()
 
-        # 4. Draw Specific Style (FIXED: passing leg_len, not len_mod)
-        if style == 'feet':
-            self._draw_limbs_feet(draw, cx, cy, scale, color, outline, leg_len, pattern_color, pat_style)
-        elif style == 'fins':
-            self._draw_limbs_fins(draw, cx, cy, scale, color, outline, leg_len, pattern_color, pat_style)
-        else:
-            self._draw_limbs_flippers(draw, cx, cy, scale, color, outline, leg_len, pattern_color, pat_style)
+        # 4. ALWAYS draw fins first (for visibility)
+        self._draw_limbs_fins(draw, cx, cy, scale, color, outline, leg_len, pattern_color, pat_style)
+        
+        # 5. Draw additional limb style on top (if not fins)
+        if style != 'fins':
+            if style == 'feet':
+                self._draw_limbs_feet(draw, cx, cy, scale, color, outline, leg_len, pattern_color, pat_style)
+            else:  # flippers
+                self._draw_limbs_flippers(draw, cx, cy, scale, color, outline, leg_len, pattern_color, pat_style)
 
     # --- Pattern applicators for limbs ---
     def _apply_limb_pattern_poly(self, draw, points, pat_color, pat_style, scale):
