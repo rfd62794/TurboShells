@@ -645,8 +645,8 @@ class VotingView:
     
     def _draw_nav_button(self, text: str, x: int, y: int, action: str):
         """Draw navigation button"""
-        button_width = 40
-        button_height = 30
+        button_width = 50
+        button_height = 40
         
         # Check if mouse is over button
         is_hovered = (x <= self.mouse_pos[0] <= x + button_width and
@@ -656,8 +656,8 @@ class VotingView:
         button_color = (150, 150, 150) if is_hovered else (100, 100, 100)
         
         # Draw button
-        pygame.draw.rect(self.screen, button_color, (x, y, button_width, button_height), border_radius=5)
-        pygame.draw.rect(self.screen, self.text_color, (x, y, button_width, button_height), 1, border_radius=5)
+        pygame.draw.rect(self.screen, button_color, (x, y, button_width, button_height), border_radius=8)
+        pygame.draw.rect(self.screen, self.text_color, (x, y, button_width, button_height), 2, border_radius=8)
         
         # Button text
         text_surface = self.normal_font.render(text, True, (255, 255, 255))
@@ -900,10 +900,10 @@ class VotingView:
                 if result:
                     return "vote_completed"
         
-        # Check navigation buttons (matching new left panel positions)
+        # Check navigation buttons (matching new left panel positions and larger buttons)
         if self.current_design_index > 0:
             nav_y = self.image_y + self.design_size + 80
-            prev_rect = pygame.Rect(self.left_panel_width // 2 - 80, nav_y, 40, 40)
+            prev_rect = pygame.Rect(self.left_panel_width // 2 - 80, nav_y, 50, 40)  # Updated size
             if prev_rect.collidepoint(pos):
                 self.current_design_index -= 1
                 return None
@@ -911,7 +911,7 @@ class VotingView:
         designs = self.voting_system.daily_designs
         if self.current_design_index < len(designs) - 1:
             nav_y = self.image_y + self.design_size + 80
-            next_rect = pygame.Rect(self.left_panel_width // 2 + 40, nav_y, 40, 40)
+            next_rect = pygame.Rect(self.left_panel_width // 2 + 40, nav_y, 50, 40)  # Updated size
             if next_rect.collidepoint(pos):
                 self.current_design_index += 1
                 return None

@@ -13,6 +13,9 @@ def draw_voting(screen, font, game_state):
         from ui.voting_view import VotingView
         game_state.voting_view = VotingView(screen, game_state)
     
+    # Update mouse position for hover effects
+    game_state.voting_view.mouse_pos = game_state.mouse_pos
+    
     # Draw header
     pygame.draw.rect(screen, (30, 30, 30), (0, 0, SCREEN_WIDTH, 40))
     
