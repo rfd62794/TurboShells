@@ -154,6 +154,7 @@ class TurtleStats:
     climb: float
     base_stats: BaseStats
     genetic_modifiers: GeneticModifiers
+    age: int = 0  # Turtle age in days
 
 
 @dataclass

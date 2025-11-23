@@ -228,6 +228,7 @@ class GameStateManager:
                                 )
                                 else getattr(turtle_stats, "climb", 5)
                             ),
+                            "age": getattr(turtle_stats, "age", 0),  # Load turtle age
                         }
 
                     roster[i] = Turtle(
@@ -238,6 +239,8 @@ class GameStateManager:
                         swim=turtle_stats.get("swim", 5),
                         climb=turtle_stats.get("climb", 5),
                     )
+                    # Restore turtle age
+                    roster[i].age = turtle_stats.get("age", 0)
 
         # Load retired turtles
         retired_turtle_ids = game_data.get("roster", {}).get("retired_turtles", [])
@@ -278,18 +281,21 @@ class GameStateManager:
                             if hasattr(getattr(turtle_stats, "climb", None), "value")
                             else getattr(turtle_stats, "climb", 5)
                         ),
+                        "age": getattr(turtle_stats, "age", 0),  # Load turtle age
                     }
 
-                retired_roster.append(
-                    Turtle(
-                        turtle_data.get("name", "Unknown"),
-                        speed=turtle_stats.get("speed", 5),
-                        energy=turtle_stats.get("max_energy", 100),
-                        recovery=turtle_stats.get("recovery", 5),
-                        swim=turtle_stats.get("swim", 5),
-                        climb=turtle_stats.get("climb", 5),
-                    )
+                retired_turtle = Turtle(
+                    turtle_data.get("name", "Unknown"),
+                    speed=turtle_stats.get("speed", 5),
+                    energy=turtle_stats.get("max_energy", 100),
+                    recovery=turtle_stats.get("recovery", 5),
+                    swim=turtle_stats.get("swim", 5),
+                    climb=turtle_stats.get("climb", 5),
                 )
+                # Restore turtle age and mark as retired
+                retired_turtle.age = turtle_stats.get("age", 0)
+                retired_turtle.is_active = False
+                retired_roster.append(retired_turtle)
 
         return roster, retired_roster
 
@@ -472,6 +478,7 @@ class GameStateManager:
                 genetic_modifiers=GeneticModifiers(
                     speed=0, energy=0, recovery=0, swim=0, climb=0
                 ),
+                age=getattr(turtle, 'age', 0),  # Preserve turtle age
             ),
             performance=TurtlePerformance(
                 race_history=[],

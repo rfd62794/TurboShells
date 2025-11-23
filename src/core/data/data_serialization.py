@@ -140,6 +140,7 @@ def create_default_turtle_data(turtle_id: str, name: str) -> TurtleData:
             climb=7.0,
             base_stats=BaseStats(7.0, 7.0, 7.0, 7.0, 7.0),
             genetic_modifiers=GeneticModifiers(0.0, 0.0, 0.0, 0.0, 0.0),
+            age=0,  # Start at age 0
         ),
         performance=TurtlePerformance(
             race_history=[],
