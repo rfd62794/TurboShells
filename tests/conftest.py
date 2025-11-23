@@ -21,8 +21,7 @@ sys.path.insert(0, str(project_root / "src"))
 
 # Import game modules for fixtures
 from src.core.entities import Turtle
-from src.core.game_state import generate_random_turtle, breed_turtles, compute_turtle_cost
-from src.core.race_track import generate_track, get_terrain_modifier
+from src.core.game_state import generate_random_turtle, breed_turtles, compute_turtle_cost, generate_track, get_terrain_at
 from tests.mock_data_generator import MockDataGenerator
 
 
@@ -106,12 +105,11 @@ def sample_tracks():
 
 
 @pytest.fixture
-def terrain_modifiers():
-    """Provide terrain modifier test data"""
+def terrain_functions():
+    """Provide terrain function test data"""
     return {
-        'grass': 1.0,
-        'water': 0.7,
-        'rock': 0.8
+        'get_terrain_at': get_terrain_at,
+        'test_positions': [(100, 100), (400, 300), (700, 500)]
     }
 
 

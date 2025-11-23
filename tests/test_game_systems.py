@@ -6,8 +6,7 @@ Tests game state, race track, and core game mechanics.
 
 import pytest
 from unittest.mock import Mock, patch
-from src.core.game_state import generate_random_turtle, breed_turtles, compute_turtle_cost
-from src.core.race_track import generate_track, get_terrain_modifier
+from src.core.game_state import generate_random_turtle, breed_turtles, compute_turtle_cost, generate_track, get_terrain_at
 from src.core.entities import Turtle
 from tests.conftest import TestDataFactory
 
