@@ -1,0 +1,24 @@
+2025-11-23 15:04:48,455 - monitoring_system - INFO - Integrated monitoring system initialized
+2025-11-23 15:04:48,541 - managers.save_manager - INFO - SaveManager initialized with directory: C:\Users\cheat\AppData\Roaming\TurboShells
+2025-11-23 15:04:48,541 - managers.save_manager - INFO - SaveManager initialized with directory: C:\Users\cheat\AppData\Roaming\TurboShells
+2025-11-23 15:04:48,549 - core.config - INFO - Configuration loaded successfully
+2025-11-23 15:04:48,550 - core.graphics_manager - INFO - Loaded graphics settings: 1024x768
+2025-11-23 15:04:48,615 - core.graphics_manager - INFO - Display initialized: (1024, 768), Fullscreen: False
+2025-11-23 15:04:48,617 - core.audio_manager - INFO - Loaded audio settings: Master Volume 0.5, Enabled True
+2025-11-23 15:04:49,150 - core.audio_manager - INFO - Audio system initialized successfully
+2025-11-23 15:04:49,156 - overlay - ERROR - Failed to initialize overlay: font not initialized
+2025-11-23 15:04:49,239 - main - INFO - Initializing TurboShells game...
+2025-11-23 15:04:49,240 - monitoring - WARNING - Low FPS: 0.0
+2025-11-23 15:04:49,240 - monitoring - INFO - Real-time monitoring started
+2025-11-23 15:04:49,240 - statistics - INFO - New gaming session started
+2025-11-23 15:04:49,241 - monitoring_system - INFO - Monitoring system started
+2025-11-23 15:04:49,241 - main - INFO - Monitoring system started
+2025-11-23 15:04:49,244 - ui.settings_view - INFO - Settings view initialized
+2025-11-23 15:04:49,245 - managers.settings_manager - INFO - Settings manager initialized
+2025-11-23 15:04:49,246 - managers.save_manager - INFO - SaveManager initialized with directory: C:\Users\cheat\AppData\Roaming\TurboShells
+2025-11-23 15:04:49,248 - core.auto_load_system - INFO - Save file found at C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 15:04:49,248 - core.auto_load_system - INFO - Attempting to restore game state from save file
+2025-11-23 15:04:49,265 - managers.save_manager - INFO - Game loaded successfully from C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 15:04:49,266 - core.auto_load_system - INFO - Successfully restored game state for player player_20251123_112134
+2025-11-23 15:04:50,746 - ui.settings_view - INFO - Settings view shown
+2025-11-23 15:04:50,746 - managers.settings_manager - INFO - Settings shown, tab: graphics
