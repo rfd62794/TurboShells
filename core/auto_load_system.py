@@ -244,27 +244,19 @@ class AutoLoadSystem:
                 notification = self.notify_user(success, "New game created")
                 return success, error, data, notification
             
-            # Step 2: Validate save file
-            is_valid, validation_error = self.validate_save_file()
+            # Step 2: Try to load directly (skip validation since SaveManager validates internally)
+            try:
+                success, error, data = self.restore_game_state()
+                if success:
+                    notification = self.notify_user(success, "Game loaded successfully")
+                    return success, error, data, notification
+            except Exception as e:
+                self.logger.warning(f"Game state restoration failed: {e}")
             
-            if not is_valid:
-                # Save file is corrupted - try fallback handling
-                self.logger.warning(f"Save file validation failed: {validation_error}")
-                success, error, data = self.handle_corrupted_save()
-                notification = self.notify_user(success, f"Save file was corrupted, {'backup restored' if success else 'new game created'}")
-                return success, error, data, notification
-            
-            # Step 3: Restore game state
-            success, error, data = self.restore_game_state()
-            
-            if success:
-                notification = self.notify_user(success, "Game loaded successfully")
-            else:
-                # Restore failed - try fallback handling
-                self.logger.warning(f"Game state restoration failed: {error}")
-                success, error, data = self.handle_corrupted_save()
-                notification = self.notify_user(success, f"Game restore failed, {'backup restored' if success else 'new game created'}")
-            
+            # Step 3: If restore failed, create new game
+            self.logger.info("Creating new game due to load failure")
+            success, error, data = self.create_new_game()
+            notification = self.notify_user(success, "New game created (load failed)")
             return success, error, data, notification
             
         except Exception as e:
