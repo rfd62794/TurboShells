@@ -5,6 +5,15 @@ Benchmark testing and regression detection for game performance.
 """
 
 # Add project root to path
+from dataclasses import dataclass
+import tempfile
+import json
+from typing import List, Dict, Any, Tuple
+from unittest.mock import Mock, patch, MagicMock
+import statistics
+import time
+import os
+import unittest
 import sys
 from pathlib import Path
 
@@ -12,17 +21,6 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 sys.path.insert(0, str(project_root / "src"))
 
-
-import unittest
-import sys
-import os
-import time
-import statistics
-from unittest.mock import Mock, patch, MagicMock
-from typing import List, Dict, Any, Tuple
-import json
-import tempfile
-from dataclasses import dataclass
 
 # Add project root to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

@@ -3,6 +3,9 @@ Basic tests for the main TurboShells game functionality.
 """
 
 # Add project root to path
+import os
+import pygame
+import pytest
 import sys
 from pathlib import Path
 
@@ -10,11 +13,6 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 sys.path.insert(0, str(project_root / "src"))
 
-
-import pytest
-import pygame
-import sys
-import os
 
 # Add the parent directory to the path so we can import the main module
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

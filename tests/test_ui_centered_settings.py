@@ -4,6 +4,9 @@ Test script to verify the centered settings menu and responsive layout.
 """
 
 # Add project root to path
+from src.managers.settings_manager import SettingsManager
+from settings import *
+import pygame
 import sys
 from pathlib import Path
 
@@ -12,13 +15,8 @@ sys.path.insert(0, str(project_root))
 sys.path.insert(0, str(project_root / "src"))
 
 
-import pygame
-import sys
-import sys
 sys.path.insert(0, ".")
 sys.path.insert(0, "src")
-from settings import *
-from src.managers.settings_manager import SettingsManager
 
 
 def test_centered_settings():

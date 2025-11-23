@@ -5,6 +5,9 @@ Tests performance of genetics operations in game context.
 """
 
 # Add project root to path
+import random
+import time
+import os
 import sys
 from pathlib import Path
 
@@ -12,11 +15,6 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 sys.path.insert(0, str(project_root / "src"))
 
-
-import sys
-import os
-import time
-import random
 
 # Add the project root to Python path
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

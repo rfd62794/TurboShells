@@ -5,6 +5,12 @@ Tests end-to-end game workflows and system interactions.
 """
 
 # Add project root to path
+import json
+import tempfile
+from typing import List, Dict, Any
+from unittest.mock import Mock, patch, MagicMock
+import os
+import unittest
 import sys
 from pathlib import Path
 
@@ -12,14 +18,6 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 sys.path.insert(0, str(project_root / "src"))
 
-
-import unittest
-import sys
-import os
-from unittest.mock import Mock, patch, MagicMock
-from typing import List, Dict, Any
-import tempfile
-import json
 
 # Add project root to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

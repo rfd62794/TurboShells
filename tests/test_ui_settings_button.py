@@ -4,6 +4,10 @@ Test script to verify the Settings button functionality in the main menu.
 """
 
 # Add project root to path
+from src.core.systems.state_handler import StateHandler
+import ui.layouts.positions as layout
+from settings import *
+import pygame
 import sys
 from pathlib import Path
 
@@ -12,14 +16,8 @@ sys.path.insert(0, str(project_root))
 sys.path.insert(0, str(project_root / "src"))
 
 
-import pygame
-import sys
-import sys
 sys.path.insert(0, ".")
 sys.path.insert(0, "src")
-from settings import *
-import ui.layouts.positions as layout
-from src.core.systems.state_handler import StateHandler
 
 
 def test_settings_button():

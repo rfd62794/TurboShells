@@ -5,6 +5,12 @@ Provides realistic test data for all game entities and scenarios.
 """
 
 # Add project root to path
+import os
+from datetime import datetime, timedelta
+import json
+from dataclasses import dataclass
+from typing import List, Dict, Any, Tuple
+import random
 import sys
 from pathlib import Path
 
@@ -13,15 +19,7 @@ sys.path.insert(0, str(project_root))
 sys.path.insert(0, str(project_root / "src"))
 
 
-import random
-from typing import List, Dict, Any, Tuple
-from dataclasses import dataclass
-import json
-from datetime import datetime, timedelta
-
 # Add project root to path for imports
-import sys
-import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 

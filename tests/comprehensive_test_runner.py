@@ -5,6 +5,13 @@ Integrates all test frameworks and provides unified reporting.
 """
 
 # Add project root to path
+from dataclasses import dataclass
+from typing import List, Dict, Any, Optional
+import importlib.util
+import json
+import time
+import os
+import unittest
 import sys
 from pathlib import Path
 
@@ -12,16 +19,6 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 sys.path.insert(0, str(project_root / "src"))
 
-
-import unittest
-import sys
-import os
-import time
-import json
-import importlib.util
-from typing import List, Dict, Any, Optional
-from dataclasses import dataclass
-from pathlib import Path
 
 # Add project root to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -140,7 +137,8 @@ class ComprehensiveTestRunner:
                 tests_run=result.testsRun,
                 failures=len(result.failures),
                 errors=len(result.errors),
-                success_rate=(result.testsRun - len(result.failures) - len(result.errors)) / result.testsRun * 100 if result.testsRun > 0 else 0,
+                success_rate=(result.testsRun - len(result.failures) - len(result.errors)) /
+                result.testsRun * 100 if result.testsRun > 0 else 0,
                 execution_time=execution_time,
                 passed=len(result.failures) == 0 and len(result.errors) == 0
             )
