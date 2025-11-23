@@ -4,6 +4,14 @@
 
 *Core systems complete with modular genetics, direct rendering, voting infrastructure, comprehensive test suite, balanced race system, production-ready persistence, and professional quality assurance. Recent major updates include complete project directory reorganization for professional maintainability, Windows Git hook compatibility fixes, betting and rewards system restoration with participation rewards, comprehensive quality system integration with enhanced pre-commit hooks, automated code quality checks, and robust development workflow with CI/CD pipeline. All core game mechanics are fully functional with proper betting flow, reward distribution, save/load systems, and automated quality assurance.*
 
+### **📋 Documentation Organization**
+- **Main TODO.md**: Phase overview and priority summary
+- **Phase_##.md**: Detailed implementation plans for each phase
+- **CHANGELOG.md**: Completed phases and version history
+- **Completed Splits**: 
+  - Phase 7: Pond/Glade Environment → [Phase_07_Pond_Glade_Environment.md](Phase_07_Pond_Glade_Environment.md)
+  - Phase 8: Advanced Training System → [Phase_08_Advanced_Training_System.md](Phase_08_Advanced_Training_System.md)
+
 ---
 
 ## **DEVELOPMENT PRIORITIES**
@@ -190,38 +198,12 @@
 ## 🎮 **CORE GAMEPLAY EXPANSION**
 
 ### **Phase 7: Pond/Glade Environment** - **0% COMPLETE**
-- Pond overview with ambient turtle behavior
-- Clickable turtles with stat tooltips
-- Profile shortcut integration
-- Ambient animations and environmental effects
-- Turtle interaction behaviors
-- Day/night cycle support
+> 📋 **Detailed Plan**: See [Phase_07_Pond_Glade_Environment.md](Phase_07_Pond_Glade_Environment.md)
+> Immersive pond environment with ambient turtle behavior and interactive features
 
 ### **Phase 8: Advanced Training System** - **0% COMPLETE**
-
-#### **🏃‍♂️ Training Course Mode**
-- [ ] **Random Terrain Generation** - Procedural course creation with grass/water/rock mix
-- [ ] **Automatic Turtle Running** - Physics-based turtle navigation with AI pathfinding
-- [ ] **Experience Gain System** - Performance-based XP awards with terrain mastery bonuses
-- [ ] **Terrain-Specific Stat Improvements** - Swim training from water, climb from rocks, speed from grass
-- [ ] **Visual Course Preview** - Interactive terrain overview with difficulty indicators
-- [ ] **Training Results Summary** - Detailed performance metrics and improvement tracking
-
-#### **🎯 Training Implementation Details**
-- [ ] **Course Generation Algorithm** - Balanced terrain distribution with difficulty scaling
-- [ ] **Turtle AI Runner** - Intelligent movement based on turtle stats and terrain modifiers
-- [ ] **Performance Scoring** - Time, energy efficiency, and terrain mastery calculations
-- [ ] **Experience Calculation** - Dynamic XP based on course difficulty and turtle performance
-- [ ] **Stat Improvement Logic** - Targeted stat gains based on completed terrain types
-- [ ] **Course Preview UI** - Visual representation with hover tooltips for terrain effects
-- [ ] **Results Screen** - Comprehensive summary with stats gained and next training recommendations
-
-#### **🔧 Technical Components**
-- [ ] **Training State Management** - New game state for training interface
-- [ ] **Terrain Engine** - Extend existing race terrain system for training courses
-- [ ] **AI Movement System** - Automatic turtle navigation with stat-based performance
-- [ ] **Experience Tracking** - Persistent XP system with level progression
-- [ ] **Training History** - Log of completed courses and performance trends
+> 📋 **Detailed Plan**: See [Phase_08_Advanced_Training_System.md](Phase_08_Advanced_Training_System.md)
+> Procedural terrain courses with AI turtle navigation and experience progression
 
 ### **Phase 9: Turtle Personalities** - **0% COMPLETE**
 
