@@ -11,6 +11,7 @@
 - **Completed Splits**: 
   - Phase 7: Pond/Glade Environment → [Phase_07_Pond_Glade_Environment.md](Phase_07_Pond_Glade_Environment.md)
   - Phase 8: Advanced Training System → [Phase_08_Advanced_Training_System.md](Phase_08_Advanced_Training_System.md)
+  - Phase 9: Turtle Personalities → [Phase_09_Turtle_Personalities.md](Phase_09_Turtle_Personalities.md)
 
 ---
 
