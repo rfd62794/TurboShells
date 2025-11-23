@@ -141,6 +141,8 @@ def test_voting_system():
     designs = voting_system.generate_daily_designs()
     print(f"Generated {len(designs)} daily designs")
     
+    test_passed = True
+    
     # Test voting
     if designs:
         design = designs[0]
@@ -153,8 +155,13 @@ def test_voting_system():
         }
         
         result = voting_system.submit_ratings(design.id, test_ratings)
-        print(f"Vote submission: {'PASS' if result['success'] else 'FAIL'}")
+        vote_success = result.get('success', False)
+        reward_earned = result.get('reward_earned', 0) > 0
+        
+        print(f"Vote submission: {'PASS' if vote_success else 'FAIL'}")
         print(f"Reward earned: ${result.get('reward_earned', 0)}")
+        
+        test_passed = test_passed and vote_success and reward_earned
     
     # Test status
     status = voting_system.get_daily_status()
@@ -164,7 +171,7 @@ def test_voting_system():
     stats = voting_system.get_statistics()
     print(f"Total votes cast: {stats['total_votes_cast']}")
     
-    return True
+    return test_passed
 
 
 def test_genetic_pool_manager():
@@ -173,6 +180,8 @@ def test_genetic_pool_manager():
     
     vg = VisualGenetics()
     pool_manager = GeneticPoolManager()
+    
+    test_passed = True
     
     # Test applying ratings
     design_genetics = vg.generate_random_genetics()
@@ -183,21 +192,31 @@ def test_genetic_pool_manager():
     }
     
     impact = pool_manager.apply_ratings_to_pool(design_genetics, test_ratings)
-    print(f"Applied ratings impact: {len(impact['trait_changes'])} traits changed")
+    trait_changes = len(impact.get('trait_changes', []))
+    print(f"Applied ratings impact: {trait_changes} traits changed")
+    
+    test_passed = test_passed and trait_changes > 0
     
     # Test influenced genetics generation
     influenced_genetics = pool_manager.generate_influenced_genetics()
-    print(f"Generated influenced genetics: {len(influenced_genetics)} traits")
+    trait_count = len(influenced_genetics)
+    print(f"Generated influenced genetics: {trait_count} traits")
+    
+    test_passed = test_passed and trait_count > 0
     
     # Test pool status
     pool_status = pool_manager.get_genetic_pool_status()
-    print(f"Pool average weight: {pool_status['average_weight']:.2f}")
+    avg_weight = pool_status.get('average_weight', 0)
+    print(f"Pool average weight: {avg_weight:.2f}")
+    
+    test_passed = test_passed and avg_weight > 0
     
     # Test most influenced traits
-    most_influenced = pool_status['most_influenced_traits'][:3]
-    print(f"Most influenced traits: {[trait[0] for trait in most_influenced]}")
+    most_influenced = pool_status.get('most_influenced_traits', [])[:3]
+    trait_names = [trait[0] for trait in most_influenced]
+    print(f"Most influenced traits: {trait_names}")
     
-    return True
+    return test_passed
 
 
 def test_complete_integration():
@@ -218,8 +237,11 @@ def test_complete_integration():
     designs = voting_system.generate_daily_designs()
     print(f"Generated {len(designs)} designs for voting")
     
+    test_passed = True
+    
     # Simulate complete voting session
     total_rewards = 0
+    successful_votes = 0
     for i, design in enumerate(designs):
         # Generate test ratings
         test_ratings = {
@@ -232,16 +254,22 @@ def test_complete_integration():
         
         # Submit ratings
         result = voting_system.submit_ratings(design.id, test_ratings)
-        if result['success']:
-            total_rewards += result['reward_earned']
+        if result.get('success', False):
+            total_rewards += result.get('reward_earned', 0)
+            successful_votes += 1
             print(f"  Design {i+1}: Voted, earned ${result['reward_earned']}")
+    
+    test_passed = test_passed and successful_votes == len(designs)
     
     print(f"Total session rewards: ${total_rewards}")
     
     # Generate influenced turtle after voting
     influenced_genetics = pool_manager.generate_influenced_genetics()
     influenced_svg = generator.generate_turtle_svg(influenced_genetics)
-    print(f"Influenced turtle generation: {'PASS' if influenced_svg is not None else 'FAIL'}")
+    svg_success = influenced_svg is not None
+    print(f"Influenced turtle generation: {'PASS' if svg_success else 'FAIL'}")
+    
+    test_passed = test_passed and svg_success
     
     # Test system statistics
     voting_stats = voting_system.get_statistics()
@@ -250,7 +278,7 @@ def test_complete_integration():
     print(f"Final voting stats: {voting_stats['total_votes_cast']} votes, ${voting_stats['total_rewards_earned']} earned")
     print(f"Final pool stats: {pool_stats['average_weight']:.2f} average weight")
     
-    return True
+    return test_passed
 
 
 def test_performance():
