@@ -649,3 +649,44 @@ class VotingView:
             'daily_status': self.voting_system.get_daily_status(),
             'can_submit': self._can_submit_ratings()
         }
+    
+    def handle_click(self, pos):
+        """Handle mouse clicks in the voting interface"""
+        x, y = pos
+        
+        # Check submit button
+        if self._can_submit_ratings():
+            submit_rect = pygame.Rect(self.width // 2 - 100, self.height - 80, 200, 50)
+            if submit_rect.collidepoint(pos):
+                result = self._submit_ratings()
+                if result:
+                    return "vote_completed"
+        
+        # Check navigation buttons
+        if self.current_design_index > 0:
+            prev_rect = pygame.Rect(50, self.height // 2 - 25, 50, 50)
+            if prev_rect.collidepoint(pos):
+                self.current_design_index -= 1
+                return None
+        
+        designs = self.voting_system.daily_designs
+        if self.current_design_index < len(designs) - 1:
+            next_rect = pygame.Rect(self.width - 100, self.height // 2 - 25, 50, 50)
+            if next_rect.collidepoint(pos):
+                self.current_design_index += 1
+                return None
+        
+        # Check rating stars
+        current_design = designs[self.current_design_index]
+        if current_design.voting_status != 'completed':
+            categories = ['appearance', 'functionality', 'creativity']
+            for i, category in enumerate(categories):
+                star_y = 300 + i * 60
+                for star in range(1, 6):
+                    star_x = 300 + star * 40
+                    star_rect = pygame.Rect(star_x, star_y, 30, 30)
+                    if star_rect.collidepoint(pos):
+                        self.selected_ratings[category] = star
+                        return None
+        
+        return None
