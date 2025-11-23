@@ -356,6 +356,8 @@ class VotingView:
         star_size = 20
         star_spacing = 35  # Increased from 25 for better spacing
         
+        print(f"Drawing stars for '{category_name}' at surface ({x}, {y})")
+        
         # Check hover position for preview (adjust for surface position)
         hover_star = -1
         if interactive:
@@ -374,6 +376,12 @@ class VotingView:
         for i in range(5):
             star_x = x + i * star_spacing
             star_y = y
+            
+            # Calculate screen position for this star
+            screen_star_x = self.left_panel_width + 30 + star_x
+            screen_star_y = 200 + star_y - self.scroll_offset
+            
+            print(f"  Star {i+1}: surface ({star_x}, {star_y}) -> screen ({screen_star_x}, {screen_star_y}) size {star_size}x{star_size}")
             
             # Determine star color with proper hover preview
             if i < rating:
@@ -947,6 +955,8 @@ class VotingView:
                 relative_x = x - self.left_panel_width - 30
                 relative_y = y - 200 + self.scroll_offset
                 
+                print(f"Click at screen ({x}, {y}) -> relative ({relative_x}, {relative_y})")
+                
                 y_offset = 0
                 for category_name in categories:
                     star_y = y_offset + 55  # Stars are at y_offset + 55
@@ -957,9 +967,12 @@ class VotingView:
                         
                         # Click area exactly matches star size (20px) with small padding
                         click_padding = 2  # Reduced from 5 to avoid extending beyond 5th star
+                        print(f"  Star {i+1}: surface ({star_x}, {star_y}) click area ({star_x-click_padding}-{star_x+20+click_padding}, {star_y-click_padding}-{star_y+20+click_padding})")
+                        
                         if (star_x - click_padding <= relative_x <= star_x + 20 + click_padding and 
                             star_y - click_padding <= relative_y <= star_y + 20 + click_padding):
                             # Set rating for this category
+                            print(f"  >>> CLICKED STAR {i+1} for {category_name}")
                             self.selected_ratings[category_name] = i + 1
                             return
                     
