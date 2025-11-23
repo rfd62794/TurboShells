@@ -10,6 +10,7 @@ import subprocess
 import shutil
 from pathlib import Path
 from typing import Dict, Any, List
+from datetime import datetime
 
 # Add project root to path
 project_root = Path(__file__).parent.parent.parent
@@ -275,7 +276,7 @@ def generate_setup_report(results: Dict[str, bool]) -> str:
     """Generate setup report"""
     report_lines = [
         "# Quality System Setup Report",
-        f"Generated: {subprocess.check_output(['date']).decode().strip()}",
+        f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
         "",
         "## Results Summary"
     ]
@@ -344,7 +345,7 @@ def main():
     report = generate_setup_report(results)
     report_file = project_root / 'logs' / 'quality_setup_report.md'
     report_file.parent.mkdir(exist_ok=True)
-    report_file.write_text(report)
+    report_file.write_text(report, encoding='utf-8')
     
     print(f"\n📄 Setup report saved to: {report_file}")
     

@@ -8,6 +8,9 @@ from src.managers.settings_manager import SettingsManager
 import sys
 sys.path.insert(0, ".")
 sys.path.insert(0, "src")
+import sys
+sys.path.insert(0, ".")
+sys.path.insert(0, "src")
 from settings import *
 import pygame
 import sys
