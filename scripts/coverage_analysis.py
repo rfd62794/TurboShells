@@ -62,7 +62,7 @@ class CoverageAnalyzer:
     
     def run_coverage_analysis(self, test_command: List[str] = None) -> bool:
         """Run coverage analysis"""
-        print("🔍 Running coverage analysis...")
+        print("[CHECK] Running coverage analysis...")
         
         # Default test command
         if test_command is None:
@@ -87,23 +87,23 @@ class CoverageAnalyzer:
             )
             
             if result.returncode == 0:
-                print("✅ Coverage analysis completed")
+                print("[PASS] Coverage analysis completed")
                 return True
             else:
-                print(f"❌ Coverage analysis failed: {result.stderr}")
+                print(f"[FAIL] Coverage analysis failed: {result.stderr}")
                 return False
                 
         except subprocess.TimeoutExpired:
-            print("❌ Coverage analysis timed out")
+            print("[FAIL] Coverage analysis timed out")
             return False
         except Exception as e:
-            print(f"❌ Coverage analysis error: {e}")
+            print(f"[FAIL] Coverage analysis error: {e}")
             return False
     
     def parse_coverage_json(self) -> Optional[Dict[str, Any]]:
         """Parse coverage JSON report"""
         if not self.coverage_json.exists():
-            print("❌ Coverage JSON file not found")
+            print("[FAIL] Coverage JSON file not found")
             return None
         
         try:
@@ -111,7 +111,7 @@ class CoverageAnalyzer:
                 coverage_data = json.load(f)
             return coverage_data
         except Exception as e:
-            print(f"❌ Error parsing coverage JSON: {e}")
+            print(f"[FAIL] Error parsing coverage JSON: {e}")
             return None
     
     def analyze_module_coverage(self, coverage_data: Dict[str, Any]) -> Dict[str, CoverageMetric]:
@@ -201,7 +201,7 @@ class CoverageAnalyzer:
     
     def generate_coverage_report(self) -> Optional[CoverageReport]:
         """Generate comprehensive coverage report"""
-        print("📊 Generating coverage report...")
+        print("[REPORT] Generating coverage report...")
         
         # Run coverage analysis
         if not self.run_coverage_analysis():
@@ -237,7 +237,7 @@ class CoverageAnalyzer:
     
     def print_coverage_summary(self, report: CoverageReport):
         """Print coverage summary"""
-        print(f"\n📊 Coverage Report Summary")
+        print(f"\n[REPORT] Coverage Report Summary")
         print("=" * 50)
         
         # Overall coverage
@@ -252,15 +252,15 @@ class CoverageAnalyzer:
         total_goals = len(report.goals_met)
         
         for goal_module, goal_percent in report.coverage_goals.items():
-            status = "✅" if report.goals_met[goal_module] else "❌"
+            status = "[PASS]" if report.goals_met[goal_module] else "[FAIL]"
             print(f"  {status} {goal_module}: {goal_percent}%")
         
         print(f"\nGoals Met: {goals_met_count}/{total_goals} ({goals_met_count/total_goals*100:.1f}%)")
         
         # Module details
-        print(f"\n📋 Module Coverage Details:")
+        print(f"\n[INFO] Module Coverage Details:")
         for module_name, metric in sorted(report.module_metrics.items()):
-            status = "✅" if metric.coverage_percent >= 80 else "⚠️" if metric.coverage_percent >= 60 else "❌"
+            status = "[PASS]" if metric.coverage_percent >= 80 else "[WARN]" if metric.coverage_percent >= 60 else "[FAIL]"
             print(f"  {status} {module_name}: {metric.coverage_percent:.1f}% ({metric.covered}/{metric.statements})")
             
             # Show missing lines if significant
@@ -303,11 +303,11 @@ class CoverageAnalyzer:
             with open(report_file, 'w') as f:
                 json.dump(report_data, f, indent=2)
             
-            print(f"📄 Coverage report saved to {report_file}")
+            print(f"[DOC] Coverage report saved to {report_file}")
             return True
             
         except Exception as e:
-            print(f"❌ Error saving coverage report: {e}")
+            print(f"[FAIL] Error saving coverage report: {e}")
             return False
     
     def generate_coverage_trends(self, current_report: CoverageReport) -> Dict[str, Any]:
@@ -362,7 +362,7 @@ class CoverageAnalyzer:
             with open(trends_file, 'w') as f:
                 json.dump(historical_data, f, indent=2)
         except Exception as e:
-            print(f"⚠️  Could not save coverage trends: {e}")
+            print(f"[WARN]  Could not save coverage trends: {e}")
         
         return trends
     
@@ -457,7 +457,7 @@ class CoverageIntegration:
         
         command = test_commands.get(test_type, test_commands["quick"])
         
-        print(f"🧪 Running coverage analysis with {test_type} tests...")
+        print(f"[TEST] Running coverage analysis with {test_type} tests...")
         report = self.analyzer.generate_coverage_report()
         
         if report:
@@ -468,10 +468,10 @@ class CoverageIntegration:
             trends = self.analyzer.generate_coverage_trends(report)
             recommendations = self.analyzer.generate_recommendations(report)
             
-            print(f"\n📈 Coverage Trends: {trends['trend_direction']} ({trends['coverage_trend']:+.1f}%)")
+            print(f"\n[METRICS] Coverage Trends: {trends['trend_direction']} ({trends['coverage_trend']:+.1f}%)")
             
             if recommendations:
-                print(f"\n💡 Recommendations:")
+                print(f"\n[NOTE] Recommendations:")
                 for i, rec in enumerate(recommendations[:5], 1):
                     print(f"  {i}. {rec}")
         
@@ -487,17 +487,17 @@ class CoverageIntegration:
         
         # Check overall minimum
         if report.overall_coverage < gates["overall_minimum"]:
-            print(f"❌ Coverage gate failed: Overall coverage {report.overall_coverage:.1f}% < {gates['overall_minimum']}%")
+            print(f"[FAIL] Coverage gate failed: Overall coverage {report.overall_coverage:.1f}% < {gates['overall_minimum']}%")
             return False
         
         # Check critical modules
         critical_modules = ['core.entities', 'core.game_state', 'managers.roster_manager']
         for module in critical_modules:
             if module in report.goals_met and not report.goals_met[module]:
-                print(f"❌ Coverage gate failed: Critical module {module} below threshold")
+                print(f"[FAIL] Coverage gate failed: Critical module {module} below threshold")
                 return False
         
-        print("✅ All coverage gates passed")
+        print("[PASS] All coverage gates passed")
         return True
 
 def main():

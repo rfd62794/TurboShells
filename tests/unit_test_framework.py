@@ -467,7 +467,7 @@ class TestRunner:
         """Generate a basic coverage report"""
         # This is a placeholder for coverage reporting
         # In a real implementation, you'd use coverage.py
-        print("\n📊 Coverage Report (Placeholder)")
+        print("\n[REPORT] Coverage Report (Placeholder)")
         print("=" * 50)
         print("Core Systems:")
         print("  Turtle Entity: 85% coverage")
@@ -478,7 +478,7 @@ class TestRunner:
         print("\nTarget: 95%+ coverage for all systems")
 
 if __name__ == "__main__":
-    print("🧪 TurboShells Unit Test Framework")
+    print("[TEST] TurboShells Unit Test Framework")
     print("=" * 50)
     
     # Create and run tests
@@ -487,7 +487,7 @@ if __name__ == "__main__":
     
     results = test_runner.run_tests()
     
-    print(f"\n📊 Test Results:")
+    print(f"\n[REPORT] Test Results:")
     print(f"Tests Run: {results['tests_run']}")
     print(f"Failures: {results['failures']}")
     print(f"Errors: {results['errors']}")
@@ -496,4 +496,4 @@ if __name__ == "__main__":
     # Generate coverage report
     test_runner.generate_coverage_report()
     
-    print("\n✅ Unit test framework execution complete!")
+    print("\n[PASS] Unit test framework execution complete!")

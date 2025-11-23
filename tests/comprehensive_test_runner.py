@@ -80,7 +80,7 @@ class ComprehensiveTestRunner:
                 return None
                 
         except ImportError:
-            print("⚠️  Coverage analysis not available")
+            print("[WARN]  Coverage analysis not available")
             return None
     
     def run_suite(self, suite_name: str, verbosity: int = 2) -> TestSuiteResult:

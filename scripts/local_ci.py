@@ -49,7 +49,7 @@ class LocalCI:
     
     def check_python_syntax(self) -> CIResult:
         """Check Python syntax for all Python files"""
-        print("🔍 Checking Python syntax...")
+        print("[CHECK] Checking Python syntax...")
         start_time = time.time()
         
         # Find all Python files
@@ -83,7 +83,7 @@ class LocalCI:
     
     def run_quick_tests(self) -> CIResult:
         """Run quick test suite"""
-        print("🧪 Running quick tests...")
+        print("[TEST] Running quick tests...")
         start_time = time.time()
         
         success, stdout, stderr = self.run_command([
@@ -108,7 +108,7 @@ class LocalCI:
     
     def check_import_structure(self) -> CIResult:
         """Check for import issues and circular dependencies"""
-        print("🔗 Checking import structure...")
+        print("[LINK] Checking import structure...")
         start_time = time.time()
         
         # Create a simple import checker script

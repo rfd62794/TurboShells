@@ -569,16 +569,16 @@ class IntegrationTestRunner:
         print("\n🔄 Integration Workflow Report")
         print("=" * 50)
         print("Workflows Tested:")
-        print("  ✅ New Game Initialization")
-        print("  ✅ First Race Workflow")
-        print("  ✅ Training Workflow")
-        print("  ✅ Shop Purchase Workflow")
-        print("  ✅ Full Roster Management")
-        print("  ✅ Breeding Workflow")
-        print("  ✅ Advanced Race with Betting")
-        print("  ✅ Economic Management")
-        print("  ✅ Error Handling")
-        print("  ✅ Performance Scenarios")
+        print("  [PASS] New Game Initialization")
+        print("  [PASS] First Race Workflow")
+        print("  [PASS] Training Workflow")
+        print("  [PASS] Shop Purchase Workflow")
+        print("  [PASS] Full Roster Management")
+        print("  [PASS] Breeding Workflow")
+        print("  [PASS] Advanced Race with Betting")
+        print("  [PASS] Economic Management")
+        print("  [PASS] Error Handling")
+        print("  [PASS] Performance Scenarios")
         print("\nEnd-to-End Coverage: 90%+")
 
 if __name__ == "__main__":
@@ -593,7 +593,7 @@ if __name__ == "__main__":
     
     results = test_runner.run_tests()
     
-    print(f"\n📊 Integration Test Results:")
+    print(f"\n[REPORT] Integration Test Results:")
     print(f"Tests Run: {results['tests_run']}")
     print(f"Failures: {results['failures']}")
     print(f"Errors: {results['errors']}")
@@ -602,4 +602,4 @@ if __name__ == "__main__":
     # Generate workflow report
     test_runner.generate_workflow_report()
     
-    print("\n✅ Integration test suite execution complete!")
+    print("\n[PASS] Integration test suite execution complete!")

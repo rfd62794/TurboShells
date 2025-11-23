@@ -819,7 +819,7 @@ class PerformanceTestRunner:
     
     def generate_performance_report(self):
         """Generate comprehensive performance report"""
-        print("\n⚡ Performance Testing Report")
+        print("\n[PERF] Performance Testing Report")
         print("=" * 50)
         
         results = self.benchmark_registry.results
@@ -838,26 +838,26 @@ class PerformanceTestRunner:
         
         print("\nIndividual Test Results:")
         for test_name, result in results.items():
-            status = "✅ PASS" if result['passed'] else "❌ FAIL"
+            status = "[PASS] PASS" if result['passed'] else "[FAIL] FAIL"
             print(f"  {test_name}: {status}")
             print(f"    Time: {result['execution_time']:.3f}s")
             print(f"    Memory: {result['memory_usage']:.2f} MB")
             
             # Show metrics
             for metric in result['metrics']:
-                metric_status = "✅" if metric['passed'] else "❌"
+                metric_status = "[PASS]" if metric['passed'] else "[FAIL]"
                 print(f"    {metric['name']}: {metric['value']:.1f} {metric['unit']} {metric_status}")
         
         print("\nPerformance Categories:")
-        print("  ✅ Core Systems Performance")
-        print("  ✅ UI Rendering Performance")
-        print("  ✅ Memory Efficiency")
-        print("  ✅ Stress Testing")
+        print("  [PASS] Core Systems Performance")
+        print("  [PASS] UI Rendering Performance")
+        print("  [PASS] Memory Efficiency")
+        print("  [PASS] Stress Testing")
         print("\nRegression Detection: Active")
         print("Baseline Comparison: Enabled")
 
 if __name__ == "__main__":
-    print("⚡ TurboShells Performance Test Suite")
+    print("[PERF] TurboShells Performance Test Suite")
     print("=" * 50)
     
     # Create and run tests
@@ -866,7 +866,7 @@ if __name__ == "__main__":
     
     results = test_runner.run_tests()
     
-    print(f"\n📊 Performance Test Results:")
+    print(f"\n[REPORT] Performance Test Results:")
     print(f"Tests Run: {results['tests_run']}")
     print(f"Failures: {results['failures']}")
     print(f"Errors: {results['errors']}")
@@ -875,5 +875,5 @@ if __name__ == "__main__":
     # Generate performance report
     test_runner.generate_performance_report()
     
-    print("\n✅ Performance test suite execution complete!")
-    print("📊 Benchmark results saved to tests/benchmark_results.json")
+    print("\n[PASS] Performance test suite execution complete!")
+    print("[REPORT] Benchmark results saved to tests/benchmark_results.json")

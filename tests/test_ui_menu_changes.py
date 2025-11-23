@@ -14,7 +14,7 @@ import ui.menu_view as menu_view
 
 def test_menu_layout():
     """Test the main menu layout changes."""
-    print("🧪 Testing Main Menu Layout Changes...")
+    print("[TEST] Testing Main Menu Layout Changes...")
     
     try:
         pygame.init()
@@ -46,15 +46,15 @@ def test_menu_layout():
         for i, rect in enumerate(actual_rects):
             expected_y = expected_positions[i]
             if rect.y == expected_y:
-                print(f"  ✅ {['ROSTER', 'SHOP', 'BREEDING', 'RACE', 'VOTING', 'SETTINGS'][i]} at Y={rect.y} (correct)")
+                print(f"  [PASS] {['ROSTER', 'SHOP', 'BREEDING', 'RACE', 'VOTING', 'SETTINGS'][i]} at Y={rect.y} (correct)")
             else:
-                print(f"  ❌ {['ROSTER', 'SHOP', 'BREEDING', 'RACE', 'VOTING', 'SETTINGS'][i]} at Y={rect.y} (expected {expected_y})")
+                print(f"  [FAIL] {['ROSTER', 'SHOP', 'BREEDING', 'RACE', 'VOTING', 'SETTINGS'][i]} at Y={rect.y} (expected {expected_y})")
         
         # Test 2: Check if Settings button exists
         if hasattr(layout, 'MENU_SETTINGS_RECT'):
-            print("\n  ✅ Settings button layout position exists")
+            print("\n  [PASS] Settings button layout position exists")
         else:
-            print("\n  ❌ Settings button layout position missing")
+            print("\n  [FAIL] Settings button layout position missing")
         
         # Test 3: Test money display
         print("\n💰 Testing Money Display...")
@@ -62,9 +62,9 @@ def test_menu_layout():
         
         # Check if money position is adjusted for longer text
         if layout.HEADER_MONEY_POS[0] < 650:  # Should be moved left from original 650
-            print(f"  ✅ Money position adjusted to X={layout.HEADER_MONEY_POS[0]}")
+            print(f"  [PASS] Money position adjusted to X={layout.HEADER_MONEY_POS[0]}")
         else:
-            print(f"  ❌ Money position still at X={layout.HEADER_MONEY_POS[0]} (should be moved left)")
+            print(f"  [FAIL] Money position still at X={layout.HEADER_MONEY_POS[0]} (should be moved left)")
         
         # Test 4: Visual test (optional)
         print("\n🎨 Visual Test - Drawing menu...")
@@ -74,11 +74,11 @@ def test_menu_layout():
         pygame.image.save(screen, "test_menu_screenshot.png")
         print("  📸 Screenshot saved as 'test_menu_screenshot.png'")
         
-        print("\n✅ Main menu layout tests completed!")
+        print("\n[PASS] Main menu layout tests completed!")
         return True
         
     except Exception as e:
-        print(f"\n❌ Test failed: {e}")
+        print(f"\n[FAIL] Test failed: {e}")
         return False
     finally:
         pygame.quit()

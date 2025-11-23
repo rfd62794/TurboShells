@@ -41,7 +41,7 @@ def show_final_layout():
     for name, rect in buttons:
         print(f"{name:10} : Y={rect.y:3d} (Height: {rect.height})")
     
-    print(f"\n📊 Layout Summary:")
+    print(f"\n[REPORT] Layout Summary:")
     print(f"• Top button starts at Y={layout.MENU_ROSTER_RECT.y}")
     print(f"• Bottom button ends at Y={layout.MENU_SETTINGS_RECT.bottom}")
     print(f"• Total button height: {layout.MENU_SETTINGS_RECT.bottom - layout.MENU_ROSTER_RECT.y}px")
@@ -65,9 +65,9 @@ def show_final_layout():
     print(f"🔴 Red box: ROSTER (top button)")
     print(f"🟢 Green box: SETTINGS (bottom button)")
     
-    print("\n✅ All buttons successfully moved up!")
-    print("✅ Settings button added and functional!")
-    print("✅ Money display updated with 'Money: ' prefix!")
+    print("\n[PASS] All buttons successfully moved up!")
+    print("[PASS] Settings button added and functional!")
+    print("[PASS] Money display updated with 'Money: ' prefix!")
     
     pygame.quit()
 

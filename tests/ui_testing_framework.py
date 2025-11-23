@@ -655,15 +655,15 @@ class UITestRunner:
         print("\n🎨 UI Testing Report")
         print("=" * 50)
         print("Components Tested:")
-        print("  ✅ Button Components")
-        print("  ✅ Toggle Button Components")
-        print("  ✅ Turtle Card Components")
-        print("  ✅ Layout System")
-        print("  ✅ Rendering System")
-        print("  ✅ Mouse Interactions")
-        print("  ✅ Keyboard Navigation")
-        print("  ✅ Responsive Design")
-        print("  ✅ Accessibility Features")
+        print("  [PASS] Button Components")
+        print("  [PASS] Toggle Button Components")
+        print("  [PASS] Turtle Card Components")
+        print("  [PASS] Layout System")
+        print("  [PASS] Rendering System")
+        print("  [PASS] Mouse Interactions")
+        print("  [PASS] Keyboard Navigation")
+        print("  [PASS] Responsive Design")
+        print("  [PASS] Accessibility Features")
         print("\nUI Coverage: 85%+")
 
 if __name__ == "__main__":
@@ -676,7 +676,7 @@ if __name__ == "__main__":
     
     results = test_runner.run_tests()
     
-    print(f"\n📊 UI Test Results:")
+    print(f"\n[REPORT] UI Test Results:")
     print(f"Tests Run: {results['tests_run']}")
     print(f"Failures: {results['failures']}")
     print(f"Errors: {results['errors']}")
@@ -685,4 +685,4 @@ if __name__ == "__main__":
     # Generate UI report
     test_runner.generate_ui_report()
     
-    print("\n✅ UI testing framework execution complete!")
+    print("\n[PASS] UI testing framework execution complete!")

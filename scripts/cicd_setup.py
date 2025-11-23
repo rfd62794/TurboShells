@@ -30,7 +30,7 @@ class CICDSetup:
         
         for directory in directories:
             directory.mkdir(parents=True, exist_ok=True)
-            print(f"✅ Created directory: {directory}")
+            print(f"[PASS] Created directory: {directory}")
     
     def create_requirements_file(self):
         """Create requirements.txt for development dependencies"""
@@ -63,9 +63,9 @@ setuptools>=60.0.0
         try:
             with open(requirements_file, 'w') as f:
                 f.write(requirements)
-            print(f"✅ Created requirements file: {requirements_file}")
+            print(f"[PASS] Created requirements file: {requirements_file}")
         except Exception as e:
-            print(f"❌ Could not create requirements file: {e}")
+            print(f"[FAIL] Could not create requirements file: {e}")
     
     def create_makefile(self):
         """Create Makefile for common development tasks"""
@@ -89,12 +89,12 @@ help:
 setup:
 	python scripts/dev_automation.py --setup
 	python scripts/dev_automation.py --shortcuts
-	@echo "✅ Development environment setup complete"
+	@echo "[PASS] Development environment setup complete"
 
 # Install git hooks
 install-hooks:
 	python scripts/git_hooks.py --install
-	@echo "✅ Git hooks installed"
+	@echo "[PASS] Git hooks installed"
 
 # Quick tests
 test-quick:
@@ -128,12 +128,12 @@ clean:
 	find . -type f -name "development_report.json" -delete
 	find . -type f -name "daily_quality_report.json" -delete
 	find . -type f -name "release_report.json" -delete
-	@echo "✅ Cleaned temporary files"
+	@echo "[PASS] Cleaned temporary files"
 
 # Install development dependencies
 install:
 	pip install -r requirements-dev.txt
-	@echo "✅ Development dependencies installed"
+	@echo "[PASS] Development dependencies installed"
 """
         
         makefile_path = self.project_root / "Makefile"
@@ -141,9 +141,9 @@ install:
         try:
             with open(makefile_path, 'w') as f:
                 f.write(makefile_content)
-            print(f"✅ Created Makefile: {makefile_path}")
+            print(f"[PASS] Created Makefile: {makefile_path}")
         except Exception as e:
-            print(f"❌ Could not create Makefile: {e}")
+            print(f"[FAIL] Could not create Makefile: {e}")
     
     def create_vscode_tasks(self):
         """Create VS Code tasks for development"""
@@ -220,9 +220,9 @@ install:
         try:
             with open(tasks_file, 'w') as f:
                 json.dump(tasks_json, f, indent=2)
-            print(f"✅ Created VS Code tasks: {tasks_file}")
+            print(f"[PASS] Created VS Code tasks: {tasks_file}")
         except Exception as e:
-            print(f"❌ Could not create VS Code tasks: {e}")
+            print(f"[FAIL] Could not create VS Code tasks: {e}")
     
     def create_launch_json(self):
         """Create VS Code launch configuration"""
@@ -263,9 +263,9 @@ install:
         try:
             with open(launch_file, 'w') as f:
                 json.dump(launch_json, f, indent=2)
-            print(f"✅ Created VS Code launch config: {launch_file}")
+            print(f"[PASS] Created VS Code launch config: {launch_file}")
         except Exception as e:
-            print(f"❌ Could not create VS Code launch config: {e}")
+            print(f"[FAIL] Could not create VS Code launch config: {e}")
     
     def create_settings_json(self):
         """Create VS Code settings"""
@@ -302,9 +302,9 @@ install:
         try:
             with open(settings_file, 'w') as f:
                 json.dump(settings_json, f, indent=2)
-            print(f"✅ Created VS Code settings: {settings_file}")
+            print(f"[PASS] Created VS Code settings: {settings_file}")
         except Exception as e:
-            print(f"❌ Could not create VS Code settings: {e}")
+            print(f"[FAIL] Could not create VS Code settings: {e}")
     
     def create_development_readme(self):
         """Create development README"""
@@ -312,7 +312,7 @@ install:
 
 This document provides information for developers working on TurboShells.
 
-## 🚀 Quick Start
+## [START] Quick Start
 
 ### Setup Development Environment
 ```bash
@@ -347,7 +347,7 @@ make dev-report
 make clean
 ```
 
-## 🧪 Testing
+## [TEST] Testing
 
 ### Test Categories
 - **Unit Tests**: Individual component testing
@@ -390,7 +390,7 @@ python tests/comprehensive_test_runner.py --suite unit_tests
 - Performance validation
 - Documentation coverage
 
-## 📊 Development Automation
+## [REPORT] Development Automation
 
 ### Daily Quality Checks
 ```bash
@@ -407,7 +407,7 @@ python scripts/dev_automation.py --report
 python scripts/dev_automation.py --release
 ```
 
-## 🔧 Development Tools
+## [FIX] Development Tools
 
 ### VS Code Integration
 - Tasks for running tests and CI
@@ -513,13 +513,13 @@ Happy developing! 🎮
         try:
             with open(readme_file, 'w') as f:
                 f.write(readme_content)
-            print(f"✅ Created development README: {readme_file}")
+            print(f"[PASS] Created development README: {readme_file}")
         except Exception as e:
-            print(f"❌ Could not create development README: {e}")
+            print(f"[FAIL] Could not create development README: {e}")
     
     def setup_complete_infrastructure(self):
         """Set up complete CI/CD infrastructure"""
-        print("🚀 Setting up TurboShells CI/CD Infrastructure")
+        print("[START] Setting up TurboShells CI/CD Infrastructure")
         print("=" * 50)
         
         # Create directories
@@ -531,7 +531,7 @@ Happy developing! 🎮
         self.create_requirements_file()
         
         # Create Makefile
-        print("\n🔧 Creating Makefile...")
+        print("\n[FIX] Creating Makefile...")
         self.create_makefile()
         
         # Create VS Code configuration
@@ -544,7 +544,7 @@ Happy developing! 🎮
         print("\n📚 Creating development documentation...")
         self.create_development_readme()
         
-        print("\n✅ CI/CD infrastructure setup complete!")
+        print("\n[PASS] CI/CD infrastructure setup complete!")
         print("\nNext steps:")
         print("1. Install dependencies: pip install -r requirements-dev.txt")
         print("2. Set up environment: python scripts/dev_automation.py --setup")

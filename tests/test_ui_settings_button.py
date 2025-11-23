@@ -11,7 +11,7 @@ from core.systems.state_handler import StateHandler
 
 def test_settings_button():
     """Test the Settings button click handling."""
-    print("🧪 Testing Settings Button Functionality...")
+    print("[TEST] Testing Settings Button Functionality...")
     
     try:
         pygame.init()
@@ -50,28 +50,28 @@ def test_settings_button():
         
         # Check if settings manager was called
         if game_state.settings_manager.show_called:
-            print("  ✅ Settings button click handled correctly")
-            print("  ✅ Settings manager show_settings() was called")
+            print("  [PASS] Settings button click handled correctly")
+            print("  [PASS] Settings manager show_settings() was called")
         else:
-            print("  ❌ Settings button click not handled")
+            print("  [FAIL] Settings button click not handled")
         
         # Test 2: Verify settings are visible
         if game_state.settings_manager.is_visible():
-            print("  ✅ Settings overlay is now visible")
+            print("  [PASS] Settings overlay is now visible")
         else:
-            print("  ❌ Settings overlay is not visible")
+            print("  [FAIL] Settings overlay is not visible")
         
         # Test 3: Verify game state didn't change (settings is overlay, not new state)
         if game_state.state == STATE_MENU:
-            print("  ✅ Game state remained in MENU (correct for overlay)")
+            print("  [PASS] Game state remained in MENU (correct for overlay)")
         else:
-            print(f"  ❌ Game state changed to {game_state.state} (should stay MENU)")
+            print(f"  [FAIL] Game state changed to {game_state.state} (should stay MENU)")
         
-        print("\n✅ Settings button functionality tests completed!")
+        print("\n[PASS] Settings button functionality tests completed!")
         return True
         
     except Exception as e:
-        print(f"\n❌ Test failed: {e}")
+        print(f"\n[FAIL] Test failed: {e}")
         import traceback
         traceback.print_exc()
         return False

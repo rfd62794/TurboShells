@@ -60,7 +60,7 @@ class DevAutomation:
     
     def setup_development_environment(self) -> bool:
         """Set up development environment"""
-        print("🔧 Setting up development environment...")
+        print("[FIX] Setting up development environment...")
         
         tasks = [
             DevTask(
@@ -92,30 +92,30 @@ class DevAutomation:
         success_count = 0
         
         for task in tasks:
-            print(f"  📋 {task.description}")
+            print(f"  [INFO] {task.description}")
             self.log_message(f"Starting task: {task.name}")
             
             task_success, stdout, stderr = self.run_command(task.command)
             
             if task_success:
-                print(f"    ✅ {task.name} completed")
+                print(f"    [PASS] {task.name} completed")
                 self.log_message(f"Task completed: {task.name}")
                 success_count += 1
             else:
                 if task.critical:
-                    print(f"    ❌ {task.name} failed (critical)")
+                    print(f"    [FAIL] {task.name} failed (critical)")
                     self.log_message(f"Critical task failed: {task.name} - {stderr}")
                     return False
                 else:
-                    print(f"    ⚠️  {task.name} failed (non-critical)")
+                    print(f"    [WARN]  {task.name} failed (non-critical)")
                     self.log_message(f"Non-critical task failed: {task.name} - {stderr}")
         
-        print(f"\n✅ Development environment setup complete ({success_count}/{len(tasks)} tasks)")
+        print(f"\n[PASS] Development environment setup complete ({success_count}/{len(tasks)} tasks)")
         return True
     
     def run_daily_quality_check(self) -> bool:
         """Run daily quality checks"""
-        print("🔍 Running daily quality checks...")
+        print("[CHECK] Running daily quality checks...")
         self.log_message("Starting daily quality check")
         
         tasks = [
@@ -142,7 +142,7 @@ class DevAutomation:
         results = {}
         
         for task in tasks:
-            print(f"  🧪 {task.description}")
+            print(f"  [TEST] {task.description}")
             self.log_message(f"Running: {task.name}")
             
             task_success, stdout, stderr = self.run_command(task.command, timeout=task.timeout)
@@ -154,10 +154,10 @@ class DevAutomation:
             }
             
             if task_success:
-                print(f"    ✅ {task.name} passed")
+                print(f"    [PASS] {task.name} passed")
                 self.log_message(f"Task passed: {task.name}")
             else:
-                print(f"    ❌ {task.name} failed")
+                print(f"    [FAIL] {task.name} failed")
                 self.log_message(f"Task failed: {task.name}")
         
         # Save results
@@ -165,19 +165,19 @@ class DevAutomation:
         try:
             with open(results_file, 'w') as f:
                 json.dump(results, f, indent=2)
-            print(f"📄 Quality report saved to {results_file}")
+            print(f"[DOC] Quality report saved to {results_file}")
         except Exception as e:
-            print(f"⚠️  Could not save quality report: {e}")
+            print(f"[WARN]  Could not save quality report: {e}")
         
         # Overall success
         all_passed = all(result["success"] for result in results.values())
         
         if all_passed:
-            print("\n🎉 All daily quality checks passed!")
+            print("\n[SUCCESS] All daily quality checks passed!")
             self.log_message("Daily quality check: ALL PASSED")
         else:
             failed_count = sum(1 for result in results.values() if not result["success"])
-            print(f"\n⚠️  {failed_count}/{len(tasks)} quality checks failed")
+            print(f"\n[WARN]  {failed_count}/{len(tasks)} quality checks failed")
             self.log_message(f"Daily quality check: {failed_count} FAILED")
         
         return all_passed
@@ -210,25 +210,25 @@ class DevAutomation:
         ]
         
         for task in tasks:
-            print(f"  🔍 {task.description}")
+            print(f"  [CHECK] {task.description}")
             
             task_success, stdout, stderr = self.run_command(task.command, timeout=task.timeout)
             
             if task_success:
-                print(f"    ✅ {task.name}")
+                print(f"    [PASS] {task.name}")
             else:
-                print(f"    ❌ {task.name}")
+                print(f"    [FAIL] {task.name}")
                 print(f"       {stderr}")
                 self.log_message(f"Pre-commit check failed: {task.name}")
                 return False
         
-        print("✅ Pre-commit workflow passed!")
+        print("[PASS] Pre-commit workflow passed!")
         self.log_message("Pre-commit workflow: PASSED")
         return True
     
     def run_release_preparation(self) -> bool:
         """Run release preparation workflow"""
-        print("🚀 Running release preparation...")
+        print("[START] Running release preparation...")
         self.log_message("Starting release preparation")
         
         tasks = [
@@ -255,7 +255,7 @@ class DevAutomation:
         results = {}
         
         for task in tasks:
-            print(f"  🧪 {task.description}")
+            print(f"  [TEST] {task.description}")
             self.log_message(f"Running release check: {task.name}")
             
             task_success, stdout, stderr = self.run_command(task.command, timeout=task.timeout)
@@ -263,9 +263,9 @@ class DevAutomation:
             results[task.name] = task_success
             
             if task_success:
-                print(f"    ✅ {task.name}")
+                print(f"    [PASS] {task.name}")
             else:
-                print(f"    ❌ {task.name}")
+                print(f"    [FAIL] {task.name}")
                 self.log_message(f"Release check failed: {task.name}")
                 return False
         
@@ -281,17 +281,17 @@ class DevAutomation:
         try:
             with open(report_file, 'w') as f:
                 json.dump(release_report, f, indent=2)
-            print(f"📄 Release report saved to {report_file}")
+            print(f"[DOC] Release report saved to {report_file}")
         except Exception as e:
-            print(f"⚠️  Could not save release report: {e}")
+            print(f"[WARN]  Could not save release report: {e}")
         
-        print("✅ Release preparation complete!")
+        print("[PASS] Release preparation complete!")
         self.log_message("Release preparation: PASSED")
         return True
     
     def generate_development_report(self) -> Dict[str, Any]:
         """Generate development status report"""
-        print("📊 Generating development report...")
+        print("[REPORT] Generating development report...")
         
         # Check recent log entries
         recent_entries = []
@@ -348,15 +348,15 @@ class DevAutomation:
         try:
             with open(report_file, 'w') as f:
                 json.dump(report, f, indent=2)
-            print(f"📄 Development report saved to {report_file}")
+            print(f"[DOC] Development report saved to {report_file}")
         except Exception as e:
-            print(f"⚠️  Could not save development report: {e}")
+            print(f"[WARN]  Could not save development report: {e}")
         
         return report
     
     def create_development_shortcuts(self) -> bool:
         """Create development shortcut scripts"""
-        print("🔗 Creating development shortcuts...")
+        print("[LINK] Creating development shortcuts...")
         
         shortcuts = {
             "test": [sys.executable, "tests/comprehensive_test_runner.py", "--quick"],
@@ -378,9 +378,9 @@ pause
             try:
                 with open(batch_file, 'w') as f:
                     f.write(batch_content)
-                print(f"  ✅ Created {shortcut_name}.bat")
+                print(f"  [PASS] Created {shortcut_name}.bat")
             except Exception as e:
-                print(f"  ❌ Could not create {shortcut_name}.bat: {e}")
+                print(f"  [FAIL] Could not create {shortcut_name}.bat: {e}")
         
         return True
 
@@ -421,7 +421,7 @@ def main():
     
     elif args.report:
         report = automation.generate_development_report()
-        print(f"📊 Development report generated")
+        print(f"[REPORT] Development report generated")
         sys.exit(0)
     
     elif args.shortcuts:

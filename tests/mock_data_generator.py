@@ -334,7 +334,7 @@ if __name__ == "__main__":
     # Test the mock data generator
     generator = MockDataGenerator(seed=42)  # Reproducible tests
     
-    print("🧪 Testing Mock Data Generator")
+    print("[TEST] Testing Mock Data Generator")
     print("=" * 50)
     
     # Generate test turtle
@@ -356,4 +356,4 @@ if __name__ == "__main__":
     
     # Export test data
     generator.export_test_data('tests/mock_test_data.json')
-    print("\n✅ Mock data generator test complete!")
+    print("\n[PASS] Mock data generator test complete!")

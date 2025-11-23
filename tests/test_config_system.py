@@ -14,7 +14,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 def test_config_manager():
     """Test the configuration manager."""
-    print("🧪 Testing Configuration Manager...")
+    print("[TEST] Testing Configuration Manager...")
     
     try:
         from core.config import config_manager, GameConfig
@@ -35,16 +35,16 @@ def test_config_manager():
         # Test player profile
         assert config.player_profile.name == "Player", "Default player name incorrect"
         
-        print("✅ Configuration Manager tests passed")
+        print("[PASS] Configuration Manager tests passed")
         return True
         
     except Exception as e:
-        print(f"❌ Configuration Manager test failed: {e}")
+        print(f"[FAIL] Configuration Manager test failed: {e}")
         return False
 
 def test_graphics_manager():
     """Test the graphics manager."""
-    print("🧪 Testing Graphics Manager...")
+    print("[TEST] Testing Graphics Manager...")
     
     try:
         from core.graphics_manager import graphics_manager
@@ -70,16 +70,16 @@ def test_graphics_manager():
         assert "current_resolution" in info, "Display info missing current resolution"
         assert "quality_level" in info, "Display info missing quality level"
         
-        print("✅ Graphics Manager tests passed")
+        print("[PASS] Graphics Manager tests passed")
         return True
         
     except Exception as e:
-        print(f"❌ Graphics Manager test failed: {e}")
+        print(f"[FAIL] Graphics Manager test failed: {e}")
         return False
 
 def test_audio_manager():
     """Test the audio manager."""
-    print("🧪 Testing Audio Manager...")
+    print("[TEST] Testing Audio Manager...")
     
     try:
         from core.audio_manager import audio_manager
@@ -107,16 +107,16 @@ def test_audio_manager():
         assert "enabled" in info, "Audio info missing enabled status"
         assert "master_volume" in info, "Audio info missing master volume"
         
-        print("✅ Audio Manager tests passed")
+        print("[PASS] Audio Manager tests passed")
         return True
         
     except Exception as e:
-        print(f"❌ Audio Manager test failed: {e}")
+        print(f"[FAIL] Audio Manager test failed: {e}")
         return False
 
 def test_save_protection():
     """Test the save protection system."""
-    print("🧪 Testing Save Protection System...")
+    print("[TEST] Testing Save Protection System...")
     
     try:
         from core.save_protection import SaveProtectionManager
@@ -172,16 +172,16 @@ def test_save_protection():
         test_save_file.unlink()
         export_path.unlink()
         
-        print("✅ Save Protection System tests passed")
+        print("[PASS] Save Protection System tests passed")
         return True
         
     except Exception as e:
-        print(f"❌ Save Protection System test failed: {e}")
+        print(f"[FAIL] Save Protection System test failed: {e}")
         return False
 
 def test_configuration_persistence():
     """Test that configuration changes persist."""
-    print("🧪 Testing Configuration Persistence...")
+    print("[TEST] Testing Configuration Persistence...")
     
     try:
         from core.config import config_manager
@@ -212,16 +212,16 @@ def test_configuration_persistence():
         new_config.player_profile.name = "Player"
         new_manager.save_config()
         
-        print("✅ Configuration Persistence tests passed")
+        print("[PASS] Configuration Persistence tests passed")
         return True
         
     except Exception as e:
-        print(f"❌ Configuration Persistence test failed: {e}")
+        print(f"[FAIL] Configuration Persistence test failed: {e}")
         return False
 
 def main():
     """Run all tests."""
-    print("🚀 Starting Configuration System Tests")
+    print("[START] Starting Configuration System Tests")
     print("=" * 50)
     
     tests = [
@@ -241,13 +241,13 @@ def main():
         print()
     
     print("=" * 50)
-    print(f"📊 Test Results: {passed}/{total} tests passed")
+    print(f"[REPORT] Test Results: {passed}/{total} tests passed")
     
     if passed == total:
-        print("🎉 All tests passed! Phase 2 implementation is working correctly.")
+        print("[SUCCESS] All tests passed! Phase 2 implementation is working correctly.")
         return True
     else:
-        print("❌ Some tests failed. Please check the implementation.")
+        print("[FAIL] Some tests failed. Please check the implementation.")
         return False
 
 if __name__ == "__main__":

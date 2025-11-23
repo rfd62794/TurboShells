@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 def test_settings_view():
     """Test the settings view component."""
-    print("🧪 Testing Settings View...")
+    print("[TEST] Testing Settings View...")
     
     try:
         from ui.settings_view import SettingsView, SettingsTab
@@ -46,16 +46,16 @@ def test_settings_view():
         assert SettingsTab.GRAPHICS in settings_view.tab_content, "Graphics tab should have content"
         assert SettingsTab.AUDIO in settings_view.tab_content, "Audio tab should have content"
         
-        print("✅ Settings View tests passed")
+        print("[PASS] Settings View tests passed")
         return True
         
     except Exception as e:
-        print(f"❌ Settings View test failed: {e}")
+        print(f"[FAIL] Settings View test failed: {e}")
         return False
 
 def test_ui_components():
     """Test the UI components library."""
-    print("🧪 Testing UI Components...")
+    print("[TEST] Testing UI Components...")
     
     try:
         from ui.ui_components import Button, Checkbox, Slider, Dropdown, Label, Panel, ComponentStyle
@@ -102,16 +102,16 @@ def test_ui_components():
         panel.add_child(button)
         assert len(panel.children) == 1, "Panel should have one child after adding"
         
-        print("✅ UI Components tests passed")
+        print("[PASS] UI Components tests passed")
         return True
         
     except Exception as e:
-        print(f"❌ UI Components test failed: {e}")
+        print(f"[FAIL] UI Components test failed: {e}")
         return False
 
 def test_settings_manager():
     """Test the settings manager integration."""
-    print("🧪 Testing Settings Manager...")
+    print("[TEST] Testing Settings Manager...")
     
     try:
         from managers.settings_manager import SettingsManager, SettingsTab
@@ -152,16 +152,16 @@ def test_settings_manager():
         assert 'audio' in summary, "Summary should contain audio settings"
         assert 'controls' in summary, "Summary should contain controls settings"
         
-        print("✅ Settings Manager tests passed")
+        print("[PASS] Settings Manager tests passed")
         return True
         
     except Exception as e:
-        print(f"❌ Settings Manager test failed: {e}")
+        print(f"[FAIL] Settings Manager test failed: {e}")
         return False
 
 def test_settings_integration():
     """Test integration between settings components."""
-    print("🧪 Testing Settings Integration...")
+    print("[TEST] Testing Settings Integration...")
     
     try:
         from managers.settings_manager import SettingsManager
@@ -193,16 +193,16 @@ def test_settings_integration():
         success = settings_manager.reset_settings()
         assert success == True, "Settings reset should succeed"
         
-        print("✅ Settings Integration tests passed")
+        print("[PASS] Settings Integration tests passed")
         return True
         
     except Exception as e:
-        print(f"❌ Settings Integration test failed: {e}")
+        print(f"[FAIL] Settings Integration test failed: {e}")
         return False
 
 def test_interactive_demo():
     """Test interactive demo of the settings interface."""
-    print("🧪 Testing Interactive Demo (press ESC to exit)...")
+    print("[TEST] Testing Interactive Demo (press ESC to exit)...")
     
     try:
         from managers.settings_manager import SettingsManager
@@ -255,16 +255,16 @@ def test_interactive_demo():
         
         pygame.quit()
         
-        print("✅ Interactive Demo completed successfully")
+        print("[PASS] Interactive Demo completed successfully")
         return True
         
     except Exception as e:
-        print(f"❌ Interactive Demo failed: {e}")
+        print(f"[FAIL] Interactive Demo failed: {e}")
         return False
 
 def main():
     """Run all tests."""
-    print("🚀 Starting Settings UI Tests")
+    print("[START] Starting Settings UI Tests")
     print("=" * 50)
     
     tests = [
@@ -284,13 +284,13 @@ def main():
         print()
     
     print("=" * 50)
-    print(f"📊 Test Results: {passed}/{total} tests passed")
+    print(f"[REPORT] Test Results: {passed}/{total} tests passed")
     
     if passed == total:
-        print("🎉 All tests passed! Phase 3 implementation is working correctly.")
+        print("[SUCCESS] All tests passed! Phase 3 implementation is working correctly.")
         return True
     else:
-        print("❌ Some tests failed. Please check the implementation.")
+        print("[FAIL] Some tests failed. Please check the implementation.")
         return False
 
 if __name__ == "__main__":

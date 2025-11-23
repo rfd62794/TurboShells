@@ -24,9 +24,9 @@ def check_python_version():
     """Check if Python version is compatible."""
     version = sys.version_info
     if version < (3, 8):
-        print(f"❌ Python {version.major}.{version.minor} is not supported. Please use Python 3.8+")
+        print(f"[FAIL] Python {version.major}.{version.minor} is not supported. Please use Python 3.8+")
         return False
-    print(f"✅ Python {version.major}.{version.minor}.{version.micro} is compatible")
+    print(f"[PASS] Python {version.major}.{version.minor}.{version.micro} is compatible")
     return True
 
 
@@ -35,17 +35,17 @@ def setup_virtual_environment():
     venv_path = Path("venv")
     
     if venv_path.exists():
-        print("✅ Virtual environment already exists")
+        print("[PASS] Virtual environment already exists")
         return True
     
-    print("🔧 Creating virtual environment...")
+    print("[FIX] Creating virtual environment...")
     success, stdout, stderr = run_command(f"{sys.executable} -m venv venv")
     
     if success:
-        print("✅ Virtual environment created successfully")
+        print("[PASS] Virtual environment created successfully")
         return True
     else:
-        print(f"❌ Failed to create virtual environment: {stderr}")
+        print(f"[FAIL] Failed to create virtual environment: {stderr}")
         return False
 
 
@@ -62,16 +62,16 @@ def install_dependencies():
     # Upgrade pip first
     success, _, _ = run_command(f"{pip_cmd} install --upgrade pip")
     if not success:
-        print("⚠️  Failed to upgrade pip, continuing...")
+        print("[WARN]  Failed to upgrade pip, continuing...")
     
     # Install requirements
     success, stdout, stderr = run_command(f"{pip_cmd} install -r requirements.txt")
     
     if success:
-        print("✅ Dependencies installed successfully")
+        print("[PASS] Dependencies installed successfully")
         return True
     else:
-        print(f"❌ Failed to install dependencies: {stderr}")
+        print(f"[FAIL] Failed to install dependencies: {stderr}")
         return False
 
 
@@ -88,16 +88,16 @@ def install_dev_dependencies():
     success, stdout, stderr = run_command(f"{pip_cmd} install -e .[dev]")
     
     if success:
-        print("✅ Development dependencies installed successfully")
+        print("[PASS] Development dependencies installed successfully")
         return True
     else:
-        print(f"❌ Failed to install development dependencies: {stderr}")
+        print(f"[FAIL] Failed to install development dependencies: {stderr}")
         return False
 
 
 def setup_pre_commit():
     """Set up pre-commit hooks."""
-    print("🔗 Setting up pre-commit hooks...")
+    print("[LINK] Setting up pre-commit hooks...")
     
     if os.name == 'nt':  # Windows
         precommit_cmd = "venv\\Scripts\\pre-commit"
@@ -108,16 +108,16 @@ def setup_pre_commit():
     success, stdout, stderr = run_command(f"{precommit_cmd} install")
     
     if success:
-        print("✅ Pre-commit hooks installed successfully")
+        print("[PASS] Pre-commit hooks installed successfully")
         return True
     else:
-        print(f"❌ Failed to install pre-commit hooks: {stderr}")
+        print(f"[FAIL] Failed to install pre-commit hooks: {stderr}")
         return False
 
 
 def run_tests():
     """Run the test suite to verify setup."""
-    print("🧪 Running tests to verify setup...")
+    print("[TEST] Running tests to verify setup...")
     
     if os.name == 'nt':  # Windows
         pytest_cmd = "venv\\Scripts\\pytest"
@@ -127,17 +127,17 @@ def run_tests():
     success, stdout, stderr = run_command(f"{pytest_cmd} tests/ -v")
     
     if success:
-        print("✅ Tests passed successfully")
+        print("[PASS] Tests passed successfully")
         return True
     else:
-        print(f"⚠️  Some tests failed: {stderr}")
+        print(f"[WARN]  Some tests failed: {stderr}")
         return False
 
 
 def print_next_steps():
     """Print next steps for the developer."""
-    print("\n🎉 Development environment setup complete!")
-    print("\n📋 Next steps:")
+    print("\n[SUCCESS] Development environment setup complete!")
+    print("\n[INFO] Next steps:")
     print("1. Activate the virtual environment:")
     if os.name == 'nt':  # Windows
         print("   venv\\Scripts\\activate")
@@ -157,7 +157,7 @@ def print_next_steps():
 
 def main():
     """Main setup function."""
-    print("🚀 TurboShells Development Environment Setup")
+    print("[START] TurboShells Development Environment Setup")
     print("=" * 50)
     
     # Check Python version
@@ -178,7 +178,7 @@ def main():
     
     # Set up pre-commit hooks
     if not setup_pre_commit():
-        print("⚠️  Pre-commit setup failed, but you can continue without it")
+        print("[WARN]  Pre-commit setup failed, but you can continue without it")
     
     # Run tests
     run_tests()
