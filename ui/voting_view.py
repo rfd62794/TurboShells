@@ -922,7 +922,6 @@ class VotingView:
     def handle_click(self, pos: Tuple[int, int]):
         """Handle mouse click"""
         x, y = pos
-        print(f"Click at ({x}, {y})")
         
         # Check feedback popup
         if self.show_feedback:
@@ -937,18 +936,14 @@ class VotingView:
             return
         
         current_design = designs[self.current_design_index]
-        print(f"Current design voting status: {current_design.voting_status}")
         
         # Check star ratings using screen coordinates directly
         if current_design.voting_status == 'pending':
             categories = current_design.rating_categories
-            print(f"Categories: {list(categories.keys())}")
             
             # Check if click is in right panel scrollable area
             right_panel_start = self.left_panel_width + 30
-            print(f"Right panel starts at x={right_panel_start}")
             if x >= right_panel_start and y >= 200:
-                print("Click is in right panel area")
                 y_offset = 0
                 for category_name in categories:
                     # Calculate screen position for this category's stars
@@ -956,29 +951,56 @@ class VotingView:
                     
                     # Check if this star row is visible on screen
                     if star_y_screen + 20 >= 200 and star_y_screen <= self.height:
-                        print(f"  Checking category '{category_name}' at y_screen={star_y_screen}")
                         for i in range(5):
                             star_spacing = 35
                             star_x_screen = self.left_panel_width + 30 + 30 + i * star_spacing  # left_panel + 30 + star_start_x
                             
-                            # Debug 5th star specifically
-                            if i == 4:  # 5th star (0-indexed)
-                                print(f"    5th star: screen_x={star_x_screen}, click_x={x}, range={star_x_screen-2}-{star_x_screen+22}")
-                            
-                            # Click area exactly matches star size (20px) with small padding
-                            click_padding = 2
+                            # Make click area larger and more forgiving
+                            click_padding = 8  # Increased from 2 to 8 for better detection
                             if (star_x_screen - click_padding <= x <= star_x_screen + 20 + click_padding and 
                                 star_y_screen - click_padding <= y <= star_y_screen + 20 + click_padding):
                                 # Set rating for this category
-                                print(f"    >>> CLICKED STAR {i+1} for {category_name}")
                                 self.selected_ratings[category_name] = i + 1
                                 return
-                    else:
-                        print(f"  Category '{category_name}' not visible (y_screen={star_y_screen})")
                     
                     y_offset += 120  # 120px per category
-            else:
-                print(f"Click NOT in right panel area (x={x} < {right_panel_start} or y={y} < 200)")
+        
+        # Check submit button (matching new scrolled layout)
+        if self._can_submit_ratings():
+            # Calculate submit button position in scrolled layout
+            categories = current_design.rating_categories
+            button_y_offset = len(categories) * 120  # After all categories
+            button_screen_y = 200 + button_y_offset - self.scroll_offset
+            
+            # Check if button is visible and clicked
+            if button_screen_y >= 200 and button_screen_y + 50 <= self.height:
+                button_x = self.left_panel_width + (self.right_panel_width - 200) // 2
+                button_width = 200
+                button_height = 50
+                
+                if (button_x <= x <= button_x + button_width and
+                    button_screen_y <= y <= button_screen_y + button_height):
+                    result = self._submit_ratings()
+                    if result:
+                        return "vote_completed"
+        
+        # Check navigation buttons (matching new right panel positions)
+        if self.current_design_index > 0:
+            nav_center_x = self.left_panel_width + self.right_panel_width // 2
+            nav_y = 90
+            prev_rect = pygame.Rect(nav_center_x - 60, nav_y, 50, 40)
+            if prev_rect.collidepoint(pos):
+                self.current_design_index -= 1
+                return None
+        
+        designs = self.voting_system.daily_designs
+        if self.current_design_index < len(designs) - 1:
+            nav_center_x = self.left_panel_width + self.right_panel_width // 2
+            nav_y = 90
+            next_rect = pygame.Rect(nav_center_x + 20, nav_y, 50, 40)
+            if next_rect.collidepoint(pos):
+                self.current_design_index += 1
+                return None
         
         # Check submit button (matching new scrolled layout)
         if self._can_submit_ratings():
@@ -1081,54 +1103,3 @@ class VotingView:
             'daily_status': self.voting_system.get_daily_status(),
             'can_submit': self._can_submit_ratings()
         }
-    
-    def handle_click(self, pos):
-        """Handle mouse clicks in the voting interface"""
-        x, y = pos
-        
-        # Check submit button (matching new right panel position)
-        if self._can_submit_ratings():
-            button_x = self.left_panel_width + (self.right_panel_width - 200) // 2
-            button_y = self.height - 80
-            submit_rect = pygame.Rect(button_x, button_y, 200, 50)
-            if submit_rect.collidepoint(pos):
-                result = self._submit_ratings()
-                if result:
-                    return "vote_completed"
-        
-        # Check navigation buttons (matching new right panel positions)
-        if self.current_design_index > 0:
-            nav_center_x = self.left_panel_width + self.right_panel_width // 2
-            nav_y = 90
-            prev_rect = pygame.Rect(nav_center_x - 60, nav_y, 50, 40)
-            if prev_rect.collidepoint(pos):
-                self.current_design_index -= 1
-                return None
-        
-        designs = self.voting_system.daily_designs
-        if self.current_design_index < len(designs) - 1:
-            nav_center_x = self.left_panel_width + self.right_panel_width // 2
-            nav_y = 90
-            next_rect = pygame.Rect(nav_center_x + 20, nav_y, 50, 40)
-            if next_rect.collidepoint(pos):
-                self.current_design_index += 1
-                return None
-        
-        # Check rating stars (matching new right panel positions)
-        current_design = designs[self.current_design_index]
-        if current_design.voting_status != 'completed':
-            controls_x = self.left_panel_width + 30
-            controls_y = 200  # Updated to match new positioning
-            y_offset = 0
-            categories = current_design.rating_categories
-            for category_name, category_data in categories.items():
-                star_x = controls_x
-                star_y = controls_y + y_offset + 55
-                for star in range(1, 6):
-                    star_rect = pygame.Rect(star_x + (star - 1) * 45, star_y, 35, 35)  # Larger spacing
-                    if star_rect.collidepoint(pos):
-                        self.selected_ratings[category_name] = star
-                        return None
-                y_offset += 120
-        
-        return None
