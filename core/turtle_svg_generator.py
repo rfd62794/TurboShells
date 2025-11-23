@@ -48,11 +48,11 @@ class TurtleSVGGenerator:
         components = [
             ('shadow', self.create_shadow, size),
             ('tail', self.create_tail, size),
-            ('legs', self.create_legs, size, svg_params.get('legs', {})),
-            ('body', self.create_body, size, svg_params.get('body', {})),
-            ('shell', self.create_shell, size, svg_params.get('shell', {})),
-            ('head', self.create_head, size, svg_params.get('head', {})),
-            ('eyes', self.create_eyes, size, svg_params.get('eyes', {}))
+            ('legs', self.create_legs, svg_params.get('legs', {}), size),
+            ('body', self.create_body, svg_params.get('body', {}), size),
+            ('shell', self.create_shell, svg_params.get('shell', {}), size),
+            ('head', self.create_head, svg_params.get('head', {}), size),
+            ('eyes', self.create_eyes, svg_params.get('eyes', {}), size)
         ]
         
         for component_name, generator_func, *args in components:
@@ -227,6 +227,12 @@ class TurtleSVGGenerator:
         leg_color = leg_params.get('stroke', '#654321')  # Dark brown default
         leg_thickness = leg_params.get('stroke_width', 3.0)
         leg_length_factor = leg_params.get('length_factor', 1.0)
+        
+        # Ensure numeric values
+        if isinstance(leg_thickness, dict):
+            leg_thickness = 3.0
+        if isinstance(leg_length_factor, dict):
+            leg_length_factor = 1.0
         
         legs_group = draw.Group()
         
