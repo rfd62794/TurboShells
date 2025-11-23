@@ -16,7 +16,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from core.visual_genetics import VisualGenetics
 from core.genetic_svg_mapper import GeneticToSVGMapper
 from core.turtle_svg_generator import TurtleSVGGenerator
-from core.svg_tkinter_renderer import get_svg_renderer
+from core.svg_tkinter_renderer_fixed import get_svg_renderer
 from core.voting_system import VotingSystem
 from core.genetic_pool_manager import GeneticPoolManager
 
@@ -311,8 +311,8 @@ class VisualGeneticsDemo:
         # Show renderer capabilities
         capabilities = self.renderer.get_rendering_capabilities()
         print(f"Renderer: {capabilities['renderer_type']}")
-        print(f"Primary converter: {capabilities['primary_converter']}")
-        print(f"Available converters: {', '.join(capabilities['available_converters']) or 'none'}")
+        print(f"SVG Parsing: {capabilities['svg_parsing']}")
+        print(f"PIL Drawing: {capabilities['pil_drawing']}")
         print(f"Can render SVG: {capabilities['can_render_svg']}")
         print()
         
