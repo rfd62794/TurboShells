@@ -16,7 +16,8 @@ def draw_race(screen, font, game_state):
     pygame.draw.line(screen, WHITE, (TRACK_LENGTH_PIXELS + 40, 50), (TRACK_LENGTH_PIXELS + 40, 500), 5)
 
     # Draw lanes and turtles
-    for i, turtle in enumerate(game_state.roster):
+    race_turtles = game_state.race_manager.race_roster if hasattr(game_state.race_manager, 'race_roster') else game_state.roster
+    for i, turtle in enumerate(race_turtles):
         lane_y = 150 + (i * 100)
         pygame.draw.rect(screen, (30, 30, 30), (0, lane_y - 20, SCREEN_WIDTH, 80))
 
@@ -40,7 +41,7 @@ def draw_race(screen, font, game_state):
     screen.blit(four_txt, (layout.SPEED_4X_RECT.x + 10, layout.SPEED_4X_RECT.y + 10))
 
     # Progress bar (simple overall race progress for player turtle)
-    player = game_state.roster[0]
+    player = race_turtles[0] if race_turtles else None
     pygame.draw.rect(screen, GRAY, layout.PROGRESS_BAR_RECT, 1)
     if player:
         pct = min(1.0, player.race_distance / TRACK_LENGTH_LOGIC)
