@@ -231,298 +231,405 @@ def draw_turtle_visual(screen, turtle, position, size):
 
 ---
 
-## 4. Phase 12: Community Store & Genetic Democracy
+## 4. Phase 12: Community Store & Genetic Democracy (Single-Player)
 
-### 4.1 Community-Driven Store System
+### 4.1 AI-Driven Community Store System
 
-#### **Player Store Concept**
-Transform the economic system from a simple shop to a community-driven marketplace where players can:
+#### **Single-Player Marketplace Concept**
+Create a simulated community marketplace where the player interacts with AI traders and community trends:
 
-- **Sell Excess Turtles**: List unwanted turtles from their roster
-- **Dynamic Pricing**: AI-valued based on stats, age, and race history
-- **Community Trading**: Buy and sell with other players
-- **Genetic Marketplace**: Special focus on visual traits and rarity
+- **Player Store**: Sell excess turtles to AI buyers with dynamic pricing
+- **AI Marketplace**: Simulated community of AI traders with preferences and trends
+- **Community Voting**: AI-simulated community preferences that the player can influence
+- **Market Dynamics**: AI-driven supply/demand and trend evolution
 
-#### **Store Interface Design**
+#### **AI Community Simulation**
 ```python
-class CommunityStore:
+class AICommunitySimulation:
     def __init__(self):
-        self.listings = []
-        self.trending_designs = []
-        self.rating_system = DesignRatingSystem()
+        self.ai_traders = self.generate_ai_traders(50)  # 50 AI community members
+        self.community_preferences = self.initialize_preferences()
+        self.market_trends = {}
+        self.voting_patterns = {}
     
-    def create_listing(self, turtle, seller_id, asking_price=None):
+    def generate_ai_traders(self, count):
+        traders = []
+        for i in range(count):
+            trader = {
+                'id': f"ai_trader_{i}",
+                'name': self.generate_trader_name(),
+                'preferences': self.generate_preferences(),
+                'budget': random.randint(100, 5000),
+                'specialty': random.choice(['racing', 'collecting', 'breeding', 'trading']),
+                'personality': random.choice(['aggressive', 'conservative', 'trendy', 'specialist'])
+            }
+            traders.append(trader)
+        return traders
+    
+    def simulate_daily_voting(self, designs):
+        # AI community votes on designs based on their preferences
+        for design in designs:
+            total_votes = 0
+            total_rating = 0
+            
+            for trader in self.ai_traders:
+                if random.random() < trader['personality']['voting_likelihood']:
+                    rating = self.calculate_ai_preference(trader, design)
+                    total_votes += 1
+                    total_rating += rating
+            
+            design['ai_votes'] = total_votes
+            design['ai_average_rating'] = total_rating / max(1, total_votes)
+```
+
+#### **Player Store Interface**
+```python
+class PlayerStore:
+    def __init__(self, ai_community):
+        self.player_listings = []
+        self.ai_community = ai_community
+        self.sales_history = []
+        self.reputation = 0
+    
+    def create_listing(self, turtle, asking_price=None):
         # AI pricing if no price specified
         if asking_price is None:
-            asking_price = self.calculate_turtle_value(turtle)
+            asking_price = self.calculate_ai_market_value(turtle)
         
-        listing = StoreListing(turtle, seller_id, asking_price)
-        self.listings.append(listing)
+        listing = {
+            'id': generate_uuid(),
+            'turtle': turtle,
+            'asking_price': asking_price,
+            'listed_date': datetime.now(),
+            'views': 0,
+            'inquiries': 0,
+            'status': 'active'
+        }
+        
+        self.player_listings.append(listing)
+        self.notify_ai_traders(listing)
         return listing.id
     
-    def calculate_turtle_value(self, turtle):
-        # Multi-factor valuation
-        base_value = self.calculate_stat_value(turtle.stats)
-        age_modifier = self.calculate_age_modifier(turtle.age)
-        history_bonus = self.calculate_race_history_bonus(turtle.race_history)
-        visual_value = self.calculate_visual_rarity(turtle.visual_genetics)
+    def simulate_ai_interest(self, listing):
+        # Simulate AI traders discovering and considering the listing
+        interested_traders = []
         
-        return base_value * age_modifier + history_bonus + visual_value
+        for trader in self.ai_community.ai_traders:
+            interest_level = self.calculate_trader_interest(trader, listing)
+            
+            if interest_level > 0.3:  # 30% interest threshold
+                interested_traders.append({
+                    'trader': trader,
+                    'interest': interest_level,
+                    'offer_price': self.calculate_offer_price(trader, listing, interest_level)
+                })
+        
+        return interested_traders
 ```
 
-#### **Advanced Pricing Algorithm**
+### 4.2 Single-Player Genetic Democracy
+
+#### **AI Community Voting System**
+The player influences simulated community preferences that affect genetic output:
+
+- **Daily Design Showcase**: 5 AI-generated designs with community voting simulation
+- **Player Influence**: Player's vote has extra weight in community preferences
+- **AI Voting Patterns**: Different AI personality types vote differently
+- **Trend Evolution**: Community preferences evolve over time based on player influence
+
+#### **Player Influence Mechanics**
 ```python
-def calculate_comprehensive_value(self, turtle):
-    # Base stats value (40% weight)
-    stat_value = sum(turtle.stats.values()) * STAT_MULTIPLIER
+class SinglePlayerGeneticInfluence:
+    def __init__(self, ai_community):
+        self.ai_community = ai_community
+        self.player_influence_weight = 2.0  # Player vote counts as 2 AI votes
+        self.influence_history = []
+        self.community_trends = {}
     
-    # Age factor (20% weight) - younger is better
-    age_factor = max(0.1, (100 - turtle.age) / 100)
+    def vote_for_design(self, design_id, player_rating):
+        # Record player vote with extra influence
+        self.influence_history.append({
+            'design_id': design_id,
+            'player_rating': player_rating,
+            'date': datetime.now()
+        })
+        
+        # Update community preferences based on player influence
+        self.update_community_trends(design_id, player_rating)
+        
+        # Apply to genetic weight system
+        self.update_genetic_weights(design_id, player_rating)
     
-    # Race history value (25% weight)
-    history_value = 0
-    if turtle.race_history:
-        for race in turtle.race_history[-10:]:  # Last 10 races
-            if race['position'] == 1:
-                history_value += 50
-            elif race['position'] == 2:
-                history_value += 25
-            elif race['position'] == 3:
-                history_value += 10
-    
-    # Visual rarity value (15% weight)
-    visual_rarity = self.calculate_visual_rarity_score(turtle.visual_genetics)
-    
-    total_value = (stat_value * 0.4) + (age_factor * 100 * 0.2) + (history_value * 0.25) + (visual_rarity * 0.15)
-    
-    return int(total_value)
+    def update_community_trends(self, design_id, player_rating):
+        # Player vote influences AI community preferences
+        design = self.find_design(design_id)
+        
+        # Gradually shift AI preferences toward player choices
+        for trait in design['genetics']:
+            current_preference = self.community_trends.get(trait, 0.5)
+            player_preference = self.extract_trait_preference(design['genetics'], trait)
+            
+            # Player influence gradually shifts community preference
+            shift = (player_preference - current_preference) * 0.1  # 10% shift per vote
+            new_preference = current_preference + shift
+            
+            self.community_trends[trait] = max(0.1, min(0.9, new_preference))
 ```
 
-### 4.2 Genetic Democracy: Design Voting System
-
-#### **Community Design Voting**
-Empower players to influence the genetic output through democratic voting:
-
-- **Daily Design Showcase**: 5 randomly generated shell designs featured daily
-- **1-5 Star Rating System**: Players rate designs on aesthetics and appeal
-- **Genetic Influence**: Higher-rated designs have increased probability in future generations
-- **Rarity Boost**: Top-rated designs become more valuable and sought-after
-
-#### **Voting Interface**
+#### **Community-Generated Designs**
 ```python
-class DesignVotingSystem:
-    def __init__(self):
-        self.daily_designs = []
-        self.voting_history = {}
-        self.genetic_weights = {}
+class CommunityDesignGenerator:
+    def __init__(self, ai_community):
+        self.ai_community = ai_community
+        self.design_history = []
     
     def generate_daily_designs(self):
-        # Generate 5 random visual genetics combinations
-        self.daily_designs = []
-        for _ in range(5):
-            design = self.generate_random_visual_genetics()
-            self.daily_designs.append({
-                'id': design['id'],
-                'genetics': design,
+        # Generate designs based on current community trends
+        daily_designs = []
+        
+        for i in range(5):
+            # Blend community preferences with random generation
+            base_design = self.generate_random_visual_genetics()
+            community_influence = self.apply_community_trends(base_design)
+            
+            design = {
+                'id': generate_uuid(),
+                'name': self.generate_design_name(),
+                'genetics': community_influence,
+                'creator': self.select_ai_creator(),
+                'creation_date': datetime.now(),
                 'votes': [],
-                'average_rating': 0,
-                'total_votes': 0
-            })
-    
-    def vote_for_design(self, design_id, user_id, rating):
-        # Record vote
-        design = self.find_design(design_id)
-        design['votes'].append({'user_id': user_id, 'rating': rating})
-        design['total_votes'] += 1
-        design['average_rating'] = sum(v['rating'] for v in design['votes']) / design['total_votes']
+                'ai_votes': 0,
+                'ai_average_rating': 0
+            }
+            
+            daily_designs.append(design)
         
-        # Update genetic weights
-        self.update_genetic_influence(design_id, rating)
+        return daily_designs
     
-    def update_genetic_influence(self, design_id, rating):
-        # Higher ratings increase genetic probability
-        influence_multiplier = rating / 5.0  # Normalize to 0-1
-        self.genetic_weights[design_id] = influence_multiplier
-```
-
-#### **Genetic Integration**
-```python
-class CommunityInfluencedGenetics:
-    def __init__(self, voting_system):
-        self.voting_system = voting_system
-        self.base_genetics = self.load_base_genetics()
-    
-    def generate_turtle_genetics(self, parent_genetics=None):
-        # Start with base genetics or parent inheritance
-        if parent_genetics:
-            child_genetics = self.inherit_from_parents(parent_genetics)
-        else:
-            child_genetics = self.generate_random_genetics()
-        
-        # Apply community influence
-        community_influence = self.apply_community_preferences(child_genetics)
-        
-        return self.merge_genetics(child_genetics, community_influence)
-    
-    def apply_community_preferences(self, base_genetics):
-        # Weight random generation based on community preferences
+    def apply_community_trends(self, base_genetics):
+        # Modify base genetics based on community preferences
         influenced_genetics = base_genetics.copy()
         
-        # Get top community designs
-        top_designs = self.voting_system.get_top_rated_designs(limit=3)
-        
-        # Blend in popular traits
-        for design in top_designs:
-            influence_weight = self.voting_system.genetic_weights[design['id']]
-            
-            # Apply color influences
-            if random.random() < influence_weight:
-                influenced_genetics['shell_base_color'] = self.blend_colors(
-                    base_genetics['shell_base_color'],
-                    design['genetics']['shell_base_color'],
-                    influence_weight
-                )
-            
-            # Apply pattern influences
-            if random.random() < influence_weight:
-                influenced_genetics['shell_pattern_type'] = design['genetics']['shell_pattern_type']
+        for trait, preference in self.ai_community.community_trends.items():
+            if trait in influenced_genetics:
+                # Shift trait toward community preference
+                current_value = influenced_genetics[trait]
+                preferred_value = self.get_preferred_value(trait, preference)
+                
+                # Blend current value with preferred value
+                blend_factor = 0.3  # 30% community influence
+                new_value = self.blend_trait_values(current_value, preferred_value, blend_factor)
+                influenced_genetics[trait] = new_value
         
         return influenced_genetics
 ```
 
-### 4.3 Store Features & Economics
+### 4.3 AI Trader Personalities & Behaviors
 
-#### **Player Storefront**
-- **Personal Store**: Each player has their own store page
-- **Store Reputation**: Based on successful trades and turtle quality
-- **Featured Turtles**: Highlight rare or valuable turtles
-- **Sales History**: Track marketplace performance
+#### **Diverse AI Community**
+Create different AI personality types that drive market behavior:
 
-#### **Market Dynamics**
+- **Aggressive Traders**: Quick to buy, focus on high-value turtles
+- **Conservative Collectors**: Careful buyers, focus on rare traits
+- **Trend Followers**: Buy what's popular, drive market trends
+- **Specialist Breeders**: Focus on specific trait combinations
+
+#### **AI Behavior Simulation**
 ```python
-class MarketplaceEconomics:
-    def __init__(self):
-        self.market_trends = {}
-        self.price_history = {}
-        self.demand_indicators = {}
+class AITraderPersonality:
+    def __init__(self, personality_type):
+        self.type = personality_type
+        self.behavior_params = self.get_behavior_parameters()
     
-    def update_market_trends(self):
-        # Analyze recent sales data
-        recent_sales = self.get_recent_sales(days=7)
-        
-        # Update demand for different traits
-        for trait_type in ['shell_pattern_type', 'body_pattern_type']:
-            trait_demand = self.calculate_trait_demand(trait_type, recent_sales)
-            self.demand_indicators[trait_type] = trait_demand
-        
-        # Update price trends
-        for stat in ['speed', 'max_energy', 'recovery', 'swim', 'climb']:
-            stat_prices = [sale['turtle'].stats[stat] for sale in recent_sales]
-            self.price_history[stat] = self.calculate_price_trend(stat_prices)
-    
-    def calculate_market_price(self, turtle):
-        base_price = self.calculate_comprehensive_value(turtle)
-        
-        # Apply market modifiers
-        for trait_type, value in turtle.visual_genetics.items():
-            if trait_type in self.demand_indicators:
-                demand_multiplier = self.demand_indicators[trait_type]
-                base_price *= (1 + demand_multiplier)
-        
-        return int(base_price)
-```
-
-#### **Store Management Tools**
-- **Bulk Listing**: List multiple turtles at once
-- **Price Suggestions**: AI-recommended pricing based on market data
-- **Sales Analytics**: Track performance and optimize pricing
-- **Inventory Management**: Organize and filter turtle collection
-
-### 4.4 Social Features & Community Building
-
-#### **Community Leaderboards**
-- **Top Sellers**: Most successful traders
-- **Trendsetters**: Players whose designs get high ratings
-- **Collection Masters**: Players with rare turtle collections
-- **Breeding Experts**: Players with successful breeding programs
-
-#### **Social Integration**
-```python
-class CommunityFeatures:
-    def __init__(self):
-        self.player_profiles = {}
-        self.social_networks = {}
-        self.community_events = []
-    
-    def create_player_profile(self, player_id):
-        profile = {
-            'player_id': player_id,
-            'store_reputation': 0,
-            'total_sales': 0,
-            'design_ratings_given': 0,
-            'favorite_designs': [],
-            'trading_partners': [],
-            'achievements': []
+    def get_behavior_parameters(self):
+        personalities = {
+            'aggressive': {
+                'buy_speed': 0.8,  # 80% chance to buy quickly
+                'price_sensitivity': 0.3,  # Willing to pay premium
+                'trend_following': 0.4,
+                'specialty_focus': 0.2
+            },
+            'conservative': {
+                'buy_speed': 0.2,  # 20% chance to buy quickly
+                'price_sensitivity': 0.9,  # Very price sensitive
+                'trend_following': 0.2,
+                'specialty_focus': 0.7
+            },
+            'trendy': {
+                'buy_speed': 0.6,
+                'price_sensitivity': 0.5,
+                'trend_following': 0.9,  # Strongly follows trends
+                'specialty_focus': 0.3
+            },
+            'specialist': {
+                'buy_speed': 0.4,
+                'price_sensitivity': 0.6,
+                'trend_following': 0.3,
+                'specialty_focus': 0.9  # Very focused on specific traits
+            }
         }
-        self.player_profiles[player_id] = profile
-        return profile
+        return personalities[self.type]
     
-    def add_trading_partner(self, player_id, partner_id):
-        if partner_id not in self.player_profiles[player_id]['trading_partners']:
-            self.player_profiles[player_id]['trading_partners'].append(partner_id)
-    
-    def award_achievement(self, player_id, achievement):
-        self.player_profiles[player_id]['achievements'].append(achievement)
+    def evaluate_turtle(self, turtle, market_trends):
+        base_value = self.calculate_base_value(turtle)
+        
+        # Apply personality-based modifiers
+        if self.behavior_params['trend_following'] > 0.5:
+            trend_bonus = self.calculate_trend_bonus(turtle, market_trends)
+            base_value *= (1 + trend_bonus * self.behavior_params['trend_following'])
+        
+        if self.behavior_params['specialty_focus'] > 0.5:
+            specialty_bonus = self.calculate_specialty_bonus(turtle)
+            base_value *= (1 + specialty_bonus * self.behavior_params['specialty_focus'])
+        
+        return base_value
 ```
 
-#### **Community Events**
-- **Design Contests**: Weekly themed design competitions
-- **Trading Festivals**: Special marketplace events with reduced fees
-- **Breeding Tournaments**: Community breeding challenges
-- **Showcase Events**: Display rare and valuable turtles
+### 4.4 Single-Player Social Features
 
-### 4.5 Technical Implementation
+#### **Community Feel Without Multiplayer**
+Create the feeling of community through AI interactions:
 
-#### **Store Backend Architecture**
+- **AI Messages**: Traders send inquiries and offers with personality
+- **Community News**: Simulated community events and announcements
+- **Market Reports**: AI-generated market analysis and trends
+- **Reputation System**: Build reputation with AI community
+
+#### **AI Communication System**
 ```python
-class CommunityStoreBackend:
+class AICommunicationSystem:
     def __init__(self):
-        self.database = self.connect_to_database()
-        self.cache = RedisCache()
-        self.messaging = MessageQueue()
+        self.message_templates = self.load_message_templates()
+        self.communication_history = []
     
-    def create_listing(self, turtle_data, seller_info):
-        # Validate listing
-        if not self.validate_turtle_ownership(turtle_data, seller_info):
-            raise InvalidOwnershipError()
+    def generate_trader_message(self, trader, listing, message_type):
+        templates = self.message_templates[message_type]
+        template = random.choice(templates[trader['personality']])
         
-        # Create listing record
-        listing = {
-            'id': generate_uuid(),
-            'turtle_id': turtle_data['id'],
-            'seller_id': seller_info['id'],
-            'price': self.calculate_suggested_price(turtle_data),
-            'created_at': datetime.now(),
-            'status': 'active'
+        message = template.format(
+            trader_name=trader['name'],
+            turtle_name=listing['turtle'].name,
+            price=listing['asking_price'],
+            specialty=trader['specialty']
+        )
+        
+        return {
+            'trader': trader,
+            'message': message,
+            'type': message_type,
+            'timestamp': datetime.now()
+        }
+    
+    def simulate_community_news(self):
+        news_events = [
+            "Turtle collectors are showing increased interest in spiral shell patterns!",
+            "Racing enthusiasts are driving up prices for high-speed turtles",
+            "Rare color combinations are trending in the community",
+            "Breeding specialists are seeking turtles with balanced stats"
+        ]
+        
+        return random.choice(news_events)
+```
+
+### 4.5 Market Analytics & Insights
+
+#### **Single-Player Market Intelligence**
+Provide the player with insights about the simulated community:
+
+- **Trend Reports**: What AI traders are buying and why
+- **Price Analysis**: Market trends and pricing recommendations
+- **Community Preferences**: Understanding AI trader behaviors
+- **Investment Opportunities**: Market gaps and opportunities
+
+#### **Analytics Dashboard**
+```python
+class SinglePlayerMarketAnalytics:
+    def __init__(self, ai_community):
+        self.ai_community = ai_community
+        self.market_data = []
+        self.trend_analysis = {}
+    
+    def generate_market_report(self):
+        report = {
+            'current_trends': self.analyze_current_trends(),
+            'price_movements': self.analyze_price_changes(),
+            'trader_behavior': self.analyze_trader_patterns(),
+            'opportunities': self.identify_opportunities(),
+            'community_sentiment': self.analyze_community_sentiment()
         }
         
-        # Save to database
-        self.database.save_listing(listing)
+        return report
+    
+    def analyze_current_trends(self):
+        # What traits are AI traders favoring?
+        trait_popularity = {}
         
-        # Update cache
-        self.cache.set(f"listing:{listing['id']}", listing)
+        for trader in self.ai_community.ai_traders:
+            for trait, preference in trader['preferences'].items():
+                if trait not in trait_popularity:
+                    trait_popularity[trait] = []
+                trait_popularity[trait].append(preference)
         
-        # Notify interested buyers
-        self.messaging.notify_new_listing(listing)
+        # Calculate average popularity
+        trends = {}
+        for trait, values in trait_popularity.items():
+            trends[trait] = sum(values) / len(values)
         
-        return listing['id']
+        return trends
+    
+    def identify_opportunities(self):
+        # Find market gaps and opportunities for the player
+        opportunities = []
+        
+        # Under-served traits
+        for trait in ['shell_pattern_type', 'body_pattern_type']:
+            demand = self.calculate_trait_demand(trait)
+            supply = self.calculate_trait_supply(trait)
+            
+            if demand > supply * 1.5:  # High demand, low supply
+                opportunities.append({
+                    'type': 'market_gap',
+                    'trait': trait,
+                    'description': f"High demand for {trait} with low supply",
+                    'potential_profit': 'High'
+                })
+        
+        return opportunities
 ```
 
-#### **Scalability Considerations**
-- **Database Optimization**: Efficient queries for large marketplace
-- **Caching Strategy**: Redis for frequently accessed data
-- **Load Balancing**: Handle high traffic during peak times
-- **Data Analytics**: Real-time market trend analysis
+### 4.6 Technical Implementation for Single-Player
+
+#### **Optimized Single-Player Architecture**
+```python
+class SinglePlayerCommunitySystem:
+    def __init__(self):
+        self.ai_community = AICommunitySimulation()
+        self.player_store = PlayerStore(self.ai_community)
+        self.genetic_influence = SinglePlayerGeneticInfluence(self.ai_community)
+        self.analytics = SinglePlayerMarketAnalytics(self.ai_community)
+        self.communication = AICommunicationSystem()
+    
+    def update_daily(self):
+        # Daily community updates
+        new_designs = self.generate_daily_designs()
+        self.simulate_ai_voting(new_designs)
+        self.update_market_trends()
+        self.generate_community_news()
+        
+        return new_designs
+    
+    def process_player_action(self, action_type, data):
+        if action_type == 'vote':
+            self.genetic_influence.vote_for_design(data['design_id'], data['rating'])
+        elif action_type == 'list_turtle':
+            self.player_store.create_listing(data['turtle'], data.get('price'))
+        elif action_type == 'respond_to_inquiry':
+            self.communication.handle_player_response(data['message_id'], data['response'])
+        
+        # Update AI reactions to player actions
+        self.simulate_ai_reactions(action_type, data)
+```
 
 ---
 
