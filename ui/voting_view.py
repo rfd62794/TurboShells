@@ -51,7 +51,7 @@ class VotingView:
         self.left_panel_width = self.width // 2
         self.right_panel_width = self.width - self.left_panel_width
         self.image_x = (self.left_panel_width - self.design_size) // 2
-        self.image_y = 150
+        self.image_y = 150 + 40  # Account for header offset
         
         # Colors
         self.bg_color = (240, 248, 255)  # Alice blue
@@ -94,8 +94,9 @@ class VotingView:
         # Update animations
         self._update_animations()
         
-        # Draw background
-        self.screen.fill(self.bg_color)
+        # Draw background (only below header area)
+        voting_area = pygame.Rect(0, 40, self.width, self.height - 40)
+        pygame.draw.rect(self.screen, self.bg_color, voting_area)
         
         # Draw left panel (turtle image)
         self._draw_left_panel()
