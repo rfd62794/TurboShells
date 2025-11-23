@@ -338,10 +338,30 @@ Future UX passes are expected to reduce reliance on keyboard shortcuts in favor 
 
 Potential directions beyond the current scope:
 
+### **Visual Genetics & Shell System**
+- **Visual DNA System:** Each turtle has genetic data for:
+  - Shell colors (base, pattern, accent)
+  - Shell patterns (plain, stripes, spots, spiral, geometric, complex)
+  - Body colors and patterns
+  - Physical traits (size, shape, proportions)
+- **Inheritance Mechanics:** 
+  - Visual traits passed from parents to offspring
+  - NEAT-based gene expression for complex pattern evolution
+  - Mutation system for new visual variations
+- **SVG Generation:** 
+  - Procedural turtle images generated on-the-fly
+  - Scalable vector graphics for crisp display at any size
+  - Pattern complexity increases with generation
+- **Profile Integration:** 
+  - Visual turtle display in Profile View
+  - Visual breeding preview showing potential offspring
+  - Rarity system for unique visual combinations
+
+### **Advanced Gameplay**
 - **Triathlons:** Multi‑stage races requiring well‑rounded turtles across multiple terrains.
 - **Visual Polish:** Animated sprites for running, swimming, climbing; better track visuals.
 - **Gym Upgrades:** Spend money to improve stat gains per training session.
 - **Weather & Conditions:** Environmental modifiers (rain, heat) that affect terrain or energy.
 - **Equipment:** Hats or shells that boost specific stats or modify behavior.
-- **Personalities:** Hidden traits (e.g., “Lazy” = recovers fast but drains energy fast).
-- **Save System:** JSON or similar persistence for the player’s stable and progression.
+- **Personalities:** Hidden traits (e.g., "Lazy" = recovers fast but drains energy fast).
+- **Save System:** JSON or similar persistence for the player's stable and progression.
