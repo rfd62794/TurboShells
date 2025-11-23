@@ -28,9 +28,9 @@ def draw_breeding(screen, font, game_state):
             break
             
         # Create a card position
-        card_x = 50 + (i % 3) * 250
+        card_x = 50 + (i % 3) * 230  # Further reduced spacing
         card_y = 120 + (i // 3) * 150
-        card_rect = pygame.Rect(card_x, card_y, 220, 120)
+        card_rect = pygame.Rect(card_x, card_y, 200, 120)  # Slightly narrower cards
 
         # Determine if this turtle is selected
         is_selected = turtle in game_state.breeding_parents
