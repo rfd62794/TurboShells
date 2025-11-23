@@ -7,7 +7,15 @@ import random
 import math
 from datetime import datetime
 from typing import Dict, Any, List, Optional, Tuple
-from genetics import VisualGenetics
+
+# Import genetics with fallback
+try:
+    from genetics import VisualGenetics
+except ImportError:
+    try:
+        from src.genetics import VisualGenetics
+    except ImportError:
+        VisualGenetics = None
 
 
 class GeneticPool:

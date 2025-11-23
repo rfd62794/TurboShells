@@ -8,7 +8,13 @@ import random
 import uuid
 
 # Import the new modular genetics system
-from genetics import VisualGenetics
+try:
+    from genetics import VisualGenetics
+except ImportError:
+    try:
+        from src.genetics import VisualGenetics
+    except ImportError:
+        VisualGenetics = None
 
 # --- SHARED PHYSICS CONSTANTS ---
 # These are the "Balanced" values found in your simulation

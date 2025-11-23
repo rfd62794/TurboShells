@@ -6,7 +6,17 @@ Complete design voting system with player-exclusive voting and genetic impact
 import json
 from datetime import datetime, date, timedelta
 from typing import Dict, Any, List, Optional, Tuple
-from genetics import VisualGenetics
+
+# Import genetics from the correct location
+try:
+    from genetics import VisualGenetics
+except ImportError:
+    # Fallback to src.genetics if the import fails
+    try:
+        from src.genetics import VisualGenetics
+    except ImportError:
+        # Final fallback - make VisualGenetics optional
+        VisualGenetics = None
 
 
 class DesignPackage:
