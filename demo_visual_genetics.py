@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from core.visual_genetics import VisualGenetics
 from core.genetic_svg_mapper import GeneticToSVGMapper
 from core.turtle_svg_generator import TurtleSVGGenerator
-from core.svg_pygame_renderer import get_svg_renderer
+from core.svg_pygame_renderer_simple import get_svg_renderer
 from core.voting_system import VotingSystem
 from core.genetic_pool_manager import GeneticPoolManager
 
@@ -82,7 +82,7 @@ def main():
                             
                             result = voting_system.submit_ratings(design.id, ratings)
                             if result['success']:
-                                print(f"✓ Voted on design {current_design_index + 1} - Earned ${result['reward_earned']}")
+                                print(f"* Voted on design {current_design_index + 1} - Earned ${result['reward_earned']}")
                                 print(f"  Your ratings influenced future turtle genetics!")
                                 
                                 # Check if all designs are voted

@@ -5,15 +5,12 @@
 drawsvg>=1.6.0
 svgwrite>=1.4.3
 
-# SVG to PyGame Conversion
-cairosvg>=2.5.2
-pillow>=9.0.0
-
 # PyGame (already in main requirements, but included for completeness)
-pygame>=2.1.0
+pygame-ce>=2.5.0
 
-# Optional: For advanced SVG manipulation
-lxml>=4.6.0
+# Optional: For advanced SVG manipulation (requires Cairo library installation)
+# cairosvg>=2.5.2  # Uncomment if Cairo is installed
+# pillow>=9.0.0    # Uncomment if using cairosvg
 
 # Development and Testing
 pytest>=6.0.0
