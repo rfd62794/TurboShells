@@ -354,7 +354,7 @@ class VotingView:
     def _draw_star_rating_scrolled(self, surface: pygame.Surface, x: int, y: int, rating: float, category_name: str, interactive: bool = True):
         """Draw interactive star rating on a surface"""
         star_size = 20
-        star_spacing = 25
+        star_spacing = 35  # Increased from 25 for better spacing
         
         # Check hover position for preview (adjust for surface position)
         hover_star = -1
@@ -952,11 +952,13 @@ class VotingView:
                     star_y = y_offset + 55  # Stars are at y_offset + 55
                     
                     for i in range(5):
-                        star_x = i * 25  # Stars start at x=0 with 25px spacing
+                        star_spacing = 35  # Match drawing spacing
+                        star_x = i * star_spacing  # Stars start at x=0 with 35px spacing
                         
-                        # Check if click is on this star (use actual star size 20px)
-                        if (star_x <= relative_x <= star_x + 20 and 
-                            star_y <= relative_y <= star_y + 20):
+                        # Increase click area for better mouse detection (add 5px padding)
+                        click_padding = 5
+                        if (star_x - click_padding <= relative_x <= star_x + 20 + click_padding and 
+                            star_y - click_padding <= relative_y <= star_y + 20 + click_padding):
                             # Set rating for this category
                             self.selected_ratings[category_name] = i + 1
                             return
