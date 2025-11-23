@@ -37,7 +37,7 @@ class DirectTurtleRenderer:
     
     def draw_realistic_turtle(self, draw: ImageDraw.Draw, genetics: Dict[str, Any], size: int):
         """
-        Draw a highly realistic turtle using PIL drawing primitives
+        Draw a clean, recognizable turtle using PIL drawing primitives
         """
         center_x = size // 2
         center_y = size // 2
@@ -49,243 +49,133 @@ class DirectTurtleRenderer:
         flipper_color = genetics.get('leg_color', (46, 125, 50))  # Darker green
         eye_color = genetics.get('eye_color', (0, 0, 0))  # Black
         
-        # Get color variations
-        shell_outline = self.get_darker_color(shell_color, 0.6)
-        shell_highlight = self.get_lighter_color(shell_color, 1.2)
-        head_outline = self.get_darker_color(head_color, 0.7)
-        flipper_outline = self.get_darker_color(flipper_color, 0.7)
+        # Get darker colors for outlines
+        shell_outline = self.get_darker_color(shell_color, 0.7)
+        head_outline = self.get_darker_color(head_color, 0.8)
+        flipper_outline = self.get_darker_color(flipper_color, 0.8)
         
-        # Draw shadow first (more realistic)
+        # Draw shadow
         shadow_ellipse = [
-            center_x - int(75 * scale), center_y + int(45 * scale) - int(12 * scale),
-            center_x + int(75 * scale), center_y + int(45 * scale) + int(12 * scale)
+            center_x - int(70 * scale), center_y + int(40 * scale) - int(8 * scale),
+            center_x + int(70 * scale), center_y + int(40 * scale) + int(8 * scale)
         ]
-        draw.ellipse(shadow_ellipse, fill=(80, 80, 80, 60))
+        draw.ellipse(shadow_ellipse, fill=(100, 100, 100, 40))
         
-        # Draw shell (carapace) - more realistic sea turtle shell
-        shell_width = int(85 * scale)
-        shell_height = int(65 * scale)
+        # Draw shell - simple, clean oval shape
+        shell_width = int(80 * scale)
+        shell_height = int(55 * scale)
+        shell_bbox = [
+            center_x - shell_width//2, center_y - shell_height//2,
+            center_x + shell_width//2, center_y + shell_height//2
+        ]
+        draw.ellipse(shell_bbox, fill=shell_color, outline=shell_outline, width=3)
         
-        # Create more realistic shell shape using bezier-like curves
-        shell_points = []
+        # Draw simple shell pattern
+        self.draw_simple_shell_pattern(draw, center_x, center_y, shell_width, shell_height, scale)
         
-        # Top curve of shell (more pronounced)
-        for i in range(21):
-            t = i / 20
-            if i <= 10:
-                # Top curve - more rounded
-                x = center_x - shell_width//2 + int(shell_width * t)
-                # Use a parabolic curve for the top
-                curve_height = int(15 * scale * (1 - 4 * (t - 0.5) ** 2))
-                y = center_y - shell_height//2 + curve_height
-            else:
-                # Bottom curve - flatter
-                x = center_x + shell_width//2 - int(shell_width * (t - 0.5) * 2)
-                curve_height = int(8 * scale * (1 - 4 * ((t - 0.5) - 0.5) ** 2))
-                y = center_y + shell_height//2 - curve_height
-            shell_points.append((x, y))
+        # Draw head - simple rounded head
+        head_width = int(25 * scale)
+        head_height = int(20 * scale)
+        head_y = center_y - int(45 * scale)
+        head_bbox = [
+            center_x - head_width//2, head_y,
+            center_x + head_width//2, head_y + head_height
+        ]
+        draw.ellipse(head_bbox, fill=head_color, outline=head_outline, width=2)
         
-        # Draw main shell
-        draw.polygon(shell_points, fill=shell_color, outline=shell_outline, width=3)
+        # Draw simple eyes
+        eye_radius = int(3 * scale)
+        eye_y = head_y + int(7 * scale)
         
-        # Draw detailed shell pattern (more realistic scutes)
-        self.draw_detailed_shell_pattern(draw, center_x, center_y, shell_width, shell_height, 
-                                        shell_color, shell_outline, shell_highlight, scale)
-        
-        # Draw head - more realistic sea turtle head
-        head_width = int(28 * scale)
-        head_height = int(22 * scale)
-        head_y = center_y - int(48 * scale)
-        
-        # Create more realistic head shape
-        head_points = []
-        
-        # Head outline (more rounded)
-        for i in range(16):
-            angle = (i / 16) * 2 * 3.14159
-            if i < 8:
-                # Top half of head
-                x = center_x + int(head_width * 0.5 * (1 - i/8) * (-1 if i < 4 else 1))
-                y = head_y + int(head_height * 0.3 * (1 - i/8))
-            else:
-                # Bottom half of head (more rounded)
-                x = center_x + int(head_width * 0.5 * (1 - (i-8)/8) * (-1 if i < 12 else 1))
-                y = head_y + int(head_height * 0.7 * ((i-8)/8))
-            head_points.append((x, y))
-        
-        draw.polygon(head_points, fill=head_color, outline=head_outline, width=2)
-        
-        # Draw eyes with more detail
-        eye_radius = int(4 * scale)
-        pupil_radius = int(2 * scale)
-        eye_y = head_y + int(8 * scale)
-        
-        # Left eye with white sclera
+        # Left eye
         draw.ellipse([
-            center_x - int(10 * scale) - eye_radius, eye_y - eye_radius,
-            center_x - int(10 * scale) + eye_radius, eye_y + eye_radius
-        ], fill=(255, 255, 255), outline=head_outline, width=1)
-        
-        # Left pupil
-        draw.ellipse([
-            center_x - int(10 * scale) - pupil_radius, eye_y - pupil_radius,
-            center_x - int(10 * scale) + pupil_radius, eye_y + pupil_radius
+            center_x - int(8 * scale) - eye_radius, eye_y - eye_radius,
+            center_x - int(8 * scale) + eye_radius, eye_y + eye_radius
         ], fill=eye_color)
         
-        # Right eye with white sclera
+        # Right eye
         draw.ellipse([
-            center_x + int(10 * scale) - eye_radius, eye_y - eye_radius,
-            center_x + int(10 * scale) + eye_radius, eye_y + eye_radius
-        ], fill=(255, 255, 255), outline=head_outline, width=1)
-        
-        # Right pupil
-        draw.ellipse([
-            center_x + int(10 * scale) - pupil_radius, eye_y - pupil_radius,
-            center_x + int(10 * scale) + pupil_radius, eye_y + pupil_radius
+            center_x + int(8 * scale) - eye_radius, eye_y - eye_radius,
+            center_x + int(8 * scale) + eye_radius, eye_y + eye_radius
         ], fill=eye_color)
         
-        # Draw more realistic flippers
-        self.draw_realistic_flippers(draw, center_x, center_y, flipper_color, flipper_outline, scale)
+        # Draw simple, clean flippers
+        self.draw_simple_flippers(draw, center_x, center_y, flipper_color, flipper_outline, scale)
     
-    def draw_detailed_shell_pattern(self, draw: ImageDraw.Draw, center_x: int, center_y: int, 
-                                  shell_width: int, shell_height: int, shell_color: Tuple[int, int, int], 
-                                  shell_outline: Tuple[int, int, int], shell_highlight: Tuple[int, int, int], 
-                                  scale: float):
+    def draw_simple_shell_pattern(self, draw: ImageDraw.Draw, center_x: int, center_y: int, 
+                                shell_width: int, shell_height: int, scale: float):
         """
-        Draw detailed and realistic turtle shell scutes pattern
+        Draw simple, clean shell pattern
         """
-        # Central vertebral scutes (along the spine)
-        vertebral_scute_width = int(12 * scale)
-        vertebral_scute_height = int(8 * scale)
+        pattern_color = self.get_darker_color((34, 139, 34), 0.6)  # Darker green
         
-        for i in range(5):
-            x = center_x
-            y = center_y - int(20 * scale) + i * int(10 * scale)
+        # Draw simple center line
+        draw.line([
+            center_x, center_y - shell_height//3,
+            center_x, center_y + shell_height//3
+        ], fill=pattern_color, width=2)
+        
+        # Draw simple horizontal lines
+        for i in range(3):
+            y = center_y - int(15 * scale) + i * int(15 * scale)
+            line_width = shell_width - int(20 * scale) - i * int(5 * scale)
             
-            # Create hexagonal vertebral scute
-            scute_points = []
-            for j in range(6):
-                angle = j * 3.14159 / 3
-                if j % 2 == 0:
-                    px = x + int(vertebral_scute_width * 0.6)
-                else:
-                    px = x + int(vertebral_scute_width * 0.3)
-                py = y + int(vertebral_scute_height * 0.5 * (1 if j < 3 else -1))
-                scute_points.append((px, py))
-            
-            # Alternate colors for vertebral scutes
-            fill_color = shell_outline if i % 2 == 0 else self.get_darker_color(shell_color, 0.8)
-            draw.polygon(scute_points, fill=fill_color, outline=self.get_darker_color(shell_outline, 0.8))
+            draw.line([
+                center_x - line_width//2, y,
+                center_x + line_width//2, y
+            ], fill=pattern_color, width=2)
         
-        # Costal scutes (side scutes)
-        costal_scute_size = int(10 * scale)
+        # Draw simple scute circles
+        scute_radius = int(5 * scale)
+        positions = [
+            (center_x - int(20 * scale), center_y - int(10 * scale)),
+            (center_x + int(20 * scale), center_y - int(10 * scale)),
+            (center_x, center_y),
+            (center_x - int(15 * scale), center_y + int(10 * scale)),
+            (center_x + int(15 * scale), center_y + int(10 * scale))
+        ]
         
-        # Left costal scutes
-        for row in range(4):
-            for col in range(2):
-                x = center_x - int(25 * scale) + col * int(15 * scale)
-                y = center_y - int(15 * scale) + row * int(12 * scale)
-                
-                # Create irregular costal scute shape
-                scute_points = [
-                    (x - costal_scute_size//2, y - costal_scute_size//3),
-                    (x + costal_scute_size//2, y - costal_scute_size//3),
-                    (x + costal_scute_size//2 + int(2 * scale), y + costal_scute_size//3),
-                    (x, y + costal_scute_size//2),
-                    (x - costal_scute_size//2 - int(2 * scale), y + costal_scute_size//3)
-                ]
-                
-                fill_color = shell_highlight if (row + col) % 2 == 0 else shell_outline
-                draw.polygon(scute_points, fill=fill_color, outline=self.get_darker_color(shell_outline, 0.8))
-        
-        # Right costal scutes (mirror of left)
-        for row in range(4):
-            for col in range(2):
-                x = center_x + int(25 * scale) - col * int(15 * scale)
-                y = center_y - int(15 * scale) + row * int(12 * scale)
-                
-                # Create irregular costal scute shape
-                scute_points = [
-                    (x - costal_scute_size//2, y - costal_scute_size//3),
-                    (x + costal_scute_size//2, y - costal_scute_size//3),
-                    (x + costal_scute_size//2 + int(2 * scale), y + costal_scute_size//3),
-                    (x, y + costal_scute_size//2),
-                    (x - costal_scute_size//2 - int(2 * scale), y + costal_scute_size//3)
-                ]
-                
-                fill_color = shell_highlight if (row + col) % 2 == 0 else shell_outline
-                draw.polygon(scute_points, fill=fill_color, outline=self.get_darker_color(shell_outline, 0.8))
-        
-        # Marginal scutes (edge scutes)
-        marginal_size = int(6 * scale)
-        
-        # Top marginal scutes
-        for i in range(6):
-            x = center_x - int(35 * scale) + i * int(14 * scale)
-            y = center_y - int(25 * scale)
-            
-            draw.polygon([
-                (x - marginal_size//2, y),
-                (x + marginal_size//2, y),
-                (x + marginal_size//3, y + marginal_size),
-                (x - marginal_size//3, y + marginal_size)
-            ], fill=shell_outline, outline=self.get_darker_color(shell_outline, 0.8))
-        
-        # Bottom marginal scutes
-        for i in range(4):
-            x = center_x - int(20 * scale) + i * int(13 * scale)
-            y = center_y + int(20 * scale)
-            
-            draw.polygon([
-                (x - marginal_size//2, y),
-                (x + marginal_size//2, y),
-                (x + marginal_size//3, y - marginal_size),
-                (x - marginal_size//3, y - marginal_size)
-            ], fill=shell_outline, outline=self.get_darker_color(shell_outline, 0.8))
+        for x, y in positions:
+            draw.ellipse([
+                x - scute_radius, y - scute_radius,
+                x + scute_radius, y + scute_radius
+            ], fill=pattern_color, outline=self.get_darker_color(pattern_color, 0.8))
     
-    def draw_realistic_flippers(self, draw: ImageDraw.Draw, center_x: int, center_y: int, 
-                              flipper_color: Tuple[int, int, int], flipper_outline: Tuple[int, int, int], 
-                              scale: float):
+    def draw_simple_flippers(self, draw: ImageDraw.Draw, center_x: int, center_y: int, 
+                           flipper_color: Tuple[int, int, int], flipper_outline: Tuple[int, int, int], 
+                           scale: float):
         """
-        Draw realistic sea turtle flippers with proper anatomy
+        Draw simple, clean flippers
         """
-        # Front right flipper - more realistic shape
+        # Front right flipper - simple rounded triangle
         fr_points = [
-            (center_x + int(40 * scale), center_y - int(5 * scale)),  # Attachment point
-            (center_x + int(55 * scale), center_y - int(15 * scale)),  # Upper curve
-            (center_x + int(65 * scale), center_y - int(10 * scale)),  # Tip
-            (center_x + int(60 * scale), center_y + int(5 * scale)),   # Lower curve
-            (center_x + int(45 * scale), center_y + int(10 * scale)),  # Return curve
-            (center_x + int(40 * scale), center_y)                     # Back to attachment
+            (center_x + int(35 * scale), center_y),
+            (center_x + int(55 * scale), center_y - int(10 * scale)),
+            (center_x + int(50 * scale), center_y + int(15 * scale))
         ]
         draw.polygon(fr_points, fill=flipper_color, outline=flipper_outline, width=2)
         
-        # Front left flipper - mirror of right
+        # Front left flipper - mirror
         fl_points = [
-            (center_x - int(40 * scale), center_y - int(5 * scale)),
-            (center_x - int(55 * scale), center_y - int(15 * scale)),
-            (center_x - int(65 * scale), center_y - int(10 * scale)),
-            (center_x - int(60 * scale), center_y + int(5 * scale)),
-            (center_x - int(45 * scale), center_y + int(10 * scale)),
-            (center_x - int(40 * scale), center_y)
+            (center_x - int(35 * scale), center_y),
+            (center_x - int(55 * scale), center_y - int(10 * scale)),
+            (center_x - int(50 * scale), center_y + int(15 * scale))
         ]
         draw.polygon(fl_points, fill=flipper_color, outline=flipper_outline, width=2)
         
-        # Back right flipper - smaller and more rounded
+        # Back right flipper - smaller
         br_points = [
-            (center_x + int(30 * scale), center_y + int(25 * scale)),
+            (center_x + int(25 * scale), center_y + int(25 * scale)),
             (center_x + int(40 * scale), center_y + int(30 * scale)),
-            (center_x + int(38 * scale), center_y + int(45 * scale)),
-            (center_x + int(25 * scale), center_y + int(40 * scale))
+            (center_x + int(30 * scale), center_y + int(40 * scale))
         ]
         draw.polygon(br_points, fill=flipper_color, outline=flipper_outline, width=2)
         
-        # Back left flipper - mirror of right
+        # Back left flipper - mirror
         bl_points = [
-            (center_x - int(30 * scale), center_y + int(25 * scale)),
+            (center_x - int(25 * scale), center_y + int(25 * scale)),
             (center_x - int(40 * scale), center_y + int(30 * scale)),
-            (center_x - int(38 * scale), center_y + int(45 * scale)),
-            (center_x - int(25 * scale), center_y + int(40 * scale))
+            (center_x - int(30 * scale), center_y + int(40 * scale))
         ]
         draw.polygon(bl_points, fill=flipper_color, outline=flipper_outline, width=2)
     
