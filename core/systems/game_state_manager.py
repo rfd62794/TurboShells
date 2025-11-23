@@ -327,17 +327,18 @@ class GameStateManager:
                   money: int, state: str, race_results: List, trigger: str = "manual") -> bool:
         """Auto-save game state"""
         try:
-            print(f"[DEBUG] Starting auto-save with trigger: {trigger}")
             game_data, turtles, preferences = self.create_save_data(
                 roster, retired_roster, money, state, race_results
             )
-            print(f"[DEBUG] Created save data: {type(game_data)}, {len(turtles)} turtles, {type(preferences)}")
             success = self.save_manager.save_game(game_data, turtles, preferences)
-            print(f"[DEBUG] Save result: {success}")
+            
+            if success:
+                print(f"Game auto-saved successfully (trigger: {trigger})")
+            else:
+                print(f"Auto-save failed (trigger: {trigger})")
+                
             return success
             
         except Exception as e:
-            print(f"[DEBUG] Auto-save error: {e}")
-            import traceback
-            traceback.print_exc()
+            print(f"Auto-save error: {e}")
             return False
