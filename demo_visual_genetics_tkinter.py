@@ -17,6 +17,7 @@ from core.visual_genetics import VisualGenetics
 from core.genetic_svg_mapper import GeneticToSVGMapper
 from core.turtle_svg_generator import TurtleSVGGenerator
 from core.svg_tkinter_renderer_fixed import get_svg_renderer
+from core.generic_turtle_svg import create_generic_turtle_svg
 from core.voting_system import VotingSystem
 from core.genetic_pool_manager import GeneticPoolManager
 
@@ -149,8 +150,9 @@ class VisualGeneticsDemo:
         # Clear canvas
         self.canvas.delete("all")
         
-        # Render turtle
-        result = self.renderer.render_turtle_to_photoimage(design.genetics, 300)
+        # Render turtle using generic template
+        svg_content = create_generic_turtle_svg(design.genetics)
+        result = self.renderer.svg_to_photoimage(svg_content, 300)
         
         if result:
             if isinstance(result, str):
