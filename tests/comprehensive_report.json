@@ -1,43 +1,43 @@
 {
-  "total_tests": 0,
+  "total_tests": 70,
   "total_failures": 0,
-  "total_errors": 4,
-  "overall_success_rate": 0,
+  "total_errors": 70,
+  "overall_success_rate": 0.0,
   "suite_results": [
     {
       "name": "unit_tests",
-      "tests_run": 0,
+      "tests_run": 26,
       "failures": 0,
-      "errors": 1,
+      "errors": 26,
       "success_rate": 0.0,
-      "execution_time": 0.0009734630584716797,
+      "execution_time": 0.5746955871582031,
       "passed": false
     },
     {
       "name": "integration_tests",
-      "tests_run": 0,
+      "tests_run": 14,
       "failures": 0,
-      "errors": 1,
+      "errors": 14,
       "success_rate": 0.0,
-      "execution_time": 0.0005447864532470703,
+      "execution_time": 0.013864517211914062,
       "passed": false
     },
     {
       "name": "ui_tests",
-      "tests_run": 0,
+      "tests_run": 21,
       "failures": 0,
-      "errors": 1,
+      "errors": 21,
       "success_rate": 0.0,
-      "execution_time": 0.0006427764892578125,
+      "execution_time": 1.2706530094146729,
       "passed": false
     },
     {
       "name": "performance_tests",
-      "tests_run": 0,
+      "tests_run": 9,
       "failures": 0,
-      "errors": 1,
+      "errors": 9,
       "success_rate": 0.0,
-      "execution_time": 0.0004820823669433594,
+      "execution_time": 0.09767484664916992,
       "passed": false
     }
   ],
@@ -52,5 +52,5 @@
     "overall_coverage": 77.0
   },
   "performance_metrics": {},
-  "timestamp": 1763913654.7515583
+  "timestamp": 1763913693.6222224
 }
