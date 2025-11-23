@@ -30,7 +30,7 @@
   - Automatic energy recovery
   - Auto-retirement at age 100
 
-### **💰 Phase 5: The Economy - COMPLETED**
+### ** Phase 5: The Economy - COMPLETED**
 - **Shop System**: 
   - Generate 3 random turtles with dynamic pricing
   - Buy functionality with proper roster integration
