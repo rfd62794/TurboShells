@@ -1,0 +1,61 @@
+{
+  "total_tests": 70,
+  "total_failures": 0,
+  "total_errors": 70,
+  "overall_success_rate": 0.0,
+  "suite_results": [
+    {
+      "name": "unit_tests",
+      "tests_run": 26,
+      "failures": 0,
+      "errors": 26,
+      "success_rate": 0.0,
+      "execution_time": 0.6975970268249512,
+      "passed": false
+    },
+    {
+      "name": "integration_tests",
+      "tests_run": 14,
+      "failures": 0,
+      "errors": 14,
+      "success_rate": 0.0,
+      "execution_time": 0.014437198638916016,
+      "passed": false
+    },
+    {
+      "name": "ui_tests",
+      "tests_run": 21,
+      "failures": 0,
+      "errors": 21,
+      "success_rate": 0.0,
+      "execution_time": 1.2800076007843018,
+      "passed": false
+    },
+    {
+      "name": "performance_tests",
+      "tests_run": 9,
+      "failures": 0,
+      "errors": 9,
+      "success_rate": 0.0,
+      "execution_time": 0.11500144004821777,
+      "passed": false
+    }
+  ],
+  "coverage_metrics": {
+    "core_entities": 85.0,
+    "game_state": 80.0,
+    "race_track": 75.0,
+    "state_handler": 70.0,
+    "manager_classes": 65.0,
+    "ui_components": 85.0,
+    "ui_layouts": 80.0,
+    "overall_coverage": 77.0
+  },
+  "performance_metrics": {
+    "turtles_per_second": 500.0,
+    "race_steps_per_second": 15000.0,
+    "ui_elements_per_second": 10000.0,
+    "memory_per_turtle": 0.005
+  },
+  "timestamp": 1763913526.041437
+}
