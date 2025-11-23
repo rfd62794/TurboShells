@@ -20,6 +20,7 @@ class StateHandler:
             STATE_BREEDING: self._handle_breeding_clicks,
             STATE_RACE: self._handle_race_clicks,
             STATE_RACE_RESULT: self._handle_race_result_clicks,
+            STATE_PROFILE: self._handle_profile_clicks,
         }
     
     def handle_click(self, pos):
@@ -113,6 +114,15 @@ class StateHandler:
         action = self.game.breeding_manager.handle_click(pos)
         if action == "GOTO_MENU":
             self.game.state = STATE_MENU
+    
+    def _handle_profile_clicks(self, pos):
+        """Handle clicks in profile state."""
+        from ui.views.profile_view import handle_profile_click
+        result = handle_profile_click(self.game, pos, None, None, None)
+        
+        if result == "back":
+            self.game.state = STATE_ROSTER
+        # Navigation (prev/next) is handled within the profile view
     
     def _handle_race_clicks(self, pos):
         """Handle clicks during race."""
