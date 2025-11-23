@@ -1,4 +1,4 @@
-from core.game.game_state import generate_random_turtle
+from core.game.game_state import generate_random_turtle, generate_balanced_opponent
 from settings import *
 import ui.layout as layout
 from core.game.race_track import generate_track, get_terrain_at
@@ -23,13 +23,17 @@ class RaceManager:
         # Generate a new track for this race
         self.track = generate_track(TRACK_LENGTH_LOGIC)
         
-        # Fill empty slots with opponents
-        if self.game_state.roster[1] is None:
-            t = generate_random_turtle(level=1)
+        # Get player's turtle for balanced opponent generation
+        player_idx = getattr(self.game_state, "active_racer_index", 0)
+        player_turtle = self.game_state.roster[player_idx] if player_idx < len(self.game_state.roster) else None
+        
+        # Fill empty slots with balanced opponents
+        if self.game_state.roster[1] is None and player_turtle:
+            t = generate_balanced_opponent(player_turtle)
             t.is_temp = True
             self.game_state.roster[1] = t
-        if self.game_state.roster[2] is None:
-            t = generate_random_turtle(level=1)
+        if self.game_state.roster[2] is None and player_turtle:
+            t = generate_balanced_opponent(player_turtle)
             t.is_temp = True
             self.game_state.roster[2] = t
 

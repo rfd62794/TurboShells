@@ -36,6 +36,53 @@ def compute_turtle_cost(turtle: Turtle) -> int:
     scale = 2.0
     return int(base_cost + total * scale)
 
+def generate_balanced_opponent(player_turtle):
+    """
+    Generates a random opponent with equal total stat points to the player's turtle.
+    Points are randomly distributed across all stats.
+    """
+    name = random.choice(TURTLE_NAMES)
+    
+    # Calculate player's total stat points (excluding energy which uses different scaling)
+    player_points = (
+        player_turtle.stats['speed'] + 
+        player_turtle.stats['recovery'] + 
+        player_turtle.stats['swim'] + 
+        player_turtle.stats['climb'] +
+        (player_turtle.stats['max_energy'] // 10)  # Energy: 10 energy = 1 point
+    )
+    
+    # Start with base stats
+    speed = 1
+    energy = 50
+    recovery = 1
+    swim = 1
+    climb = 1
+    
+    # Use player's total points as budget
+    budget = player_points - 5  # Subtract base points (1+1+1+1+5=5)
+    
+    # Randomly distribute points
+    while budget > 0:
+        choice = random.randint(0, 4)
+        if choice == 0: # Speed
+            speed += 1
+            budget -= 1
+        elif choice == 1: # Energy
+            energy += 10
+            budget -= 1
+        elif choice == 2: # Recovery
+            recovery += 1
+            budget -= 1
+        elif choice == 3: # Swim
+            swim += 1
+            budget -= 1
+        elif choice == 4: # Climb
+            climb += 1
+            budget -= 1
+    
+    return Turtle(name, speed, energy, recovery, swim, climb)
+
 def generate_random_turtle(level=1):
     """
     Generates a random turtle based on a level budget.
