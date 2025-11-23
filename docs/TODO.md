@@ -20,6 +20,7 @@
   - Phase 11: Advanced Genetics → [phases/Phase_11_Advanced_Genetics.md](phases/Phase_11_Advanced_Genetics.md)
   - Phase 12: Tournament & League System → [phases/Phase_12_Tournament_League_System.md](phases/Phase_12_Tournament_League_System.md)
   - Phase 13: Economic Expansion → [phases/Phase_13_Economic_Expansion.md](phases/Phase_13_Economic_Expansion.md)
+  - Phase 14: Graphics & Rendering → [phases/Phase_14_Graphics_Rendering.md](phases/Phase_14_Graphics_Rendering.md)
 
 ---
 
@@ -171,34 +172,11 @@
 
 ### **Phase 13: Economic Expansion** - **0% COMPLETE**
 > 📋 **Detailed Plan**: See [phases/Phase_13_Economic_Expansion.md](phases/Phase_13_Economic_Expansion.md)
-> Complete economic simulation with 50+ AI traders, dynamic pricing, market cycles, and advanced trading strategies
-
----
-
 ## ⚡ **PERFORMANCE & POLISH**
 
 ### **Phase 14: Graphics & Rendering** - **0% COMPLETE**
-
-#### **⚡ Performance Enhancements**
-- [ ] **Graphics Engine**: Advanced rendering and effects
-- [ ] **Physics Simulation**: More realistic movement
-- [ ] **AI Optimization**: Smarter opponent behavior
-- [ ] **Memory Management**: Larger save files and history
-- [ ] **Multi-threading**: Better performance on modern hardware
-
-#### **🎨 Rendering Engine**
-- [ ] **Advanced Graphics**: Enhanced visual effects and rendering
-- [ ] **Physics Engine**: Realistic turtle movement and interactions
-- [ ] **Particle System**: Environmental effects and animations
-- [ ] **Lighting System**: Dynamic lighting and shadows
-- [ ] **Animation Engine**: Smooth turtle movement and transitions
-
-#### **🔧 System Optimization**
-- [ ] **AI Performance**: Optimized decision-making algorithms
-- [ ] **Memory Optimization**: Efficient data storage and retrieval
-- [ ] **Multi-threading**: Parallel processing for better performance
-- [ ] **Caching System**: Intelligent resource management
-- [ ] **Profiling Tools**: Performance monitoring and optimization
+> 📋 **Detailed Plan**: See [phases/Phase_14_Graphics_Rendering.md](phases/Phase_14_Graphics_Rendering.md)
+> Advanced graphics engine with physics simulation, particle systems, dynamic lighting, and performance optimization
 
 ### **Phase 15: Audio & Effects** - **0% COMPLETE**
 - Sound Effects: Audio for clicks, races, and actions
