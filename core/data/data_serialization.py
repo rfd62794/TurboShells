@@ -55,7 +55,7 @@ class DataSerializer:
 import datetime
 from typing import Optional
 
-from core.data_structures import (
+from core.data.data_structures import (
     GameStateData, EconomicData, SessionStats, RosterData, LastSession,
     GeneTrait, BaseStats, GeneticModifiers, TurtleStats, TerrainPerformance,
     RaceResult, TurtlePerformance, TurtleParents, TraitWeights, ColorPreferences,

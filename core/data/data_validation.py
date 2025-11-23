@@ -5,7 +5,7 @@ This module contains only validation logic for data structures,
 following Single Responsibility Principle.
 """
 
-import jsonschema
+import json
 from typing import Dict, List, Any, Optional, Tuple
 
 from .data_structures import GameData, TurtleData, PlayerPreferences

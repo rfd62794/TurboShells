@@ -12,8 +12,9 @@ from datetime import datetime, timezone
 
 from core.data import (
     GameData, TurtleData, PlayerPreferences,
-    DataValidator, DataMigrator, save_manager
+    DataValidator, DataMigrator
 )
+from managers.save_manager import SaveManager
 
 
 class AutoLoadSystem:
@@ -23,7 +24,7 @@ class AutoLoadSystem:
         self.logger = logging.getLogger(__name__)
         self.validator = DataValidator()
         self.migrator = DataMigrator()
-        self.save_manager = save_manager
+        self.save_manager = SaveManager()
         
         # Load states
         self.load_successful = False
