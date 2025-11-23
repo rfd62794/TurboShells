@@ -147,23 +147,19 @@ def draw_navigation_dots(screen, font, current_index, total_count):
 
 def handle_profile_click(game_state, pos, back_btn, prev_btn, next_btn):
     """Handle clicks in profile view"""
-    if back_btn and back_btn.is_clicked(pos):
+    # This function is called from state handler, but buttons are created in draw_profile
+    # So we need to recreate the button logic here or restructure
+    # For now, let's check the basic positions
+    
+    # Check back button
+    if layout.PROFILE_BACK_BTN_RECT.collidepoint(pos):
         return "back"
     
-    if prev_btn and prev_btn.is_clicked(pos):
-        # Navigate to previous turtle
-        all_turtles = get_all_turtles(game_state)
-        if all_turtles:
-            current_index = getattr(game_state, 'profile_turtle_index', 0)
-            game_state.profile_turtle_index = (current_index - 1) % len(all_turtles)
-        return "navigate"
+    # Check navigation buttons
+    if layout.PROFILE_PREV_BTN_RECT.collidepoint(pos):
+        return "navigate_prev"
     
-    if next_btn and next_btn.is_clicked(pos):
-        # Navigate to next turtle
-        all_turtles = get_all_turtles(game_state)
-        if all_turtles:
-            current_index = getattr(game_state, 'profile_turtle_index', 0)
-            game_state.profile_turtle_index = (current_index + 1) % len(all_turtles)
-        return "navigate"
+    if layout.PROFILE_NEXT_BTN_RECT.collidepoint(pos):
+        return "navigate_next"
     
     return None

@@ -157,7 +157,20 @@ class StateHandler:
         
         if result == "back":
             self.game.state = STATE_ROSTER
-        # Navigation (prev/next) is handled within the profile view
+        elif result == "navigate_prev":
+            # Navigate to previous turtle
+            from ui.views.profile_view import get_all_turtles
+            all_turtles = get_all_turtles(self.game)
+            if all_turtles:
+                current_index = getattr(self.game, 'profile_turtle_index', 0)
+                self.game.profile_turtle_index = (current_index - 1) % len(all_turtles)
+        elif result == "navigate_next":
+            # Navigate to next turtle
+            from ui.views.profile_view import get_all_turtles
+            all_turtles = get_all_turtles(self.game)
+            if all_turtles:
+                current_index = getattr(self.game, 'profile_turtle_index', 0)
+                self.game.profile_turtle_index = (current_index + 1) % len(all_turtles)
     
     def _handle_race_clicks(self, pos):
         """Handle clicks during race."""
