@@ -132,43 +132,40 @@ class GenericTurtleSVG:
     
     def generate_turtle_svg(self, genetics: Dict[str, Any]) -> str:
         """
-        Generate a turtle SVG using the template with genetic colors
+        Generate a turtle SVG using the improved template with genetic colors
         """
         # Extract colors from genetics
-        shell_color = self.rgb_to_hex(genetics.get('shell_base_color', (34, 139, 34)))
-        body_color = self.rgb_to_hex(genetics.get('body_base_color', (139, 90, 43)))
-        eye_color = self.rgb_to_hex(genetics.get('eye_color', (0, 0, 0)))
-        head_color = self.rgb_to_hex(genetics.get('head_color', (139, 90, 43)))
-        leg_color = self.rgb_to_hex(genetics.get('leg_color', (101, 67, 33)))
+        shell_color = self.rgb_to_hex(genetics.get('shell_base_color', (160, 82, 45)))  # Brown
+        head_color = self.rgb_to_hex(genetics.get('head_color', (60, 179, 113)))  # Green
+        flipper_color = self.rgb_to_hex(genetics.get('leg_color', (60, 179, 113)))  # Green for flippers
+        eye_color = self.rgb_to_hex(genetics.get('eye_color', (0, 0, 0)))  # Black
         
         # Get pattern
         shell_pattern_type = genetics.get('shell_pattern_type', 'solid')
         pattern_template = self.patterns.get(shell_pattern_type, self.patterns['solid'])
         
-        # Get pattern color
-        shell_rgb = genetics.get('shell_base_color', (34, 139, 34))
-        pattern_color = self.get_pattern_color(shell_rgb)
-        
-        # Fill pattern template
-        shell_pattern_svg = pattern_template.format(pattern_color=pattern_color)
-        
-        # Get outline colors
-        shell_outline = self.get_darker_color(genetics.get('shell_base_color', (34, 139, 34)))
-        head_outline = self.get_darker_color(genetics.get('head_color', (139, 90, 43)))
-        leg_outline = self.get_darker_color(genetics.get('leg_color', (101, 67, 33)))
-        tail_color = leg_color  # Use leg color for tail
+        # Determine shell fill
+        if shell_pattern_type == 'solid':
+            # Solid color shell
+            shell_fill = shell_color
+            pattern_defs = ''
+        else:
+            # Patterned shell
+            # Get pattern color
+            shell_rgb = genetics.get('shell_base_color', (160, 82, 45))
+            pattern_color = self.get_pattern_color(shell_rgb)
+            
+            # Fill pattern template
+            pattern_defs = pattern_template.format(pattern_color=pattern_color)
+            shell_fill = f"url(#{shell_pattern_type})"
         
         # Fill the main template
         svg_content = self.turtle_template.format(
-            shell_color=shell_color,
-            shell_outline=shell_outline,
-            shell_pattern=shell_pattern_svg,
+            shell_fill=shell_fill,
             head_color=head_color,
-            head_outline=head_outline,
+            flipper_color=flipper_color,
             eye_color=eye_color,
-            leg_color=leg_color,
-            leg_outline=leg_outline,
-            tail_color=tail_color
+            pattern_defs=pattern_defs
         )
         
         return svg_content
