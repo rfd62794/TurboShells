@@ -272,7 +272,7 @@ class VisualGeneticsDemo:
     def update_statistics(self):
         """Update the statistics display"""
         status = self.voting_system.get_daily_status()
-        pool_stats = self.pool_manager.get_pool_statistics()
+        pool_stats = self.pool_manager.get_genetic_pool_status()
         
         stats_text = f"Votes Cast: {status['completed_votes']}/{status['total_designs']}\n"
         stats_text += f"Total Earned: ${status['total_earned']}\n"

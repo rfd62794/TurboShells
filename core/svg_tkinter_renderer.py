@@ -158,7 +158,7 @@ class TkinterSVGRenderer:
             
             # Convert to PNG
             temp_png = os.path.join(self.temp_dir, f"temp_{id(svg_string)}.png")
-            svg2png.svg2png(inputfile=temp_svg, outputfile=temp_png)
+            svg2png.svg2png(inputfile=temp_svg, output_file=temp_png)
             
             # Load with PIL
             if os.path.exists(temp_png):
