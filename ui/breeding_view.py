@@ -102,11 +102,11 @@ def draw_breeding(screen, font, game_state):
                     warning_txt = warning_font.render("WILL BE LOST", True, (255, 0, 0))  # Bright red
                     
                     # Rotate the text for diagonal effect
-                    rotated_text = pygame.transform.rotate(warning_txt, -35)  # Less steep angle
+                    rotated_text = pygame.transform.rotate(warning_txt, -25)  # Even less steep angle
                     
-                    # Position the diagonal text more across the turtle image area
-                    text_x = slot_rect.x + 15  # More to the left
-                    text_y = slot_rect.y + 60  # Higher up, more across the image
+                    # Position from top-left corner, more up and left
+                    text_x = slot_rect.x + 5   # Very close to left edge
+                    text_y = slot_rect.y + 25  # Much higher up, near top
                     
                     # Draw the diagonal text
                     screen.blit(rotated_text, (text_x, text_y))
