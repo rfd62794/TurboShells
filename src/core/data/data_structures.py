@@ -14,9 +14,11 @@ from dataclasses import dataclass
 # GAME DATA STRUCTURES
 # ============================================================================
 
+
 @dataclass
 class TransactionData:
     """Individual transaction record"""
+
     id: str
     timestamp: str
     type: str  # earnings, purchase, breeding_cost
@@ -28,6 +30,7 @@ class TransactionData:
 @dataclass
 class EconomicData:
     """Economic state and transaction history"""
+
     total_earned: int
     total_spent: int
     transaction_history: List[TransactionData]
@@ -36,6 +39,7 @@ class EconomicData:
 @dataclass
 class SessionStats:
     """Player session statistics"""
+
     total_playtime_minutes: int
     races_completed: int
     turtles_bred: int
@@ -45,6 +49,7 @@ class SessionStats:
 @dataclass
 class GameStateData:
     """Core game state information"""
+
     money: int
     current_phase: str
     unlocked_features: List[str]
@@ -55,6 +60,7 @@ class GameStateData:
 @dataclass
 class RosterData:
     """Roster management data"""
+
     active_slots: int
     active_turtles: List[str]
     retired_turtles: List[str]
@@ -64,6 +70,7 @@ class RosterData:
 @dataclass
 class LastSession:
     """Information about last game session"""
+
     timestamp: str
     duration_minutes: int
     activities: List[str]
@@ -72,6 +79,7 @@ class LastSession:
 @dataclass
 class GameData:
     """Complete game data structure"""
+
     version: str
     timestamp: str
     player_id: str
@@ -85,9 +93,11 @@ class GameData:
 # GENE DATA STRUCTURES
 # ============================================================================
 
+
 @dataclass
 class ParentContribution:
     """Parent contribution to genetic traits"""
+
     mother: float
     father: float
 
@@ -95,6 +105,7 @@ class ParentContribution:
 @dataclass
 class MutationDetails:
     """Details about mutations"""
+
     type: str
     similarity_to_parents: Optional[float] = None
 
@@ -102,6 +113,7 @@ class MutationDetails:
 @dataclass
 class GeneTrait:
     """Individual genetic trait"""
+
     value: Union[str, float]
     dominance: float
     mutation_source: str  # inherited, mutation, random
@@ -112,6 +124,7 @@ class GeneTrait:
 @dataclass
 class BaseStats:
     """Base stats before genetic modifiers"""
+
     speed: float
     energy: float
     recovery: float
@@ -122,6 +135,7 @@ class BaseStats:
 @dataclass
 class GeneticModifiers:
     """Stat modifiers from genetics"""
+
     speed: float
     energy: float
     recovery: float
@@ -132,6 +146,7 @@ class GeneticModifiers:
 @dataclass
 class TurtleStats:
     """Complete turtle statistics"""
+
     speed: float
     energy: float
     recovery: float
@@ -144,6 +159,7 @@ class TurtleStats:
 @dataclass
 class TerrainPerformance:
     """Performance on different terrain types"""
+
     grass: float
     water: float
     rock: float
@@ -152,6 +168,7 @@ class TerrainPerformance:
 @dataclass
 class RaceResult:
     """Individual race result"""
+
     race_id: str
     timestamp: str
     position: int
@@ -162,6 +179,7 @@ class RaceResult:
 @dataclass
 class TurtlePerformance:
     """Turtle performance history"""
+
     race_history: List[RaceResult]
     total_races: int
     wins: int
@@ -172,6 +190,7 @@ class TurtlePerformance:
 @dataclass
 class TurtleParents:
     """Parent information for breeding"""
+
     mother_id: str
     father_id: str
 
@@ -179,6 +198,7 @@ class TurtleParents:
 @dataclass
 class TurtleData:
     """Complete turtle data structure"""
+
     turtle_id: str
     name: str
     generation: int
@@ -193,9 +213,11 @@ class TurtleData:
 # PREFERENCE DATA STRUCTURES
 # ============================================================================
 
+
 @dataclass
 class VotingRecord:
     """Individual voting record"""
+
     date: str
     design_id: str
     ratings: Dict[str, int]
@@ -206,6 +228,7 @@ class VotingRecord:
 @dataclass
 class TraitWeights:
     """Player preference weights for traits"""
+
     shell_pattern: float
     shell_color: float
     pattern_color: float
@@ -219,6 +242,7 @@ class TraitWeights:
 @dataclass
 class ColorPreferences:
     """Player color preferences"""
+
     favorite_colors: List[str]
     avoided_colors: List[str]
     color_harmony_score: float
@@ -227,6 +251,7 @@ class ColorPreferences:
 @dataclass
 class PatternPreferences:
     """Player pattern preferences"""
+
     favorite_patterns: List[str]
     avoided_patterns: List[str]
     complexity_preference: float
@@ -235,6 +260,7 @@ class PatternPreferences:
 @dataclass
 class RatingBehavior:
     """Player rating behavior analysis"""
+
     average_rating: float
     rating_variance: float
     tendency_to_extreme: float
@@ -244,6 +270,7 @@ class RatingBehavior:
 @dataclass
 class PreferenceProfile:
     """Complete player preference profile"""
+
     trait_weights: TraitWeights
     color_preferences: ColorPreferences
     pattern_preferences: PatternPreferences
@@ -253,6 +280,7 @@ class PreferenceProfile:
 @dataclass
 class TraitInfluence:
     """Genetic influence by trait"""
+
     shell_pattern: float
     shell_color: float
     pattern_color: float
@@ -266,6 +294,7 @@ class TraitInfluence:
 @dataclass
 class InfluenceDecay:
     """Influence decay tracking"""
+
     daily_decay_rate: float
     last_decay_date: str
     total_decayed: float
@@ -274,6 +303,7 @@ class InfluenceDecay:
 @dataclass
 class GeneticInfluence:
     """Player's genetic influence on gene pool"""
+
     total_influence_points: int
     trait_influence: TraitInfluence
     influence_decay: InfluenceDecay
@@ -282,6 +312,7 @@ class GeneticInfluence:
 @dataclass
 class PlayerPreferences:
     """Complete player preference data"""
+
     version: str
     player_id: str
     last_updated: str
@@ -294,9 +325,11 @@ class PlayerPreferences:
 # GENE POOL DATA STRUCTURES
 # ============================================================================
 
+
 @dataclass
 class TraitFrequencies:
     """Frequency distribution for genetic traits"""
+
     hex: float
     spots: float
     stripes: float
@@ -306,6 +339,7 @@ class TraitFrequencies:
 @dataclass
 class DominantTraits:
     """Currently dominant traits in gene pool"""
+
     shell_pattern: str
     limb_shape: str
     pattern_color: str
@@ -314,6 +348,7 @@ class DominantTraits:
 @dataclass
 class MutationRates:
     """Current mutation rates"""
+
     point_mutation: float
     adaptive_mutation: float
     pattern_mutation: float
@@ -322,6 +357,7 @@ class MutationRates:
 @dataclass
 class GenePoolData:
     """Gene pool state and statistics"""
+
     version: str
     last_updated: str
     trait_frequencies: Dict[str, Union[TraitFrequencies, Dict[str, Any]]]
@@ -333,9 +369,11 @@ class GenePoolData:
 # COMMUNITY DATA STRUCTURES
 # ============================================================================
 
+
 @dataclass
 class TraitAverages:
     """Community average ratings for traits"""
+
     shell_pattern: float
     shell_color: float
     pattern_color: float
@@ -349,6 +387,7 @@ class TraitAverages:
 @dataclass
 class TraitCombination:
     """Popular trait combination"""
+
     combination: Dict[str, Any]
     popularity_score: float
     frequency: float
@@ -357,6 +396,7 @@ class TraitCombination:
 @dataclass
 class TrendingTraits:
     """Trending trait information"""
+
     rising: List[str]
     declining: List[str]
     stable: List[str]
@@ -365,6 +405,7 @@ class TrendingTraits:
 @dataclass
 class CommunityPreferences:
     """Community preference aggregates"""
+
     version: str
     date: str
     total_voters: int

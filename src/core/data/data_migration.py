@@ -33,21 +33,21 @@ class DataMigrator:
                 "migration_required": ["2.1.0", "2.0.0", "1.0.0"],
                 "deprecated_fields": {
                     "turtle.stats.speed_rating": "Replaced with turtle.stats.speed",
-                    "game_state.current_screen": "Replaced with game_state.current_phase"
-                }
+                    "game_state.current_screen": "Replaced with game_state.current_phase",
+                },
             },
             "2.1.0": {
                 "can_load": ["2.0.0", "1.0.0"],
                 "migration_required": ["2.0.0", "1.0.0"],
                 "deprecated_fields": {
                     "turtle.stats.speed_rating": "Replaced with turtle.stats.speed"
-                }
+                },
             },
             "2.0.0": {
                 "can_load": ["1.0.0"],
                 "migration_required": ["1.0.0"],
-                "deprecated_fields": {}
-            }
+                "deprecated_fields": {},
+            },
         }
 
     def get_migration_path(self, from_version: str, to_version: str) -> List[Callable]:
@@ -67,7 +67,9 @@ class DataMigrator:
         while current_version != to_version:
             next_migration = self._find_next_migration(current_version, to_version)
             if not next_migration:
-                raise ValueError(f"No migration path from {from_version} to {to_version}")
+                raise ValueError(
+                    f"No migration path from {from_version} to {to_version}"
+                )
 
             migration_key = f"{current_version}_to_{next_migration}"
             path.append(self.migration_rules[migration_key])
@@ -78,8 +80,8 @@ class DataMigrator:
     def _find_next_migration(self, from_version: str, to_version: str) -> Optional[str]:
         """Find the next version in migration path"""
         # Simple version comparison logic
-        from_parts = [int(x) for x in from_version.split('.')]
-        to_parts = [int(x) for x in to_version.split('.')]
+        from_parts = [int(x) for x in from_version.split(".")]
+        to_parts = [int(x) for x in to_version.split(".")]
 
         # Try to increment version components
         for i in range(len(from_parts)):
@@ -90,13 +92,15 @@ class DataMigrator:
                 for j in range(i + 1, len(next_parts)):
                     next_parts[j] = 0
 
-                next_version = '.'.join(str(x) for x in next_parts)
+                next_version = ".".join(str(x) for x in next_parts)
                 if f"{from_version}_to_{next_version}" in self.migration_rules:
                     return next_version
 
         return None
 
-    def migrate_data(self, save_data: Dict[str, Any], target_version: str) -> Dict[str, Any]:
+    def migrate_data(
+        self, save_data: Dict[str, Any], target_version: str
+    ) -> Dict[str, Any]:
         """Migrate save data to target version"""
         current_version = save_data.get("version", "1.0.0")
 
@@ -135,7 +139,7 @@ class DataMigrator:
                 genetics["skin_texture"] = {
                     "value": "smooth",
                     "dominance": 0.5,
-                    "mutation_source": "random"
+                    "mutation_source": "random",
                 }
                 turtle["genetics"] = genetics
 
@@ -151,7 +155,7 @@ class DataMigrator:
                 "total_playtime_minutes": 0,
                 "races_completed": 0,
                 "turtles_bred": 0,
-                "votes_cast": 0
+                "votes_cast": 0,
             }
 
         # Update preference data structure
@@ -168,24 +172,24 @@ class DataMigrator:
                     "limb_length": 0.125,
                     "head_size": 0.125,
                     "eye_color": 0.125,
-                    "skin_texture": 0.125
+                    "skin_texture": 0.125,
                 },
                 "color_preferences": {
                     "favorite_colors": ["#4A90E2", "#E74C3C", "#2ECC71"],
                     "avoided_colors": [],
-                    "color_harmony_score": 0.5
+                    "color_harmony_score": 0.5,
                 },
                 "pattern_preferences": {
                     "favorite_patterns": [],
                     "avoided_patterns": [],
-                    "complexity_preference": 0.5
+                    "complexity_preference": 0.5,
                 },
                 "rating_behavior": {
                     "average_rating": 3.0,
                     "rating_variance": 1.0,
                     "tendency_to_extreme": 0.1,
-                    "consistent_rater": False
-                }
+                    "consistent_rater": False,
+                },
             }
 
         # Add genetic influence if missing
@@ -200,13 +204,13 @@ class DataMigrator:
                     "limb_length": 0.0,
                     "head_size": 0.0,
                     "eye_color": 0.0,
-                    "skin_texture": 0.0
+                    "skin_texture": 0.0,
                 },
                 "influence_decay": {
                     "daily_decay_rate": 0.05,
                     "last_decay_date": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
-                    "total_decayed": 0.0
-                }
+                    "total_decayed": 0.0,
+                },
             }
 
         return save_data
@@ -230,7 +234,7 @@ class DataMigrator:
                     "energy": 7.0,
                     "recovery": 7.0,
                     "swim": 7.0,
-                    "climb": 7.0
+                    "climb": 7.0,
                 }
 
             if "genetic_modifiers" not in stats:
@@ -239,7 +243,7 @@ class DataMigrator:
                     "energy": 0.0,
                     "recovery": 0.0,
                     "swim": 0.0,
-                    "climb": 0.0
+                    "climb": 0.0,
                 }
 
         # Update game state structure
@@ -255,7 +259,7 @@ class DataMigrator:
                 "roster_intro": False,
                 "racing_basics": False,
                 "breeding_intro": False,
-                "voting_system": False
+                "voting_system": False,
             }
 
         return save_data
@@ -273,7 +277,9 @@ class DataMigrator:
         # Create new game_data structure
         new_game_data = {
             "version": "2.0.0",
-            "timestamp": save_data.get("timestamp", datetime.now(timezone.utc).isoformat()),
+            "timestamp": save_data.get(
+                "timestamp", datetime.now(timezone.utc).isoformat()
+            ),
             "player_id": f"player_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
             "game_state": {
                 "money": old_game_state.get("money", 1000),
@@ -283,27 +289,27 @@ class DataMigrator:
                     "roster_intro": False,
                     "racing_basics": False,
                     "breeding_intro": False,
-                    "voting_system": False
+                    "voting_system": False,
                 },
                 "session_stats": {
                     "total_playtime_minutes": 0,
                     "races_completed": 0,
                     "turtles_bred": 0,
-                    "votes_cast": 0
-                }
+                    "votes_cast": 0,
+                },
             },
-            "economy": {
-                "total_earned": 0,
-                "total_spent": 0,
-                "transaction_history": []
-            },
+            "economy": {"total_earned": 0, "total_spent": 0, "transaction_history": []},
             "roster": {
                 "active_slots": 3,
-                "active_turtles": [t.get("id", f"turtle_{i:03d}") for i, t in enumerate(turtles[:3])],
-                "retired_turtles": [t.get("id", f"turtle_{i:03d}") for i, t in enumerate(turtles[3:])],
-                "max_retired": 20
+                "active_turtles": [
+                    t.get("id", f"turtle_{i:03d}") for i, t in enumerate(turtles[:3])
+                ],
+                "retired_turtles": [
+                    t.get("id", f"turtle_{i:03d}") for i, t in enumerate(turtles[3:])
+                ],
+                "max_retired": 20,
             },
-            "last_sessions": []
+            "last_sessions": [],
         }
 
         # Migrate turtles to new structure
@@ -319,43 +325,43 @@ class DataMigrator:
                     "shell_pattern": {
                         "value": old_turtle.get("shell_pattern", "hex"),
                         "dominance": 1.0,
-                        "mutation_source": "random"
+                        "mutation_source": "random",
                     },
                     "shell_color": {
                         "value": old_turtle.get("shell_color", "#4A90E2"),
                         "dominance": 1.0,
-                        "mutation_source": "random"
+                        "mutation_source": "random",
                     },
                     "pattern_color": {
                         "value": old_turtle.get("pattern_color", "#E74C3C"),
                         "dominance": 1.0,
-                        "mutation_source": "random"
+                        "mutation_source": "random",
                     },
                     "limb_shape": {
                         "value": old_turtle.get("limb_shape", "flippers"),
                         "dominance": 1.0,
-                        "mutation_source": "random"
+                        "mutation_source": "random",
                     },
                     "limb_length": {
                         "value": old_turtle.get("limb_length", 1.0),
                         "dominance": 1.0,
-                        "mutation_source": "random"
+                        "mutation_source": "random",
                     },
                     "head_size": {
                         "value": old_turtle.get("head_size", 1.0),
                         "dominance": 1.0,
-                        "mutation_source": "random"
+                        "mutation_source": "random",
                     },
                     "eye_color": {
                         "value": old_turtle.get("eye_color", "#2ECC71"),
                         "dominance": 1.0,
-                        "mutation_source": "random"
+                        "mutation_source": "random",
                     },
                     "skin_texture": {
                         "value": "smooth",
                         "dominance": 0.5,
-                        "mutation_source": "random"
-                    }
+                        "mutation_source": "random",
+                    },
                 },
                 "stats": {
                     "speed": old_turtle.get("speed", 7.0),
@@ -368,23 +374,23 @@ class DataMigrator:
                         "energy": 7.0,
                         "recovery": 7.0,
                         "swim": 7.0,
-                        "climb": 7.0
+                        "climb": 7.0,
                     },
                     "genetic_modifiers": {
                         "speed": old_turtle.get("speed", 7.0) - 7.0,
                         "energy": old_turtle.get("energy", 7.0) - 7.0,
                         "recovery": old_turtle.get("recovery", 7.0) - 7.0,
                         "swim": old_turtle.get("swim", 7.0) - 7.0,
-                        "climb": old_turtle.get("climb", 7.0) - 7.0
-                    }
+                        "climb": old_turtle.get("climb", 7.0) - 7.0,
+                    },
                 },
                 "performance": {
                     "race_history": [],
                     "total_races": 0,
                     "wins": 0,
                     "average_position": 0.0,
-                    "total_earnings": 0
-                }
+                    "total_earnings": 0,
+                },
             }
             new_turtles.append(new_turtle)
 
@@ -403,24 +409,24 @@ class DataMigrator:
                     "limb_length": 0.125,
                     "head_size": 0.125,
                     "eye_color": 0.125,
-                    "skin_texture": 0.125
+                    "skin_texture": 0.125,
                 },
                 "color_preferences": {
                     "favorite_colors": ["#4A90E2", "#E74C3C", "#2ECC71"],
                     "avoided_colors": [],
-                    "color_harmony_score": 0.5
+                    "color_harmony_score": 0.5,
                 },
                 "pattern_preferences": {
                     "favorite_patterns": [],
                     "avoided_patterns": [],
-                    "complexity_preference": 0.5
+                    "complexity_preference": 0.5,
                 },
                 "rating_behavior": {
                     "average_rating": 3.0,
                     "rating_variance": 1.0,
                     "tendency_to_extreme": 0.1,
-                    "consistent_rater": False
-                }
+                    "consistent_rater": False,
+                },
             },
             "genetic_influence": {
                 "total_influence_points": 0,
@@ -432,14 +438,14 @@ class DataMigrator:
                     "limb_length": 0.0,
                     "head_size": 0.0,
                     "eye_color": 0.0,
-                    "skin_texture": 0.0
+                    "skin_texture": 0.0,
                 },
                 "influence_decay": {
                     "daily_decay_rate": 0.05,
                     "last_decay_date": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
-                    "total_decayed": 0.0
-                }
-            }
+                    "total_decayed": 0.0,
+                },
+            },
         }
 
         # Return new structure
@@ -448,7 +454,7 @@ class DataMigrator:
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "game_data": new_game_data,
             "turtles": new_turtles,
-            "preferences": new_preferences
+            "preferences": new_preferences,
         }
 
     def is_version_compatible(self, save_version: str, target_version: str) -> bool:

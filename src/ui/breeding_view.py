@@ -30,7 +30,9 @@ def draw_breeding(screen, font, game_state):
     screen.blit(msg, (50, 60))
 
     # Warning about parent loss
-    warning = font.render("Parent 2 will be lost.", True, (255, 200, 100))  # Orange warning color
+    warning = font.render(
+        "Parent 2 will be lost.", True, (255, 200, 100)
+    )  # Orange warning color
     screen.blit(warning, (50, 80))
 
     # Breed button (only if 2 parents selected) - positioned next to instructions
@@ -47,18 +49,24 @@ def draw_breeding(screen, font, game_state):
 
         # Show breeding info
         parent1, parent2 = game_state.breeding_parents
-        info_txt = font.render(f"Breeding: {parent1.name} + {parent2.name}", True, WHITE)
+        info_txt = font.render(
+            f"Breeding: {parent1.name} + {parent2.name}", True, WHITE
+        )
         screen.blit(info_txt, (50, 110))  # Moved down to make space
 
     # Combined breeding pool: active + retired turtles
-    candidates = [t for t in game_state.roster if t is not None] + list(game_state.retired_roster)
+    candidates = [t for t in game_state.roster if t is not None] + list(
+        game_state.retired_roster
+    )
 
     # Create breeding slots in a grid layout (2 rows of 3) - adjusted Y position and more space
     breeding_slots = [
-        pygame.Rect(50, 140, 230, 190),   # Top row - increased width from 220 to 230, height from 180 to 190
+        pygame.Rect(
+            50, 140, 230, 190
+        ),  # Top row - increased width from 220 to 230, height from 180 to 190
         pygame.Rect(280, 140, 230, 190),  # Adjusted X for more spacing
         pygame.Rect(530, 140, 230, 190),
-        pygame.Rect(50, 350, 230, 190),   # Bottom row - adjusted Y for more spacing
+        pygame.Rect(50, 350, 230, 190),  # Bottom row - adjusted Y for more spacing
         pygame.Rect(280, 350, 230, 190),
         pygame.Rect(530, 350, 230, 190),
     ]
@@ -82,10 +90,17 @@ def draw_breeding(screen, font, game_state):
 
                 # Determine parent number (1 or 2)
                 parent_num = "1" if game_state.breeding_parents[0] == turtle else "2"
-                parent_color = (100, 255, 100) if parent_num == "1" else (255, 100, 100)  # Green for P1, Red for P2
+                parent_color = (
+                    (100, 255, 100) if parent_num == "1" else (255, 100, 100)
+                )  # Green for P1, Red for P2
 
                 # Draw colored background bar at bottom
-                bar_rect = pygame.Rect(slot_rect.x + 5, slot_rect.y + slot_rect.height - 35, slot_rect.width - 10, 30)
+                bar_rect = pygame.Rect(
+                    slot_rect.x + 5,
+                    slot_rect.y + slot_rect.height - 35,
+                    slot_rect.width - 10,
+                    30,
+                )
                 pygame.draw.rect(screen, parent_color, bar_rect)
                 pygame.draw.rect(screen, WHITE, bar_rect, 1)
 
@@ -103,12 +118,20 @@ def draw_breeding(screen, font, game_state):
                     x_size = 50  # Size of the X
 
                     # Draw thick red X lines
-                    pygame.draw.line(screen, (255, 0, 0),
-                                     (x_center - x_size, y_center - x_size),
-                                     (x_center + x_size, y_center + x_size), 5)
-                    pygame.draw.line(screen, (255, 0, 0),
-                                     (x_center + x_size, y_center - x_size),
-                                     (x_center - x_size, y_center + x_size), 5)
+                    pygame.draw.line(
+                        screen,
+                        (255, 0, 0),
+                        (x_center - x_size, y_center - x_size),
+                        (x_center + x_size, y_center + x_size),
+                        5,
+                    )
+                    pygame.draw.line(
+                        screen,
+                        (255, 0, 0),
+                        (x_center + x_size, y_center - x_size),
+                        (x_center - x_size, y_center + x_size),
+                        5,
+                    )
 
             # Draw turtle info
             draw_breeding_turtle_card(screen, font, turtle, slot_rect, is_retired)
@@ -120,7 +143,10 @@ def draw_breeding(screen, font, game_state):
             # Empty slot
             pygame.draw.rect(screen, GRAY, slot_rect, 1)
             empty_txt = font.render("EMPTY", True, GRAY)
-            screen.blit(empty_txt, (slot_rect.centerx - empty_txt.get_width() // 2, slot_rect.centery))
+            screen.blit(
+                empty_txt,
+                (slot_rect.centerx - empty_txt.get_width() // 2, slot_rect.centery),
+            )
 
 
 def draw_breeding_turtle_card(screen, font, turtle, rect, is_retired):
@@ -131,6 +157,7 @@ def draw_breeding_turtle_card(screen, font, turtle, rect, is_retired):
     # Draw turtle image using universal renderer
     try:
         from core.rendering.pygame_turtle_renderer import render_turtle_pygame
+
         # Generate small turtle image (60x60) using existing renderer
         turtle_img = render_turtle_pygame(turtle, size=60)
         img_x = rect.x + 10
@@ -146,10 +173,12 @@ def draw_breeding_turtle_card(screen, font, turtle, rect, is_retired):
         center_x = pic_rect.centerx
         center_y = pic_rect.centery
         # Shell
-        pygame.draw.ellipse(screen, (34, 139, 34),
-                            (center_x - 25, center_y - 20, 50, 40))
-        pygame.draw.ellipse(screen, (0, 100, 0),
-                            (center_x - 25, center_y - 20, 50, 40), 2)
+        pygame.draw.ellipse(
+            screen, (34, 139, 34), (center_x - 25, center_y - 20, 50, 40)
+        )
+        pygame.draw.ellipse(
+            screen, (0, 100, 0), (center_x - 25, center_y - 20, 50, 40), 2
+        )
         # Head
         pygame.draw.circle(screen, (139, 90, 43), (center_x, center_y - 35), 10)
         pygame.draw.circle(screen, (100, 60, 20), (center_x, center_y - 35), 10, 2)
@@ -169,7 +198,7 @@ def draw_breeding_turtle_card(screen, font, turtle, rect, is_retired):
         f"Energy: {turtle.max_energy}",
         f"Recovery: {turtle.recovery}",
         f"Swim: {turtle.swim}",
-        f"Climb: {turtle.climb}"
+        f"Climb: {turtle.climb}",
     ]
 
     # Start position with more space for retired indicator

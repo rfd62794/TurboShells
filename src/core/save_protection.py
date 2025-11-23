@@ -19,6 +19,7 @@ from core.logging_config import get_logger
 @dataclass
 class SaveFileInfo:
     """Information about a save file."""
+
     file_path: str
     checksum: str
     timestamp: datetime
@@ -30,6 +31,7 @@ class SaveFileInfo:
 @dataclass
 class BackupInfo:
     """Information about a backup file."""
+
     backup_path: str
     original_checksum: str
     backup_timestamp: datetime
@@ -44,7 +46,12 @@ class SaveProtectionManager:
     and recovery options for game save files.
     """
 
-    def __init__(self, save_dir: str = "saves", backup_dir: str = "backups", max_backups: int = 10):
+    def __init__(
+        self,
+        save_dir: str = "saves",
+        backup_dir: str = "backups",
+        max_backups: int = 10,
+    ):
         """
         Initialize save protection manager.
 
@@ -57,7 +64,9 @@ class SaveProtectionManager:
         self.backup_dir = Path(backup_dir)
         self.max_backups = max_backups
         self.logger = get_logger(__name__)
-        self.corruption_threshold = 3  # Number of failed loads before considering corrupted
+        self.corruption_threshold = (
+            3  # Number of failed loads before considering corrupted
+        )
 
         # Ensure directories exist
         self.save_dir.mkdir(exist_ok=True)
@@ -72,14 +81,16 @@ class SaveProtectionManager:
         """Load backup registry from file."""
         try:
             if self.backup_registry_file.exists():
-                with open(self.backup_registry_file, 'r', encoding='utf-8') as f:
+                with open(self.backup_registry_file, "r", encoding="utf-8") as f:
                     data = json.load(f)
 
                 # Convert JSON data to BackupInfo objects
                 for save_file, backups in data.items():
                     backup_list = []
                     for backup_data in backups:
-                        backup_data['backup_timestamp'] = datetime.fromisoformat(backup_data['backup_timestamp'])
+                        backup_data["backup_timestamp"] = datetime.fromisoformat(
+                            backup_data["backup_timestamp"]
+                        )
                         backup_list.append(BackupInfo(**backup_data))
                     self.backup_registry[save_file] = backup_list
 
@@ -106,11 +117,13 @@ class SaveProtectionManager:
                 backup_list = []
                 for backup in backups:
                     backup_dict = asdict(backup)
-                    backup_dict['backup_timestamp'] = backup.backup_timestamp.isoformat()
+                    backup_dict["backup_timestamp"] = (
+                        backup.backup_timestamp.isoformat()
+                    )
                     backup_list.append(backup_dict)
                 registry_data[save_file] = backup_list
 
-            with open(self.backup_registry_file, 'w', encoding='utf-8') as f:
+            with open(self.backup_registry_file, "w", encoding="utf-8") as f:
                 json.dump(registry_data, f, indent=2, ensure_ascii=False)
 
             return True
@@ -163,7 +176,9 @@ class SaveProtectionManager:
 
             # Create backup filename with timestamp
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            backup_filename = f"{save_file.replace('.json', '')}_{timestamp}_{backup_type}.json"
+            backup_filename = (
+                f"{save_file.replace('.json', '')}_{timestamp}_{backup_type}.json"
+            )
             backup_path = self.backup_dir / backup_filename
 
             # Copy file
@@ -174,7 +189,7 @@ class SaveProtectionManager:
                 backup_path=str(backup_path),
                 original_checksum=checksum,
                 backup_timestamp=datetime.now(),
-                backup_type=backup_type
+                backup_type=backup_type,
             )
 
             if save_file not in self.backup_registry:
@@ -212,7 +227,7 @@ class SaveProtectionManager:
 
         # Keep only the most recent backups
         if len(backups) > self.max_backups:
-            old_backups = backups[self.max_backups:]
+            old_backups = backups[self.max_backups :]
 
             for backup in old_backups:
                 try:
@@ -221,10 +236,12 @@ class SaveProtectionManager:
                         backup_path.unlink()
                     self.logger.debug(f"Removed old backup: {backup.backup_path}")
                 except Exception as e:
-                    self.logger.error(f"Failed to remove old backup {backup.backup_path}: {e}")
+                    self.logger.error(
+                        f"Failed to remove old backup {backup.backup_path}: {e}"
+                    )
 
             # Update registry
-            self.backup_registry[save_file] = backups[:self.max_backups]
+            self.backup_registry[save_file] = backups[: self.max_backups]
 
     def validate_save_file(self, save_file: str) -> Tuple[bool, Optional[str]]:
         """
@@ -249,13 +266,13 @@ class SaveProtectionManager:
 
             # Try to parse JSON
             try:
-                with open(save_path, 'r', encoding='utf-8') as f:
+                with open(save_path, "r", encoding="utf-8") as f:
                     data = json.load(f)
             except json.JSONDecodeError as e:
                 return False, f"Invalid JSON format: {e}"
 
             # Validate required fields (basic validation)
-            required_fields = ['game_data', 'turtles', 'preferences']
+            required_fields = ["game_data", "turtles", "preferences"]
             for field in required_fields:
                 if field not in data:
                     return False, f"Missing required field: {field}"
@@ -296,7 +313,7 @@ class SaveProtectionManager:
             "Extra data",
             "UnicodeDecodeError",
             "FileNotFoundError",
-            "Permission denied"
+            "Permission denied",
         ]
 
         for indicator in corruption_indicators:
@@ -317,13 +334,19 @@ class SaveProtectionManager:
             Tuple of (recovery_successful, backup_used_path)
         """
         try:
-            if save_file not in self.backup_registry or not self.backup_registry[save_file]:
+            if (
+                save_file not in self.backup_registry
+                or not self.backup_registry[save_file]
+            ):
                 self.logger.error(f"No backups available for {save_file}")
                 return False, None
 
             # Get backups sorted by timestamp (newest first)
-            backups = sorted(self.backup_registry[save_file],
-                             key=lambda b: b.backup_timestamp, reverse=True)
+            backups = sorted(
+                self.backup_registry[save_file],
+                key=lambda b: b.backup_timestamp,
+                reverse=True,
+            )
 
             # Try each backup until we find a valid one
             for backup in backups:
@@ -343,10 +366,14 @@ class SaveProtectionManager:
                     # Create a corruption recovery backup
                     self.create_backup(save_file, "corruption_recovery")
 
-                    self.logger.info(f"Successfully recovered {save_file} from backup: {backup.backup_path}")
+                    self.logger.info(
+                        f"Successfully recovered {save_file} from backup: {backup.backup_path}"
+                    )
                     return True, backup.backup_path
                 else:
-                    self.logger.warning(f"Backup {backup.backup_path} is also invalid: {error}")
+                    self.logger.warning(
+                        f"Backup {backup.backup_path} is also invalid: {error}"
+                    )
 
             self.logger.error(f"No valid backups found for {save_file}")
             return False, None
@@ -383,7 +410,7 @@ class SaveProtectionManager:
                 timestamp=datetime.fromtimestamp(stat.st_mtime),
                 file_size=stat.st_size,
                 is_valid=is_valid,
-                backup_count=backup_count
+                backup_count=backup_count,
             )
 
         except Exception as e:
@@ -524,7 +551,10 @@ class SaveProtectionManager:
                 backups_to_remove = []
 
                 for backup in backups:
-                    if backup.backup_timestamp < cutoff_date and backup.backup_type == "auto":
+                    if (
+                        backup.backup_timestamp < cutoff_date
+                        and backup.backup_type == "auto"
+                    ):
                         # Remove old auto-backups
                         try:
                             backup_path = Path(backup.backup_path)
@@ -533,7 +563,9 @@ class SaveProtectionManager:
                             backups_to_remove.append(backup)
                             removed_count += 1
                         except Exception as e:
-                            self.logger.error(f"Failed to remove old backup {backup.backup_path}: {e}")
+                            self.logger.error(
+                                f"Failed to remove old backup {backup.backup_path}: {e}"
+                            )
 
                 # Update registry
                 for backup in backups_to_remove:
@@ -579,7 +611,7 @@ class SaveProtectionManager:
             "corrupted_save_files": corrupted_saves,
             "total_backups": total_backups,
             "max_backups_per_file": self.max_backups,
-            "backup_registry_size": len(self.backup_registry)
+            "backup_registry_size": len(self.backup_registry),
         }
 
 

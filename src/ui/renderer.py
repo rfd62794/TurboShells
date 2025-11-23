@@ -3,7 +3,10 @@ from settings import *
 import ui.layout as layout
 from ui.menu_view import draw_menu as draw_main_menu_view
 from ui.roster_view import draw_roster as draw_menu_view
-from ui.race_view import draw_race as draw_race_view, draw_race_result as draw_race_result_view
+from ui.race_view import (
+    draw_race as draw_race_view,
+    draw_race_result as draw_race_result_view,
+)
 from ui.shop_view import draw_shop as draw_shop_view
 from ui.breeding_view import draw_breeding as draw_breeding_view
 from ui.views.profile_view import draw_profile as draw_profile_view
@@ -53,7 +56,7 @@ class Renderer:
 
         # Draw Energy Bar above head
         bar_width = 40
-        pct = turtle.current_energy / turtle.stats['max_energy']
+        pct = turtle.current_energy / turtle.stats["max_energy"]
         fill_width = int(pct * bar_width)
 
         pygame.draw.rect(self.screen, RED, (screen_x, y_pos - 10, bar_width, 5))

@@ -25,7 +25,7 @@ def setup_logging(log_level=logging.INFO, log_to_file=True, log_to_console=True)
 
     # Create formatter
     formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     )
 
     # Configure root logger
@@ -48,7 +48,7 @@ def setup_logging(log_level=logging.INFO, log_to_file=True, log_to_console=True)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         log_file = logs_dir / f"turboshells_{timestamp}.log"
 
-        file_handler = logging.FileHandler(log_file, encoding='utf-8')
+        file_handler = logging.FileHandler(log_file, encoding="utf-8")
         file_handler.setLevel(log_level)
         file_handler.setFormatter(formatter)
         root_logger.addHandler(file_handler)
@@ -78,7 +78,7 @@ def log_game_event(event_type, details, level=logging.INFO):
         details: Event details
         level: Logging level
     """
-    logger = get_logger('game_events')
+    logger = get_logger("game_events")
     logger.log(level, f"{event_type}: {details}")
 
 
@@ -91,7 +91,7 @@ def log_error(error, context="", level=logging.ERROR):
         context: Additional context information
         level: Logging level
     """
-    logger = get_logger('game_errors')
+    logger = get_logger("game_errors")
     if context:
         logger.log(level, f"Error in {context}: {error}")
     else:
@@ -108,7 +108,7 @@ def log_performance(operation, duration, details="", level=logging.DEBUG):
         details: Additional details
         level: Logging level
     """
-    logger = get_logger('performance')
+    logger = get_logger("performance")
     logger.log(level, f"Performance - {operation}: {duration:.3f}s {details}")
 
 

@@ -16,6 +16,7 @@ from core.logging_config import get_logger
 @dataclass
 class GraphicsSettings:
     """Graphics configuration settings."""
+
     resolution_width: int = 1024
     resolution_height: int = 768
     fullscreen: bool = False
@@ -36,6 +37,7 @@ class GraphicsSettings:
 @dataclass
 class AudioSettings:
     """Audio configuration settings."""
+
     master_volume: float = 1.0
     music_volume: float = 0.8
     sfx_volume: float = 0.9
@@ -55,6 +57,7 @@ class AudioSettings:
 @dataclass
 class ControlSettings:
     """Control and input settings."""
+
     key_bindings: Dict[str, str] = None
     mouse_sensitivity: float = 1.0
     invert_mouse_y: bool = False
@@ -81,13 +84,14 @@ class ControlSettings:
                 "speed_2x": "2",
                 "speed_4x": "3",
                 "breed": "return",
-                "escape": "escape"
+                "escape": "escape",
             }
 
 
 @dataclass
 class DifficultySettings:
     """Game difficulty and accessibility settings."""
+
     difficulty_level: str = "normal"  # easy, normal, hard, expert
     auto_save: bool = True
     show_tutorials: bool = True
@@ -101,14 +105,17 @@ class DifficultySettings:
             "easy": 0.8,
             "normal": 1.0,
             "hard": 1.2,
-            "expert": 1.5
+            "expert": 1.5,
         }
-        return self.race_speed_multiplier * difficulty_multipliers.get(self.difficulty_level, 1.0)
+        return self.race_speed_multiplier * difficulty_multipliers.get(
+            self.difficulty_level, 1.0
+        )
 
 
 @dataclass
 class PlayerProfile:
     """Player profile information."""
+
     name: str = "Player"
     avatar_index: int = 0
     total_playtime: int = 0  # seconds
@@ -126,6 +133,7 @@ class PlayerProfile:
 @dataclass
 class UITheme:
     """UI theme settings."""
+
     theme_name: str = "default"
     color_scheme: str = "blue"  # blue, green, red, purple, dark
     font_size: int = 16
@@ -137,6 +145,7 @@ class UITheme:
 @dataclass
 class AccessibilitySettings:
     """Accessibility and comfort settings."""
+
     colorblind_mode: str = "none"  # none, protanopia, deuteranopia, tritanopia
     high_contrast: bool = False
     large_text: bool = False
@@ -148,6 +157,7 @@ class AccessibilitySettings:
 @dataclass
 class PrivacySettings:
     """Privacy and data collection settings."""
+
     analytics_enabled: bool = False
     crash_reporting: bool = True
     usage_statistics: bool = False
@@ -157,6 +167,7 @@ class PrivacySettings:
 @dataclass
 class GameConfig:
     """Main game configuration containing all settings."""
+
     graphics: GraphicsSettings = None
     audio: AudioSettings = None
     controls: ControlSettings = None
@@ -217,7 +228,7 @@ class ConfigManager:
         """
         try:
             if self.config_file.exists():
-                with open(self.config_file, 'r', encoding='utf-8') as f:
+                with open(self.config_file, "r", encoding="utf-8") as f:
                     data = json.load(f)
 
                 # Convert JSON to GameConfig
@@ -250,14 +261,14 @@ class ConfigManager:
             data = asdict(self._config)
 
             # Save to file with backup
-            backup_file = self.config_file.with_suffix('.json.bak')
+            backup_file = self.config_file.with_suffix(".json.bak")
             if self.config_file.exists():
                 # Remove existing backup if it exists
                 if backup_file.exists():
                     backup_file.unlink()
                 self.config_file.rename(backup_file)
 
-            with open(self.config_file, 'w', encoding='utf-8') as f:
+            with open(self.config_file, "w", encoding="utf-8") as f:
                 json.dump(data, f, indent=2, ensure_ascii=False)
 
             self.logger.info("Configuration saved successfully")
@@ -302,7 +313,7 @@ class ConfigManager:
             export_file.parent.mkdir(parents=True, exist_ok=True)
 
             data = asdict(self._config)
-            with open(export_file, 'w', encoding='utf-8') as f:
+            with open(export_file, "w", encoding="utf-8") as f:
                 json.dump(data, f, indent=2, ensure_ascii=False)
 
             self.logger.info(f"Configuration exported to {export_path}")
@@ -328,7 +339,7 @@ class ConfigManager:
                 self.logger.error(f"Import file not found: {import_path}")
                 return False
 
-            with open(import_file, 'r', encoding='utf-8') as f:
+            with open(import_file, "r", encoding="utf-8") as f:
                 data = json.load(f)
 
             self._config = self._dict_to_config(data)
@@ -352,14 +363,14 @@ class ConfigManager:
             GameConfig object
         """
         # Extract individual settings
-        graphics_data = data.get('graphics', {})
-        audio_data = data.get('audio', {})
-        controls_data = data.get('controls', {})
-        difficulty_data = data.get('difficulty', {})
-        profile_data = data.get('player_profile', {})
-        theme_data = data.get('ui_theme', {})
-        accessibility_data = data.get('accessibility', {})
-        privacy_data = data.get('privacy', {})
+        graphics_data = data.get("graphics", {})
+        audio_data = data.get("audio", {})
+        controls_data = data.get("controls", {})
+        difficulty_data = data.get("difficulty", {})
+        profile_data = data.get("player_profile", {})
+        theme_data = data.get("ui_theme", {})
+        accessibility_data = data.get("accessibility", {})
+        privacy_data = data.get("privacy", {})
 
         # Create settings objects
         graphics = GraphicsSettings(**graphics_data)
@@ -379,7 +390,7 @@ class ConfigManager:
             player_profile=profile,
             ui_theme=theme,
             accessibility=accessibility,
-            privacy=privacy
+            privacy=privacy,
         )
 
 

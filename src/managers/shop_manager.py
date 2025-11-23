@@ -13,7 +13,9 @@ class ShopManager:
 
     def handle_click(self, pos):
         # Check Navigation - Header Back Button (like voting view)
-        if hasattr(self.game_state, 'shop_back_rect') and self.game_state.shop_back_rect.collidepoint(pos):
+        if hasattr(
+            self.game_state, "shop_back_rect"
+        ) and self.game_state.shop_back_rect.collidepoint(pos):
             return "GOTO_MENU"
 
         # Check Refresh Button (now at bottom)
@@ -25,9 +27,12 @@ class ShopManager:
         for i, slot_rect in enumerate(layout.SHOP_SLOT_RECTS):
             # Calculate absolute button position
             # SHOP_BTN_BUY_RECT is relative to slot
-            buy_rect = pygame.Rect(slot_rect.x + layout.SHOP_BTN_BUY_RECT.x,
-                                   slot_rect.y + layout.SHOP_BTN_BUY_RECT.y,
-                                   layout.SHOP_BTN_BUY_RECT.width, layout.SHOP_BTN_BUY_RECT.height)
+            buy_rect = pygame.Rect(
+                slot_rect.x + layout.SHOP_BTN_BUY_RECT.x,
+                slot_rect.y + layout.SHOP_BTN_BUY_RECT.y,
+                layout.SHOP_BTN_BUY_RECT.width,
+                layout.SHOP_BTN_BUY_RECT.height,
+            )
 
             if buy_rect.collidepoint(pos):
                 self.buy_turtle(i)
@@ -57,7 +62,7 @@ class ShopManager:
             self.inventory = [
                 generate_random_turtle(level=1, use_influenced_genetics=True),
                 generate_random_turtle(level=2, use_influenced_genetics=True),
-                generate_random_turtle(level=3, use_influenced_genetics=True)
+                generate_random_turtle(level=3, use_influenced_genetics=True),
             ]
 
             # Precompute and attach shop_cost for UI display

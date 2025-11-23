@@ -15,6 +15,7 @@ from .data_structures import GameData, TurtleData, PlayerPreferences
 # SIMPLE JSON-BASED VALIDATION
 # ============================================================================
 
+
 class DataValidator:
     """Validates data structures using JSON serialization and basic checks"""
 
@@ -28,7 +29,14 @@ class DataValidator:
             json.dumps(data)
 
             # Check required fields
-            required_fields = ["version", "timestamp", "player_id", "game_state", "economy", "roster"]
+            required_fields = [
+                "version",
+                "timestamp",
+                "player_id",
+                "game_state",
+                "economy",
+                "roster",
+            ]
             for field in required_fields:
                 if field not in data:
                     return False, f"Missing required field: {field}"
@@ -66,7 +74,8 @@ class DataValidator:
                 "created_timestamp",
                 "genetics",
                 "stats",
-                "performance"]
+                "performance",
+            ]
             for field in required_fields:
                 if field not in data:
                     return False, f"Missing required field: {field}"
@@ -92,7 +101,9 @@ class DataValidator:
         except Exception as e:
             return False, f"Validation error: {str(e)}"
 
-    def validate_preference_data(self, data: Dict[str, Any]) -> Tuple[bool, Optional[str]]:
+    def validate_preference_data(
+        self, data: Dict[str, Any]
+    ) -> Tuple[bool, Optional[str]]:
         """Validate preference data structure"""
         try:
             # Try to serialize to JSON to ensure it's valid
@@ -105,7 +116,8 @@ class DataValidator:
                 "last_updated",
                 "voting_history",
                 "preference_profile",
-                "genetic_influence"]
+                "genetic_influence",
+            ]
             for field in required_fields:
                 if field not in data:
                     return False, f"Missing required field: {field}"
@@ -129,14 +141,20 @@ class DataValidator:
         except Exception as e:
             return False, f"Validation error: {str(e)}"
 
-    def validate_all(self, game_data: Dict[str, Any], turtles: List[Dict[str, Any]],
-                     preferences: Dict[str, Any]) -> Dict[str, Any]:
+    def validate_all(
+        self,
+        game_data: Dict[str, Any],
+        turtles: List[Dict[str, Any]],
+        preferences: Dict[str, Any],
+    ) -> Dict[str, Any]:
         """Validate all data types"""
         results = {}
-        results['game'] = self.validate_game_data(game_data)
-        results['turtles'] = [(self.validate_turtle_data(turtle), turtle.get('turtle_id', 'unknown'))
-                              for turtle in turtles]
-        results['preferences'] = self.validate_preference_data(preferences)
+        results["game"] = self.validate_game_data(game_data)
+        results["turtles"] = [
+            (self.validate_turtle_data(turtle), turtle.get("turtle_id", "unknown"))
+            for turtle in turtles
+        ]
+        results["preferences"] = self.validate_preference_data(preferences)
         return results
 
 

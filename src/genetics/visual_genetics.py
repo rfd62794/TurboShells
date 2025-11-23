@@ -33,12 +33,18 @@ class VisualGenetics:
         """Generate random value for a specific gene"""
         return self.gene_generator.generate_random_gene_value(gene_def)
 
-    def inherit_genetics(self, parent1_genetics: Dict, parent2_genetics: Dict) -> Dict[str, Union[Tuple, str, float]]:
+    def inherit_genetics(
+        self, parent1_genetics: Dict, parent2_genetics: Dict
+    ) -> Dict[str, Union[Tuple, str, float]]:
         """Inherit genetics from two parents with mutation"""
-        child_genetics = self.inheritance.inherit_genetics(parent1_genetics, parent2_genetics)
+        child_genetics = self.inheritance.inherit_genetics(
+            parent1_genetics, parent2_genetics
+        )
         return self.mutation.mutate_genetics(child_genetics)
 
-    def mutate_gene(self, gene_name: str, value: Union[Tuple, str, float]) -> Union[Tuple, str, float]:
+    def mutate_gene(
+        self, gene_name: str, value: Union[Tuple, str, float]
+    ) -> Union[Tuple, str, float]:
         """Apply mutation to a gene value"""
         return self.mutation.mutate_gene(gene_name, value)
 
@@ -48,71 +54,90 @@ class VisualGenetics:
         """Get access to gene definitions"""
         return self.gene_definitions
 
-    def create_offspring(self, parent1_genetics: Dict, parent2_genetics: Dict,
-                         inheritance_type: str = 'standard',
-                         mutation_intensity: str = 'moderate') -> Dict[str, Union[Tuple, str, float]]:
+    def create_offspring(
+        self,
+        parent1_genetics: Dict,
+        parent2_genetics: Dict,
+        inheritance_type: str = "standard",
+        mutation_intensity: str = "moderate",
+    ) -> Dict[str, Union[Tuple, str, float]]:
         """
         Create offspring with specified inheritance and mutation types
         """
         # Choose inheritance method
-        if inheritance_type == 'standard':
-            child_genetics = self.inheritance.inherit_genetics(parent1_genetics, parent2_genetics)
-        elif inheritance_type == 'blended':
-            blend_genes = ['shell_size_modifier', 'head_size_modifier', 'leg_length']
-            child_genetics = self.inheritance.inherit_blended(parent1_genetics, parent2_genetics, blend_genes)
-        elif inheritance_type == 'color_patterns':
-            child_genetics = self.inheritance.inherit_color_patterns(parent1_genetics, parent2_genetics)
+        if inheritance_type == "standard":
+            child_genetics = self.inheritance.inherit_genetics(
+                parent1_genetics, parent2_genetics
+            )
+        elif inheritance_type == "blended":
+            blend_genes = ["shell_size_modifier", "head_size_modifier", "leg_length"]
+            child_genetics = self.inheritance.inherit_blended(
+                parent1_genetics, parent2_genetics, blend_genes
+            )
+        elif inheritance_type == "color_patterns":
+            child_genetics = self.inheritance.inherit_color_patterns(
+                parent1_genetics, parent2_genetics
+            )
         else:
-            child_genetics = self.inheritance.inherit_genetics(parent1_genetics, parent2_genetics)
+            child_genetics = self.inheritance.inherit_genetics(
+                parent1_genetics, parent2_genetics
+            )
 
         # Apply mutations
-        if mutation_intensity == 'pattern':
+        if mutation_intensity == "pattern":
             child_genetics = self.mutation.pattern_mutation(child_genetics)
         else:
-            child_genetics = self.mutation.mutate_with_intensity(child_genetics, mutation_intensity)
+            child_genetics = self.mutation.mutate_with_intensity(
+                child_genetics, mutation_intensity
+            )
 
         return child_genetics
 
-    def generate_variations(self, base_genetics: Dict, count: int = 5,
-                            variation_type: str = 'mutation') -> List[Dict[str, Union[Tuple, str, float]]]:
+    def generate_variations(
+        self, base_genetics: Dict, count: int = 5, variation_type: str = "mutation"
+    ) -> List[Dict[str, Union[Tuple, str, float]]]:
         """
         Generate variations of base genetics
         """
         variations = []
 
-        if variation_type == 'mutation':
+        if variation_type == "mutation":
             for _ in range(count):
-                variation = self.mutation.mutate_with_intensity(base_genetics, 'moderate')
+                variation = self.mutation.mutate_with_intensity(
+                    base_genetics, "moderate"
+                )
                 variations.append(variation)
 
-        elif variation_type == 'color':
+        elif variation_type == "color":
             # Generate color variations
-            base_color = base_genetics.get('shell_base_color', (34, 139, 34))
+            base_color = base_genetics.get("shell_base_color", (34, 139, 34))
             color_variations = self.gene_generator.generate_color_variations(base_color)
 
             for color in color_variations[:count]:
                 variation = base_genetics.copy()
-                variation['shell_base_color'] = color
+                variation["shell_base_color"] = color
                 variations.append(variation)
 
-        elif variation_type == 'pattern':
+        elif variation_type == "pattern":
             # Generate pattern variations
-            base_pattern = base_genetics.get('shell_pattern_type', 'hex')
-            pattern_variations = self.gene_generator.generate_pattern_variations(base_pattern)
+            base_pattern = base_genetics.get("shell_pattern_type", "hex")
+            pattern_variations = self.gene_generator.generate_pattern_variations(
+                base_pattern
+            )
 
             for pattern in pattern_variations[:count]:
                 variation = base_genetics.copy()
-                variation['shell_pattern_type'] = pattern
+                variation["shell_pattern_type"] = pattern
                 variations.append(variation)
 
-        elif variation_type == 'size':
+        elif variation_type == "size":
             # Generate size variations
-            base_size = base_genetics.get('shell_size_modifier', 1.0)
+            base_size = base_genetics.get("shell_size_modifier", 1.0)
             size_variations = self.gene_generator.generate_size_variations(base_size)
 
             for size in size_variations[:count]:
                 variation = base_genetics.copy()
-                variation['shell_size_modifier'] = size
+                variation["shell_size_modifier"] = size
                 variations.append(variation)
 
         return variations
@@ -122,13 +147,13 @@ class VisualGenetics:
         Analyze genetic profile and return insights
         """
         analysis = {
-            'total_genes': len(genetics),
-            'color_genes': len(self.gene_definitions.get_genes_by_type('rgb')),
-            'pattern_genes': len(self.gene_definitions.get_genes_by_type('discrete')),
-            'size_genes': len(self.gene_definitions.get_genes_by_type('continuous')),
-            'dominant_colors': self._get_dominant_colors(genetics),
-            'pattern_profile': self._get_pattern_profile(genetics),
-            'size_profile': self._get_size_profile(genetics)
+            "total_genes": len(genetics),
+            "color_genes": len(self.gene_definitions.get_genes_by_type("rgb")),
+            "pattern_genes": len(self.gene_definitions.get_genes_by_type("discrete")),
+            "size_genes": len(self.gene_definitions.get_genes_by_type("continuous")),
+            "dominant_colors": self._get_dominant_colors(genetics),
+            "pattern_profile": self._get_pattern_profile(genetics),
+            "size_profile": self._get_size_profile(genetics),
         }
 
         return analysis
@@ -136,24 +161,30 @@ class VisualGenetics:
     def _get_dominant_colors(self, genetics: Dict) -> List[str]:
         """Extract dominant color themes from genetics"""
         colors = []
-        color_genes = ['shell_base_color', 'head_color', 'leg_color', 'eye_color', 'pattern_color']
+        color_genes = [
+            "shell_base_color",
+            "head_color",
+            "leg_color",
+            "eye_color",
+            "pattern_color",
+        ]
 
         for gene in color_genes:
             if gene in genetics:
                 rgb = genetics[gene]
                 # Simple color categorization
                 if rgb[0] > 200 and rgb[1] > 200 and rgb[2] > 200:
-                    colors.append('light')
+                    colors.append("light")
                 elif rgb[0] < 55 and rgb[1] < 55 and rgb[2] < 55:
-                    colors.append('dark')
+                    colors.append("dark")
                 elif rgb[0] > rgb[1] and rgb[0] > rgb[2]:
-                    colors.append('red')
+                    colors.append("red")
                 elif rgb[1] > rgb[0] and rgb[1] > rgb[2]:
-                    colors.append('green')
+                    colors.append("green")
                 elif rgb[2] > rgb[0] and rgb[2] > rgb[1]:
-                    colors.append('blue')
+                    colors.append("blue")
                 else:
-                    colors.append('neutral')
+                    colors.append("neutral")
 
         return colors
 
@@ -161,7 +192,7 @@ class VisualGenetics:
         """Get pattern information from genetics"""
         profile = {}
 
-        pattern_genes = ['shell_pattern_type', 'body_pattern_type']
+        pattern_genes = ["shell_pattern_type", "body_pattern_type"]
         for gene in pattern_genes:
             if gene in genetics:
                 profile[gene] = str(genetics[gene])
@@ -172,7 +203,12 @@ class VisualGenetics:
         """Get size information from genetics"""
         profile = {}
 
-        size_genes = ['shell_size_modifier', 'head_size_modifier', 'leg_length', 'eye_size_modifier']
+        size_genes = [
+            "shell_size_modifier",
+            "head_size_modifier",
+            "leg_length",
+            "eye_size_modifier",
+        ]
         for gene in size_genes:
             if gene in genetics:
                 profile[gene] = float(genetics[gene])
@@ -186,7 +222,9 @@ class VisualGenetics:
         validation_results = {}
 
         for gene_name, value in genetics.items():
-            validation_results[gene_name] = self.gene_definitions.validate_gene_value(gene_name, value)
+            validation_results[gene_name] = self.gene_definitions.validate_gene_value(
+                gene_name, value
+            )
 
         return validation_results
 

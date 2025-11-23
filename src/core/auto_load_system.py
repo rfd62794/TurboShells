@@ -11,8 +11,11 @@ from typing import Optional, Tuple, Dict, Any
 from datetime import datetime, timezone
 
 from core.data import (
-    GameData, TurtleData, PlayerPreferences,
-    DataValidator, DataMigrator
+    GameData,
+    TurtleData,
+    PlayerPreferences,
+    DataValidator,
+    DataMigrator,
 )
 from managers.save_manager import SaveManager
 
@@ -48,7 +51,9 @@ class AutoLoadSystem:
             self.logger.error(f"Error checking for save file: {e}")
             return False
 
-    def validate_save_file(self, save_path: Optional[Path] = None) -> Tuple[bool, Optional[str]]:
+    def validate_save_file(
+        self, save_path: Optional[Path] = None
+    ) -> Tuple[bool, Optional[str]]:
         """Verify save file integrity and compatibility"""
         try:
             path = save_path or self.save_manager.primary_save_path
@@ -81,8 +86,13 @@ class AutoLoadSystem:
             self.logger.error(f"Save file validation error: {e}")
             return False, f"Validation error: {e}"
 
-    def restore_game_state(self) -> Tuple[bool, Optional[str],
-                                          Optional[Tuple[GameData, list[TurtleData], PlayerPreferences]]]:
+    def restore_game_state(
+        self,
+    ) -> Tuple[
+        bool,
+        Optional[str],
+        Optional[Tuple[GameData, list[TurtleData], PlayerPreferences]],
+    ]:
         """Restore complete game state from save"""
         try:
             self.logger.info("Attempting to restore game state from save file")
@@ -96,16 +106,26 @@ class AutoLoadSystem:
             game_data, turtles, preferences = result
 
             # Validate loaded data (they should be dataclass objects)
-            game_valid, game_error = self.validator.validate_game_data(game_data.__dict__)
+            game_valid, game_error = self.validator.validate_game_data(
+                game_data.__dict__
+            )
             if not game_valid:
                 return False, f"Invalid game data: {game_error}", None
 
             for i, turtle in enumerate(turtles):
-                turtle_valid, turtle_error = self.validator.validate_turtle_data(turtle.__dict__)
+                turtle_valid, turtle_error = self.validator.validate_turtle_data(
+                    turtle.__dict__
+                )
                 if not turtle_valid:
-                    return False, f"Invalid turtle data for turtle {i + 1}: {turtle_error}", None
+                    return (
+                        False,
+                        f"Invalid turtle data for turtle {i + 1}: {turtle_error}",
+                        None,
+                    )
 
-            pref_valid, pref_error = self.validator.validate_preference_data(preferences.__dict__)
+            pref_valid, pref_error = self.validator.validate_preference_data(
+                preferences.__dict__
+            )
             if not pref_valid:
                 return False, f"Invalid preference data: {pref_error}", None
 
@@ -114,22 +134,29 @@ class AutoLoadSystem:
             self.load_successful = True
             self.load_error = None
             self.save_file_info = {
-                "file_path": str(
-                    self.save_manager.primary_save_path),
+                "file_path": str(self.save_manager.primary_save_path),
                 "file_size": self.save_manager.primary_save_path.stat().st_size,
                 "last_modified": datetime.fromtimestamp(
-                    self.save_manager.primary_save_path.stat().st_mtime,
-                    timezone.utc).isoformat()}
+                    self.save_manager.primary_save_path.stat().st_mtime, timezone.utc
+                ).isoformat(),
+            }
 
-            self.logger.info(f"Successfully restored game state for player {game_data.player_id}")
+            self.logger.info(
+                f"Successfully restored game state for player {game_data.player_id}"
+            )
             return True, None, (game_data, turtles, preferences)
 
         except Exception as e:
             self.logger.error(f"Failed to restore game state: {e}")
             return False, f"Failed to restore game state: {e}", None
 
-    def handle_corrupted_save(self) -> Tuple[bool, Optional[str],
-                                             Optional[Tuple[GameData, list[TurtleData], PlayerPreferences]]]:
+    def handle_corrupted_save(
+        self,
+    ) -> Tuple[
+        bool,
+        Optional[str],
+        Optional[Tuple[GameData, list[TurtleData], PlayerPreferences]],
+    ]:
         """Handle corrupted or missing save files"""
         try:
             self.logger.warning("Handling corrupted save file")
@@ -149,7 +176,11 @@ class AutoLoadSystem:
                         self.save_manager.primary_save_path = original_primary
                         self.save_manager._create_backup()
                         import shutil
-                        shutil.copy2(self.save_manager.backup_save_path, self.save_manager.primary_save_path)
+
+                        shutil.copy2(
+                            self.save_manager.backup_save_path,
+                            self.save_manager.primary_save_path,
+                        )
 
                         self.logger.info("Successfully restored from backup")
                         return result
@@ -167,11 +198,20 @@ class AutoLoadSystem:
             self.logger.error(error_msg)
             return False, error_msg, None
 
-    def create_new_game(self) -> Tuple[bool, Optional[str],
-                                       Optional[Tuple[GameData, list[TurtleData], PlayerPreferences]]]:
+    def create_new_game(
+        self,
+    ) -> Tuple[
+        bool,
+        Optional[str],
+        Optional[Tuple[GameData, list[TurtleData], PlayerPreferences]],
+    ]:
         """Create new game when no save is available"""
         try:
-            from core.data import create_default_game_data, create_default_turtle_data, create_default_preference_data
+            from core.data import (
+                create_default_game_data,
+                create_default_turtle_data,
+                create_default_preference_data,
+            )
 
             self.logger.info("Creating new game")
 
@@ -197,38 +237,42 @@ class AutoLoadSystem:
             self.logger.error(error_msg)
             return False, error_msg, None
 
-    def notify_user(self, success: bool, message: Optional[str] = None) -> Dict[str, Any]:
+    def notify_user(
+        self, success: bool, message: Optional[str] = None
+    ) -> Dict[str, Any]:
         """Inform user about load status"""
         notification = {
             "type": "load_notification",
             "success": success,
             "timestamp": datetime.now(timezone.utc).isoformat(),
-            "message": message
+            "message": message,
         }
 
         if success and self.loaded_data:
             game_data, turtles, preferences = self.loaded_data
 
             # Handle both dataclass and dict formats
-            if hasattr(game_data, 'game_state'):
-                if hasattr(game_data.game_state, 'money'):
+            if hasattr(game_data, "game_state"):
+                if hasattr(game_data.game_state, "money"):
                     money = game_data.game_state.money
                 else:
-                    money = game_data.game_state.get('money', 0)
+                    money = game_data.game_state.get("money", 0)
             else:
-                money = game_data.get('game_state', {}).get('money', 0)
+                money = game_data.get("game_state", {}).get("money", 0)
 
             # Simple notification without complex attribute access
-            notification.update({
-                "player_id": getattr(game_data, 'player_id', 'unknown'),
-                "game_version": getattr(game_data, 'version', 'unknown'),
-                "save_timestamp": getattr(game_data, 'timestamp', 'unknown'),
-                "money": money,
-                "active_turtles": len(turtles) if turtles else 0,
-                "retired_turtles": 0,
-                "total_races": 0,
-                "total_votes_cast": 0
-            })
+            notification.update(
+                {
+                    "player_id": getattr(game_data, "player_id", "unknown"),
+                    "game_version": getattr(game_data, "version", "unknown"),
+                    "save_timestamp": getattr(game_data, "timestamp", "unknown"),
+                    "money": money,
+                    "active_turtles": len(turtles) if turtles else 0,
+                    "retired_turtles": 0,
+                    "total_races": 0,
+                    "total_votes_cast": 0,
+                }
+            )
 
             if self.save_file_info:
                 notification["save_file_info"] = self.save_file_info
@@ -238,8 +282,14 @@ class AutoLoadSystem:
 
         return notification
 
-    def auto_load(self) -> Tuple[bool, Optional[str],
-                                 Optional[Tuple[GameData, list[TurtleData], PlayerPreferences]], Dict[str, Any]]:
+    def auto_load(
+        self,
+    ) -> Tuple[
+        bool,
+        Optional[str],
+        Optional[Tuple[GameData, list[TurtleData], PlayerPreferences]],
+        Dict[str, Any],
+    ]:
         """Complete auto-load process with all steps"""
         try:
             # Step 1: Check for save file
@@ -272,7 +322,9 @@ class AutoLoadSystem:
 
             # Ultimate fallback - create new game
             success, error, data = self.create_new_game()
-            notification = self.notify_user(success, f"Auto-load failed, new game created: {error_msg}")
+            notification = self.notify_user(
+                success, f"Auto-load failed, new game created: {error_msg}"
+            )
             return success, error, data, notification
 
     def get_load_status(self) -> Dict[str, Any]:
@@ -283,7 +335,7 @@ class AutoLoadSystem:
             "has_loaded_data": self.loaded_data is not None,
             "save_file_info": self.save_file_info,
             "save_file_exists": self.save_manager.primary_save_path.exists(),
-            "backup_file_exists": self.save_manager.backup_save_path.exists()
+            "backup_file_exists": self.save_manager.backup_save_path.exists(),
         }
 
 

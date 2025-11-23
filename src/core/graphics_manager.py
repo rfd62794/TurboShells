@@ -27,7 +27,7 @@ class GraphicsManager:
         (1366, 768),
         (1920, 1080),
         (2560, 1440),
-        (3840, 2160)
+        (3840, 2160),
     ]
 
     # Quality levels with their settings
@@ -37,29 +37,29 @@ class GraphicsManager:
             "particle_count": 0.3,
             "shadow_quality": 0.2,
             "anti_aliasing": 0,
-            "anisotropic_filtering": 0
+            "anisotropic_filtering": 0,
         },
         "medium": {
             "texture_quality": 0.7,
             "particle_count": 0.6,
             "shadow_quality": 0.5,
             "anti_aliasing": 2,
-            "anisotropic_filtering": 2
+            "anisotropic_filtering": 2,
         },
         "high": {
             "texture_quality": 0.9,
             "particle_count": 0.8,
             "shadow_quality": 0.8,
             "anti_aliasing": 4,
-            "anisotropic_filtering": 4
+            "anisotropic_filtering": 4,
         },
         "ultra": {
             "texture_quality": 1.0,
             "particle_count": 1.0,
             "shadow_quality": 1.0,
             "anti_aliasing": 8,
-            "anisotropic_filtering": 8
-        }
+            "anisotropic_filtering": 8,
+        },
     }
 
     def __init__(self):
@@ -80,13 +80,13 @@ class GraphicsManager:
         config = config_manager.get_config()
         self.current_settings = config.graphics
         self.quality_settings = self.QUALITY_PRESETS.get(
-            self.current_settings.quality_level,
-            self.QUALITY_PRESETS["high"]
+            self.current_settings.quality_level, self.QUALITY_PRESETS["high"]
         )
         self.logger.info(
             f"Loaded graphics settings: {
                 self.current_settings.resolution_width}x{
-                self.current_settings.resolution_height}")
+                self.current_settings.resolution_height}"
+        )
 
     def initialize_display(self) -> pygame.Surface:
         """
@@ -103,8 +103,7 @@ class GraphicsManager:
 
             # Create display
             self.screen = pygame.display.set_mode(
-                self.current_settings.get_resolution(),
-                flags
+                self.current_settings.get_resolution(), flags
             )
 
             # Set frame rate
@@ -118,7 +117,8 @@ class GraphicsManager:
             self.logger.info(
                 f"Display initialized: {
                     self.current_settings.get_resolution()}, Fullscreen: {
-                    self.current_settings.fullscreen}")
+                    self.current_settings.fullscreen}"
+            )
             return self.screen
 
         except Exception as e:
@@ -130,7 +130,9 @@ class GraphicsManager:
             self.screen = pygame.display.set_mode((1024, 768))
             return self.screen
 
-    def apply_resolution_change(self, width: int, height: int, fullscreen: bool = None) -> bool:
+    def apply_resolution_change(
+        self, width: int, height: int, fullscreen: bool = None
+    ) -> bool:
         """
         Apply a new resolution setting.
 
@@ -146,7 +148,7 @@ class GraphicsManager:
             old_settings = (
                 self.current_settings.resolution_width,
                 self.current_settings.resolution_height,
-                self.current_settings.fullscreen
+                self.current_settings.fullscreen,
             )
 
             # Update settings
@@ -160,13 +162,19 @@ class GraphicsManager:
             # Save configuration
             config_manager.save_config()
 
-            self.logger.info(f"Resolution changed to {width}x{height}, Fullscreen: {self.current_settings.fullscreen}")
+            self.logger.info(
+                f"Resolution changed to {width}x{height}, Fullscreen: {self.current_settings.fullscreen}"
+            )
             return True
 
         except Exception as e:
             self.logger.error(f"Failed to change resolution: {e}")
             # Revert to old settings
-            self.current_settings.resolution_width, self.current_settings.resolution_height, self.current_settings.fullscreen = old_settings
+            (
+                self.current_settings.resolution_width,
+                self.current_settings.resolution_height,
+                self.current_settings.fullscreen,
+            ) = old_settings
             return False
 
     def toggle_fullscreen(self) -> bool:
@@ -179,7 +187,7 @@ class GraphicsManager:
         return self.apply_resolution_change(
             self.current_settings.resolution_width,
             self.current_settings.resolution_height,
-            not self.current_settings.fullscreen
+            not self.current_settings.fullscreen,
         )
 
     def set_quality_level(self, quality: str) -> bool:
@@ -304,7 +312,9 @@ class GraphicsManager:
         """
         self.current_settings.frame_rate_limit = max(30, min(240, limit))
         config_manager.save_config()
-        self.logger.info(f"Frame rate limit set to {self.current_settings.frame_rate_limit}")
+        self.logger.info(
+            f"Frame rate limit set to {self.current_settings.frame_rate_limit}"
+        )
 
     def get_frame_rate_limit(self) -> int:
         """
@@ -353,7 +363,7 @@ class GraphicsManager:
             "frame_rate_limit": self.get_frame_rate_limit(),
             "vsync": self.is_vsync_enabled(),
             "hardware_accelerated": bool(info.hw),
-            "available_resolutions": self.get_available_resolutions()
+            "available_resolutions": self.get_available_resolutions(),
         }
 
     def reset_to_defaults(self) -> None:

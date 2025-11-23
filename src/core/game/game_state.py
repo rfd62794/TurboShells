@@ -10,9 +10,26 @@ from .entities import Turtle
 
 # --- DATA ---
 TURTLE_NAMES = [
-    "Speedy", "Flash", "Tank", "Rocky", "Splash", "Bolt", "Zoom", "Crush",
-    "Snap", "Drift", "Turbo", "Nitro", "Apex", "Vortex", "Titan", "Goliath",
-    "Dash", "Sprint", "Marathon", "Iron"
+    "Speedy",
+    "Flash",
+    "Tank",
+    "Rocky",
+    "Splash",
+    "Bolt",
+    "Zoom",
+    "Crush",
+    "Snap",
+    "Drift",
+    "Turbo",
+    "Nitro",
+    "Apex",
+    "Vortex",
+    "Titan",
+    "Goliath",
+    "Dash",
+    "Sprint",
+    "Marathon",
+    "Iron",
 ]
 
 
@@ -46,11 +63,11 @@ def generate_balanced_opponent(player_turtle):
 
     # Calculate player's total stat points (excluding energy which uses different scaling)
     player_points = (
-        player_turtle.stats['speed'] +
-        player_turtle.stats['recovery'] +
-        player_turtle.stats['swim'] +
-        player_turtle.stats['climb'] +
-        (player_turtle.stats['max_energy'] // 10)  # Energy: 10 energy = 1 point
+        player_turtle.stats["speed"]
+        + player_turtle.stats["recovery"]
+        + player_turtle.stats["swim"]
+        + player_turtle.stats["climb"]
+        + (player_turtle.stats["max_energy"] // 10)  # Energy: 10 energy = 1 point
     )
 
     # Start with base stats
@@ -139,6 +156,7 @@ def generate_random_turtle(level=1, use_influenced_genetics=False):
     if use_influenced_genetics:
         try:
             from core.systems import GeneticPoolManager
+
             pool_manager = GeneticPoolManager()
             influenced_genetics = pool_manager.generate_influenced_genetics()
             # Apply the influenced genetics to the turtle
@@ -162,7 +180,7 @@ def breed_turtles(parent_a, parent_b, use_influenced_genetics=False):
         use_influenced_genetics: If True, applies voting influence to child
     """
     # Name combination (First half of A + Last half of B)
-    name_a_part = parent_a.name[:len(parent_a.name) // 2]
+    name_a_part = parent_a.name[: len(parent_a.name) // 2]
     name_b_part = parent_b.name[len(parent_b.name) // 2]
     child_name = name_a_part + name_b_part
 
@@ -172,9 +190,11 @@ def breed_turtles(parent_a, parent_b, use_influenced_genetics=False):
     # Inherit stats from parents, with mutation
     speed = max(1, (parent_a.speed + parent_b.speed) // 2 + mutation)
     energy = max(50, (parent_a.max_energy + parent_b.max_energy) // 2 + (mutation * 10))
-    recovery = max(1, (parent_a.stats['recovery'] + parent_b.stats['recovery']) // 2 + mutation)
-    swim = max(1, (parent_a.stats['swim'] + parent_b.stats['swim']) // 2 + mutation)
-    climb = max(1, (parent_a.stats['climb'] + parent_b.stats['climb']) // 2 + mutation)
+    recovery = max(
+        1, (parent_a.stats["recovery"] + parent_b.stats["recovery"]) // 2 + mutation
+    )
+    swim = max(1, (parent_a.stats["swim"] + parent_b.stats["swim"]) // 2 + mutation)
+    climb = max(1, (parent_a.stats["climb"] + parent_b.stats["climb"]) // 2 + mutation)
 
     # Create child with inheritance
     child = Turtle(child_name, speed, energy, recovery, swim, climb)
@@ -183,6 +203,7 @@ def breed_turtles(parent_a, parent_b, use_influenced_genetics=False):
     if use_influenced_genetics:
         try:
             from core.systems import GeneticPoolManager
+
             pool_manager = GeneticPoolManager()
             influenced_genetics = pool_manager.generate_influenced_genetics()
             # Apply the influenced genetics to the child (blend with inherited)

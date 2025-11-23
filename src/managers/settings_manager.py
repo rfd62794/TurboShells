@@ -20,6 +20,7 @@ from core.logging_config import get_logger
 @dataclass
 class SettingsState:
     """Current state of the settings interface."""
+
     visible: bool = False
     active_tab: SettingsTab = SettingsTab.GRAPHICS
     pending_changes: Dict[str, Any] = None
@@ -57,7 +58,9 @@ class SettingsManager:
         """Update screen rectangle and adjust layout."""
         self.screen_rect = screen_rect
         self.settings_view.update_layout(screen_rect)
-        self.logger.info(f"Settings manager updated for screen size {screen_rect.width}x{screen_rect.height}")
+        self.logger.info(
+            f"Settings manager updated for screen size {screen_rect.width}x{screen_rect.height}"
+        )
 
     def _initialize_components(self) -> None:
         """Initialize UI components for settings."""
@@ -69,7 +72,7 @@ class SettingsManager:
             hover_color=(100, 100, 100),
             pressed_color=(120, 120, 120),
             disabled_color=(60, 60, 60),
-            corner_radius=4
+            corner_radius=4,
         )
 
         checkbox_style = ComponentStyle(
@@ -78,7 +81,7 @@ class SettingsManager:
             text_color=(255, 255, 255),
             hover_color=(80, 80, 80),
             pressed_color=(100, 100, 100),
-            disabled_color=(40, 40, 40)
+            disabled_color=(40, 40, 40),
         )
 
         slider_style = ComponentStyle(
@@ -87,14 +90,14 @@ class SettingsManager:
             text_color=(255, 255, 255),
             hover_color=(70, 70, 70),
             pressed_color=(90, 90, 90),
-            disabled_color=(30, 30, 30)
+            disabled_color=(30, 30, 30),
         )
 
         # Store styles for later use
         self.styles = {
-            'button': button_style,
-            'checkbox': checkbox_style,
-            'slider': slider_style
+            "button": button_style,
+            "checkbox": checkbox_style,
+            "slider": slider_style,
         }
 
     def show_settings(self, tab: SettingsTab = SettingsTab.GRAPHICS) -> None:
@@ -187,68 +190,84 @@ class SettingsManager:
         self.pending_changes.clear()
 
         # Graphics settings
-        self.pending_changes.update({
-            'resolution': f"{config.graphics.resolution_width}x{config.graphics.resolution_height}",
-            'fullscreen': config.graphics.fullscreen,
-            'quality': config.graphics.quality_level,
-            'vsync': config.graphics.vsync,
-            'frame_rate_limit': config.graphics.frame_rate_limit
-        })
+        self.pending_changes.update(
+            {
+                "resolution": f"{config.graphics.resolution_width}x{config.graphics.resolution_height}",
+                "fullscreen": config.graphics.fullscreen,
+                "quality": config.graphics.quality_level,
+                "vsync": config.graphics.vsync,
+                "frame_rate_limit": config.graphics.frame_rate_limit,
+            }
+        )
 
         # Audio settings
-        self.pending_changes.update({
-            'master_volume': config.audio.master_volume,
-            'music_volume': config.audio.music_volume,
-            'sfx_volume': config.audio.sfx_volume,
-            'voice_volume': config.audio.voice_volume,
-            'audio_enabled': config.audio.enabled,
-            'mute_when_inactive': config.audio.mute_when_inactive
-        })
+        self.pending_changes.update(
+            {
+                "master_volume": config.audio.master_volume,
+                "music_volume": config.audio.music_volume,
+                "sfx_volume": config.audio.sfx_volume,
+                "voice_volume": config.audio.voice_volume,
+                "audio_enabled": config.audio.enabled,
+                "mute_when_inactive": config.audio.mute_when_inactive,
+            }
+        )
 
         # Control settings
-        self.pending_changes.update({
-            'mouse_sensitivity': config.controls.mouse_sensitivity,
-            'invert_mouse_y': config.controls.invert_mouse_y,
-            'auto_save_interval': config.controls.auto_save_interval
-        })
+        self.pending_changes.update(
+            {
+                "mouse_sensitivity": config.controls.mouse_sensitivity,
+                "invert_mouse_y": config.controls.invert_mouse_y,
+                "auto_save_interval": config.controls.auto_save_interval,
+            }
+        )
 
         # Difficulty settings
-        self.pending_changes.update({
-            'difficulty_level': config.difficulty.difficulty_level,
-            'auto_save': config.difficulty.auto_save,
-            'show_tutorials': config.difficulty.show_tutorials,
-            'confirm_actions': config.difficulty.confirm_actions
-        })
+        self.pending_changes.update(
+            {
+                "difficulty_level": config.difficulty.difficulty_level,
+                "auto_save": config.difficulty.auto_save,
+                "show_tutorials": config.difficulty.show_tutorials,
+                "confirm_actions": config.difficulty.confirm_actions,
+            }
+        )
 
         # Player profile
-        self.pending_changes.update({
-            'player_name': config.player_profile.name,
-            'avatar_index': config.player_profile.avatar_index
-        })
+        self.pending_changes.update(
+            {
+                "player_name": config.player_profile.name,
+                "avatar_index": config.player_profile.avatar_index,
+            }
+        )
 
         # UI theme
-        self.pending_changes.update({
-            'theme_name': config.ui_theme.theme_name,
-            'color_scheme': config.ui_theme.color_scheme,
-            'font_size': config.ui_theme.font_size,
-            'ui_scale': config.ui_theme.ui_scale
-        })
+        self.pending_changes.update(
+            {
+                "theme_name": config.ui_theme.theme_name,
+                "color_scheme": config.ui_theme.color_scheme,
+                "font_size": config.ui_theme.font_size,
+                "ui_scale": config.ui_theme.ui_scale,
+            }
+        )
 
         # Accessibility
-        self.pending_changes.update({
-            'colorblind_mode': config.accessibility.colorblind_mode,
-            'high_contrast': config.accessibility.high_contrast,
-            'large_text': config.accessibility.large_text,
-            'reduced_motion': config.accessibility.reduced_motion
-        })
+        self.pending_changes.update(
+            {
+                "colorblind_mode": config.accessibility.colorblind_mode,
+                "high_contrast": config.accessibility.high_contrast,
+                "large_text": config.accessibility.large_text,
+                "reduced_motion": config.accessibility.reduced_motion,
+            }
+        )
 
         # Privacy
-        self.pending_changes.update({
-            'analytics_enabled': config.privacy.analytics_enabled,
-            'crash_reporting': config.privacy.crash_reporting,
-            'usage_statistics': config.privacy.usage_statistics,
-            'personal_data_sharing': config.privacy.personal_data_sharing
-        })
+        self.pending_changes.update(
+            {
+                "analytics_enabled": config.privacy.analytics_enabled,
+                "crash_reporting": config.privacy.crash_reporting,
+                "usage_statistics": config.privacy.usage_statistics,
+                "personal_data_sharing": config.privacy.personal_data_sharing,
+            }
+        )
 
     def apply_settings(self) -> bool:
         """
@@ -262,125 +281,155 @@ class SettingsManager:
             requires_restart = False
 
             # Apply graphics settings
-            if 'resolution' in self.pending_changes:
-                resolution_str = self.pending_changes['resolution']
-                width, height = map(int, resolution_str.split('x'))
+            if "resolution" in self.pending_changes:
+                resolution_str = self.pending_changes["resolution"]
+                width, height = map(int, resolution_str.split("x"))
 
-                if (config.graphics.resolution_width != width or
-                        config.graphics.resolution_height != height):
+                if (
+                    config.graphics.resolution_width != width
+                    or config.graphics.resolution_height != height
+                ):
                     config.graphics.set_resolution(width, height)
                     graphics_manager.apply_resolution_change(width, height)
 
-            if 'fullscreen' in self.pending_changes:
-                config.graphics.fullscreen = self.pending_changes['fullscreen']
+            if "fullscreen" in self.pending_changes:
+                config.graphics.fullscreen = self.pending_changes["fullscreen"]
                 if config.graphics.fullscreen != graphics_manager.is_fullscreen():
                     graphics_manager.toggle_fullscreen()
 
-            if 'quality' in self.pending_changes:
-                config.graphics.quality_level = self.pending_changes['quality']
+            if "quality" in self.pending_changes:
+                config.graphics.quality_level = self.pending_changes["quality"]
                 graphics_manager.set_quality_level(config.graphics.quality_level)
 
-            if 'vsync' in self.pending_changes:
-                config.graphics.vsync = self.pending_changes['vsync']
+            if "vsync" in self.pending_changes:
+                config.graphics.vsync = self.pending_changes["vsync"]
                 graphics_manager.enable_vsync(config.graphics.vsync)
 
-            if 'frame_rate_limit' in self.pending_changes:
-                config.graphics.frame_rate_limit = self.pending_changes['frame_rate_limit']
+            if "frame_rate_limit" in self.pending_changes:
+                config.graphics.frame_rate_limit = self.pending_changes[
+                    "frame_rate_limit"
+                ]
                 graphics_manager.set_frame_rate_limit(config.graphics.frame_rate_limit)
 
             # Apply audio settings
-            if 'master_volume' in self.pending_changes:
-                config.audio.master_volume = self.pending_changes['master_volume']
+            if "master_volume" in self.pending_changes:
+                config.audio.master_volume = self.pending_changes["master_volume"]
                 audio_manager.set_master_volume(config.audio.master_volume)
 
-            if 'music_volume' in self.pending_changes:
-                config.audio.music_volume = self.pending_changes['music_volume']
+            if "music_volume" in self.pending_changes:
+                config.audio.music_volume = self.pending_changes["music_volume"]
                 audio_manager.set_music_volume(config.audio.music_volume)
 
-            if 'sfx_volume' in self.pending_changes:
-                config.audio.sfx_volume = self.pending_changes['sfx_volume']
+            if "sfx_volume" in self.pending_changes:
+                config.audio.sfx_volume = self.pending_changes["sfx_volume"]
                 audio_manager.set_sfx_volume(config.audio.sfx_volume)
 
-            if 'voice_volume' in self.pending_changes:
-                config.audio.voice_volume = self.pending_changes['voice_volume']
+            if "voice_volume" in self.pending_changes:
+                config.audio.voice_volume = self.pending_changes["voice_volume"]
                 audio_manager.set_voice_volume(config.audio.voice_volume)
 
-            if 'audio_enabled' in self.pending_changes:
-                config.audio.enabled = self.pending_changes['audio_enabled']
+            if "audio_enabled" in self.pending_changes:
+                config.audio.enabled = self.pending_changes["audio_enabled"]
                 audio_manager.toggle_audio(config.audio.enabled)
 
-            if 'mute_when_inactive' in self.pending_changes:
-                config.audio.mute_when_inactive = self.pending_changes['mute_when_inactive']
+            if "mute_when_inactive" in self.pending_changes:
+                config.audio.mute_when_inactive = self.pending_changes[
+                    "mute_when_inactive"
+                ]
                 audio_manager.toggle_mute_when_inactive(config.audio.mute_when_inactive)
 
             # Apply control settings
-            if 'mouse_sensitivity' in self.pending_changes:
-                config.controls.mouse_sensitivity = self.pending_changes['mouse_sensitivity']
+            if "mouse_sensitivity" in self.pending_changes:
+                config.controls.mouse_sensitivity = self.pending_changes[
+                    "mouse_sensitivity"
+                ]
 
-            if 'invert_mouse_y' in self.pending_changes:
-                config.controls.invert_mouse_y = self.pending_changes['invert_mouse_y']
+            if "invert_mouse_y" in self.pending_changes:
+                config.controls.invert_mouse_y = self.pending_changes["invert_mouse_y"]
 
-            if 'auto_save_interval' in self.pending_changes:
-                config.controls.auto_save_interval = self.pending_changes['auto_save_interval']
+            if "auto_save_interval" in self.pending_changes:
+                config.controls.auto_save_interval = self.pending_changes[
+                    "auto_save_interval"
+                ]
 
             # Apply difficulty settings
-            if 'difficulty_level' in self.pending_changes:
-                config.difficulty.difficulty_level = self.pending_changes['difficulty_level']
+            if "difficulty_level" in self.pending_changes:
+                config.difficulty.difficulty_level = self.pending_changes[
+                    "difficulty_level"
+                ]
 
-            if 'auto_save' in self.pending_changes:
-                config.difficulty.auto_save = self.pending_changes['auto_save']
+            if "auto_save" in self.pending_changes:
+                config.difficulty.auto_save = self.pending_changes["auto_save"]
 
-            if 'show_tutorials' in self.pending_changes:
-                config.difficulty.show_tutorials = self.pending_changes['show_tutorials']
+            if "show_tutorials" in self.pending_changes:
+                config.difficulty.show_tutorials = self.pending_changes[
+                    "show_tutorials"
+                ]
 
-            if 'confirm_actions' in self.pending_changes:
-                config.difficulty.confirm_actions = self.pending_changes['confirm_actions']
+            if "confirm_actions" in self.pending_changes:
+                config.difficulty.confirm_actions = self.pending_changes[
+                    "confirm_actions"
+                ]
 
             # Apply player profile settings
-            if 'player_name' in self.pending_changes:
-                config.player_profile.name = self.pending_changes['player_name']
+            if "player_name" in self.pending_changes:
+                config.player_profile.name = self.pending_changes["player_name"]
 
-            if 'avatar_index' in self.pending_changes:
-                config.player_profile.avatar_index = self.pending_changes['avatar_index']
+            if "avatar_index" in self.pending_changes:
+                config.player_profile.avatar_index = self.pending_changes[
+                    "avatar_index"
+                ]
 
             # Apply UI theme settings
-            if 'theme_name' in self.pending_changes:
-                config.ui_theme.theme_name = self.pending_changes['theme_name']
+            if "theme_name" in self.pending_changes:
+                config.ui_theme.theme_name = self.pending_changes["theme_name"]
 
-            if 'color_scheme' in self.pending_changes:
-                config.ui_theme.color_scheme = self.pending_changes['color_scheme']
+            if "color_scheme" in self.pending_changes:
+                config.ui_theme.color_scheme = self.pending_changes["color_scheme"]
 
-            if 'font_size' in self.pending_changes:
-                config.ui_theme.font_size = self.pending_changes['font_size']
+            if "font_size" in self.pending_changes:
+                config.ui_theme.font_size = self.pending_changes["font_size"]
 
-            if 'ui_scale' in self.pending_changes:
-                config.ui_theme.ui_scale = self.pending_changes['ui_scale']
+            if "ui_scale" in self.pending_changes:
+                config.ui_theme.ui_scale = self.pending_changes["ui_scale"]
 
             # Apply accessibility settings
-            if 'colorblind_mode' in self.pending_changes:
-                config.accessibility.colorblind_mode = self.pending_changes['colorblind_mode']
+            if "colorblind_mode" in self.pending_changes:
+                config.accessibility.colorblind_mode = self.pending_changes[
+                    "colorblind_mode"
+                ]
 
-            if 'high_contrast' in self.pending_changes:
-                config.accessibility.high_contrast = self.pending_changes['high_contrast']
+            if "high_contrast" in self.pending_changes:
+                config.accessibility.high_contrast = self.pending_changes[
+                    "high_contrast"
+                ]
 
-            if 'large_text' in self.pending_changes:
-                config.accessibility.large_text = self.pending_changes['large_text']
+            if "large_text" in self.pending_changes:
+                config.accessibility.large_text = self.pending_changes["large_text"]
 
-            if 'reduced_motion' in self.pending_changes:
-                config.accessibility.reduced_motion = self.pending_changes['reduced_motion']
+            if "reduced_motion" in self.pending_changes:
+                config.accessibility.reduced_motion = self.pending_changes[
+                    "reduced_motion"
+                ]
 
             # Apply privacy settings
-            if 'analytics_enabled' in self.pending_changes:
-                config.privacy.analytics_enabled = self.pending_changes['analytics_enabled']
+            if "analytics_enabled" in self.pending_changes:
+                config.privacy.analytics_enabled = self.pending_changes[
+                    "analytics_enabled"
+                ]
 
-            if 'crash_reporting' in self.pending_changes:
-                config.privacy.crash_reporting = self.pending_changes['crash_reporting']
+            if "crash_reporting" in self.pending_changes:
+                config.privacy.crash_reporting = self.pending_changes["crash_reporting"]
 
-            if 'usage_statistics' in self.pending_changes:
-                config.privacy.usage_statistics = self.pending_changes['usage_statistics']
+            if "usage_statistics" in self.pending_changes:
+                config.privacy.usage_statistics = self.pending_changes[
+                    "usage_statistics"
+                ]
 
-            if 'personal_data_sharing' in self.pending_changes:
-                config.privacy.personal_data_sharing = self.pending_changes['personal_data_sharing']
+            if "personal_data_sharing" in self.pending_changes:
+                config.privacy.personal_data_sharing = self.pending_changes[
+                    "personal_data_sharing"
+                ]
 
             # Save configuration
             config_manager.save_config()
@@ -447,23 +496,45 @@ class SettingsManager:
 
         # Check if any pending values differ from current config
         for key, value in self.pending_changes.items():
-            if key == 'resolution':
+            if key == "resolution":
                 current_value = f"{config.graphics.resolution_width}x{config.graphics.resolution_height}"
-            elif key in ['fullscreen', 'quality', 'vsync']:
+            elif key in ["fullscreen", "quality", "vsync"]:
                 current_value = getattr(config.graphics, key)
-            elif key in ['master_volume', 'music_volume', 'sfx_volume', 'voice_volume', 'audio_enabled', 'mute_when_inactive']:
+            elif key in [
+                "master_volume",
+                "music_volume",
+                "sfx_volume",
+                "voice_volume",
+                "audio_enabled",
+                "mute_when_inactive",
+            ]:
                 current_value = getattr(config.audio, key)
-            elif key in ['mouse_sensitivity', 'invert_mouse_y', 'auto_save_interval']:
+            elif key in ["mouse_sensitivity", "invert_mouse_y", "auto_save_interval"]:
                 current_value = getattr(config.controls, key)
-            elif key in ['difficulty_level', 'auto_save', 'show_tutorials', 'confirm_actions']:
+            elif key in [
+                "difficulty_level",
+                "auto_save",
+                "show_tutorials",
+                "confirm_actions",
+            ]:
                 current_value = getattr(config.difficulty, key)
-            elif key in ['player_name', 'avatar_index']:
+            elif key in ["player_name", "avatar_index"]:
                 current_value = getattr(config.player_profile, key)
-            elif key in ['theme_name', 'color_scheme', 'font_size', 'ui_scale']:
+            elif key in ["theme_name", "color_scheme", "font_size", "ui_scale"]:
                 current_value = getattr(config.ui_theme, key)
-            elif key in ['colorblind_mode', 'high_contrast', 'large_text', 'reduced_motion']:
+            elif key in [
+                "colorblind_mode",
+                "high_contrast",
+                "large_text",
+                "reduced_motion",
+            ]:
                 current_value = getattr(config.accessibility, key)
-            elif key in ['analytics_enabled', 'crash_reporting', 'usage_statistics', 'personal_data_sharing']:
+            elif key in [
+                "analytics_enabled",
+                "crash_reporting",
+                "usage_statistics",
+                "personal_data_sharing",
+            ]:
                 current_value = getattr(config.privacy, key)
             else:
                 current_value = None
@@ -483,30 +554,30 @@ class SettingsManager:
         config = config_manager.get_config()
 
         return {
-            'graphics': {
-                'resolution': f"{config.graphics.resolution_width}x{config.graphics.resolution_height}",
-                'fullscreen': config.graphics.fullscreen,
-                'quality': config.graphics.quality_level,
-                'vsync': config.graphics.vsync
+            "graphics": {
+                "resolution": f"{config.graphics.resolution_width}x{config.graphics.resolution_height}",
+                "fullscreen": config.graphics.fullscreen,
+                "quality": config.graphics.quality_level,
+                "vsync": config.graphics.vsync,
             },
-            'audio': {
-                'master_volume': config.audio.master_volume,
-                'music_volume': config.audio.music_volume,
-                'sfx_volume': config.audio.sfx_volume,
-                'enabled': config.audio.enabled
+            "audio": {
+                "master_volume": config.audio.master_volume,
+                "music_volume": config.audio.music_volume,
+                "sfx_volume": config.audio.sfx_volume,
+                "enabled": config.audio.enabled,
             },
-            'controls': {
-                'mouse_sensitivity': config.controls.mouse_sensitivity,
-                'auto_save_interval': config.controls.auto_save_interval
+            "controls": {
+                "mouse_sensitivity": config.controls.mouse_sensitivity,
+                "auto_save_interval": config.controls.auto_save_interval,
             },
-            'difficulty': {
-                'level': config.difficulty.difficulty_level,
-                'auto_save': config.difficulty.auto_save
+            "difficulty": {
+                "level": config.difficulty.difficulty_level,
+                "auto_save": config.difficulty.auto_save,
             },
-            'profile': {
-                'name': config.player_profile.name,
-                'races_completed': config.player_profile.races_completed
-            }
+            "profile": {
+                "name": config.player_profile.name,
+                "races_completed": config.player_profile.races_completed,
+            },
         }
 
     def export_settings(self, file_path: str) -> bool:

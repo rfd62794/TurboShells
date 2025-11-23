@@ -31,7 +31,7 @@ class Turtle:
             "max_energy": energy,
             "recovery": recovery,
             "swim": swim,
-            "climb": climb
+            "climb": climb,
         }
 
         # Dynamic Race State (Reset before every race)
@@ -79,7 +79,7 @@ class Turtle:
         # 1. RECOVERY LOGIC
         if self.is_resting:
             # Recover 10% of recovery stat per tick
-            self.current_energy += (self.stats["recovery"] * RECOVERY_RATE)
+            self.current_energy += self.stats["recovery"] * RECOVERY_RATE
 
             # Check if ready to run again
             if self.current_energy >= (self.stats["max_energy"] * RECOVERY_THRESHOLD):
@@ -91,9 +91,9 @@ class Turtle:
 
         # Apply Terrain Modifiers
         if terrain_type == "water":
-            move_speed *= (self.stats["swim"] / 10.0)
+            move_speed *= self.stats["swim"] / 10.0
         elif terrain_type == "rock":
-            move_speed *= (self.stats["climb"] / 10.0)
+            move_speed *= self.stats["climb"] / 10.0
 
         # 3. ENERGY DRAIN LOGIC
         drain = 0.5 * TERRAIN_DIFFICULTY
@@ -132,10 +132,10 @@ class Turtle:
             race_number = self.total_races + 1
 
         result = {
-            'number': race_number,
-            'position': position,
-            'earnings': earnings,
-            'age_at_race': self.age
+            "number": race_number,
+            "position": position,
+            "earnings": earnings,
+            "age_at_race": self.age,
         }
 
         self.race_history.append(result)
@@ -182,15 +182,28 @@ class Turtle:
 
     def inherit_from_parents(self, parent1_genetics, parent2_genetics):
         """Create child genetics from two parents"""
-        self.visual_genetics = self.genetics_system.inherit_genetics(parent1_genetics, parent2_genetics)
-        self.parent_ids = [parent1_genetics.get('turtle_id'), parent2_genetics.get('turtle_id')]
-        self.generation = max(parent1_genetics.get('generation', 0), parent2_genetics.get('generation', 0)) + 1
+        self.visual_genetics = self.genetics_system.inherit_genetics(
+            parent1_genetics, parent2_genetics
+        )
+        self.parent_ids = [
+            parent1_genetics.get("turtle_id"),
+            parent2_genetics.get("turtle_id"),
+        ]
+        self.generation = (
+            max(
+                parent1_genetics.get("generation", 0),
+                parent2_genetics.get("generation", 0),
+            )
+            + 1
+        )
 
     def mutate_trait(self, trait_name: str = None):
         """Apply mutation to a specific trait or random trait"""
         if trait_name is None:
             # Pick a random trait to mutate
-            trait_name = random.choice(self.genetics_system.get_gene_definitions().get_all_gene_names())
+            trait_name = random.choice(
+                self.genetics_system.get_gene_definitions().get_all_gene_names()
+            )
 
         current_value = self.visual_genetics.get(trait_name)
         if current_value is not None:
@@ -202,17 +215,17 @@ class Turtle:
         traits = []
 
         # Shell traits
-        shell_pattern = self.get_genetic_trait('shell_pattern_type')
-        shell_color = self.get_genetic_trait('shell_base_color')
+        shell_pattern = self.get_genetic_trait("shell_pattern_type")
+        shell_color = self.get_genetic_trait("shell_base_color")
         traits.append(f"{shell_pattern} shell")
 
         # Limb traits
-        limb_shape = self.get_genetic_trait('limb_shape')
-        leg_length = self.get_genetic_trait('leg_length')
+        limb_shape = self.get_genetic_trait("limb_shape")
+        leg_length = self.get_genetic_trait("leg_length")
         traits.append(f"{limb_shape} legs")
 
         # Body traits
-        body_pattern = self.get_genetic_trait('body_pattern_type')
+        body_pattern = self.get_genetic_trait("body_pattern_type")
         traits.append(f"{body_pattern} body")
 
         return ", ".join(traits)

@@ -9,4 +9,10 @@ from .inheritance import Inheritance
 from .mutation import Mutation
 from .visual_genetics import VisualGenetics
 
-__all__ = ['GeneDefinitions', 'GeneGenerator', 'Inheritance', 'Mutation', 'VisualGenetics']
+__all__ = [
+    "GeneDefinitions",
+    "GeneGenerator",
+    "Inheritance",
+    "Mutation",
+    "VisualGenetics",
+]

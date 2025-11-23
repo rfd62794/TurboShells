@@ -15,8 +15,12 @@ def draw_shop(screen, font, game_state):
 
     # Back button in header (like voting view)
     back_rect = pygame.Rect(700, 5, 80, 30)
-    mouse_pos = getattr(game_state, 'mouse_pos', None)
-    back_color = (150, 50, 50) if mouse_pos and back_rect.collidepoint(mouse_pos) else (100, 100, 100)
+    mouse_pos = getattr(game_state, "mouse_pos", None)
+    back_color = (
+        (150, 50, 50)
+        if mouse_pos and back_rect.collidepoint(mouse_pos)
+        else (100, 100, 100)
+    )
 
     pygame.draw.rect(screen, back_color, back_rect)
     pygame.draw.rect(screen, (200, 200, 200), back_rect, 2)
@@ -47,6 +51,7 @@ def draw_shop(screen, font, game_state):
         # Draw larger turtle image at top using universal renderer
         try:
             from core.rendering.pygame_turtle_renderer import render_turtle_pygame
+
             # Generate larger turtle image (80x80) for bigger boxes
             turtle_img = render_turtle_pygame(turtle, size=80)
             img_x = card_rect.x + (card_rect.width - 80) // 2
@@ -54,8 +59,11 @@ def draw_shop(screen, font, game_state):
             screen.blit(turtle_img, (img_x, img_y))
         except BaseException:
             # Fallback: draw a simple colored square
-            pygame.draw.rect(screen, (100, 150, 200),
-                             (card_rect.x + (card_rect.width - 80) // 2, card_rect.y + 15, 80, 80))
+            pygame.draw.rect(
+                screen,
+                (100, 150, 200),
+                (card_rect.x + (card_rect.width - 80) // 2, card_rect.y + 15, 80, 80),
+            )
 
         # Name below image (moved down)
         name_txt = font.render(turtle.name, True, WHITE)
@@ -68,7 +76,7 @@ def draw_shop(screen, font, game_state):
             f"Energy: {turtle.stats['max_energy']}",
             f"Recovery: {turtle.stats['recovery']}",
             f"Swim: {turtle.stats['swim']}",
-            f"Climb: {turtle.stats['climb']}"
+            f"Climb: {turtle.stats['climb']}",
         ]
 
         y_offset = card_rect.y + 150  # Moved down for larger images
@@ -82,9 +90,13 @@ def draw_shop(screen, font, game_state):
         energy_bg = pygame.Rect(card_rect.x + 20, card_rect.y + 280, 180, 15)
         pygame.draw.rect(screen, (50, 50, 50), energy_bg)
 
-        energy_fill_width = int((turtle.current_energy / turtle.stats['max_energy']) * 176)
+        energy_fill_width = int(
+            (turtle.current_energy / turtle.stats["max_energy"]) * 176
+        )
         if energy_fill_width > 0:
-            energy_fill = pygame.Rect(card_rect.x + 22, card_rect.y + 282, energy_fill_width, 11)
+            energy_fill = pygame.Rect(
+                card_rect.x + 22, card_rect.y + 282, energy_fill_width, 11
+            )
             pygame.draw.rect(screen, GREEN, energy_fill)
 
         # Cost at bottom - better alignment (moved down)
@@ -113,4 +125,7 @@ def draw_shop(screen, font, game_state):
     # Refresh button at bottom only (back button is now in header)
     pygame.draw.rect(screen, BLUE, layout.SHOP_BTN_REFRESH_RECT, 2)
     refresh_txt = font.render("REFRESH ($5)", True, WHITE)
-    screen.blit(refresh_txt, (layout.SHOP_BTN_REFRESH_RECT.x + 15, layout.SHOP_BTN_REFRESH_RECT.y + 15))
+    screen.blit(
+        refresh_txt,
+        (layout.SHOP_BTN_REFRESH_RECT.x + 15, layout.SHOP_BTN_REFRESH_RECT.y + 15),
+    )

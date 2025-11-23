@@ -25,7 +25,7 @@ class PygameTurtleRenderer:
         """
         try:
             # Get genetics data from turtle
-            genetics = getattr(turtle, 'visual_genetics', {})
+            genetics = getattr(turtle, "visual_genetics", {})
 
             # Use the existing renderer to create PIL Image
             pil_image = self._render_to_pil(genetics, size)
@@ -41,10 +41,11 @@ class PygameTurtleRenderer:
     def _render_to_pil(self, genetics: Dict[str, Any], size: int) -> Image.Image:
         """Use existing renderer to create PIL Image"""
         # Create PIL Image using the existing renderer's internal method
-        pil_image = Image.new('RGBA', (size, size), (0, 0, 0, 0))
+        pil_image = Image.new("RGBA", (size, size), (0, 0, 0, 0))
 
         # Import the drawing method from the existing renderer
         from .direct_turtle_renderer import ImageDraw
+
         draw = ImageDraw.Draw(pil_image)
 
         # Use the existing renderer's draw method
@@ -56,7 +57,7 @@ class PygameTurtleRenderer:
         """Convert PIL Image to pygame surface"""
         # Convert PIL Image to bytes
         img_bytes = io.BytesIO()
-        pil_image.save(img_bytes, format='PNG')
+        pil_image.save(img_bytes, format="PNG")
         img_bytes.seek(0)
 
         # Create pygame surface from bytes
@@ -69,18 +70,24 @@ class PygameTurtleRenderer:
         surface = pygame.Surface((size, size), pygame.SRCALPHA)
 
         # Get genetics data if available
-        genetics = getattr(turtle, 'visual_genetics', {})
+        genetics = getattr(turtle, "visual_genetics", {})
 
         # Extract colors from genetics or use defaults
-        shell_color = self._get_color_from_genetics(genetics, 'shell_color', (74, 144, 226))
-        pattern_color = self._get_color_from_genetics(genetics, 'pattern_color', (231, 76, 60))
+        shell_color = self._get_color_from_genetics(
+            genetics, "shell_color", (74, 144, 226)
+        )
+        pattern_color = self._get_color_from_genetics(
+            genetics, "pattern_color", (231, 76, 60)
+        )
 
         # Simple turtle shape
         center_x = size // 2
         center_y = size // 2
 
         # Draw shell (ellipse)
-        shell_rect = pygame.Rect(center_x - size // 3, center_y - size // 4, size * 2 // 3, size // 2)
+        shell_rect = pygame.Rect(
+            center_x - size // 3, center_y - size // 4, size * 2 // 3, size // 2
+        )
         pygame.draw.ellipse(surface, shell_color, shell_rect)
         pygame.draw.ellipse(surface, (0, 0, 0), shell_rect, 2)
 
@@ -88,20 +95,26 @@ class PygameTurtleRenderer:
         pygame.draw.circle(surface, pattern_color, (center_x, center_y), size // 8)
 
         # Draw head
-        pygame.draw.circle(surface, (100, 150, 200), (center_x + size // 3, center_y), size // 6)
-        pygame.draw.circle(surface, (0, 0, 0), (center_x + size // 3, center_y), size // 6, 2)
+        pygame.draw.circle(
+            surface, (100, 150, 200), (center_x + size // 3, center_y), size // 6
+        )
+        pygame.draw.circle(
+            surface, (0, 0, 0), (center_x + size // 3, center_y), size // 6, 2
+        )
 
         return surface
 
-    def _get_color_from_genetics(self, genetics: Dict, key: str, default: tuple) -> tuple:
+    def _get_color_from_genetics(
+        self, genetics: Dict, key: str, default: tuple
+    ) -> tuple:
         """Extract color from genetics data or return default"""
         color_data = genetics.get(key, {})
-        if isinstance(color_data, dict) and 'value' in color_data:
-            color_str = color_data['value']
-            if isinstance(color_str, str) and color_str.startswith('#'):
+        if isinstance(color_data, dict) and "value" in color_data:
+            color_str = color_data["value"]
+            if isinstance(color_str, str) and color_str.startswith("#"):
                 # Convert hex to RGB
-                hex_color = color_str.lstrip('#')
-                return tuple(int(hex_color[i:i + 2], 16) for i in (0, 2, 4))
+                hex_color = color_str.lstrip("#")
+                return tuple(int(hex_color[i : i + 2], 16) for i in (0, 2, 4))
         return default
 
 

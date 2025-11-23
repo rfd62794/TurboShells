@@ -6,6 +6,7 @@ Complete pattern generation library with genetic control
 import math
 import random
 from typing import Optional, Dict, Any
+
 try:
     import drawsvg as draw
 except ImportError:
@@ -22,8 +23,9 @@ class PatternGenerators:
         self.pattern_cache = {}
         self.max_cache_size = 100
 
-    def generate_pattern(self, pattern_type: str, size: int, color: str,
-                         density: float, opacity: float) -> Optional[object]:
+    def generate_pattern(
+        self, pattern_type: str, size: int, color: str, density: float, opacity: float
+    ) -> Optional[object]:
         """
         Generate pattern based on type and parameters
         Returns drawsvg Pattern object or None if drawsvg not available
@@ -36,15 +38,15 @@ class PatternGenerators:
         if cache_key in self.pattern_cache:
             return self.pattern_cache[cache_key]
 
-        if pattern_type == 'stripes':
+        if pattern_type == "stripes":
             pattern = self.generate_stripes(size, color, density, opacity)
-        elif pattern_type == 'spots':
+        elif pattern_type == "spots":
             pattern = self.generate_spots(size, color, density, opacity)
-        elif pattern_type == 'spiral':
+        elif pattern_type == "spiral":
             pattern = self.generate_spiral(size, color, density, opacity)
-        elif pattern_type == 'geometric':
+        elif pattern_type == "geometric":
             pattern = self.generate_geometric(size, color, density, opacity)
-        elif pattern_type == 'complex':
+        elif pattern_type == "complex":
             pattern = self.generate_complex(size, color, density, opacity)
         else:
             pattern = None
@@ -54,12 +56,16 @@ class PatternGenerators:
 
         return pattern
 
-    def generate_stripes(self, size: int, color: str, density: float, opacity: float) -> object:
+    def generate_stripes(
+        self, size: int, color: str, density: float, opacity: float
+    ) -> object:
         """
         Generate radial stripes pattern
         """
         pattern_id = f"stripes_{id(self)}"
-        pattern = draw.Pattern(pattern_id, 0, 0, size, size, patternUnits="userSpaceOnUse")
+        pattern = draw.Pattern(
+            pattern_id, 0, 0, size, size, patternUnits="userSpaceOnUse"
+        )
 
         stripe_count = int(density * 12) + 3  # 3-15 stripes
         stripe_width = max(1, size // (stripe_count * 2))
@@ -69,23 +75,28 @@ class PatternGenerators:
 
             # Create radial stripe
             stripe = draw.Line(
-                size / 2, size / 2,
+                size / 2,
+                size / 2,
                 size / 2 + size * 0.4 * math.cos(math.radians(angle)),
                 size / 2 + size * 0.4 * math.sin(math.radians(angle)),
                 stroke=color,
                 stroke_width=stripe_width,
-                opacity=opacity
+                opacity=opacity,
             )
             pattern.append(stripe)
 
         return pattern
 
-    def generate_spots(self, size: int, color: str, density: float, opacity: float) -> object:
+    def generate_spots(
+        self, size: int, color: str, density: float, opacity: float
+    ) -> object:
         """
         Generate random spots pattern
         """
         pattern_id = f"spots_{id(self)}"
-        pattern = draw.Pattern(pattern_id, 0, 0, size, size, patternUnits="userSpaceOnUse")
+        pattern = draw.Pattern(
+            pattern_id, 0, 0, size, size, patternUnits="userSpaceOnUse"
+        )
 
         spot_count = int(density * 20) + 5  # 5-25 spots
         min_spot_size = size * 0.02
@@ -106,19 +117,20 @@ class PatternGenerators:
         random.seed()  # Reset random seed
         return pattern
 
-    def generate_spiral(self, size: int, color: str, density: float, opacity: float) -> object:
+    def generate_spiral(
+        self, size: int, color: str, density: float, opacity: float
+    ) -> object:
         """
         Generate spiral pattern
         """
         pattern_id = f"spiral_{id(self)}"
-        pattern = draw.Pattern(pattern_id, 0, 0, size, size, patternUnits="userSpaceOnUse")
+        pattern = draw.Pattern(
+            pattern_id, 0, 0, size, size, patternUnits="userSpaceOnUse"
+        )
 
         # Generate spiral path
         spiral = draw.Path(
-            stroke=color,
-            stroke_width=max(1, size * 0.02),
-            fill='none',
-            opacity=opacity
+            stroke=color, stroke_width=max(1, size * 0.02), fill="none", opacity=opacity
         )
 
         # Spiral parameters
@@ -144,12 +156,16 @@ class PatternGenerators:
         pattern.append(spiral)
         return pattern
 
-    def generate_geometric(self, size: int, color: str, density: float, opacity: float) -> object:
+    def generate_geometric(
+        self, size: int, color: str, density: float, opacity: float
+    ) -> object:
         """
         Generate geometric pattern
         """
         pattern_id = f"geometric_{id(self)}"
-        pattern = draw.Pattern(pattern_id, 0, 0, size, size, patternUnits="userSpaceOnUse")
+        pattern = draw.Pattern(
+            pattern_id, 0, 0, size, size, patternUnits="userSpaceOnUse"
+        )
 
         # Create geometric shapes based on density
         shape_count = int(density * 8) + 2  # 2-10 shapes
@@ -166,10 +182,12 @@ class PatternGenerators:
             # Alternate between squares and triangles
             if i % 2 == 0:
                 shape = draw.Rect(
-                    x - shape_size / 2, y - shape_size / 2,
-                    shape_size, shape_size,
+                    x - shape_size / 2,
+                    y - shape_size / 2,
+                    shape_size,
+                    shape_size,
                     fill=color,
-                    opacity=opacity
+                    opacity=opacity,
                 )
             else:
                 shape = draw.Path(fill=color, opacity=opacity)
@@ -182,12 +200,16 @@ class PatternGenerators:
 
         return pattern
 
-    def generate_complex(self, size: int, color: str, density: float, opacity: float) -> object:
+    def generate_complex(
+        self, size: int, color: str, density: float, opacity: float
+    ) -> object:
         """
         Generate complex pattern combining multiple elements
         """
         pattern_id = f"complex_{id(self)}"
-        pattern = draw.Pattern(pattern_id, 0, 0, size, size, patternUnits="userSpaceOnUse")
+        pattern = draw.Pattern(
+            pattern_id, 0, 0, size, size, patternUnits="userSpaceOnUse"
+        )
 
         # Combine multiple pattern types
         # Base layer: radial lines
@@ -199,10 +221,7 @@ class PatternGenerators:
             y2 = size / 2 + size * 0.4 * math.sin(math.radians(angle))
 
             line = draw.Line(
-                x1, y1, x2, y2,
-                stroke=color,
-                stroke_width=1,
-                opacity=opacity * 0.5
+                x1, y1, x2, y2, stroke=color, stroke_width=1, opacity=opacity * 0.5
             )
             pattern.append(line)
 
@@ -221,20 +240,22 @@ class PatternGenerators:
         random.seed()  # Reset random seed
         return pattern
 
-    def generate_body_pattern(self, pattern_type: str, size: int, color: str, density: float) -> Optional[object]:
+    def generate_body_pattern(
+        self, pattern_type: str, size: int, color: str, density: float
+    ) -> Optional[object]:
         """
         Generate body-specific patterns
         """
         if draw is None:
             return None
 
-        if pattern_type == 'solid':
+        if pattern_type == "solid":
             return None  # No pattern for solid
-        elif pattern_type == 'mottled':
+        elif pattern_type == "mottled":
             return self.generate_mottled(size, color, density)
-        elif pattern_type == 'speckled':
+        elif pattern_type == "speckled":
             return self.generate_speckled(size, color, density)
-        elif pattern_type == 'marbled':
+        elif pattern_type == "marbled":
             return self.generate_marbled(size, color, density)
         else:
             return None
@@ -244,7 +265,9 @@ class PatternGenerators:
         Generate mottled body pattern
         """
         pattern_id = f"mottled_{id(self)}"
-        pattern = draw.Pattern(pattern_id, 0, 0, size, size, patternUnits="userSpaceOnUse")
+        pattern = draw.Pattern(
+            pattern_id, 0, 0, size, size, patternUnits="userSpaceOnUse"
+        )
 
         blot_count = int(density * 10) + 5
         random.seed(hash(f"mottled_{size}_{density}"))
@@ -265,7 +288,9 @@ class PatternGenerators:
         Generate speckled body pattern
         """
         pattern_id = f"speckled_{id(self)}"
-        pattern = draw.Pattern(pattern_id, 0, 0, size, size, patternUnits="userSpaceOnUse")
+        pattern = draw.Pattern(
+            pattern_id, 0, 0, size, size, patternUnits="userSpaceOnUse"
+        )
 
         speck_count = int(density * 30) + 10
         speck_size = max(1, size * 0.02)
@@ -286,7 +311,9 @@ class PatternGenerators:
         Generate marbled body pattern
         """
         pattern_id = f"marbled_{id(self)}"
-        pattern = draw.Pattern(pattern_id, 0, 0, size, size, patternUnits="userSpaceOnUse")
+        pattern = draw.Pattern(
+            pattern_id, 0, 0, size, size, patternUnits="userSpaceOnUse"
+        )
 
         # Create flowing marble lines
         line_count = int(density * 5) + 3
@@ -297,8 +324,8 @@ class PatternGenerators:
             path = draw.Path(
                 stroke=color,
                 stroke_width=max(1, size * 0.015),
-                fill='none',
-                opacity=0.7
+                fill="none",
+                opacity=0.7,
             )
 
             points = []
@@ -338,39 +365,42 @@ class PatternGenerators:
         Get cache statistics
         """
         return {
-            'size': len(self.pattern_cache),
-            'max_size': self.max_cache_size,
-            'usage_percentage': (len(self.pattern_cache) / self.max_cache_size) * 100
+            "size": len(self.pattern_cache),
+            "max_size": self.max_cache_size,
+            "usage_percentage": (len(self.pattern_cache) / self.max_cache_size) * 100,
         }
 
     def get_available_patterns(self) -> list:
         """
         Get list of available pattern types
         """
-        return ['stripes', 'spots', 'spiral', 'geometric', 'complex']
+        return ["stripes", "spots", "spiral", "geometric", "complex"]
 
     def get_available_body_patterns(self) -> list:
         """
         Get list of available body pattern types
         """
-        return ['solid', 'mottled', 'speckled', 'marbled']
+        return ["solid", "mottled", "speckled", "marbled"]
 
-    def validate_pattern_parameters(self, pattern_type: str, size: int, color: str,
-                                    density: float, opacity: float) -> Dict[str, bool]:
+    def validate_pattern_parameters(
+        self, pattern_type: str, size: int, color: str, density: float, opacity: float
+    ) -> Dict[str, bool]:
         """
         Validate pattern parameters
         """
         validation_results = {
-            'pattern_type': pattern_type in self.get_available_patterns(),
-            'size': isinstance(size, int) and size > 0,
-            'color': isinstance(color, str) and color.startswith('#'),
-            'density': isinstance(density, (int, float)) and 0.0 <= density <= 1.0,
-            'opacity': isinstance(opacity, (int, float)) and 0.0 <= opacity <= 1.0
+            "pattern_type": pattern_type in self.get_available_patterns(),
+            "size": isinstance(size, int) and size > 0,
+            "color": isinstance(color, str) and color.startswith("#"),
+            "density": isinstance(density, (int, float)) and 0.0 <= density <= 1.0,
+            "opacity": isinstance(opacity, (int, float)) and 0.0 <= opacity <= 1.0,
         }
 
         return validation_results
 
-    def create_pattern_preview(self, pattern_type: str, size: int = 100) -> Optional[object]:
+    def create_pattern_preview(
+        self, pattern_type: str, size: int = 100
+    ) -> Optional[object]:
         """
         Create a preview of a pattern with default parameters
         """
@@ -378,44 +408,46 @@ class PatternGenerators:
             return None
 
         # Default parameters for preview
-        default_color = '#FF0000'  # Red for visibility
+        default_color = "#FF0000"  # Red for visibility
         default_density = 0.5
         default_opacity = 0.8
 
-        return self.generate_pattern(pattern_type, size, default_color, default_density, default_opacity)
+        return self.generate_pattern(
+            pattern_type, size, default_color, default_density, default_opacity
+        )
 
     def get_pattern_description(self, pattern_type: str) -> str:
         """
         Get human-readable description of pattern type
         """
         descriptions = {
-            'stripes': 'Radial stripes emanating from center',
-            'spots': 'Random circular spots distributed across surface',
-            'spiral': 'Mathematical spiral pattern with multiple rotations',
-            'geometric': 'Grid-based geometric shapes (squares and triangles)',
-            'complex': 'Combination of radial lines and circular elements',
-            'solid': 'No pattern, solid color only',
-            'mottled': 'Irregular blotches with soft edges',
-            'speckled': 'Small dots distributed across surface',
-            'marbled': 'Flowing curved lines mimicking marble texture'
+            "stripes": "Radial stripes emanating from center",
+            "spots": "Random circular spots distributed across surface",
+            "spiral": "Mathematical spiral pattern with multiple rotations",
+            "geometric": "Grid-based geometric shapes (squares and triangles)",
+            "complex": "Combination of radial lines and circular elements",
+            "solid": "No pattern, solid color only",
+            "mottled": "Irregular blotches with soft edges",
+            "speckled": "Small dots distributed across surface",
+            "marbled": "Flowing curved lines mimicking marble texture",
         }
 
-        return descriptions.get(pattern_type, 'Unknown pattern type')
+        return descriptions.get(pattern_type, "Unknown pattern type")
 
     def get_pattern_complexity(self, pattern_type: str) -> int:
         """
         Get complexity rating for pattern type (1-5 scale)
         """
         complexity = {
-            'solid': 1,
-            'stripes': 2,
-            'spots': 2,
-            'speckled': 3,
-            'mottled': 3,
-            'spiral': 4,
-            'geometric': 4,
-            'marbled': 4,
-            'complex': 5
+            "solid": 1,
+            "stripes": 2,
+            "spots": 2,
+            "speckled": 3,
+            "mottled": 3,
+            "spiral": 4,
+            "geometric": 4,
+            "marbled": 4,
+            "complex": 5,
         }
 
         return complexity.get(pattern_type, 1)
@@ -428,15 +460,17 @@ def create_pattern_generators() -> PatternGenerators:
 
 
 # Utility functions
-def generate_shell_pattern(pattern_type: str, size: int, color: str,
-                           density: float, opacity: float) -> Optional[object]:
+def generate_shell_pattern(
+    pattern_type: str, size: int, color: str, density: float, opacity: float
+) -> Optional[object]:
     """Generate shell pattern using default PatternGenerators instance"""
     generators = PatternGenerators()
     return generators.generate_pattern(pattern_type, size, color, density, opacity)
 
 
-def generate_body_pattern(pattern_type: str, size: int, color: str,
-                          density: float) -> Optional[object]:
+def generate_body_pattern(
+    pattern_type: str, size: int, color: str, density: float
+) -> Optional[object]:
     """Generate body pattern using default PatternGenerators instance"""
     generators = PatternGenerators()
     return generators.generate_body_pattern(pattern_type, size, color, density)
@@ -446,6 +480,6 @@ def get_all_pattern_types() -> Dict[str, list]:
     """Get all available pattern types organized by category"""
     generators = PatternGenerators()
     return {
-        'shell': generators.get_available_patterns(),
-        'body': generators.get_available_body_patterns()
+        "shell": generators.get_available_patterns(),
+        "body": generators.get_available_body_patterns(),
     }

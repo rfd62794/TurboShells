@@ -13,11 +13,20 @@ def draw_race(screen, font, game_state):
     screen.blit(header, layout.HEADER_TITLE_POS)
 
     # Draw Finish Line
-    pygame.draw.line(screen, WHITE, (TRACK_LENGTH_PIXELS + 40, 50), (TRACK_LENGTH_PIXELS + 40, 500), 5)
+    pygame.draw.line(
+        screen,
+        WHITE,
+        (TRACK_LENGTH_PIXELS + 40, 50),
+        (TRACK_LENGTH_PIXELS + 40, 500),
+        5,
+    )
 
     # Draw lanes and turtles
-    race_turtles = game_state.race_manager.race_roster if hasattr(
-        game_state.race_manager, 'race_roster') else game_state.roster
+    race_turtles = (
+        game_state.race_manager.race_roster
+        if hasattr(game_state.race_manager, "race_roster")
+        else game_state.roster
+    )
     for i, turtle in enumerate(race_turtles):
         lane_y = 150 + (i * 100)
         pygame.draw.rect(screen, (30, 30, 30), (0, lane_y - 20, SCREEN_WIDTH, 80))
@@ -88,8 +97,20 @@ def draw_race_result(screen, font, game_state):
     menu_txt = font.render("MENU", True, WHITE)
     rerun_txt = font.render("RACE AGAIN", True, WHITE)
 
-    screen.blit(menu_txt, (layout.RACE_RESULT_MENU_BTN_RECT.x + 60, layout.RACE_RESULT_MENU_BTN_RECT.y + 15))
-    screen.blit(rerun_txt, (layout.RACE_RESULT_RERUN_BTN_RECT.x + 25, layout.RACE_RESULT_RERUN_BTN_RECT.y + 15))
+    screen.blit(
+        menu_txt,
+        (
+            layout.RACE_RESULT_MENU_BTN_RECT.x + 60,
+            layout.RACE_RESULT_MENU_BTN_RECT.y + 15,
+        ),
+    )
+    screen.blit(
+        rerun_txt,
+        (
+            layout.RACE_RESULT_RERUN_BTN_RECT.x + 25,
+            layout.RACE_RESULT_RERUN_BTN_RECT.y + 15,
+        ),
+    )
 
 
 def draw_turtle_sprite(screen, font, turtle, y_pos, race_direction="horizontal"):
@@ -101,11 +122,16 @@ def draw_turtle_sprite(screen, font, turtle, y_pos, race_direction="horizontal")
     else:  # vertical (bottom to top)
         screen_x = y_pos  # Use y_pos as x position for vertical layout
         # Invert Y for bottom-to-top racing
-        screen_y = SCREEN_HEIGHT - 50 - (turtle.race_distance / TRACK_LENGTH_LOGIC) * (SCREEN_HEIGHT - 150)
+        screen_y = (
+            SCREEN_HEIGHT
+            - 50
+            - (turtle.race_distance / TRACK_LENGTH_LOGIC) * (SCREEN_HEIGHT - 150)
+        )
 
     try:
         # Use universal pygame renderer
         from core.rendering.pygame_turtle_renderer import render_turtle_pygame
+
         # Generate small turtle image (60x60) for race
         turtle_surface = render_turtle_pygame(turtle, size=60)
 
@@ -113,11 +139,13 @@ def draw_turtle_sprite(screen, font, turtle, y_pos, race_direction="horizontal")
         if race_direction == "horizontal":
             turtle_surface = pygame.transform.rotate(turtle_surface, -90)  # Face right
         else:
-            turtle_surface = pygame.transform.rotate(turtle_surface, 0)    # Face up (no rotation)
+            turtle_surface = pygame.transform.rotate(
+                turtle_surface, 0
+            )  # Face up (no rotation)
 
         # Add energy bar overlay
         bar_width = 60
-        pct = turtle.current_energy / turtle.stats['max_energy']
+        pct = turtle.current_energy / turtle.stats["max_energy"]
         fill_width = int(pct * bar_width)
 
         # Draw energy bar above/below turtle based on direction
@@ -126,7 +154,9 @@ def draw_turtle_sprite(screen, font, turtle, y_pos, race_direction="horizontal")
             pygame.draw.rect(screen, GREEN, (screen_x, screen_y - 15, fill_width, 5))
         else:
             pygame.draw.rect(screen, RED, (screen_x - 30, screen_y - 10, bar_width, 5))
-            pygame.draw.rect(screen, GREEN, (screen_x - 30, screen_y - 10, fill_width, 5))
+            pygame.draw.rect(
+                screen, GREEN, (screen_x - 30, screen_y - 10, fill_width, 5)
+            )
 
         # Draw turtle
         screen.blit(turtle_surface, (screen_x, screen_y))
@@ -141,7 +171,7 @@ def draw_turtle_sprite(screen, font, turtle, y_pos, race_direction="horizontal")
 
         # Add energy bar for fallback
         bar_width = 40
-        pct = turtle.current_energy / turtle.stats['max_energy']
+        pct = turtle.current_energy / turtle.stats["max_energy"]
         fill_width = int(pct * bar_width)
 
         if race_direction == "horizontal":
@@ -149,7 +179,9 @@ def draw_turtle_sprite(screen, font, turtle, y_pos, race_direction="horizontal")
             pygame.draw.rect(screen, GREEN, (screen_x, screen_y - 10, fill_width, 3))
         else:
             pygame.draw.rect(screen, RED, (screen_x - 20, screen_y - 8, bar_width, 3))
-            pygame.draw.rect(screen, GREEN, (screen_x - 20, screen_y - 8, fill_width, 3))
+            pygame.draw.rect(
+                screen, GREEN, (screen_x - 20, screen_y - 8, fill_width, 3)
+            )
 
         # Draw turtle name on fallback
         name_font = pygame.font.SysFont("Arial", 10)

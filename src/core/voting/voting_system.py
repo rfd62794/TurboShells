@@ -15,14 +15,19 @@ class DesignPackage:
     Contains genetics, SVG content, feature breakdown, and voting data
     """
 
-    def __init__(self, design_id: str, visual_genetics: Dict[str, Any],
-                 svg_content: str, feature_breakdown: Dict[str, Any]):
+    def __init__(
+        self,
+        design_id: str,
+        visual_genetics: Dict[str, Any],
+        svg_content: str,
+        feature_breakdown: Dict[str, Any],
+    ):
         self.id = design_id
         self.genetics = visual_genetics
         self.svg_content = svg_content
         self.feature_breakdown = feature_breakdown
         self.rating_categories = self._get_rating_categories()
-        self.voting_status = 'pending'  # pending, completed
+        self.voting_status = "pending"  # pending, completed
         self.reward_available = True
         self.ratings = {}
         self.timestamp = datetime.now()
@@ -33,49 +38,51 @@ class DesignPackage:
         Define rating categories for voting
         """
         return {
-            'overall': {
-                'display_name': 'Overall Design',
-                'type': 'rating_1_5',
-                'weight': 1.0,
-                'description': 'Your overall impression of this turtle design'
+            "overall": {
+                "display_name": "Overall Design",
+                "type": "rating_1_5",
+                "weight": 1.0,
+                "description": "Your overall impression of this turtle design",
             },
-            'shell_appearance': {
-                'display_name': 'Shell Appearance',
-                'type': 'rating_1_5',
-                'weight': 0.9,
-                'description': 'How the shell looks (color, pattern, size)'
+            "shell_appearance": {
+                "display_name": "Shell Appearance",
+                "type": "rating_1_5",
+                "weight": 0.9,
+                "description": "How the shell looks (color, pattern, size)",
             },
-            'color_harmony': {
-                'display_name': 'Color Harmony',
-                'type': 'rating_1_5',
-                'weight': 0.8,
-                'description': 'How well the colors work together'
+            "color_harmony": {
+                "display_name": "Color Harmony",
+                "type": "rating_1_5",
+                "weight": 0.8,
+                "description": "How well the colors work together",
             },
-            'pattern_quality': {
-                'display_name': 'Pattern Quality',
-                'type': 'rating_1_5',
-                'weight': 0.7,
-                'description': 'How good the patterns look'
+            "pattern_quality": {
+                "display_name": "Pattern Quality",
+                "type": "rating_1_5",
+                "weight": 0.7,
+                "description": "How good the patterns look",
             },
-            'proportions': {
-                'display_name': 'Body Proportions',
-                'type': 'rating_1_5',
-                'weight': 0.6,
-                'description': 'How well-proportioned the turtle is'
-            }
+            "proportions": {
+                "display_name": "Body Proportions",
+                "type": "rating_1_5",
+                "weight": 0.6,
+                "description": "How well-proportioned the turtle is",
+            },
         }
 
     def is_available_for_voting(self) -> bool:
         """Check if design is available for voting"""
-        return self.voting_status == 'pending' and self.reward_available
+        return self.voting_status == "pending" and self.reward_available
 
     def can_earn_reward(self) -> bool:
         """Check if reward is available"""
-        return self.reward_available and self.voting_status == 'pending'
+        return self.reward_available and self.voting_status == "pending"
 
-    def complete_voting(self, ratings: Dict[str, float], genetic_impact: Dict[str, Any]):
+    def complete_voting(
+        self, ratings: Dict[str, float], genetic_impact: Dict[str, Any]
+    ):
         """Mark voting as complete with results"""
-        self.voting_status = 'completed'
+        self.voting_status = "completed"
         self.ratings = ratings
         self.genetic_impact = genetic_impact
         self.reward_available = False
@@ -104,11 +111,11 @@ class VotingSystem:
 
         # Statistics
         self.stats = {
-            'total_votes_cast': 0,
-            'total_rewards_earned': 0,
-            'designs_generated': 0,
-            'voting_sessions': 0,
-            'average_rating': 0.0
+            "total_votes_cast": 0,
+            "total_rewards_earned": 0,
+            "designs_generated": 0,
+            "voting_sessions": 0,
+            "average_rating": 0.0,
         }
 
     def set_genetic_pool_manager(self, manager):
@@ -144,68 +151,72 @@ class VotingSystem:
                 f"design_{today.strftime('%Y%m%d')}_{i}",
                 random_genetics,
                 svg_content,
-                feature_breakdown
+                feature_breakdown,
             )
 
             self.daily_designs.append(design)
 
         self.last_reset_date = today
-        self.stats['designs_generated'] += self.daily_design_count
+        self.stats["designs_generated"] += self.daily_design_count
 
         return self.daily_designs
 
-    def _create_feature_breakdown(self, genetics: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
+    def _create_feature_breakdown(
+        self, genetics: Dict[str, Any]
+    ) -> Dict[str, Dict[str, Any]]:
         """
         Create detailed feature breakdown for voting
         """
         return {
-            'shell_color': {
-                'gene_name': 'shell_base_color',
-                'display_name': 'Shell Color',
-                'value': genetics.get('shell_base_color', (34, 139, 34)),
-                'type': 'color',
-                'description': 'Primary shell color',
-                'rating_weight': 1.0
+            "shell_color": {
+                "gene_name": "shell_base_color",
+                "display_name": "Shell Color",
+                "value": genetics.get("shell_base_color", (34, 139, 34)),
+                "type": "color",
+                "description": "Primary shell color",
+                "rating_weight": 1.0,
             },
-            'shell_pattern': {
-                'gene_name': 'shell_pattern_type',
-                'display_name': 'Shell Pattern',
-                'value': genetics.get('shell_pattern_type', 'stripes'),
-                'type': 'pattern',
-                'description': 'Shell pattern style',
-                'rating_weight': 0.8
+            "shell_pattern": {
+                "gene_name": "shell_pattern_type",
+                "display_name": "Shell Pattern",
+                "value": genetics.get("shell_pattern_type", "stripes"),
+                "type": "pattern",
+                "description": "Shell pattern style",
+                "rating_weight": 0.8,
             },
-            'shell_pattern_color': {
-                'gene_name': 'shell_pattern_color',
-                'display_name': 'Pattern Color',
-                'value': genetics.get('shell_pattern_color', (255, 255, 255)),
-                'type': 'color',
-                'description': 'Shell pattern color',
-                'rating_weight': 0.6
+            "shell_pattern_color": {
+                "gene_name": "shell_pattern_color",
+                "display_name": "Pattern Color",
+                "value": genetics.get("shell_pattern_color", (255, 255, 255)),
+                "type": "color",
+                "description": "Shell pattern color",
+                "rating_weight": 0.6,
             },
-            'body_color': {
-                'gene_name': 'body_base_color',
-                'display_name': 'Body Color',
-                'value': genetics.get('body_base_color', (107, 142, 35)),
-                'type': 'color',
-                'description': 'Primary body color',
-                'rating_weight': 0.8
+            "body_color": {
+                "gene_name": "body_base_color",
+                "display_name": "Body Color",
+                "value": genetics.get("body_base_color", (107, 142, 35)),
+                "type": "color",
+                "description": "Primary body color",
+                "rating_weight": 0.8,
             },
-            'proportions': {
-                'gene_name': 'combined_proportions',
-                'display_name': 'Body Proportions',
-                'value': {
-                    'shell_size': genetics.get('shell_size_modifier', 1.0),
-                    'head_size': genetics.get('head_size_modifier', 1.0),
-                    'leg_length': genetics.get('leg_length', 1.0)
+            "proportions": {
+                "gene_name": "combined_proportions",
+                "display_name": "Body Proportions",
+                "value": {
+                    "shell_size": genetics.get("shell_size_modifier", 1.0),
+                    "head_size": genetics.get("head_size_modifier", 1.0),
+                    "leg_length": genetics.get("leg_length", 1.0),
                 },
-                'type': 'proportions',
-                'description': 'Overall body proportions',
-                'rating_weight': 0.6
-            }
+                "type": "proportions",
+                "description": "Overall body proportions",
+                "rating_weight": 0.6,
+            },
         }
 
-    def submit_ratings(self, design_id: str, ratings: Dict[str, float]) -> Dict[str, Any]:
+    def submit_ratings(
+        self, design_id: str, ratings: Dict[str, float]
+    ) -> Dict[str, Any]:
         """
         Process player ratings for a design
         Returns result with reward and genetic impact
@@ -215,7 +226,7 @@ class VotingSystem:
         if not design:
             return {"error": "Design not found"}
 
-        if design.voting_status == 'completed':
+        if design.voting_status == "completed":
             return {"error": "Already voted on this design"}
 
         # Validate ratings
@@ -223,10 +234,10 @@ class VotingSystem:
 
         # Record ratings
         rating_record = {
-            'design_id': design_id,
-            'timestamp': datetime.now(),
-            'ratings': validated_ratings,
-            'genetics': design.genetics
+            "design_id": design_id,
+            "timestamp": datetime.now(),
+            "ratings": validated_ratings,
+            "genetics": design.genetics,
         }
 
         self.voting_history.append(rating_record)
@@ -249,10 +260,10 @@ class VotingSystem:
         self._update_statistics(validated_ratings)
 
         return {
-            'success': True,
-            'reward_earned': reward_earned,
-            'genetic_impact': genetic_impact,
-            'message': f"You earned ${reward_earned} and influenced future turtle genetics!"
+            "success": True,
+            "reward_earned": reward_earned,
+            "genetic_impact": genetic_impact,
+            "message": f"You earned ${reward_earned} and influenced future turtle genetics!",
         }
 
     def _find_design(self, design_id: str) -> Optional[DesignPackage]:
@@ -267,7 +278,10 @@ class VotingSystem:
         validated = {}
 
         for category, rating in ratings.items():
-            if isinstance(rating, (int, float)) and self.rating_range[0] <= rating <= self.rating_range[1]:
+            if (
+                isinstance(rating, (int, float))
+                and self.rating_range[0] <= rating <= self.rating_range[1]
+            ):
                 validated[category] = float(rating)
             else:
                 validated[category] = 3.0  # Default to neutral
@@ -279,33 +293,39 @@ class VotingSystem:
         # This would connect to the main game's money system
         print(f"Awarding ${amount} to player")
         # In actual implementation: game_state.player_money += amount
-        self.stats['total_rewards_earned'] += amount
+        self.stats["total_rewards_earned"] += amount
 
     def _update_statistics(self, ratings: Dict[str, float]):
         """Update voting statistics"""
-        self.stats['total_votes_cast'] += 1
+        self.stats["total_votes_cast"] += 1
 
         # Update average rating
-        if 'overall' in ratings:
-            current_avg = self.stats['average_rating']
-            new_avg = ((current_avg * (self.stats['total_votes_cast'] - 1)) +
-                       ratings['overall']) / self.stats['total_votes_cast']
-            self.stats['average_rating'] = new_avg
+        if "overall" in ratings:
+            current_avg = self.stats["average_rating"]
+            new_avg = (
+                (current_avg * (self.stats["total_votes_cast"] - 1))
+                + ratings["overall"]
+            ) / self.stats["total_votes_cast"]
+            self.stats["average_rating"] = new_avg
 
     def get_daily_status(self) -> Dict[str, Any]:
         """Get current daily voting status"""
         total_designs = len(self.daily_designs)
-        completed_votes = sum(1 for d in self.daily_designs if d.voting_status == 'completed')
+        completed_votes = sum(
+            1 for d in self.daily_designs if d.voting_status == "completed"
+        )
         available_rewards = sum(1 for d in self.daily_designs if d.reward_available)
 
         return {
-            'total_designs': total_designs,
-            'completed_votes': completed_votes,
-            'available_rewards': available_rewards,
-            'potential_earnings': available_rewards * self.reward_per_vote,
-            'completion_percentage': (completed_votes / total_designs) * 100 if total_designs > 0 else 0,
-            'last_reset': self.last_reset_date,
-            'days_until_reset': self._days_until_reset()
+            "total_designs": total_designs,
+            "completed_votes": completed_votes,
+            "available_rewards": available_rewards,
+            "potential_earnings": available_rewards * self.reward_per_vote,
+            "completion_percentage": (
+                (completed_votes / total_designs) * 100 if total_designs > 0 else 0
+            ),
+            "last_reset": self.last_reset_date,
+            "days_until_reset": self._days_until_reset(),
         }
 
     def _days_until_reset(self) -> int:
@@ -325,11 +345,13 @@ class VotingSystem:
         """Get comprehensive voting statistics"""
         return {
             **self.stats,
-            'daily_status': self.get_daily_status(),
-            'total_designs_voted': len(self.voting_history),
-            'unique_designs_rated': len(set(record['design_id'] for record in self.voting_history)),
-            'average_session_length': self._calculate_average_session_length(),
-            'most_common_rating': self._get_most_common_rating()
+            "daily_status": self.get_daily_status(),
+            "total_designs_voted": len(self.voting_history),
+            "unique_designs_rated": len(
+                set(record["design_id"] for record in self.voting_history)
+            ),
+            "average_session_length": self._calculate_average_session_length(),
+            "most_common_rating": self._get_most_common_rating(),
         }
 
     def _calculate_average_session_length(self) -> float:
@@ -340,7 +362,7 @@ class VotingSystem:
         # Group votes by date
         votes_by_date = {}
         for record in self.voting_history:
-            vote_date = record['timestamp'].date()
+            vote_date = record["timestamp"].date()
             if vote_date not in votes_by_date:
                 votes_by_date[vote_date] = 0
             votes_by_date[vote_date] += 1
@@ -352,8 +374,11 @@ class VotingSystem:
 
     def _get_most_common_rating(self) -> float:
         """Get most common overall rating"""
-        overall_ratings = [record['ratings'].get('overall', 3.0)
-                           for record in self.voting_history if 'overall' in record['ratings']]
+        overall_ratings = [
+            record["ratings"].get("overall", 3.0)
+            for record in self.voting_history
+            if "overall" in record["ratings"]
+        ]
 
         if not overall_ratings:
             return 3.0
@@ -380,7 +405,9 @@ class VotingSystem:
                 return self.daily_designs[i]
         return None
 
-    def get_previous_pending_design(self, current_index: int) -> Optional[DesignPackage]:
+    def get_previous_pending_design(
+        self, current_index: int
+    ) -> Optional[DesignPackage]:
         """Get previous pending design before current index"""
         for i in range(current_index - 1, -1, -1):
             if self.daily_designs[i].is_available_for_voting():
@@ -397,26 +424,28 @@ class VotingSystem:
     def export_voting_data(self) -> Dict[str, Any]:
         """Export voting data for backup or analysis"""
         return {
-            'daily_designs': [
+            "daily_designs": [
                 {
-                    'id': design.id,
-                    'genetics': design.genetics,
-                    'ratings': design.ratings,
-                    'voting_status': design.voting_status,
-                    'timestamp': design.timestamp.isoformat()
+                    "id": design.id,
+                    "genetics": design.genetics,
+                    "ratings": design.ratings,
+                    "voting_status": design.voting_status,
+                    "timestamp": design.timestamp.isoformat(),
                 }
                 for design in self.daily_designs
             ],
-            'voting_history': [
+            "voting_history": [
                 {
-                    'design_id': record['design_id'],
-                    'ratings': record['ratings'],
-                    'timestamp': record['timestamp'].isoformat()
+                    "design_id": record["design_id"],
+                    "ratings": record["ratings"],
+                    "timestamp": record["timestamp"].isoformat(),
                 }
                 for record in self.voting_history
             ],
-            'statistics': self.get_statistics(),
-            'last_reset': self.last_reset_date.isoformat() if self.last_reset_date else None
+            "statistics": self.get_statistics(),
+            "last_reset": (
+                self.last_reset_date.isoformat() if self.last_reset_date else None
+            ),
         }
 
     def import_voting_data(self, data: Dict[str, Any]) -> bool:
@@ -424,29 +453,31 @@ class VotingSystem:
         try:
             # Import daily designs
             self.daily_designs.clear()
-            for design_data in data.get('daily_designs', []):
+            for design_data in data.get("daily_designs", []):
                 # Recreate design package
-                feature_breakdown = self._create_feature_breakdown(design_data['genetics'])
-                design = DesignPackage(
-                    design_data['id'],
-                    design_data['genetics'],
-                    "",  # SVG content would need to be regenerated
-                    feature_breakdown
+                feature_breakdown = self._create_feature_breakdown(
+                    design_data["genetics"]
                 )
-                design.ratings = design_data.get('ratings', {})
-                design.voting_status = design_data.get('voting_status', 'pending')
-                design.timestamp = datetime.fromisoformat(design_data['timestamp'])
+                design = DesignPackage(
+                    design_data["id"],
+                    design_data["genetics"],
+                    "",  # SVG content would need to be regenerated
+                    feature_breakdown,
+                )
+                design.ratings = design_data.get("ratings", {})
+                design.voting_status = design_data.get("voting_status", "pending")
+                design.timestamp = datetime.fromisoformat(design_data["timestamp"])
 
                 self.daily_designs.append(design)
 
             # Import voting history
             self.voting_history = []
-            for record in data.get('voting_history', []):
-                record['timestamp'] = datetime.fromisoformat(record['timestamp'])
+            for record in data.get("voting_history", []):
+                record["timestamp"] = datetime.fromisoformat(record["timestamp"])
                 self.voting_history.append(record)
 
             # Import last reset date
-            last_reset = data.get('last_reset')
+            last_reset = data.get("last_reset")
             if last_reset:
                 self.last_reset_date = datetime.fromisoformat(last_reset).date()
 
@@ -459,22 +490,22 @@ class VotingSystem:
     def validate_system_integrity(self) -> Dict[str, bool]:
         """Validate system integrity"""
         validation = {
-            'daily_designs_valid': True,
-            'voting_history_valid': True,
-            'genetic_pool_connected': self.genetic_pool_manager is not None,
-            'components_available': True
+            "daily_designs_valid": True,
+            "voting_history_valid": True,
+            "genetic_pool_connected": self.genetic_pool_manager is not None,
+            "components_available": True,
         }
 
         # Validate daily designs
         for design in self.daily_designs:
             if not design.genetics or not design.feature_breakdown:
-                validation['daily_designs_valid'] = False
+                validation["daily_designs_valid"] = False
                 break
 
         # Validate voting history
         for record in self.voting_history:
-            if not record.get('design_id') or not record.get('ratings'):
-                validation['voting_history_valid'] = False
+            if not record.get("design_id") or not record.get("ratings"):
+                validation["voting_history_valid"] = False
                 break
 
         # Validate components
@@ -482,9 +513,9 @@ class VotingSystem:
             self.visual_genetics.generate_random_genetics()
             # Direct renderer test not needed here
         except BaseException:
-            validation['components_available'] = False
+            validation["components_available"] = False
 
-        validation['overall'] = all(validation.values())
+        validation["overall"] = all(validation.values())
         return validation
 
 

@@ -26,7 +26,11 @@ class RaceManager:
 
         # Get player's turtle for balanced opponent generation
         player_idx = getattr(self.game_state, "active_racer_index", 0)
-        player_turtle = self.game_state.roster[player_idx] if player_idx < len(self.game_state.roster) else None
+        player_turtle = (
+            self.game_state.roster[player_idx]
+            if player_idx < len(self.game_state.roster)
+            else None
+        )
 
         # Create race roster: player turtle + 2 temporary opponents
         self.race_roster = []
@@ -35,6 +39,7 @@ class RaceManager:
         if player_turtle:
             # Create a copy of the player turtle for the race
             import copy
+
             race_player = copy.deepcopy(player_turtle)
             race_player.reset_for_race()
             self.race_roster.append(race_player)
@@ -57,7 +62,7 @@ class RaceManager:
             self.game_state.race_speed_multiplier = 4
 
     def update(self):
-        active_turtles = self.race_roster if hasattr(self, 'race_roster') else []
+        active_turtles = self.race_roster if hasattr(self, "race_roster") else []
 
         for _ in range(self.game_state.race_speed_multiplier):
             for t in active_turtles:
@@ -89,7 +94,7 @@ class RaceManager:
         player_turtle = None
         if 0 <= idx < len(self.game_state.roster):
             player_turtle = self.game_state.roster[idx]
-        
+
         # Find the player's race turtle by name (since race uses copies)
         player_race_turtle = None
         if player_turtle:
@@ -97,7 +102,7 @@ class RaceManager:
                 if race_turtle.name == player_turtle.name:
                     player_race_turtle = race_turtle
                     break
-        
+
         if player_race_turtle:
             rank = player_race_turtle.rank
             reward = 0

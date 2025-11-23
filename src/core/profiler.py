@@ -36,7 +36,7 @@ class SimpleProfiler:
         self.duration = self.end_time - self.start_time
 
         if self.log_results:
-            logger = get_logger('performance')
+            logger = get_logger("performance")
             logger.debug(f"Profile - {self.operation_name}: {self.duration:.3f}s")
 
     def get_duration(self) -> float:
@@ -54,6 +54,7 @@ def profile_function(operation_name: str = None) -> Callable:
     Returns:
         Decorated function
     """
+
     def decorator(func: Callable) -> Callable:
         name = operation_name or f"{func.__module__}.{func.__name__}"
 
@@ -63,6 +64,7 @@ def profile_function(operation_name: str = None) -> Callable:
                 return func(*args, **kwargs)
 
         return wrapper
+
     return decorator
 
 
@@ -94,7 +96,7 @@ class PerformanceTracker:
 
         # Keep only the most recent samples
         if len(self.samples[operation]) > self.max_samples:
-            self.samples[operation] = self.samples[operation][-self.max_samples:]
+            self.samples[operation] = self.samples[operation][-self.max_samples :]
 
     def get_stats(self, operation: str) -> dict:
         """
@@ -111,11 +113,11 @@ class PerformanceTracker:
 
         durations = self.samples[operation]
         return {
-            'count': len(durations),
-            'avg': sum(durations) / len(durations),
-            'min': min(durations),
-            'max': max(durations),
-            'latest': durations[-1]
+            "count": len(durations),
+            "avg": sum(durations) / len(durations),
+            "min": min(durations),
+            "max": max(durations),
+            "latest": durations[-1],
         }
 
     def get_all_stats(self) -> dict:
@@ -142,6 +144,7 @@ def track_performance(operation: str):
     Returns:
         Context manager
     """
+
     class Tracker:
         def __enter__(self):
             self.start_time = time.perf_counter()
@@ -153,10 +156,12 @@ def track_performance(operation: str):
 
             # Log if it's unusually slow
             stats = performance_tracker.get_stats(operation)
-            if stats.get('count', 0) > 5 and duration > stats['avg'] * 2:
-                logger = get_logger('performance')
-                logger.warning(f"Slow execution detected - {operation}: {duration:.3f}s "
-                               f"(avg: {stats['avg']:.3f}s)")
+            if stats.get("count", 0) > 5 and duration > stats["avg"] * 2:
+                logger = get_logger("performance")
+                logger.warning(
+                    f"Slow execution detected - {operation}: {duration:.3f}s "
+                    f"(avg: {stats['avg']:.3f}s)"
+                )
 
     return Tracker()
 
@@ -169,7 +174,7 @@ def log_fps(frame_time: float):
         frame_time: Time per frame in seconds
     """
     fps = 1.0 / frame_time if frame_time > 0 else 0
-    logger = get_logger('performance')
+    logger = get_logger("performance")
     logger.debug(f"FPS: {fps:.1f} (frame time: {frame_time * 1000:.1f}ms)")
 
 
@@ -177,11 +182,12 @@ def log_memory_usage():
     """Log current memory usage (basic implementation)."""
     try:
         import psutil
+
         process = psutil.Process()
         memory_info = process.memory_info()
         memory_mb = memory_info.rss / 1024 / 1024
 
-        logger = get_logger('performance')
+        logger = get_logger("performance")
         logger.debug(f"Memory usage: {memory_mb:.1f} MB")
     except ImportError:
         # psutil not available, skip memory logging
@@ -201,13 +207,13 @@ class GameLoopProfiler:
 
     def end_frame(self):
         """End timing a frame and record metrics."""
-        if hasattr(self, 'frame_start'):
+        if hasattr(self, "frame_start"):
             frame_time = time.perf_counter() - self.frame_start
             self.frame_times.append(frame_time)
 
             # Keep only recent samples
             if len(self.frame_times) > self.max_samples:
-                self.frame_times = self.frame_times[-self.max_samples:]
+                self.frame_times = self.frame_times[-self.max_samples :]
 
             # Log FPS every 60 frames
             if len(self.frame_times) % 60 == 0:

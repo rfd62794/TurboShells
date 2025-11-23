@@ -33,10 +33,10 @@ class BreedingManager:
 
         # Check breeding slot clicks (2x3 grid) - updated positions and sizes
         breeding_slots = [
-            pygame.Rect(50, 140, 230, 190),   # Top row
+            pygame.Rect(50, 140, 230, 190),  # Top row
             pygame.Rect(280, 140, 230, 190),
             pygame.Rect(530, 140, 230, 190),
-            pygame.Rect(50, 350, 230, 190),   # Bottom row
+            pygame.Rect(50, 350, 230, 190),  # Bottom row
             pygame.Rect(280, 350, 230, 190),
             pygame.Rect(530, 350, 230, 190),
         ]

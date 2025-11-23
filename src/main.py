@@ -26,7 +26,9 @@ from managers.settings_manager import SettingsManager
 class TurboShellsGame:
     def __init__(self):
         pygame.init()
-        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
+        self.screen = pygame.display.set_mode(
+            (SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE
+        )
         pygame.display.set_caption("Turbo Shells MVP")
         self.clock = pygame.time.Clock()
         self.font = pygame.font.SysFont("Arial", 24)
@@ -39,7 +41,7 @@ class TurboShellsGame:
         self.roster = [
             Turtle("Starter", speed=5, energy=100, recovery=5, swim=5, climb=5),
             None,
-            None
+            None,
         ]
         self.retired_roster = []
         self.money = 200
@@ -95,7 +97,9 @@ class TurboShellsGame:
 
             # Handle window resize
             if event.type == pygame.VIDEORESIZE:
-                self.screen = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
+                self.screen = pygame.display.set_mode(
+                    (event.w, event.h), pygame.RESIZABLE
+                )
                 new_screen_rect = pygame.Rect(0, 0, event.w, event.h)
                 self.settings_manager.update_screen_rect(new_screen_rect)
                 continue
@@ -164,7 +168,9 @@ class TurboShellsGame:
 
     def _initialize_game_state(self):
         """Initialize game state using GameStateManager"""
-        success, roster, retired_roster, money, state, notification = self.game_state_manager.initialize_game_state()
+        success, roster, retired_roster, money, state, notification = (
+            self.game_state_manager.initialize_game_state()
+        )
 
         # Update game state
         self.roster = roster
@@ -176,11 +182,17 @@ class TurboShellsGame:
     def auto_save(self, trigger="manual"):
         """Auto-save game state using GameStateManager"""
         print(f"[DEBUG] Auto-save triggered: {trigger}")
-        print(f"[DEBUG] Roster before save: {[t.name if t else None for t in self.roster]}")
+        print(
+            f"[DEBUG] Roster before save: {[t.name if t else None for t in self.roster]}"
+        )
         print(f"[DEBUG] Money: ${self.money}")
         result = self.game_state_manager.auto_save(
-            self.roster, self.retired_roster, self.money, self.state,
-            self.race_results, trigger
+            self.roster,
+            self.retired_roster,
+            self.money,
+            self.state,
+            self.race_results,
+            trigger,
         )
         print(f"[DEBUG] Auto-save result: {result}")
         return result

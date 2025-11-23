@@ -45,8 +45,12 @@ def draw_roster(screen, font, game_state):
     # Roster slots
     for idx, slot_rect in enumerate(layout.SLOT_RECTS):
         turtle = turtles_to_show[idx]
-        is_active_racer = (not show_retired) and idx == getattr(game_state, "active_racer_index", 0)
-        draw_stable_turtle_slot(screen, font, game_state, turtle, slot_rect, is_active_racer, mouse_pos)
+        is_active_racer = (not show_retired) and idx == getattr(
+            game_state, "active_racer_index", 0
+        )
+        draw_stable_turtle_slot(
+            screen, font, game_state, turtle, slot_rect, is_active_racer, mouse_pos
+        )
 
         # Train button (for all active roster turtles, not in select racer mode)
         if turtle and not show_retired and not select_racer_mode:
@@ -55,7 +59,8 @@ def draw_roster(screen, font, game_state):
                 slot_rect.x + train_btn.x,
                 slot_rect.y + train_btn.y,
                 train_btn.width,
-                train_btn.height)
+                train_btn.height,
+            )
 
             # Hover highlight for train button
             train_color = GRAY

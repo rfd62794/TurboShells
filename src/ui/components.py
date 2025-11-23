@@ -15,6 +15,7 @@ from core.logging_config import get_logger
 
 class ComponentState(Enum):
     """Component interaction states."""
+
     NORMAL = "normal"
     HOVER = "hover"
     PRESSED = "pressed"
@@ -25,6 +26,7 @@ class ComponentState(Enum):
 @dataclass
 class ComponentStyle:
     """Style configuration for UI components."""
+
     background_color: Tuple[int, int, int]
     border_color: Tuple[int, int, int]
     text_color: Tuple[int, int, int]
@@ -71,7 +73,7 @@ class UIComponent:
             text_color=(255, 255, 255),
             hover_color=(100, 100, 100),
             pressed_color=(120, 120, 120),
-            disabled_color=(60, 60, 60)
+            disabled_color=(60, 60, 60),
         )
 
     def handle_event(self, event: pygame.event.Event) -> bool:
@@ -91,7 +93,10 @@ class UIComponent:
 
         if event.type == pygame.MOUSEMOTION:
             if self.rect.collidepoint(mouse_pos):
-                if self.state != ComponentState.HOVER and self.state != ComponentState.PRESSED:
+                if (
+                    self.state != ComponentState.HOVER
+                    and self.state != ComponentState.PRESSED
+                ):
                     self.state = ComponentState.HOVER
                     self._hover_time = pygame.time.get_ticks()
                     if self.on_hover:
@@ -173,12 +178,21 @@ class Button(UIComponent):
         # Draw button background
         color = self.get_color_for_state()
         if self.style.corner_radius > 0:
-            pygame.draw.rect(screen, color, self.rect, border_radius=self.style.corner_radius)
-            pygame.draw.rect(screen, self.style.border_color, self.rect,
-                             self.style.border_width, border_radius=self.style.corner_radius)
+            pygame.draw.rect(
+                screen, color, self.rect, border_radius=self.style.corner_radius
+            )
+            pygame.draw.rect(
+                screen,
+                self.style.border_color,
+                self.rect,
+                self.style.border_width,
+                border_radius=self.style.corner_radius,
+            )
         else:
             pygame.draw.rect(screen, color, self.rect)
-            pygame.draw.rect(screen, self.style.border_color, self.rect, self.style.border_width)
+            pygame.draw.rect(
+                screen, self.style.border_color, self.rect, self.style.border_width
+            )
 
         # Draw text
         text_color = self.style.text_color if self.enabled else (150, 150, 150)
@@ -190,7 +204,9 @@ class Button(UIComponent):
 class Checkbox(UIComponent):
     """Checkbox component for boolean values."""
 
-    def __init__(self, rect: pygame.Rect, checked: bool = False, style: ComponentStyle = None):
+    def __init__(
+        self, rect: pygame.Rect, checked: bool = False, style: ComponentStyle = None
+    ):
         """
         Initialize checkbox.
 
@@ -221,7 +237,9 @@ class Checkbox(UIComponent):
         # Draw checkbox background
         color = self.get_color_for_state()
         pygame.draw.rect(screen, color, self.rect)
-        pygame.draw.rect(screen, self.style.border_color, self.rect, self.style.border_width)
+        pygame.draw.rect(
+            screen, self.style.border_color, self.rect, self.style.border_width
+        )
 
         # Draw checkmark if checked
         if self.checked:
@@ -229,7 +247,7 @@ class Checkbox(UIComponent):
             check_points = [
                 (self.rect.left + 3, self.rect.centery),
                 (self.rect.left + 8, self.rect.bottom - 3),
-                (self.rect.right - 3, self.rect.top + 3)
+                (self.rect.right - 3, self.rect.top + 3),
             ]
             pygame.draw.lines(screen, check_color, False, check_points, 2)
 
@@ -237,8 +255,14 @@ class Checkbox(UIComponent):
 class Slider(UIComponent):
     """Slider component for numeric values."""
 
-    def __init__(self, rect: pygame.Rect, min_value: float = 0.0, max_value: float = 1.0,
-                 initial_value: float = 0.5, style: ComponentStyle = None):
+    def __init__(
+        self,
+        rect: pygame.Rect,
+        min_value: float = 0.0,
+        max_value: float = 1.0,
+        initial_value: float = 0.5,
+        style: ComponentStyle = None,
+    ):
         """
         Initialize slider.
 
@@ -292,7 +316,9 @@ class Slider(UIComponent):
         relative_x = mouse_pos[0] - self.rect.x
         relative_x = max(0, min(self.rect.width, relative_x))
 
-        self.value = self.min_value + (relative_x / self.rect.width) * (self.max_value - self.min_value)
+        self.value = self.min_value + (relative_x / self.rect.width) * (
+            self.max_value - self.min_value
+        )
 
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the slider."""
@@ -305,21 +331,29 @@ class Slider(UIComponent):
         pygame.draw.rect(screen, track_color, track_rect)
 
         # Draw handle
-        handle_x = self.rect.x + int((self.value - self.min_value) /
-                                     (self.max_value - self.min_value) * self.rect.width)
+        handle_x = self.rect.x + int(
+            (self.value - self.min_value)
+            / (self.max_value - self.min_value)
+            * self.rect.width
+        )
         handle_rect = pygame.Rect(handle_x - 8, self.rect.centery - 8, 16, 16)
 
         handle_color = self.get_color_for_state()
         pygame.draw.rect(screen, handle_color, handle_rect)
-        pygame.draw.rect(screen, self.style.border_color, handle_rect, self.style.border_width)
+        pygame.draw.rect(
+            screen, self.style.border_color, handle_rect, self.style.border_width
+        )
 
         # Draw value text
-        value_text = f"{int(self.value * 100)}%" if self.max_value == 1.0 else f"{self.value:.1f}"
+        value_text = (
+            f"{int(self.value * 100)}%"
+            if self.max_value == 1.0
+            else f"{self.value:.1f}"
+        )
         text_color = self.style.text_color if self.enabled else (150, 150, 150)
         text_surface = self.font.render(value_text, True, text_color)
         text_rect = text_surface.get_rect(
-            left=self.rect.right + 10,
-            centery=self.rect.centery
+            left=self.rect.right + 10, centery=self.rect.centery
         )
         screen.blit(text_surface, text_rect)
 
@@ -327,8 +361,13 @@ class Slider(UIComponent):
 class Dropdown(UIComponent):
     """Dropdown component for selecting from multiple options."""
 
-    def __init__(self, rect: pygame.Rect, options: List[str], selected_index: int = 0,
-                 style: ComponentStyle = None):
+    def __init__(
+        self,
+        rect: pygame.Rect,
+        options: List[str],
+        selected_index: int = 0,
+        style: ComponentStyle = None,
+    ):
         """
         Initialize dropdown.
 
@@ -364,7 +403,9 @@ class Dropdown(UIComponent):
                     # Check if clicking on an option
                     expanded_rect = self._get_expanded_rect()
                     if expanded_rect.collidepoint(mouse_pos):
-                        item_index = (mouse_pos[1] - expanded_rect.y) // self.item_height
+                        item_index = (
+                            mouse_pos[1] - expanded_rect.y
+                        ) // self.item_height
                         if 0 <= item_index < len(self.options):
                             self.selected_index = item_index
                             self.expanded = False
@@ -391,15 +432,20 @@ class Dropdown(UIComponent):
         # Draw main dropdown box
         color = self.get_color_for_state()
         pygame.draw.rect(screen, color, self.rect)
-        pygame.draw.rect(screen, self.style.border_color, self.rect, self.style.border_width)
+        pygame.draw.rect(
+            screen, self.style.border_color, self.rect, self.style.border_width
+        )
 
         # Draw selected option
-        selected_text = self.options[self.selected_index] if self.selected_index < len(self.options) else ""
+        selected_text = (
+            self.options[self.selected_index]
+            if self.selected_index < len(self.options)
+            else ""
+        )
         text_color = self.style.text_color if self.enabled else (150, 150, 150)
         text_surface = self.font.render(selected_text, True, text_color)
         text_rect = text_surface.get_rect(
-            left=self.rect.left + 5,
-            centery=self.rect.centery
+            left=self.rect.left + 5, centery=self.rect.centery
         )
         screen.blit(text_surface, text_rect)
 
@@ -409,13 +455,13 @@ class Dropdown(UIComponent):
             arrow_points = [
                 (self.rect.right - 15, self.rect.centery + 5),
                 (self.rect.right - 5, self.rect.centery + 5),
-                (self.rect.right - 10, self.rect.centery - 5)
+                (self.rect.right - 10, self.rect.centery - 5),
             ]
         else:
             arrow_points = [
                 (self.rect.right - 15, self.rect.centery - 5),
                 (self.rect.right - 5, self.rect.centery - 5),
-                (self.rect.right - 10, self.rect.centery + 5)
+                (self.rect.right - 10, self.rect.centery + 5),
             ]
         pygame.draw.polygon(screen, arrow_color, arrow_points)
 
@@ -423,15 +469,17 @@ class Dropdown(UIComponent):
         if self.expanded:
             expanded_rect = self._get_expanded_rect()
             pygame.draw.rect(screen, self.style.background_color, expanded_rect)
-            pygame.draw.rect(screen, self.style.border_color, expanded_rect, self.style.border_width)
+            pygame.draw.rect(
+                screen, self.style.border_color, expanded_rect, self.style.border_width
+            )
 
             # Draw options
-            for i, option in enumerate(self.options[:self.max_display_items]):
+            for i, option in enumerate(self.options[: self.max_display_items]):
                 option_rect = pygame.Rect(
                     expanded_rect.x,
                     expanded_rect.y + i * self.item_height,
                     expanded_rect.width,
-                    self.item_height
+                    self.item_height,
                 )
 
                 # Highlight selected option
@@ -441,8 +489,7 @@ class Dropdown(UIComponent):
                 # Draw option text
                 option_surface = self.font.render(option, True, text_color)
                 option_text_rect = option_surface.get_rect(
-                    left=option_rect.left + 5,
-                    centery=option_rect.centery
+                    left=option_rect.left + 5, centery=option_rect.centery
                 )
                 screen.blit(option_surface, option_text_rect)
 
@@ -450,8 +497,13 @@ class Dropdown(UIComponent):
 class Label(UIComponent):
     """Simple text label component."""
 
-    def __init__(self, rect: pygame.Rect, text: str, font_size: int = 14,
-                 text_color: Tuple[int, int, int] = (255, 255, 255)):
+    def __init__(
+        self,
+        rect: pygame.Rect,
+        text: str,
+        font_size: int = 14,
+        text_color: Tuple[int, int, int] = (255, 255, 255),
+    ):
         """
         Initialize label.
 
@@ -522,12 +574,21 @@ class Panel(UIComponent):
         # Draw panel background
         color = self.get_color_for_state()
         if self.style.corner_radius > 0:
-            pygame.draw.rect(screen, color, self.rect, border_radius=self.style.corner_radius)
-            pygame.draw.rect(screen, self.style.border_color, self.rect,
-                             self.style.border_width, border_radius=self.style.corner_radius)
+            pygame.draw.rect(
+                screen, color, self.rect, border_radius=self.style.corner_radius
+            )
+            pygame.draw.rect(
+                screen,
+                self.style.border_color,
+                self.rect,
+                self.style.border_width,
+                border_radius=self.style.corner_radius,
+            )
         else:
             pygame.draw.rect(screen, color, self.rect)
-            pygame.draw.rect(screen, self.style.border_color, self.rect, self.style.border_width)
+            pygame.draw.rect(
+                screen, self.style.border_color, self.rect, self.style.border_width
+            )
 
         # Draw children
         for child in self.children:
@@ -568,7 +629,7 @@ class TooltipManager:
             pos[0] + 10,
             pos[1] - 20,
             text_surface.get_width() + padding * 2,
-            text_surface.get_height() + padding * 2
+            text_surface.get_height() + padding * 2,
         )
 
     def hide_tooltip(self) -> None:
@@ -578,12 +639,18 @@ class TooltipManager:
 
     def update(self, mouse_pos: Tuple[int, int]) -> None:
         """Update tooltip visibility based on hover time."""
-        if self.visible and pygame.time.get_ticks() - self.hover_start_time < self.show_delay:
+        if (
+            self.visible
+            and pygame.time.get_ticks() - self.hover_start_time < self.show_delay
+        ):
             self.visible = False
 
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the tooltip if visible."""
-        if not self.visible or pygame.time.get_ticks() - self.hover_start_time < self.show_delay:
+        if (
+            not self.visible
+            or pygame.time.get_ticks() - self.hover_start_time < self.show_delay
+        ):
             return
 
         self._ensure_font()

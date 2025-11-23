@@ -38,7 +38,8 @@ class AudioManager:
         self.logger.info(
             f"Loaded audio settings: Master Volume {
                 self.current_settings.master_volume}, Enabled {
-                self.current_settings.enabled}")
+                self.current_settings.enabled}"
+        )
 
     def initialize_audio(self) -> bool:
         """
@@ -76,7 +77,8 @@ class AudioManager:
 
             # Set SFX volume (will be applied to individual channels)
             self.logger.debug(
-                f"Applied volume settings - Music: {master_volume:.2f}, SFX: {self.current_settings.get_sfx_volume():.2f}")
+                f"Applied volume settings - Music: {master_volume:.2f}, SFX: {self.current_settings.get_sfx_volume():.2f}"
+            )
 
         except Exception as e:
             self.logger.error(f"Failed to apply volume settings: {e}")
@@ -281,7 +283,9 @@ class AudioManager:
         """
         return self.current_settings.get_sfx_volume()
 
-    def play_sound(self, sound_file: str, volume_override: float = None) -> Optional[pygame.mixer.Sound]:
+    def play_sound(
+        self, sound_file: str, volume_override: float = None
+    ) -> Optional[pygame.mixer.Sound]:
         """
         Play a sound effect with current volume settings.
 
@@ -384,7 +388,9 @@ class AudioManager:
             else:
                 # Window gained focus, restore volume
                 if self.initialized:
-                    pygame.mixer.music.set_volume(self.current_settings.get_music_volume())
+                    pygame.mixer.music.set_volume(
+                        self.current_settings.get_music_volume()
+                    )
                 self.logger.debug("Window focused, audio restored")
 
     def get_audio_info(self) -> Dict[str, any]:
@@ -404,26 +410,30 @@ class AudioManager:
             "effective_music_volume": self.get_effective_music_volume(),
             "effective_sfx_volume": self.get_effective_sfx_volume(),
             "mute_when_inactive": self.is_mute_when_inactive(),
-            "music_playing": self.is_music_playing()
+            "music_playing": self.is_music_playing(),
         }
 
         if self.initialized:
             mixer_info = pygame.mixer.get_init()
             if mixer_info and len(mixer_info) >= 4:
-                info.update({
-                    "frequency": mixer_info[0],
-                    "size": mixer_info[1],
-                    "channels": mixer_info[2],
-                    "buffer": mixer_info[3]
-                })
+                info.update(
+                    {
+                        "frequency": mixer_info[0],
+                        "size": mixer_info[1],
+                        "channels": mixer_info[2],
+                        "buffer": mixer_info[3],
+                    }
+                )
             elif mixer_info:
                 # Handle case where tuple has fewer elements
-                info.update({
-                    "frequency": mixer_info[0] if len(mixer_info) > 0 else 0,
-                    "size": mixer_info[1] if len(mixer_info) > 1 else 0,
-                    "channels": mixer_info[2] if len(mixer_info) > 2 else 0,
-                    "buffer": mixer_info[3] if len(mixer_info) > 3 else 0
-                })
+                info.update(
+                    {
+                        "frequency": mixer_info[0] if len(mixer_info) > 0 else 0,
+                        "size": mixer_info[1] if len(mixer_info) > 1 else 0,
+                        "channels": mixer_info[2] if len(mixer_info) > 2 else 0,
+                        "buffer": mixer_info[3] if len(mixer_info) > 3 else 0,
+                    }
+                )
 
         return info
 

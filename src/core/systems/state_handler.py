@@ -140,7 +140,11 @@ class StateHandler:
         if not show_retired:
             # Active roster view
             for i, slot_rect in enumerate(layout.SLOT_RECTS):
-                if slot_rect.collidepoint(pos) and i < len(self.game.roster) and self.game.roster[i]:
+                if (
+                    slot_rect.collidepoint(pos)
+                    and i < len(self.game.roster)
+                    and self.game.roster[i]
+                ):
                     # Find this turtle in the all_turtles list
                     for j, turtle in enumerate(all_turtles):
                         if turtle == self.game.roster[i]:
@@ -159,6 +163,7 @@ class StateHandler:
     def _handle_profile_clicks(self, pos):
         """Handle clicks in profile state."""
         from ui.views.profile_view import handle_profile_click
+
         result = handle_profile_click(self.game, pos, None, None, None)
 
         if result == "back":
@@ -166,16 +171,18 @@ class StateHandler:
         elif result == "navigate_prev":
             # Navigate to previous turtle
             from ui.views.profile_view import get_all_turtles
+
             all_turtles = get_all_turtles(self.game)
             if all_turtles:
-                current_index = getattr(self.game, 'profile_turtle_index', 0)
+                current_index = getattr(self.game, "profile_turtle_index", 0)
                 self.game.profile_turtle_index = (current_index - 1) % len(all_turtles)
         elif result == "navigate_next":
             # Navigate to next turtle
             from ui.views.profile_view import get_all_turtles
+
             all_turtles = get_all_turtles(self.game)
             if all_turtles:
-                current_index = getattr(self.game, 'profile_turtle_index', 0)
+                current_index = getattr(self.game, "profile_turtle_index", 0)
                 self.game.profile_turtle_index = (current_index + 1) % len(all_turtles)
 
     def _handle_race_clicks(self, pos):
@@ -188,9 +195,9 @@ class StateHandler:
         if action == "GOTO_MENU":
             self.game.state = STATE_MENU
             # Clear temporary opponents when returning to menu
-            if self.game.roster[1] and getattr(self.game.roster[1], 'is_temp', False):
+            if self.game.roster[1] and getattr(self.game.roster[1], "is_temp", False):
                 self.game.roster[1] = None
-            if self.game.roster[2] and getattr(self.game.roster[2], 'is_temp', False):
+            if self.game.roster[2] and getattr(self.game.roster[2], "is_temp", False):
                 self.game.roster[2] = None
         elif action == "RERUN":
             self.game.state = STATE_RACE
@@ -224,6 +231,7 @@ class StateHandler:
     def _handle_voting_clicks(self, pos):
         """Handle clicks in voting state."""
         from ui.voting_interface import handle_voting_click
+
         result = handle_voting_click(self.game, pos)
 
         if result == "back_to_menu":
@@ -232,7 +240,7 @@ class StateHandler:
             # Award $1 for completed vote
             self.game.money += 1
             # Auto-save after vote
-            if hasattr(self.game, 'save_manager'):
+            if hasattr(self.game, "save_manager"):
                 self.game.save_manager.auto_save()
         elif result == "back":
             self.game.state = STATE_MENU
@@ -240,7 +248,7 @@ class StateHandler:
     def handle_mouse_wheel(self, button):
         """Handle mouse wheel events."""
         if self.game.state == STATE_VOTING:
-            if hasattr(self.game, 'voting_view'):
-                self.game.voting_view.handle_event(pygame.event.Event(
-                    pygame.MOUSEBUTTONDOWN, {'button': button}
-                ))
+            if hasattr(self.game, "voting_view"):
+                self.game.voting_view.handle_event(
+                    pygame.event.Event(pygame.MOUSEBUTTONDOWN, {"button": button})
+                )

@@ -50,7 +50,7 @@ class SecurityManager:
             return ""
 
         data_string = json.dumps(data, sort_keys=True, default=str)
-        return hashlib.sha256(data_string.encode('utf-8')).hexdigest()
+        return hashlib.sha256(data_string.encode("utf-8")).hexdigest()
 
     def verify_checksum(self, data: Dict[str, Any], expected_checksum: str) -> bool:
         """Verify data integrity with checksum"""
@@ -63,17 +63,17 @@ class SecurityManager:
     def encrypt_data(self, data: str) -> bytes:
         """Encrypt data with Fernet symmetric encryption"""
         if not self.encryption_enabled:
-            return data.encode('utf-8')
+            return data.encode("utf-8")
 
-        return self.fernet.encrypt(data.encode('utf-8'))
+        return self.fernet.encrypt(data.encode("utf-8"))
 
     def decrypt_data(self, encrypted_data: bytes) -> str:
         """Decrypt data with Fernet symmetric encryption"""
         if not self.encryption_enabled:
-            return encrypted_data.decode('utf-8')
+            return encrypted_data.decode("utf-8")
 
         try:
-            return self.fernet.decrypt(encrypted_data).decode('utf-8')
+            return self.fernet.decrypt(encrypted_data).decode("utf-8")
         except Exception as e:
             raise ValueError(f"Decryption failed: {e}")
 
@@ -81,9 +81,7 @@ class SecurityManager:
         """Create HMAC signature for data"""
         data_string = json.dumps(data, sort_keys=True, default=str)
         signature = hmac.new(
-            self.encryption_key,
-            data_string.encode('utf-8'),
-            hashlib.sha256
+            self.encryption_key, data_string.encode("utf-8"), hashlib.sha256
         ).hexdigest()
         return signature
 
@@ -91,9 +89,7 @@ class SecurityManager:
         """Verify HMAC signature for data"""
         data_string = json.dumps(data, sort_keys=True, default=str)
         expected_signature = hmac.new(
-            self.encryption_key,
-            data_string.encode('utf-8'),
-            hashlib.sha256
+            self.encryption_key, data_string.encode("utf-8"), hashlib.sha256
         ).hexdigest()
 
         return hmac.compare_digest(signature, expected_signature)

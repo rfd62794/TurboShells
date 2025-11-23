@@ -11,6 +11,7 @@ import random
 @dataclass
 class TurtleEntity:
     """Basic turtle entity"""
+
     x: float = 0.0
     y: float = 0.0
     angle: float = 0.0
@@ -21,6 +22,7 @@ class TurtleEntity:
     def move_forward(self, distance: float):
         """Move turtle forward"""
         import math
+
         self.x += distance * math.cos(math.radians(self.angle))
         self.y += distance * math.sin(math.radians(self.angle))
 
@@ -39,6 +41,7 @@ Turtle = TurtleEntity
 @dataclass
 class RaceTrack:
     """Race track entity"""
+
     width: int = 800
     height: int = 600
     checkpoints: list = None
@@ -51,13 +54,17 @@ class RaceTrack:
         """Add a checkpoint to the track"""
         self.checkpoints.append({"x": x, "y": y, "radius": radius})
 
-    def is_checkpoint_reached(self, turtle: TurtleEntity, checkpoint_index: int) -> bool:
+    def is_checkpoint_reached(
+        self, turtle: TurtleEntity, checkpoint_index: int
+    ) -> bool:
         """Check if turtle reached a checkpoint"""
         if checkpoint_index >= len(self.checkpoints):
             return False
 
         checkpoint = self.checkpoints[checkpoint_index]
-        distance = ((turtle.x - checkpoint["x"])**2 + (turtle.y - checkpoint["y"])**2)**0.5
+        distance = (
+            (turtle.x - checkpoint["x"]) ** 2 + (turtle.y - checkpoint["y"]) ** 2
+        ) ** 0.5
         return distance <= checkpoint["radius"]
 
 
@@ -68,5 +75,5 @@ def generate_random_turtle() -> TurtleEntity:
         y=random.uniform(100, 500),
         angle=random.uniform(0, 360),
         speed=random.uniform(0.5, 2.0),
-        color=random.choice(["red", "green", "blue", "yellow", "purple", "orange"])
+        color=random.choice(["red", "green", "blue", "yellow", "purple", "orange"]),
     )

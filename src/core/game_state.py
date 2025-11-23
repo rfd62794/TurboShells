@@ -11,6 +11,7 @@ import random
 
 class GameState(Enum):
     """Game states"""
+
     MENU = "menu"
     RACING = "racing"
     PAUSED = "paused"
@@ -21,6 +22,7 @@ class GameState(Enum):
 @dataclass
 class GameConfig:
     """Game configuration"""
+
     track_width: int = 800
     track_height: int = 600
     max_turtles: int = 8
@@ -34,13 +36,14 @@ class GameConfig:
             "track_height": self.track_height,
             "max_turtles": self.max_turtles,
             "race_laps": self.race_laps,
-            "difficulty": self.difficulty
+            "difficulty": self.difficulty,
         }
 
 
 @dataclass
 class RaceState:
     """Race state information"""
+
     current_lap: int = 1
     total_laps: int = 3
     race_time: float = 0.0
@@ -99,24 +102,28 @@ class StateManager:
 def generate_random_turtle():
     """Generate a random turtle for compatibility"""
     from .entities import TurtleEntity
+
     return TurtleEntity(
         x=random.uniform(100, 700),
         y=random.uniform(100, 500),
         angle=random.uniform(0, 360),
         speed=random.uniform(0.5, 2.0),
-        color=random.choice(["red", "green", "blue", "yellow", "purple", "orange"])
+        color=random.choice(["red", "green", "blue", "yellow", "purple", "orange"]),
     )
 
 
 def breed_turtles(parent1, parent2):
     """Breed two turtles to create offspring"""
     from .entities import TurtleEntity
+
     return TurtleEntity(
         x=(parent1.x + parent2.x) / 2,
         y=(parent1.y + parent2.y) / 2,
         angle=random.uniform(parent1.angle, parent2.angle),
-        speed=random.uniform(min(parent1.speed, parent2.speed), max(parent1.speed, parent2.speed)),
-        color=parent1.color if random.random() > 0.5 else parent2.color
+        speed=random.uniform(
+            min(parent1.speed, parent2.speed), max(parent1.speed, parent2.speed)
+        ),
+        color=parent1.color if random.random() > 0.5 else parent2.color,
     )
 
 
@@ -132,6 +139,7 @@ def compute_turtle_cost(turtle):
 def generate_track(width=800, height=600):
     """Generate a race track"""
     from .entities import RaceTrack
+
     track = RaceTrack(width=width, height=height)
 
     # Add some checkpoints
@@ -140,7 +148,7 @@ def generate_track(width=800, height=600):
         (600, 150, 30),
         (600, 450, 30),
         (200, 450, 30),
-        (400, 300, 40)  # Finish line
+        (400, 300, 40),  # Finish line
     ]
 
     for x, y, radius in checkpoints:
@@ -179,14 +187,16 @@ def run_race(turtles, track, max_steps=1000):
 
             steps += 1
 
-        results.append({
-            'turtle': turtle,
-            'steps': steps,
-            'checkpoints': checkpoints_passed,
-            'finished': checkpoints_passed >= len(track.checkpoints)
-        })
+        results.append(
+            {
+                "turtle": turtle,
+                "steps": steps,
+                "checkpoints": checkpoints_passed,
+                "finished": checkpoints_passed >= len(track.checkpoints),
+            }
+        )
 
     # Sort by checkpoints passed, then by steps
-    results.sort(key=lambda x: (-x['checkpoints'], x['steps']))
+    results.sort(key=lambda x: (-x["checkpoints"], x["steps"]))
 
     return results

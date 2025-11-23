@@ -17,7 +17,9 @@ def format_turtle_label_basic(turtle) -> str:
     )
 
 
-def draw_stable_turtle_slot(screen, font, game_state, turtle, slot_rect, is_active_racer, mouse_pos):
+def draw_stable_turtle_slot(
+    screen, font, game_state, turtle, slot_rect, is_active_racer, mouse_pos
+):
     """Draw the Stable/Main Menu turtle slot, without action buttons.
 
     Buttons and click handling remain in RosterManager; this is purely visual.
@@ -34,12 +36,18 @@ def draw_stable_turtle_slot(screen, font, game_state, turtle, slot_rect, is_acti
         return
 
     # Name
-    name_pos = (slot_rect.x + layout.SLOT_NAME_POS[0], slot_rect.y + layout.SLOT_NAME_POS[1])
+    name_pos = (
+        slot_rect.x + layout.SLOT_NAME_POS[0],
+        slot_rect.y + layout.SLOT_NAME_POS[1],
+    )
     name_txt = font.render(turtle.name, True, WHITE)
     screen.blit(name_txt, name_pos)
 
     # Stats line with status + age
-    stats_pos = (slot_rect.x + layout.SLOT_STATS_POS[0], slot_rect.y + layout.SLOT_STATS_POS[1])
+    stats_pos = (
+        slot_rect.x + layout.SLOT_STATS_POS[0],
+        slot_rect.y + layout.SLOT_STATS_POS[1],
+    )
     stats_str = format_turtle_label_basic(turtle)
     stats_txt = font.render(stats_str, True, WHITE)
     screen.blit(stats_txt, stats_pos)

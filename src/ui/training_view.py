@@ -32,7 +32,9 @@ def draw_training(screen, font, game_state):
     if not turtle:
         # No turtle selected
         no_turtle_txt = font.render("No turtle selected for training", True, GRAY)
-        screen.blit(no_turtle_txt, (SCREEN_WIDTH // 2 - no_turtle_txt.get_width() // 2, 200))
+        screen.blit(
+            no_turtle_txt, (SCREEN_WIDTH // 2 - no_turtle_txt.get_width() // 2, 200)
+        )
         return
 
     # Draw turtle info
@@ -50,7 +52,7 @@ def draw_training(screen, font, game_state):
         f"Recovery: {turtle.stats['recovery']}",
         f"Swim: {turtle.stats['swim']}",
         f"Climb: {turtle.stats['climb']}",
-        f"Age: {turtle.age}"
+        f"Age: {turtle.age}",
     ]
 
     for i, line in enumerate(stats_lines):
@@ -70,7 +72,7 @@ def draw_training(screen, font, game_state):
         ("Train Energy (+1)", "energy", 300, button_y),
         ("Train Recovery (+1)", "recovery", 50, button_y + 60),
         ("Train Swim (+1)", "swim", 300, button_y + 60),
-        ("Train Climb (+1)", "climb", 50, button_y + 120)
+        ("Train Climb (+1)", "climb", 50, button_y + 120),
     ]
 
     for text, stat, x, y in training_buttons:
@@ -95,7 +97,7 @@ def draw_training(screen, font, game_state):
         "• Each training session ages the turtle by 1",
         "• Primary stat always improves by +1",
         "• 20% chance for other stats to improve",
-        "• Turtles auto-retire at age 100"
+        "• Turtles auto-retire at age 100",
     ]
 
     for i, line in enumerate(info_lines):

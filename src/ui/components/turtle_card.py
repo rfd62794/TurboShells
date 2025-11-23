@@ -14,7 +14,14 @@ class TurtleCard:
         self.font = pygame.font.SysFont("Arial", 18)
         self.small_font = pygame.font.SysFont("Arial", 14)
 
-    def draw(self, screen, game_state, mouse_pos=None, is_selected=False, is_active_racer=False):
+    def draw(
+        self,
+        screen,
+        game_state,
+        mouse_pos=None,
+        is_selected=False,
+        is_active_racer=False,
+    ):
         """Draw the turtle card."""
         # Draw card border
         border_color = GREEN if is_selected else (WHITE if is_active_racer else GRAY)
@@ -34,12 +41,22 @@ class TurtleCard:
             screen.blit(stats_surface, (self.rect.x + 20, self.rect.y + 45))
 
             # Draw energy bar
-            energy_width = int((self.turtle.current_energy / self.turtle.stats['max_energy']) * 200)
-            pygame.draw.rect(screen, GRAY, (self.rect.x + 20, self.rect.y + 70, 200, 10))
-            pygame.draw.rect(screen, GREEN, (self.rect.x + 20, self.rect.y + 70, energy_width, 10))
+            energy_width = int(
+                (self.turtle.current_energy / self.turtle.stats["max_energy"]) * 200
+            )
+            pygame.draw.rect(
+                screen, GRAY, (self.rect.x + 20, self.rect.y + 70, 200, 10)
+            )
+            pygame.draw.rect(
+                screen, GREEN, (self.rect.x + 20, self.rect.y + 70, energy_width, 10)
+            )
 
             # Draw train button if enabled and turtle is active
-            if self.show_train_button and is_active_racer and getattr(self.turtle, 'is_active', True):
+            if (
+                self.show_train_button
+                and is_active_racer
+                and getattr(self.turtle, "is_active", True)
+            ):
                 self._draw_train_button(screen, mouse_pos)
         else:
             # Empty slot
@@ -50,12 +67,7 @@ class TurtleCard:
 
     def _draw_train_button(self, screen, mouse_pos=None):
         """Draw train button on the card."""
-        train_rect = pygame.Rect(
-            self.rect.x + 550,
-            self.rect.y + 15,
-            80,
-            28
-        )
+        train_rect = pygame.Rect(self.rect.x + 550, self.rect.y + 15, 80, 28)
 
         color = WHITE if mouse_pos and train_rect.collidepoint(mouse_pos) else GRAY
         pygame.draw.rect(screen, color, train_rect, 2)
@@ -74,12 +86,7 @@ class TurtleCard:
         if not self.turtle or not self.show_train_button:
             return False
 
-        train_rect = pygame.Rect(
-            self.rect.x + 550,
-            self.rect.y + 15,
-            80,
-            28
-        )
+        train_rect = pygame.Rect(self.rect.x + 550, self.rect.y + 15, 80, 28)
         return train_rect.collidepoint(pos)
 
     def is_card_clicked(self, pos):

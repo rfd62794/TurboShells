@@ -16,7 +16,11 @@ class Button:
 
     def draw(self, screen, mouse_pos=None):
         """Draw the button."""
-        color = self.hover_color if mouse_pos and self.rect.collidepoint(mouse_pos) else self.color
+        color = (
+            self.hover_color
+            if mouse_pos and self.rect.collidepoint(mouse_pos)
+            else self.color
+        )
         pygame.draw.rect(screen, color, self.rect, 2)
 
         text_surface = self.font.render(self.text, True, WHITE)
@@ -40,9 +44,17 @@ class ToggleButton(Button):
     def draw(self, screen, mouse_pos=None):
         """Draw the toggle button."""
         if self.is_active:
-            color = self.hover_color if mouse_pos and self.rect.collidepoint(mouse_pos) else self.active_color
+            color = (
+                self.hover_color
+                if mouse_pos and self.rect.collidepoint(mouse_pos)
+                else self.active_color
+            )
         else:
-            color = self.hover_color if mouse_pos and self.rect.collidepoint(mouse_pos) else self.color
+            color = (
+                self.hover_color
+                if mouse_pos and self.rect.collidepoint(mouse_pos)
+                else self.color
+            )
 
         pygame.draw.rect(screen, color, self.rect, 2)
 

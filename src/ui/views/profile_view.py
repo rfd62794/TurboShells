@@ -23,7 +23,7 @@ def draw_profile(screen, font, game_state):
         screen.blit(no_turtles_txt, (300, 250))
         return back_btn
 
-    current_index = getattr(game_state, 'profile_turtle_index', 0)
+    current_index = getattr(game_state, "profile_turtle_index", 0)
     current_index = max(0, min(current_index, len(all_turtles) - 1))
     game_state.profile_turtle_index = current_index
 
@@ -35,6 +35,7 @@ def draw_profile(screen, font, game_state):
     # Draw actual turtle image using PIL-to-pygame port (preserves customizations)
     try:
         from core.rendering.pygame_turtle_renderer import render_turtle_pygame
+
         # Generate turtle image (120x120 for profile view) using existing renderer
         turtle_img = render_turtle_pygame(turtle, size=120)
         img_x = layout.PROFILE_TURTLE_IMAGE_POS[0] - 60  # Center the image
@@ -42,7 +43,9 @@ def draw_profile(screen, font, game_state):
         screen.blit(turtle_img, (img_x, img_y))
     except Exception as e:
         # Fallback: draw a simple colored circle with turtle info
-        pygame.draw.circle(screen, (100, 150, 200), layout.PROFILE_TURTLE_IMAGE_POS, 80, 0)
+        pygame.draw.circle(
+            screen, (100, 150, 200), layout.PROFILE_TURTLE_IMAGE_POS, 80, 0
+        )
         pygame.draw.circle(screen, GRAY, layout.PROFILE_TURTLE_IMAGE_POS, 80, 2)
 
         # Fallback text with turtle name
@@ -56,7 +59,9 @@ def draw_profile(screen, font, game_state):
         age_rect = age_txt.get_rect(
             center=(
                 layout.PROFILE_TURTLE_IMAGE_POS[0],
-                layout.PROFILE_TURTLE_IMAGE_POS[1] + 20))
+                layout.PROFILE_TURTLE_IMAGE_POS[1] + 20,
+            )
+        )
         screen.blit(age_txt, age_rect)
 
     # RIGHT PANEL - Detailed Information
@@ -86,7 +91,7 @@ def draw_profile(screen, font, game_state):
         ("Max Energy", turtle.max_energy, "Total stamina for racing"),
         ("Recovery", turtle.recovery, "How quickly energy regenerates"),
         ("Swim", turtle.swim, "Performance in water terrain"),
-        ("Climb", turtle.climb, "Performance on rock terrain")
+        ("Climb", turtle.climb, "Performance on rock terrain"),
     ]
 
     y_pos = layout.PROFILE_STATS_START_Y
@@ -116,7 +121,9 @@ def draw_profile(screen, font, game_state):
         energy_rect = pygame.Rect(390, 390, energy_width, 20)
         pygame.draw.rect(screen, GREEN, energy_rect)
 
-        energy_txt = font.render(f"{turtle.current_energy}/{turtle.max_energy}", True, WHITE)
+        energy_txt = font.render(
+            f"{turtle.current_energy}/{turtle.max_energy}", True, WHITE
+        )
         screen.blit(energy_txt, (390, 415))
 
     # BOTTOM SECTION - Race History
@@ -126,7 +133,7 @@ def draw_profile(screen, font, game_state):
     screen.blit(history_header, layout.PROFILE_HISTORY_HEADER_POS)
 
     # Display race history
-    race_history = getattr(turtle, 'race_history', [])
+    race_history = getattr(turtle, "race_history", [])
     if race_history:
         y_pos = layout.PROFILE_HISTORY_START_Y
         for i, race in enumerate(race_history[-5:]):  # Show last 5 races
@@ -142,7 +149,8 @@ def draw_profile(screen, font, game_state):
                         'earnings',
                         0)}",
                 True,
-                WHITE)
+                WHITE,
+            )
             screen.blit(race_txt, (70, y_pos))
             y_pos += layout.PROFILE_HISTORY_HEIGHT
     else:

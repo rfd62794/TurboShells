@@ -37,11 +37,19 @@ class RosterManager:
             slot_x = slot_rect.x
             slot_y = slot_rect.y
 
-            train_rect = pygame.Rect(slot_x + layout.SLOT_BTN_TRAIN_RECT.x, slot_y + layout.SLOT_BTN_TRAIN_RECT.y,
-                                     layout.SLOT_BTN_TRAIN_RECT.width, layout.SLOT_BTN_TRAIN_RECT.height)
+            train_rect = pygame.Rect(
+                slot_x + layout.SLOT_BTN_TRAIN_RECT.x,
+                slot_y + layout.SLOT_BTN_TRAIN_RECT.y,
+                layout.SLOT_BTN_TRAIN_RECT.width,
+                layout.SLOT_BTN_TRAIN_RECT.height,
+            )
 
-            retire_rect = pygame.Rect(slot_x + layout.SLOT_BTN_RETIRE_RECT.x, slot_y + layout.SLOT_BTN_RETIRE_RECT.y,
-                                      layout.SLOT_BTN_RETIRE_RECT.width, layout.SLOT_BTN_RETIRE_RECT.height)
+            retire_rect = pygame.Rect(
+                slot_x + layout.SLOT_BTN_RETIRE_RECT.x,
+                slot_y + layout.SLOT_BTN_RETIRE_RECT.y,
+                layout.SLOT_BTN_RETIRE_RECT.width,
+                layout.SLOT_BTN_RETIRE_RECT.height,
+            )
 
             # Check if this slot is the active racer
             is_active_racer = i == getattr(self.game_state, "active_racer_index", 0)

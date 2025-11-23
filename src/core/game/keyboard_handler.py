@@ -44,9 +44,9 @@ class KeyboardHandler:
 
     def _clear_temporary_opponents(self):
         """Clear temporary opponents from roster."""
-        if self.game.roster[1] and getattr(self.game.roster[1], 'is_temp', False):
+        if self.game.roster[1] and getattr(self.game.roster[1], "is_temp", False):
             self.game.roster[1] = None
-        if self.game.roster[2] and getattr(self.game.roster[2], 'is_temp', False):
+        if self.game.roster[2] and getattr(self.game.roster[2], "is_temp", False):
             self.game.roster[2] = None
 
     def _handle_menu_keys(self, event):
@@ -102,9 +102,9 @@ class KeyboardHandler:
     def _handle_race_keys(self, event):
         """Handle keys during race."""
         speed_actions = {
-            pygame.K_1: lambda: setattr(self.game, 'race_speed_multiplier', 1),
-            pygame.K_2: lambda: setattr(self.game, 'race_speed_multiplier', 2),
-            pygame.K_3: lambda: setattr(self.game, 'race_speed_multiplier', 4),
+            pygame.K_1: lambda: setattr(self.game, "race_speed_multiplier", 1),
+            pygame.K_2: lambda: setattr(self.game, "race_speed_multiplier", 2),
+            pygame.K_3: lambda: setattr(self.game, "race_speed_multiplier", 4),
         }
 
         if event.key in speed_actions:

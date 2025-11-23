@@ -14,10 +14,16 @@ from datetime import datetime, timezone
 import logging
 
 from core.data import (
-    GameData, TurtleData, PlayerPreferences,
-    DataValidator, DataSerializer,
-    create_default_game_data, create_default_turtle_data, create_default_preference_data,
-    PerformanceOptimizer, SecurityManager
+    GameData,
+    TurtleData,
+    PlayerPreferences,
+    DataValidator,
+    DataSerializer,
+    create_default_game_data,
+    create_default_turtle_data,
+    create_default_preference_data,
+    PerformanceOptimizer,
+    SecurityManager,
 )
 
 
@@ -26,7 +32,11 @@ class SaveManager:
 
     def __init__(self, save_directory: Optional[str] = None):
         """Initialize save manager with directory setup"""
-        self.save_directory = Path(save_directory) if save_directory else self._get_default_save_directory()
+        self.save_directory = (
+            Path(save_directory)
+            if save_directory
+            else self._get_default_save_directory()
+        )
         self.save_directory.mkdir(parents=True, exist_ok=True)
 
         # File paths
@@ -49,35 +59,38 @@ class SaveManager:
         self.auto_save_enabled = True
         self.last_auto_save = None
 
-        self.logger.info(f"SaveManager initialized with directory: {self.save_directory}")
+        self.logger.info(
+            f"SaveManager initialized with directory: {self.save_directory}"
+        )
 
     def _get_default_save_directory(self) -> Path:
         """Get default save directory based on OS"""
         import os
-        if os.name == 'nt':  # Windows
-            base_dir = Path(os.environ.get('APPDATA', '')) / 'TurboShells'
+
+        if os.name == "nt":  # Windows
+            base_dir = Path(os.environ.get("APPDATA", "")) / "TurboShells"
         else:  # Unix-like
-            base_dir = Path.home() / '.local' / 'share' / 'TurboShells'
+            base_dir = Path.home() / ".local" / "share" / "TurboShells"
 
         return base_dir
 
     def _compress_data(self, data: str) -> bytes:
         """Compress data using gzip"""
         if not self.compression_enabled:
-            return data.encode('utf-8')
+            return data.encode("utf-8")
 
-        return gzip.compress(data.encode('utf-8'), compresslevel=self.compression_level)
+        return gzip.compress(data.encode("utf-8"), compresslevel=self.compression_level)
 
     def _decompress_data(self, compressed_data: bytes) -> str:
         """Decompress data from gzip"""
         if not self.compression_enabled:
-            return compressed_data.decode('utf-8')
+            return compressed_data.decode("utf-8")
 
         try:
-            return gzip.decompress(compressed_data).decode('utf-8')
+            return gzip.decompress(compressed_data).decode("utf-8")
         except gzip.BadGzipFile:
             # Fallback to uncompressed data
-            return compressed_data.decode('utf-8')
+            return compressed_data.decode("utf-8")
 
     def _create_backup(self) -> bool:
         """Create backup of existing save file"""
@@ -97,9 +110,12 @@ class SaveManager:
             self.logger.error(f"Failed to create backup: {e}")
             return False
 
-    def _validate_save_data(self, game_data: Dict[str, Any],
-                            turtles: List[Dict[str, Any]],
-                            preferences: Dict[str, Any]) -> bool:
+    def _validate_save_data(
+        self,
+        game_data: Dict[str, Any],
+        turtles: List[Dict[str, Any]],
+        preferences: Dict[str, Any],
+    ) -> bool:
         """Validate all save data"""
         # Validate game data
         game_valid, game_error = self.validator.validate_game_data(game_data)
@@ -124,21 +140,29 @@ class SaveManager:
 
     def _convert_to_dict(self, obj) -> Dict[str, Any]:
         """Recursively convert dataclass objects to dictionaries"""
-        if hasattr(obj, '__dict__'):
+        if hasattr(obj, "__dict__"):
             # It's a dataclass or object with __dict__
             result = {}
             for key, value in obj.__dict__.items():
-                if hasattr(value, '__dict__'):
+                if hasattr(value, "__dict__"):
                     # Recursively convert nested dataclass
                     result[key] = self._convert_to_dict(value)
                 elif isinstance(value, dict):
                     # Handle nested dictionaries
-                    result[key] = {k: self._convert_to_dict(v) if hasattr(v, '__dict__') else v
-                                   for k, v in value.items()}
+                    result[key] = {
+                        k: self._convert_to_dict(v) if hasattr(v, "__dict__") else v
+                        for k, v in value.items()
+                    }
                 elif isinstance(value, list):
                     # Handle lists of objects
-                    result[key] = [self._convert_to_dict(item) if hasattr(item, '__dict__') else item
-                                   for item in value]
+                    result[key] = [
+                        (
+                            self._convert_to_dict(item)
+                            if hasattr(item, "__dict__")
+                            else item
+                        )
+                        for item in value
+                    ]
                 else:
                     result[key] = value
             return result
@@ -146,8 +170,12 @@ class SaveManager:
             # It's already a primitive value
             return obj
 
-    def save_game(self, game_data: GameData, turtles: List[TurtleData],
-                  preferences: PlayerPreferences) -> bool:
+    def save_game(
+        self,
+        game_data: GameData,
+        turtles: List[TurtleData],
+        preferences: PlayerPreferences,
+    ) -> bool:
         """Save complete game state"""
         try:
             # Convert to dictionaries recursively
@@ -170,7 +198,9 @@ class SaveManager:
                 "game_data": game_dict,
                 "turtles": turtles_dict,
                 "preferences": preferences_dict,
-                "checksum": self._calculate_checksum(game_dict, turtles_dict, preferences_dict)
+                "checksum": self._calculate_checksum(
+                    game_dict, turtles_dict, preferences_dict
+                ),
             }
 
             # Serialize and compress
@@ -178,7 +208,7 @@ class SaveManager:
             compressed_data = self._compress_data(json_data)
 
             # Write to file
-            with open(self.primary_save_path, 'wb') as f:
+            with open(self.primary_save_path, "wb") as f:
                 f.write(compressed_data)
 
             # Update auto-save timestamp
@@ -195,7 +225,9 @@ class SaveManager:
                 self.logger.info("Restored from backup after save failure")
             return False
 
-    def load_game(self) -> Optional[tuple[GameData, List[TurtleData], PlayerPreferences]]:
+    def load_game(
+        self,
+    ) -> Optional[tuple[GameData, List[TurtleData], PlayerPreferences]]:
         """Load complete game state"""
         try:
             if not self.primary_save_path.exists():
@@ -203,7 +235,7 @@ class SaveManager:
                 return self._create_new_game()
 
             # Read and decompress
-            with open(self.primary_save_path, 'rb') as f:
+            with open(self.primary_save_path, "rb") as f:
                 compressed_data = f.read()
 
             json_data = self._decompress_data(compressed_data)
@@ -216,7 +248,9 @@ class SaveManager:
 
             # Verify checksum
             expected_checksum = save_data.get("checksum")
-            actual_checksum = self._calculate_checksum(game_dict, turtles_dict, preferences_dict)
+            actual_checksum = self._calculate_checksum(
+                game_dict, turtles_dict, preferences_dict
+            )
 
             if expected_checksum and expected_checksum != actual_checksum:
                 self.logger.error("Save file checksum mismatch, data may be corrupted")
@@ -242,7 +276,9 @@ class SaveManager:
             # Try loading from backup
             return self._load_from_backup()
 
-    def _load_from_backup(self) -> Optional[tuple[GameData, List[TurtleData], PlayerPreferences]]:
+    def _load_from_backup(
+        self,
+    ) -> Optional[tuple[GameData, List[TurtleData], PlayerPreferences]]:
         """Attempt to load from backup file"""
         if not self.backup_save_path.exists():
             self.logger.warning("No backup file available")
@@ -281,8 +317,12 @@ class SaveManager:
         self.logger.info("Created new game with default data")
         return game_data, turtles, preferences
 
-    def auto_save(self, game_data: GameData, turtles: List[TurtleData],
-                  preferences: PlayerPreferences) -> bool:
+    def auto_save(
+        self,
+        game_data: GameData,
+        turtles: List[TurtleData],
+        preferences: PlayerPreferences,
+    ) -> bool:
         """Auto-save game state"""
         if not self.auto_save_enabled:
             return True
@@ -295,20 +335,23 @@ class SaveManager:
 
         return self.save_game(game_data, turtles, preferences)
 
-    def _calculate_checksum(self, game_data: Dict[str, Any],
-                            turtles: List[Dict[str, Any]],
-                            preferences: Dict[str, Any]) -> str:
+    def _calculate_checksum(
+        self,
+        game_data: Dict[str, Any],
+        turtles: List[Dict[str, Any]],
+        preferences: Dict[str, Any],
+    ) -> str:
         """Calculate checksum for data integrity"""
         import hashlib
 
         # Create a deterministic string representation
-        data_string = json.dumps({
-            "game_data": game_data,
-            "turtles": turtles,
-            "preferences": preferences
-        }, sort_keys=True, default=str)
+        data_string = json.dumps(
+            {"game_data": game_data, "turtles": turtles, "preferences": preferences},
+            sort_keys=True,
+            default=str,
+        )
 
-        return hashlib.sha256(data_string.encode('utf-8')).hexdigest()
+        return hashlib.sha256(data_string.encode("utf-8")).hexdigest()
 
     def validate_save_file(self, file_path: Optional[str] = None) -> bool:
         """Validate save file integrity"""
@@ -319,22 +362,26 @@ class SaveManager:
 
         try:
             # Read and decompress
-            with open(path, 'rb') as f:
+            with open(path, "rb") as f:
                 compressed_data = f.read()
 
             json_data = self._decompress_data(compressed_data)
             save_data = json.loads(json_data)
 
             # Basic structure validation
-            required_keys = ["version", "timestamp", "game_data", "turtles", "preferences"]
+            required_keys = [
+                "version",
+                "timestamp",
+                "game_data",
+                "turtles",
+                "preferences",
+            ]
             if not all(key in save_data for key in required_keys):
                 return False
 
             # Validate individual components
             return self._validate_save_data(
-                save_data["game_data"],
-                save_data["turtles"],
-                save_data["preferences"]
+                save_data["game_data"], save_data["turtles"], save_data["preferences"]
             )
 
         except Exception as e:
@@ -363,15 +410,21 @@ class SaveManager:
             "old_exists": self.old_save_path.exists(),
             "compression_enabled": self.compression_enabled,
             "auto_save_enabled": self.auto_save_enabled,
-            "last_auto_save": self.last_auto_save.isoformat() if self.last_auto_save else None
+            "last_auto_save": (
+                self.last_auto_save.isoformat() if self.last_auto_save else None
+            ),
         }
 
         if self.primary_save_path.exists():
             stat = self.primary_save_path.stat()
-            info.update({
-                "primary_size_bytes": stat.st_size,
-                "primary_modified": datetime.fromtimestamp(stat.st_mtime, timezone.utc).isoformat()
-            })
+            info.update(
+                {
+                    "primary_size_bytes": stat.st_size,
+                    "primary_modified": datetime.fromtimestamp(
+                        stat.st_mtime, timezone.utc
+                    ).isoformat(),
+                }
+            )
 
         return info
 
@@ -380,7 +433,11 @@ class SaveManager:
         try:
             files_deleted = []
 
-            for path in [self.primary_save_path, self.backup_save_path, self.old_save_path]:
+            for path in [
+                self.primary_save_path,
+                self.backup_save_path,
+                self.old_save_path,
+            ]:
                 if path.exists():
                     path.unlink()
                     files_deleted.append(str(path))

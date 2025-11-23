@@ -25,9 +25,11 @@ class VotingView:
         self.turtle_renderer = get_direct_renderer()
 
         # Helper method to convert PIL to PyGame
-        self._pil_to_pygame = lambda pil_image: pygame.image.fromstring(
-            pil_image.tobytes(), pil_image.size, pil_image.mode
-        ) if pil_image else None
+        self._pil_to_pygame = lambda pil_image: (
+            pygame.image.fromstring(pil_image.tobytes(), pil_image.size, pil_image.mode)
+            if pil_image
+            else None
+        )
 
         # UI state
         self.current_design_index = 0
@@ -45,7 +47,9 @@ class VotingView:
         # UI layout
         self.width = screen.get_width()
         self.height = screen.get_height()
-        self.design_size = min(200, self.width // 3)  # Larger design size for left column
+        self.design_size = min(
+            200, self.width // 3
+        )  # Larger design size for left column
 
         # Layout dimensions
         self.left_panel_width = self.width // 2
@@ -73,10 +77,10 @@ class VotingView:
             self.small_font = pygame.font.Font(None, 14)
         except BaseException:
             # Fallback to default font
-            self.title_font = pygame.font.SysFont('Arial', 36)
-            self.header_font = pygame.font.SysFont('Arial', 24)
-            self.normal_font = pygame.font.SysFont('Arial', 18)
-            self.small_font = pygame.font.SysFont('Arial', 14)
+            self.title_font = pygame.font.SysFont("Arial", 36)
+            self.header_font = pygame.font.SysFont("Arial", 24)
+            self.normal_font = pygame.font.SysFont("Arial", 18)
+            self.small_font = pygame.font.SysFont("Arial", 14)
 
         # Initialize daily designs
         self.voting_system.generate_daily_designs()
@@ -122,9 +126,13 @@ class VotingView:
         pygame.draw.rect(self.screen, (250, 250, 250), panel_rect)
 
         # Draw separator
-        pygame.draw.line(self.screen, self.accent_color,
-                         (self.left_panel_width - 2, 0),
-                         (self.left_panel_width - 2, self.height), 3)
+        pygame.draw.line(
+            self.screen,
+            self.accent_color,
+            (self.left_panel_width - 2, 0),
+            (self.left_panel_width - 2, self.height),
+            3,
+        )
 
         # Draw title
         title_text = "Daily Design Voting"
@@ -149,8 +157,19 @@ class VotingView:
         card_x = x - 20
         card_y = y - 20
 
-        pygame.draw.rect(self.screen, self.card_color, (card_x, card_y, card_width, card_height), border_radius=15)
-        pygame.draw.rect(self.screen, self.accent_color, (card_x, card_y, card_width, card_height), 3, border_radius=15)
+        pygame.draw.rect(
+            self.screen,
+            self.card_color,
+            (card_x, card_y, card_width, card_height),
+            border_radius=15,
+        )
+        pygame.draw.rect(
+            self.screen,
+            self.accent_color,
+            (card_x, card_y, card_width, card_height),
+            3,
+            border_radius=15,
+        )
 
         # Draw turtle using the same rendering system as the main game
         try:
@@ -167,7 +186,9 @@ class VotingView:
                         turtle_surface = pygame.image.load(pil_image)
                         self.screen.blit(turtle_surface, (x, y))
                     except BaseException:
-                        self._draw_placeholder_turtle(x + self.design_size // 2, y + self.design_size // 2)
+                        self._draw_placeholder_turtle(
+                            x + self.design_size // 2, y + self.design_size // 2
+                        )
                 elif pil_image:
                     # Convert PIL to PyGame surface
                     try:
@@ -175,17 +196,27 @@ class VotingView:
                         if turtle_surface:
                             self.screen.blit(turtle_surface, (x, y))
                         else:
-                            self._draw_placeholder_turtle(x + self.design_size // 2, y + self.design_size // 2)
+                            self._draw_placeholder_turtle(
+                                x + self.design_size // 2, y + self.design_size // 2
+                            )
                     except BaseException:
-                        self._draw_placeholder_turtle(x + self.design_size // 2, y + self.design_size // 2)
+                        self._draw_placeholder_turtle(
+                            x + self.design_size // 2, y + self.design_size // 2
+                        )
                 else:
-                    self._draw_placeholder_turtle(x + self.design_size // 2, y + self.design_size // 2)
+                    self._draw_placeholder_turtle(
+                        x + self.design_size // 2, y + self.design_size // 2
+                    )
             else:
-                self._draw_placeholder_turtle(x + self.design_size // 2, y + self.design_size // 2)
+                self._draw_placeholder_turtle(
+                    x + self.design_size // 2, y + self.design_size // 2
+                )
 
         except Exception as e:
             print(f"Error rendering turtle: {e}")
-            self._draw_placeholder_turtle(x + self.design_size // 2, y + self.design_size // 2)
+            self._draw_placeholder_turtle(
+                x + self.design_size // 2, y + self.design_size // 2
+            )
 
     def _draw_navigation_controls(self):
         """Draw navigation controls in right panel"""
@@ -217,10 +248,19 @@ class VotingView:
         bar_y = nav_y + 75
 
         # Background
-        pygame.draw.rect(self.screen, (200, 200, 200), (bar_x, bar_y, bar_width, bar_height), border_radius=3)
+        pygame.draw.rect(
+            self.screen,
+            (200, 200, 200),
+            (bar_x, bar_y, bar_width, bar_height),
+            border_radius=3,
+        )
         # Progress
-        pygame.draw.rect(self.screen, self.accent_color, (bar_x, bar_y,
-                         int(bar_width * progress), bar_height), border_radius=3)
+        pygame.draw.rect(
+            self.screen,
+            self.accent_color,
+            (bar_x, bar_y, int(bar_width * progress), bar_height),
+            border_radius=3,
+        )
 
     def _update_animations(self):
         """Update animation states"""
@@ -244,21 +284,29 @@ class VotingView:
         current_design = designs[self.current_design_index]
 
         # Draw panel background
-        panel_rect = pygame.Rect(self.left_panel_width, 0, self.right_panel_width, self.height)
+        panel_rect = pygame.Rect(
+            self.left_panel_width, 0, self.right_panel_width, self.height
+        )
         pygame.draw.rect(self.screen, self.bg_color, panel_rect)
 
         # Draw voting title with back button
         voting_title = "Rate This Design"
         title_surface = self.header_font.render(voting_title, True, self.text_color)
-        title_rect = title_surface.get_rect(centerx=self.left_panel_width + self.right_panel_width // 2 - 40, y=20)
+        title_rect = title_surface.get_rect(
+            centerx=self.left_panel_width + self.right_panel_width // 2 - 40, y=20
+        )
         self.screen.blit(title_surface, title_rect)
 
         # Draw back button next to title
         back_rect = pygame.Rect(title_rect.right + 20, 15, 60, 30)
 
         # Hover effect
-        mouse_pos = getattr(self, 'mouse_pos', None)
-        back_color = (150, 50, 50) if mouse_pos and back_rect.collidepoint(mouse_pos) else (100, 100, 100)
+        mouse_pos = getattr(self, "mouse_pos", None)
+        back_color = (
+            (150, 50, 50)
+            if mouse_pos and back_rect.collidepoint(mouse_pos)
+            else (100, 100, 100)
+        )
 
         pygame.draw.rect(self.screen, back_color, back_rect)
         pygame.draw.rect(self.screen, (200, 200, 200), back_rect, 2)  # Border
@@ -274,24 +322,32 @@ class VotingView:
         # Draw subtitle
         subtitle_text = "Rate each category to earn $1 and influence genetics!"
         subtitle_surface = self.normal_font.render(subtitle_text, True, (100, 100, 100))
-        subtitle_rect = subtitle_surface.get_rect(centerx=self.left_panel_width + self.right_panel_width // 2, y=55)
+        subtitle_rect = subtitle_surface.get_rect(
+            centerx=self.left_panel_width + self.right_panel_width // 2, y=55
+        )
         self.screen.blit(subtitle_surface, subtitle_rect)
 
         # Draw navigation controls at the top of right panel
         self._draw_navigation_controls()
 
         # Create a clipping surface for scrollable content
-        content_area = pygame.Rect(self.left_panel_width, 200, self.right_panel_width - 20, self.height - 210)
-        clip_surface = pygame.Surface((content_area.width, content_area.height), pygame.SRCALPHA)
+        content_area = pygame.Rect(
+            self.left_panel_width, 200, self.right_panel_width - 20, self.height - 210
+        )
+        clip_surface = pygame.Surface(
+            (content_area.width, content_area.height), pygame.SRCALPHA
+        )
         clip_surface.fill((0, 0, 0, 0))
 
         # Calculate content height and update scroll limits
         categories = current_design.rating_categories
-        content_height = len(categories) * 120 + 100  # 120px per category + submit button space
+        content_height = (
+            len(categories) * 120 + 100
+        )  # 120px per category + submit button space
         self._update_scroll_limits(content_height)
 
         # Draw voting controls with clipping
-        if current_design.voting_status == 'completed':
+        if current_design.voting_status == "completed":
             self._draw_completed_ratings_scrolled(clip_surface, current_design)
         else:
             self._draw_rating_controls_scrolled(clip_surface, current_design)
@@ -306,7 +362,7 @@ class VotingView:
         """Draw rating controls with scrolling support"""
         categories = current_design.rating_categories
 
-        if current_design.voting_status == 'completed':
+        if current_design.voting_status == "completed":
             return
 
         # Rating controls area (relative to surface)
@@ -318,25 +374,32 @@ class VotingView:
         y_offset = 0
         for category_name, category_data in categories.items():
             # Category name
-            category_text = category_data['display_name']
+            category_text = category_data["display_name"]
             text_surface = self.normal_font.render(category_text, True, self.text_color)
             surface.blit(text_surface, (controls_x, controls_y + y_offset))
 
             # Draw description
-            desc_text = category_data['description']
+            desc_text = category_data["description"]
             desc_surface = self.small_font.render(desc_text, True, (100, 100, 100))
             surface.blit(desc_surface, (controls_x, controls_y + y_offset + 25))
 
             # Draw stars (more space in right panel)
             star_rating = self.selected_ratings.get(category_name, 0)
-            self._draw_star_rating_scrolled(surface, controls_x, controls_y + y_offset + 55,
-                                            star_rating, category_name)
+            self._draw_star_rating_scrolled(
+                surface,
+                controls_x,
+                controls_y + y_offset + 55,
+                star_rating,
+                category_name,
+            )
 
             y_offset += 120
 
         # Draw submit button if ratings are complete
         if self._can_submit_ratings():
-            self._draw_submit_button_scrolled(surface, controls_x, controls_y + y_offset)
+            self._draw_submit_button_scrolled(
+                surface, controls_x, controls_y + y_offset
+            )
 
     def _draw_completed_ratings_scrolled(self, surface: pygame.Surface, current_design):
         """Draw completed ratings display with scrolling support"""
@@ -355,15 +418,21 @@ class VotingView:
         y_offset = 40
         for category_name, rating in current_design.ratings.items():
             category_data = current_design.rating_categories.get(category_name, {})
-            category_text = category_data.get('display_name', category_name)
+            category_text = category_data.get("display_name", category_name)
 
             # Category name
             text_surface = self.normal_font.render(category_text, True, self.text_color)
             surface.blit(text_surface, (controls_x, controls_y + y_offset))
 
             # Stars
-            self._draw_star_rating_scrolled(surface, controls_x, controls_y + y_offset,
-                                            rating, category_name, interactive=False)
+            self._draw_star_rating_scrolled(
+                surface,
+                controls_x,
+                controls_y + y_offset,
+                rating,
+                category_name,
+                interactive=False,
+            )
 
             # Rating value
             rating_text = f"{rating:.1f}/5.0"
@@ -373,13 +442,14 @@ class VotingView:
             y_offset += 35
 
     def _draw_star_rating_scrolled(
-            self,
-            surface: pygame.Surface,
-            x: int,
-            y: int,
-            rating: float,
-            category_name: str,
-            interactive: bool = True):
+        self,
+        surface: pygame.Surface,
+        x: int,
+        y: int,
+        rating: float,
+        category_name: str,
+        interactive: bool = True,
+    ):
         """Draw interactive star rating on a surface"""
         star_size = 20
         star_spacing = 45  # Increased from 35 for more space between stars
@@ -399,13 +469,14 @@ class VotingView:
 
                 # Match hover padding exactly to click padding
                 hover_padding = 4  # Same as click padding
-                if (star_screen_x -
-                    hover_padding <= self.mouse_pos[0] <= star_screen_x +
-                    star_size +
-                    hover_padding and star_screen_y -
-                    hover_padding <= self.mouse_pos[1] <= star_screen_y +
-                    star_size +
-                        hover_padding):
+                if (
+                    star_screen_x - hover_padding
+                    <= self.mouse_pos[0]
+                    <= star_screen_x + star_size + hover_padding
+                    and star_screen_y - hover_padding
+                    <= self.mouse_pos[1]
+                    <= star_screen_y + star_size + hover_padding
+                ):
                     hover_star = i
                     break
 
@@ -427,7 +498,14 @@ class VotingView:
             # Draw star on surface
             self._draw_star_on_surface(surface, star_x, star_y, star_size, star_color)
 
-    def _draw_star_on_surface(self, surface: pygame.Surface, x: int, y: int, size: int, color: Tuple[int, int, int]):
+    def _draw_star_on_surface(
+        self,
+        surface: pygame.Surface,
+        x: int,
+        y: int,
+        size: int,
+        color: Tuple[int, int, int],
+    ):
         """Draw a star shape on a surface"""
         points = []
         for i in range(10):
@@ -456,16 +534,26 @@ class VotingView:
         button_color = tuple(min(255, int(c + c * pulse_factor)) for c in base_color)
 
         # Draw button
-        pygame.draw.rect(surface, button_color,
-                         (button_x, button_y, button_width, button_height), border_radius=8)
-        pygame.draw.rect(surface, self.text_color,
-                         (button_x, button_y, button_width, button_height), 2, border_radius=8)
+        pygame.draw.rect(
+            surface,
+            button_color,
+            (button_x, button_y, button_width, button_height),
+            border_radius=8,
+        )
+        pygame.draw.rect(
+            surface,
+            self.text_color,
+            (button_x, button_y, button_width, button_height),
+            2,
+            border_radius=8,
+        )
 
         # Button text
         button_text = "Submit & Earn $1"
         text_surface = self.normal_font.render(button_text, True, (255, 255, 255))
-        text_rect = text_surface.get_rect(centerx=button_x + button_width // 2,
-                                          centery=button_y + button_height // 2)
+        text_rect = text_surface.get_rect(
+            centerx=button_x + button_width // 2, centery=button_y + button_height // 2
+        )
         surface.blit(text_surface, text_rect)
 
     def _draw_rating_controls(self):
@@ -477,7 +565,7 @@ class VotingView:
 
         current_design = designs[self.current_design_index]
 
-        if current_design.voting_status == 'completed':
+        if current_design.voting_status == "completed":
             self._draw_completed_ratings(current_design)
             return
 
@@ -492,19 +580,20 @@ class VotingView:
         y_offset = 0
         for category_name, category_data in categories.items():
             # Category name
-            category_text = category_data['display_name']
+            category_text = category_data["display_name"]
             text_surface = self.normal_font.render(category_text, True, self.text_color)
             self.screen.blit(text_surface, (controls_x, controls_y + y_offset))
 
             # Draw description
-            desc_text = category_data['description']
+            desc_text = category_data["description"]
             desc_surface = self.small_font.render(desc_text, True, (100, 100, 100))
             self.screen.blit(desc_surface, (controls_x, controls_y + y_offset + 25))
 
             # Draw stars (more space in right panel)
             star_rating = self.selected_ratings.get(category_name, 0)
-            self._draw_star_rating(controls_x, controls_y + y_offset + 55,
-                                   star_rating, category_name)
+            self._draw_star_rating(
+                controls_x, controls_y + y_offset + 55, star_rating, category_name
+            )
 
             y_offset += 120
 
@@ -527,8 +616,9 @@ class VotingView:
         self.screen.blit(subtitle_surface, subtitle_rect)
 
         # Draw separator line
-        pygame.draw.line(self.screen, self.accent_color,
-                         (50, 90), (self.width - 50, 90), 2)
+        pygame.draw.line(
+            self.screen, self.accent_color, (50, 90), (self.width - 50, 90), 2
+        )
 
     def _draw_current_design(self):
         """Draw the current design for voting"""
@@ -572,7 +662,9 @@ class VotingView:
                         turtle_y = card_y + 30
                         self.screen.blit(turtle_surface, (turtle_x, turtle_y))
                     except BaseException:
-                        self._draw_placeholder_turtle(card_x + card_width // 2, card_y + 80)
+                        self._draw_placeholder_turtle(
+                            card_x + card_width // 2, card_y + 80
+                        )
                 elif pil_image:
                     # Convert PIL to PyGame surface
                     try:
@@ -583,9 +675,13 @@ class VotingView:
                             turtle_y = card_y + 30
                             self.screen.blit(turtle_surface, (turtle_x, turtle_y))
                         else:
-                            self._draw_placeholder_turtle(card_x + card_width // 2, card_y + 80)
+                            self._draw_placeholder_turtle(
+                                card_x + card_width // 2, card_y + 80
+                            )
                     except BaseException:
-                        self._draw_placeholder_turtle(card_x + card_width // 2, card_y + 80)
+                        self._draw_placeholder_turtle(
+                            card_x + card_width // 2, card_y + 80
+                        )
                 else:
                     self._draw_placeholder_turtle(card_x + card_width // 2, card_y + 80)
             else:
@@ -596,10 +692,12 @@ class VotingView:
             self._draw_placeholder_turtle(card_x + card_width // 2, card_y + 80)
 
         # Draw feature breakdown
-        self._draw_feature_breakdown(current_design, card_x + 20, card_y + self.design_size + 50)
+        self._draw_feature_breakdown(
+            current_design, card_x + 20, card_y + self.design_size + 50
+        )
 
         # Draw design status
-        if current_design.voting_status == 'completed':
+        if current_design.voting_status == "completed":
             status_text = "✓ VOTED"
             status_color = self.success_color
         else:
@@ -607,17 +705,17 @@ class VotingView:
             status_color = self.accent_color
 
         status_surface = self.normal_font.render(status_text, True, status_color)
-        status_rect = status_surface.get_rect(right=card_x + card_width - 20, top=card_y + 10)
+        status_rect = status_surface.get_rect(
+            right=card_x + card_width - 20, top=card_y + 10
+        )
         self.screen.blit(status_surface, status_rect)
 
     def _draw_placeholder_turtle(self, x: int, y: int):
         """Draw placeholder turtle when SVG fails"""
         # Draw simple turtle shape
         # Shell
-        pygame.draw.ellipse(self.screen, (34, 139, 34),
-                            (x - 40, y - 30, 80, 60))
-        pygame.draw.ellipse(self.screen, (0, 100, 0),
-                            (x - 40, y - 30, 80, 60), 2)
+        pygame.draw.ellipse(self.screen, (34, 139, 34), (x - 40, y - 30, 80, 60))
+        pygame.draw.ellipse(self.screen, (0, 100, 0), (x - 40, y - 30, 80, 60), 2)
 
         # Head
         pygame.draw.circle(self.screen, (139, 90, 43), (x, y - 50), 15)
@@ -626,9 +724,13 @@ class VotingView:
         # Legs
         leg_positions = [(-25, 10), (25, 10), (-20, 25), (20, 25)]
         for leg_x, leg_y in leg_positions:
-            pygame.draw.line(self.screen, (101, 67, 33),
-                             (x + leg_x, y + leg_y),
-                             (x + leg_x, y + leg_y + 20), 3)
+            pygame.draw.line(
+                self.screen,
+                (101, 67, 33),
+                (x + leg_x, y + leg_y),
+                (x + leg_x, y + leg_y + 20),
+                3,
+            )
 
         # Eyes
         pygame.draw.circle(self.screen, (0, 0, 0), (x - 5, y - 50), 2)
@@ -646,24 +748,28 @@ class VotingView:
             self.screen.blit(text_surface, (x, y + y_offset))
 
             # Feature value
-            if feature_data['type'] == 'color':
+            if feature_data["type"] == "color":
                 # Draw color swatch
-                rgb = feature_data['value']
+                rgb = feature_data["value"]
                 pygame.draw.rect(self.screen, rgb, (x + 120, y + y_offset, 25, 15))
-                pygame.draw.rect(self.screen, self.text_color, (x + 120, y + y_offset, 25, 15), 1)
+                pygame.draw.rect(
+                    self.screen, self.text_color, (x + 120, y + y_offset, 25, 15), 1
+                )
 
                 # Draw RGB values
                 rgb_text = f"RGB({rgb[0]},{rgb[1]},{rgb[2]})"
                 rgb_surface = self.small_font.render(rgb_text, True, self.text_color)
                 self.screen.blit(rgb_surface, (x + 150, y + y_offset))
 
-            elif feature_data['type'] == 'pattern':
-                pattern_text = feature_data['value'].title()
-                text_surface = self.small_font.render(pattern_text, True, self.text_color)
+            elif feature_data["type"] == "pattern":
+                pattern_text = feature_data["value"].title()
+                text_surface = self.small_font.render(
+                    pattern_text, True, self.text_color
+                )
                 self.screen.blit(text_surface, (x + 120, y + y_offset))
 
-            elif feature_data['type'] == 'proportions':
-                prop_data = feature_data['value']
+            elif feature_data["type"] == "proportions":
+                prop_data = feature_data["value"]
                 prop_text = f"S:{
                     prop_data['shell_size']:.1f} H:{
                     prop_data['head_size']:.1f} L:{
@@ -690,14 +796,20 @@ class VotingView:
         y_offset = 40
         for category_name, rating in design.ratings.items():
             category_data = design.rating_categories.get(category_name, {})
-            category_text = category_data.get('display_name', category_name)
+            category_text = category_data.get("display_name", category_name)
 
             # Category name
             text_surface = self.normal_font.render(category_text, True, self.text_color)
             self.screen.blit(text_surface, (controls_x, controls_y + y_offset))
 
             # Stars
-            self._draw_star_rating(controls_x, controls_y + y_offset, rating, category_name, interactive=False)
+            self._draw_star_rating(
+                controls_x,
+                controls_y + y_offset,
+                rating,
+                category_name,
+                interactive=False,
+            )
 
             # Rating value
             rating_text = f"{rating:.1f}/5.0"
@@ -706,7 +818,14 @@ class VotingView:
 
             y_offset += 35
 
-    def _draw_star_rating(self, x: int, y: int, rating: float, category_name: str, interactive: bool = True):
+    def _draw_star_rating(
+        self,
+        x: int,
+        y: int,
+        rating: float,
+        category_name: str,
+        interactive: bool = True,
+    ):
         """Draw interactive star rating"""
         star_size = 20
         star_spacing = 25
@@ -717,8 +836,10 @@ class VotingView:
             for i in range(5):
                 star_x = x + i * star_spacing
                 star_y = y
-                if (star_x <= self.mouse_pos[0] <= star_x + star_size and
-                        star_y <= self.mouse_pos[1] <= star_y + star_size):
+                if (
+                    star_x <= self.mouse_pos[0] <= star_x + star_size
+                    and star_y <= self.mouse_pos[1] <= star_y + star_size
+                ):
                     hover_star = i
                     break
 
@@ -764,8 +885,10 @@ class VotingView:
         button_height = 50
 
         # Check if mouse is over button
-        is_hovered = (button_x <= self.mouse_pos[0] <= button_x + button_width and
-                      button_y <= self.mouse_pos[1] <= button_y + button_height)
+        is_hovered = (
+            button_x <= self.mouse_pos[0] <= button_x + button_width
+            and button_y <= self.mouse_pos[1] <= button_y + button_height
+        )
 
         # Button color with pulse effect
         pulse_factor = 0.1 * math.sin(self.pulse_phase)
@@ -773,16 +896,26 @@ class VotingView:
         button_color = tuple(min(255, int(c + c * pulse_factor)) for c in base_color)
 
         # Draw button
-        pygame.draw.rect(self.screen, button_color,
-                         (button_x, button_y, button_width, button_height), border_radius=8)
-        pygame.draw.rect(self.screen, self.text_color,
-                         (button_x, button_y, button_width, button_height), 2, border_radius=8)
+        pygame.draw.rect(
+            self.screen,
+            button_color,
+            (button_x, button_y, button_width, button_height),
+            border_radius=8,
+        )
+        pygame.draw.rect(
+            self.screen,
+            self.text_color,
+            (button_x, button_y, button_width, button_height),
+            2,
+            border_radius=8,
+        )
 
         # Button text
         button_text = "Submit & Earn $1"
         text_surface = self.normal_font.render(button_text, True, (255, 255, 255))
-        text_rect = text_surface.get_rect(centerx=button_x + button_width // 2,
-                                          centery=button_y + button_height // 2)
+        text_rect = text_surface.get_rect(
+            centerx=button_x + button_width // 2, centery=button_y + button_height // 2
+        )
         self.screen.blit(text_surface, text_rect)
 
     def _draw_nav_button(self, text: str, x: int, y: int, action: str):
@@ -791,20 +924,34 @@ class VotingView:
         button_height = 40
 
         # Check if mouse is over button
-        is_hovered = (x <= self.mouse_pos[0] <= x + button_width and
-                      y <= self.mouse_pos[1] <= y + button_height)
+        is_hovered = (
+            x <= self.mouse_pos[0] <= x + button_width
+            and y <= self.mouse_pos[1] <= y + button_height
+        )
 
         # Button color
         button_color = (150, 150, 150) if is_hovered else (100, 100, 100)
 
         # Draw button
-        pygame.draw.rect(self.screen, button_color, (x, y, button_width, button_height), border_radius=8)
-        pygame.draw.rect(self.screen, self.text_color, (x, y, button_width, button_height), 2, border_radius=8)
+        pygame.draw.rect(
+            self.screen,
+            button_color,
+            (x, y, button_width, button_height),
+            border_radius=8,
+        )
+        pygame.draw.rect(
+            self.screen,
+            self.text_color,
+            (x, y, button_width, button_height),
+            2,
+            border_radius=8,
+        )
 
         # Button text
         text_surface = self.normal_font.render(text, True, (255, 255, 255))
-        text_rect = text_surface.get_rect(centerx=x + button_width // 2,
-                                          centery=y + button_height // 2)
+        text_rect = text_surface.get_rect(
+            centerx=x + button_width // 2, centery=y + button_height // 2
+        )
         self.screen.blit(text_surface, text_rect)
 
     def _draw_status(self):
@@ -818,20 +965,25 @@ class VotingView:
         panel_height = 60
 
         # Draw panel background
-        pygame.draw.rect(self.screen, self.card_color, (panel_x, panel_y, panel_width, panel_height), border_radius=5)
+        pygame.draw.rect(
+            self.screen,
+            self.card_color,
+            (panel_x, panel_y, panel_width, panel_height),
+            border_radius=5,
+        )
         pygame.draw.rect(
             self.screen,
             self.accent_color,
-            (panel_x,
-             panel_y,
-             panel_width,
-             panel_height),
+            (panel_x, panel_y, panel_width, panel_height),
             2,
-            border_radius=5)
+            border_radius=5,
+        )
 
         # Status text
-        status_text = f"Completed: {status['completed_votes']}/{status['total_designs']} | " \
+        status_text = (
+            f"Completed: {status['completed_votes']}/{status['total_designs']} | "
             f"Available Rewards: ${status['potential_earnings']}"
+        )
         text_surface = self.normal_font.render(status_text, True, self.text_color)
         text_rect = text_surface.get_rect(centerx=self.width // 2, y=panel_y + 10)
         self.screen.blit(text_surface, text_rect)
@@ -839,7 +991,9 @@ class VotingView:
         # Progress text
         progress_text = f"Progress: {status['completion_percentage']:.1f}%"
         progress_surface = self.small_font.render(progress_text, True, self.text_color)
-        progress_rect = progress_surface.get_rect(centerx=self.width // 2, y=panel_y + 35)
+        progress_rect = progress_surface.get_rect(
+            centerx=self.width // 2, y=panel_y + 35
+        )
         self.screen.blit(progress_surface, progress_rect)
 
     def _draw_feedback(self):
@@ -861,31 +1015,44 @@ class VotingView:
 
         # Draw popup
         self.screen.blit(popup_surface, (popup_x, popup_y))
-        pygame.draw.rect(self.screen, self.accent_color,
-                         (popup_x, popup_y, popup_width, popup_height), 3, border_radius=10)
+        pygame.draw.rect(
+            self.screen,
+            self.accent_color,
+            (popup_x, popup_y, popup_width, popup_height),
+            3,
+            border_radius=10,
+        )
 
         # Feedback title
         title_text = "Rating Submitted!"
         title_surface = self.header_font.render(title_text, True, self.success_color)
-        title_rect = title_surface.get_rect(centerx=popup_x + popup_width // 2, y=popup_y + 20)
+        title_rect = title_surface.get_rect(
+            centerx=popup_x + popup_width // 2, y=popup_y + 20
+        )
         self.screen.blit(title_surface, title_rect)
 
         # Reward message
         reward_text = f"You earned ${self.current_feedback['reward_earned']}!"
         reward_surface = self.normal_font.render(reward_text, True, self.text_color)
-        reward_rect = reward_surface.get_rect(centerx=popup_x + popup_width // 2, y=popup_y + 60)
+        reward_rect = reward_surface.get_rect(
+            centerx=popup_x + popup_width // 2, y=popup_y + 60
+        )
         self.screen.blit(reward_surface, reward_rect)
 
         # Impact message
         impact_text = "Your ratings will influence future turtle genetics!"
         impact_surface = self.normal_font.render(impact_text, True, self.text_color)
-        impact_rect = impact_surface.get_rect(centerx=popup_x + popup_width // 2, y=popup_y + 90)
+        impact_rect = impact_surface.get_rect(
+            centerx=popup_x + popup_width // 2, y=popup_y + 90
+        )
         self.screen.blit(impact_surface, impact_rect)
 
         # Close instruction
         close_text = "Click to continue"
         close_surface = self.small_font.render(close_text, True, self.accent_color)
-        close_rect = close_surface.get_rect(centerx=popup_x + popup_width // 2, y=popup_y + 150)
+        close_rect = close_surface.get_rect(
+            centerx=popup_x + popup_width // 2, y=popup_y + 150
+        )
         self.screen.blit(close_surface, close_rect)
 
     def _scroll_up(self):
@@ -925,20 +1092,29 @@ class VotingView:
         if self.max_scroll > 0:
             thumb_ratio = (self.height - 210) / (self.height - 210 + self.max_scroll)
             thumb_height = max(30, int(scrollbar_height * thumb_ratio))
-            thumb_y = scrollbar_y + int((self.scroll_offset / self.max_scroll) * (scrollbar_height - thumb_height))
+            thumb_y = scrollbar_y + int(
+                (self.scroll_offset / self.max_scroll)
+                * (scrollbar_height - thumb_height)
+            )
         else:
             thumb_height = scrollbar_height
             thumb_y = scrollbar_y
 
         # Draw scrollbar background
-        pygame.draw.rect(self.screen, (200, 200, 200),
-                         (scrollbar_x, scrollbar_y, self.scrollbar_width, scrollbar_height),
-                         border_radius=6)
+        pygame.draw.rect(
+            self.screen,
+            (200, 200, 200),
+            (scrollbar_x, scrollbar_y, self.scrollbar_width, scrollbar_height),
+            border_radius=6,
+        )
 
         # Draw scrollbar thumb
-        pygame.draw.rect(self.screen, (150, 150, 150),
-                         (scrollbar_x, thumb_y, self.scrollbar_width, thumb_height),
-                         border_radius=6)
+        pygame.draw.rect(
+            self.screen,
+            (150, 150, 150),
+            (scrollbar_x, thumb_y, self.scrollbar_width, thumb_height),
+            border_radius=6,
+        )
 
     def handle_event(self, event: pygame.event.Event) -> str:
         """Handle pygame events"""
@@ -973,7 +1149,9 @@ class VotingView:
         x, y = pos
 
         # Check back button first
-        if hasattr(self, 'back_button_rect') and self.back_button_rect.collidepoint(pos):
+        if hasattr(self, "back_button_rect") and self.back_button_rect.collidepoint(
+            pos
+        ):
             return "back_to_menu"
 
         # Check feedback popup
@@ -991,7 +1169,7 @@ class VotingView:
         current_design = designs[self.current_design_index]
 
         # Check star ratings using screen coordinates directly
-        if current_design.voting_status == 'pending':
+        if current_design.voting_status == "pending":
             categories = current_design.rating_categories
 
             # Check if click is in right panel scrollable area
@@ -1009,12 +1187,20 @@ class VotingView:
                     if star_y_screen + 20 >= 200 and star_y_screen <= self.height:
                         for i in range(5):
                             star_spacing = 45
-                            star_x_screen = self.left_panel_width + 30 + i * star_spacing  # left_panel + controls_x + i*spacing
+                            star_x_screen = (
+                                self.left_panel_width + 30 + i * star_spacing
+                            )  # left_panel + controls_x + i*spacing
 
                             # Reduce click padding further for more spacing
                             click_padding = 4  # Reduced from 6 to 4
-                            if (star_x_screen - click_padding <= x <= star_x_screen + 20 + click_padding and
-                                    star_y_screen - click_padding <= y <= star_y_screen + 20 + click_padding):
+                            if (
+                                star_x_screen - click_padding
+                                <= x
+                                <= star_x_screen + 20 + click_padding
+                                and star_y_screen - click_padding
+                                <= y
+                                <= star_y_screen + 20 + click_padding
+                            ):
                                 # Set rating for this category
                                 self.selected_ratings[category_name] = i + 1
                                 return
@@ -1034,8 +1220,10 @@ class VotingView:
                 button_width = 200
                 button_height = 50
 
-                if (button_x <= x <= button_x + button_width and
-                        button_screen_y <= y <= button_screen_y + button_height):
+                if (
+                    button_x <= x <= button_x + button_width
+                    and button_screen_y <= y <= button_screen_y + button_height
+                ):
                     result = self._submit_ratings()
                     if result:
                         return "vote_completed"
@@ -1071,8 +1259,10 @@ class VotingView:
                 button_width = 200
                 button_height = 50
 
-                if (button_x <= x <= button_x + button_width and
-                        button_screen_y <= y <= button_screen_y + button_height):
+                if (
+                    button_x <= x <= button_x + button_width
+                    and button_screen_y <= y <= button_screen_y + button_height
+                ):
                     result = self._submit_ratings()
                     if result:
                         return "vote_completed"
@@ -1116,7 +1306,9 @@ class VotingView:
             return False
 
         current_design = designs[self.current_design_index]
-        return current_design.voting_status == 'pending' and len(self.selected_ratings) > 0
+        return (
+            current_design.voting_status == "pending" and len(self.selected_ratings) > 0
+        )
 
     def _submit_ratings(self):
         """Submit current ratings"""
@@ -1128,9 +1320,11 @@ class VotingView:
         current_design = designs[self.current_design_index]
 
         # Submit ratings
-        result = self.voting_system.submit_ratings(current_design.id, self.selected_ratings)
+        result = self.voting_system.submit_ratings(
+            current_design.id, self.selected_ratings
+        )
 
-        if result['success']:
+        if result["success"]:
             self.current_feedback = result
             self.show_feedback = True
             self.feedback_timer = 180  # 3 seconds at 60 FPS
@@ -1154,8 +1348,8 @@ class VotingView:
     def get_voting_data(self) -> Dict[str, Any]:
         """Get current voting data for external use"""
         return {
-            'current_design_index': self.current_design_index,
-            'selected_ratings': self.selected_ratings.copy(),
-            'daily_status': self.voting_system.get_daily_status(),
-            'can_submit': self._can_submit_ratings()
+            "current_design_index": self.current_design_index,
+            "selected_ratings": self.selected_ratings.copy(),
+            "daily_status": self.voting_system.get_daily_status(),
+            "can_submit": self._can_submit_ratings(),
         }
