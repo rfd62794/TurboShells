@@ -1,6 +1,6 @@
 {
   "graphics": {
-    "resolution_width": 1024,
+    "resolution_width": 1280,
     "resolution_height": 768,
     "fullscreen": false,
     "vsync": true,
@@ -8,7 +8,7 @@
     "quality_level": "high"
   },
   "audio": {
-    "master_volume": 1.0,
+    "master_volume": 0.5,
     "music_volume": 0.8,
     "sfx_volume": 0.9,
     "voice_volume": 1.0,
@@ -49,7 +49,7 @@
     "economy_multiplier": 1.0
   },
   "player_profile": {
-    "name": "Player",
+    "name": "TestPlayer",
     "avatar_index": 0,
     "total_playtime": 0,
     "races_completed": 0,
