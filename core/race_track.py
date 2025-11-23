@@ -121,3 +121,8 @@ def create_custom_track(checkpoints: List[tuple], width=800, height=600) -> Race
         track.add_checkpoint(x, y, radius)
     
     return track
+
+# Alias for compatibility
+def generate_track(width=800, height=600):
+    """Generate a default track (alias for create_oval_track)"""
+    return create_oval_track(width, height)
