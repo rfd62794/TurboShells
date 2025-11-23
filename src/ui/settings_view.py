@@ -98,15 +98,15 @@ class SettingsView:
 
         # Layout dimensions - Upper-left corner positioning for better tab fit
         panel_width = min(
-            screen_rect.width * 0.9, 900
-        )  # 90% of screen width, max 900px for more space
+            screen_rect.width * 0.95, 950
+        )  # 95% of screen width, max 950px for maximum space
         panel_height = min(
-            screen_rect.height * 0.85, 650
-        )  # 85% of screen height, max 650px for more space
+            screen_rect.height * 0.9, 700
+        )  # 90% of screen height, max 700px for more space
 
         self.panel_rect = pygame.Rect(
-            50,  # Upper-left corner X position
-            50,  # Upper-left corner Y position  
+            30,  # Even closer to upper-left corner
+            30,  # Even closer to upper-left corner  
             panel_width,
             panel_height,
         )
@@ -138,15 +138,15 @@ class SettingsView:
 
         # Recalculate panel dimensions
         panel_width = min(
-            screen_rect.width * 0.9, 900
-        )  # 90% of screen width, max 900px for more space
+            screen_rect.width * 0.95, 950
+        )  # 95% of screen width, max 950px for maximum space
         panel_height = min(
-            screen_rect.height * 0.85, 650
-        )  # 85% of screen height, max 650px for more space
+            screen_rect.height * 0.9, 700
+        )  # 90% of screen height, max 700px for more space
 
         self.panel_rect = pygame.Rect(
-            50,  # Upper-left corner X position
-            50,  # Upper-left corner Y position
+            30,  # Even closer to upper-left corner
+            30,  # Even closer to upper-left corner
             panel_width,
             panel_height,
         )
@@ -203,13 +203,29 @@ class SettingsView:
             (SettingsTab.PRIVACY, "Privacy"),
         ]
 
-        # Calculate tab width to fit all tabs in the available space
+        # Calculate tab layout with better spacing
         num_tabs = len(tab_configs)
         available_width = self.tab_bar_rect.width - 20  # Leave some padding
-        tab_spacing = 3  # Reduced spacing for better fit
+        tab_spacing = 2  # Minimal spacing for maximum space
+        
+        # Calculate optimal tab width
         tab_width = (available_width - (num_tabs - 1) * tab_spacing) // num_tabs
-        tab_width = max(80, min(tab_width, 110))  # Ensure reasonable min/max width
+        tab_width = max(85, min(tab_width, 100))  # Ensure reasonable min/max width
         tab_height = 35
+
+        # If tabs are still too narrow, use abbreviations
+        if tab_width < 90:
+            tab_configs = [
+                (SettingsTab.GRAPHICS, "Graphics"),
+                (SettingsTab.AUDIO, "Audio"),
+                (SettingsTab.CONTROLS, "Controls"),
+                (SettingsTab.DIFFICULTY, "Diff"),
+                (SettingsTab.PROFILE, "Profile"),
+                (SettingsTab.APPEARANCE, "Appear"),
+                (SettingsTab.ACCESSIBILITY, "Access"),
+                (SettingsTab.SAVES, "Saves"),
+                (SettingsTab.PRIVACY, "Privacy"),
+            ]
 
         for i, (tab, label) in enumerate(tab_configs):
             x = self.tab_bar_rect.x + 10 + i * (tab_width + tab_spacing)
@@ -940,20 +956,31 @@ class SettingsView:
                 self.COLORS["text"] if tab == self.active_tab else self.COLORS["text"]
             )
             
-            # Use smaller font for narrow tabs
-            if element.rect.width < 90:
+            # Use appropriate font size based on tab width
+            if element.rect.width < 95:
+                font_size = 11
+            elif element.rect.width < 105:
                 font_size = 12
             else:
-                font_size = 14
+                font_size = 13
             
             tab_font = pygame.font.Font(None, font_size)
             label_text = tab_font.render(element.label, True, label_color)
             label_rect = label_text.get_rect(center=element.rect.center)
             
-            # Truncate text if still too wide
-            if label_rect.width > element.rect.width - 4:
-                # Truncate and add ellipsis
-                truncated_label = element.label[:7] + "..." if len(element.label) > 7 else element.label
+            # Smart text truncation if needed
+            max_width = element.rect.width - 6
+            if label_rect.width > max_width:
+                # Calculate how many characters can fit
+                avg_char_width = label_rect.width // len(element.label)
+                max_chars = max_width // avg_char_width
+                
+                if max_chars >= 3:
+                    truncated_label = element.label[:max_chars-1] + "…" if len(element.label) > max_chars else element.label
+                else:
+                    # For very narrow tabs, use first letter only
+                    truncated_label = element.label[0].upper()
+                
                 label_text = tab_font.render(truncated_label, True, label_color)
                 label_rect = label_text.get_rect(center=element.rect.center)
             
