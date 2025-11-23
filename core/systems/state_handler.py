@@ -49,9 +49,12 @@ class StateHandler:
                     # Go to roster with select racer mode
                     self.game.state = STATE_ROSTER
                     self.game.select_racer_mode = True
+                elif new_state == "SETTINGS":
+                    # Show settings overlay
+                    self.game.settings_manager.show_settings()
                 else:
                     self.game.state = new_state
-                break
+                return
     
     def _handle_roster_clicks(self, pos):
         """Handle clicks in roster state."""
