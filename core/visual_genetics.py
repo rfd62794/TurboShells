@@ -24,8 +24,8 @@ class VisualGenetics:
             },
             'shell_pattern_type': {
                 'type': 'discrete',
-                'range': ['stripes', 'spots', 'spiral', 'geometric', 'complex'],
-                'default': 'stripes',
+                'range': ['hex', 'spots', 'stripes', 'rings'],  # Updated to match renderer
+                'default': 'hex',
                 'description': 'Shell pattern type'
             },
             'shell_pattern_color': {
@@ -94,11 +94,17 @@ class VisualGenetics:
             },
             
             # Leg Genetics
-            'leg_length_modifier': {
+            'leg_length': {  # Updated key to match renderer
                 'type': 'continuous',
-                'range': (0.8, 1.2),
+                'range': (0.5, 1.5),  # Updated range to match renderer
                 'default': 1.0,
                 'description': 'Leg length scaling'
+            },
+            'limb_shape': {  # New gene for limb shape
+                'type': 'discrete',
+                'range': ['flippers', 'feet', 'fins'],  # Match renderer expectations
+                'default': 'flippers',
+                'description': 'Limb shape type'
             },
             'leg_thickness_modifier': {
                 'type': 'continuous',

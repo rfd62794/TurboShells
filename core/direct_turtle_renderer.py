@@ -98,7 +98,9 @@ class DirectTurtleRenderer:
         center_y = size // 2
         scale = size / 200.0
         
+        # Store current genetics for helper functions
         self.current_genetics = genetics
+        
         gene_seed = hash(str(genetics)) 
         random.seed(gene_seed)
 
