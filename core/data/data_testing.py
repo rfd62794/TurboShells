@@ -9,7 +9,7 @@ import datetime
 import time
 from typing import Dict, List, Any
 
-from core.data_structures import (
+from .data_structures import (
     GameData, TurtleData, PlayerPreferences,
     TransactionData, EconomicData, SessionStats, GameStateData, RosterData, LastSession,
     GeneTrait, ParentContribution, MutationDetails, BaseStats, GeneticModifiers,
@@ -18,7 +18,7 @@ from core.data_structures import (
     RatingBehavior, PreferenceProfile, TraitInfluence, InfluenceDecay,
     GeneticInfluence
 )
-from core.data_validation import DataValidator
+from .data_validation import DataValidator
 
 
 class TestDataGenerator:

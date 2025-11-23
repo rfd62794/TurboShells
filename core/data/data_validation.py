@@ -8,7 +8,7 @@ following Single Responsibility Principle.
 import jsonschema
 from typing import Dict, List, Any, Optional, Tuple
 
-from core.data_structures import GameData, TurtleData, PlayerPreferences
+from .data_structures import GameData, TurtleData, PlayerPreferences
 
 
 # ============================================================================

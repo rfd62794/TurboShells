@@ -64,24 +64,23 @@ class PerformanceOptimizer:
         self.compression_level = 6
         self.compression_threshold = 1024  # Only compress data larger than 1KB
     
-    @lru_cache(maxsize=1000)
     def cached_validate_game_data(self, data_hash: str, data: Dict[str, Any]) -> tuple[bool, Optional[str]]:
         """Cached game data validation"""
-        from core.data_validation import DataValidator
+        from .data_validation import DataValidator
         validator = DataValidator()
         return validator.validate_game_data(data)
     
     @lru_cache(maxsize=1000)
     def cached_validate_turtle_data(self, data_hash: str, data: Dict[str, Any]) -> tuple[bool, Optional[str]]:
         """Cached turtle data validation"""
-        from core.data_validation import DataValidator
+        from .data_validation import DataValidator
         validator = DataValidator()
         return validator.validate_turtle_data(data)
     
     @lru_cache(maxsize=1000)
     def cached_validate_preference_data(self, data_hash: str, data: Dict[str, Any]) -> tuple[bool, Optional[str]]:
         """Cached preference data validation"""
-        from core.data_validation import DataValidator
+        from .data_validation import DataValidator
         validator = DataValidator()
         return validator.validate_preference_data(data)
     

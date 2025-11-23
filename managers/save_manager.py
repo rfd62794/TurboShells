@@ -13,11 +13,12 @@ from typing import Optional, Dict, List, Any
 from datetime import datetime, timezone
 import logging
 
-from core.data_structures import GameData, TurtleData, PlayerPreferences
-from core.data_validation import DataValidator
-from core.data_serialization import DataSerializer, create_default_game_data, create_default_turtle_data, create_default_preference_data
-from core.data_performance import PerformanceOptimizer
-from core.data_security import SecurityManager
+from core.data import (
+    GameData, TurtleData, PlayerPreferences,
+    DataValidator, DataSerializer,
+    create_default_game_data, create_default_turtle_data, create_default_preference_data,
+    PerformanceOptimizer, SecurityManager
+)
 
 
 class SaveManager:

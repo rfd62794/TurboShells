@@ -10,7 +10,7 @@ from typing import Dict, Any, List, Callable, Optional
 from datetime import datetime, timezone
 import logging
 
-from core.data_structures import GameData, TurtleData, PlayerPreferences
+from .data_structures import GameData, TurtleData, PlayerPreferences
 
 
 class DataMigrator:

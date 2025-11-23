@@ -8,7 +8,7 @@ following Single Responsibility Principle.
 import json
 from typing import Dict, Any
 
-from core.data_structures import GameData, TurtleData, PlayerPreferences
+from .data_structures import GameData, TurtleData, PlayerPreferences
 
 
 class DataSerializer:
