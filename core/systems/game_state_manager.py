@@ -19,68 +19,54 @@ class GameStateManager:
     
     def initialize_game_state(self) -> Tuple[bool, List[Turtle], List[Turtle], int, str, Dict[str, Any]]:
         """
-        Initialize game state by directly loading save file
+        Initialize game state using auto-load system
         
         Returns:
             Tuple of (success, roster, retired_roster, money, state, load_notification)
         """
         try:
-            # Try to load directly from save file
-            if self.save_manager.primary_save_path.exists():
-                print("Loading save file...")
-                loaded_data = self.save_manager.load_game()
+            # Perform auto-load
+            success, error, loaded_data, notification = auto_load_system.auto_load()
+            
+            # Store notification for display
+            self.load_notification = notification
+            
+            if success and loaded_data:
+                game_data, turtles, preferences = loaded_data
                 
-                if loaded_data:
-                    game_data, turtles, preferences = loaded_data
-                    
-                    # Convert dataclass objects to dictionaries for compatibility
-                    game_data_dict, turtles_dict = self._convert_loaded_data(game_data, turtles)
-                    
-                    # Store player_id for save operations
-                    self.player_id = game_data_dict.get("player_id", "unknown")
-                    
-                    # Extract game state values
-                    game_state = game_data_dict.get("game_state", {})
-                    if hasattr(game_state, '__dict__'):
-                        game_state = game_state.__dict__
-                    
-                    money = game_state.get("money", 100)
-                    state = game_state.get("current_phase", "MENU")
-                    
-                    # Convert turtle data to game entities
-                    roster, retired_roster = self._load_turtles_from_data(game_data_dict, turtles_dict)
-                    
-                    print(f"Game loaded successfully for player {self.player_id}")
-                    print(f"Money: ${money}, Active turtles: {len([t for t in roster if t])}")
-                    
-                    notification = {
-                        "type": "load_notification",
-                        "success": True,
-                        "message": "Game loaded successfully",
-                        "timestamp": "2025-11-22T00:00:00Z"
-                    }
-                    
-                    return True, roster, retired_roster, money, state, notification
-                else:
-                    print("Save file corrupted or invalid")
-            
-            # No save file or load failed - start new game
-            print("Starting new game")
-            
-            # Create default roster with starter turtle
-            roster = [Turtle("Starter", speed=5, energy=100, recovery=5, swim=5, climb=5), None, None]
-            retired_roster = []
-            money = 100
-            state = "MENU"
-            
-            notification = {
-                "type": "load_notification",
-                "success": False,
-                "message": "No save file found - starting new game",
-                "timestamp": "2025-11-22T00:00:00Z"
-            }
-            
-            return True, roster, retired_roster, money, state, notification
+                # Convert dataclass objects to dictionaries for compatibility
+                game_data_dict, turtles_dict = self._convert_loaded_data(game_data, turtles)
+                
+                # Store player_id for save operations
+                self.player_id = game_data_dict.get("player_id", "unknown")
+                
+                # Extract game state values
+                game_state = game_data_dict.get("game_state", {})
+                if hasattr(game_state, '__dict__'):
+                    game_state = game_state.__dict__
+                
+                money = game_state.get("money", 100)
+                state = game_state.get("current_phase", "MENU")
+                
+                # Convert turtle data to game entities
+                roster, retired_roster = self._load_turtles_from_data(game_data_dict, turtles_dict)
+                
+                print(f"Game loaded successfully for player {self.player_id}")
+                print(f"Money: ${money}, Active turtles: {len([t for t in roster if t])}")
+                
+                return True, roster, retired_roster, money, state, notification
+                
+            else:
+                # Keep default state for new game
+                print(f"Starting new game: {error or 'No save file found'}")
+                
+                # Create default roster with starter turtle
+                roster = [Turtle("Starter", speed=5, energy=100, recovery=5, swim=5, climb=5), None, None]
+                retired_roster = []
+                money = 100
+                state = "MENU"
+                
+                return True, roster, retired_roster, money, state, notification
                 
         except Exception as e:
             print(f"Error during game state initialization: {e}")
@@ -88,7 +74,7 @@ class GameStateManager:
             traceback.print_exc()
             
             # Fallback state
-            notification = {
+            self.load_notification = {
                 "type": "load_notification",
                 "success": False,
                 "message": f"Initialization error: {e}",
@@ -100,7 +86,7 @@ class GameStateManager:
             money = 100
             state = "MENU"
             
-            return False, roster, retired_roster, money, state, notification
+            return False, roster, retired_roster, money, state, self.load_notification
     
     def _convert_loaded_data(self, game_data: Any, turtles: Any) -> Tuple[Dict, List[Dict]]:
         """Convert dataclass objects to dictionaries for compatibility"""
