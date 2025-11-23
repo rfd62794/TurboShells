@@ -74,13 +74,13 @@ PROFILE_NEXT_BTN_RECT = pygame.Rect(470, 575, 80, 25)
 PROFILE_DOTS_START_X = 340
 PROFILE_DOTS_Y = 590
 
-# 6. Main Menu Layout - Moved buttons up
-MENU_ROSTER_RECT = pygame.Rect(200, 100, 400, 70)
-MENU_SHOP_RECT = pygame.Rect(200, 190, 400, 70)
-MENU_BREEDING_RECT = pygame.Rect(200, 280, 400, 70)
-MENU_RACE_RECT = pygame.Rect(200, 370, 400, 70)
-MENU_VOTING_RECT = pygame.Rect(200, 460, 400, 70)
-MENU_SETTINGS_RECT = pygame.Rect(200, 550, 400, 70)  # Added Settings at bottom
+# 6. Main Menu Layout - Moved buttons up further for better spacing
+MENU_ROSTER_RECT = pygame.Rect(200, 80, 400, 70)
+MENU_SHOP_RECT = pygame.Rect(200, 170, 400, 70)
+MENU_BREEDING_RECT = pygame.Rect(200, 260, 400, 70)
+MENU_RACE_RECT = pygame.Rect(200, 350, 400, 70)
+MENU_VOTING_RECT = pygame.Rect(200, 440, 400, 70)
+MENU_SETTINGS_RECT = pygame.Rect(200, 530, 400, 70)  # Added Settings at bottom
 
 # 4. Shop Layout - Redesigned for larger images and better layout
 SHOP_SLOT_1_RECT = pygame.Rect(50, 80, 220, 380)  # Larger and extended down

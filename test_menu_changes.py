@@ -32,8 +32,8 @@ def test_menu_layout():
         # Test 1: Check if layout positions are correct
         print("\n📍 Testing Layout Positions...")
         
-        # Verify buttons are moved up (Y positions should be lower)
-        expected_positions = [100, 190, 280, 370, 460, 550]  # Expected Y positions
+        # Verify buttons are moved up further (Y positions should be even lower)
+        expected_positions = [80, 170, 260, 350, 440, 530]  # Updated expected Y positions
         actual_rects = [
             layout.MENU_ROSTER_RECT,
             layout.MENU_SHOP_RECT, 
