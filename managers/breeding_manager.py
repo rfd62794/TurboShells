@@ -14,7 +14,7 @@ class BreedingManager:
             return "GOTO_MENU"
 
         # Check Breed button at new position (next to instructions)
-        breed_rect = pygame.Rect(250, 55, 100, 35)
+        breed_rect = pygame.Rect(250, 65, 100, 35)
         if breed_rect.collidepoint(pos):
             if len(self.parents) == 2:
                 if self.breed():
