@@ -50,7 +50,7 @@ class GameStateManager:
                     game_state = game_state.__dict__
                 
                 money = game_state.get("money", 100)
-                state = game_state.get("current_phase", "MENU")
+                state = "MENU"  # Always start on Main Menu, not saved state
                 
                 print(f"Game state loaded: Money=${money}, Phase={state}")
                 print(f"Roster loaded separately: {len([t for t in roster if t])} turtles")
