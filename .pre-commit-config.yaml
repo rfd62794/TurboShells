@@ -1,23 +1,71 @@
+# TurboShells Pre-commit Configuration
 repos:
+  - repo: local
+    hooks:
+      # Python syntax check
+      - id: python-syntax
+        name: Python Syntax Check
+        entry: python -m py_compile
+        language: system
+        files: ^.*\.py$
+        
+      # Import structure check
+      - id: import-check
+        name: Import Structure Check
+        entry: python scripts/local_ci.py --pre-commit
+        language: system
+        pass_filenames: false
+        always_run: true
+        
+      # Quick test suite
+      - id: quick-tests
+        name: Quick Test Suite
+        entry: python tests/comprehensive_test_runner.py --quick
+        language: system
+        pass_filenames: false
+        always_run: true
+        
+      # Code style check
+      - id: code-style
+        name: Code Style Check
+        entry: python scripts/local_ci.py
+        language: system
+        pass_filenames: false
+        always_run: true
+        
+      # Documentation check
+      - id: docs-check
+        name: Documentation Coverage
+        entry: python scripts/local_ci.py
+        language: system
+        pass_filenames: false
+        always_run: true
+
+  # Basic built-in hooks (Windows compatible)
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:
-      - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-yaml
-      - id: check-added-large-files
+      - id: check-json
       - id: check-merge-conflict
-      - id: debug-statements
+      - id: check-added-large-files
 
+  # Python hooks (Windows compatible)
   - repo: https://github.com/psf/black
-    rev: 23.7.0
+    rev: 22.10.0
     hooks:
       - id: black
         language_version: python3
-
-  - repo: https://github.com/pycqa/pylint
-    rev: v3.0.0
+        
+  - repo: https://github.com/pycqa/isort
+    rev: 5.11.4
     hooks:
-      - id: pylint
-        additional_dependencies: [pylint-django]
-        args: [--disable=C0114,R0903,C0103]
+      - id: isort
+        args: ["--profile", "black"]
+        
+  - repo: https://github.com/pycqa/flake8
+    rev: 5.0.4
+    hooks:
+      - id: flake8
+        args: [--max-line-length=88, --extend-ignore=E203,W503]

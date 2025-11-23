@@ -36,22 +36,26 @@ class CICDSetup:
         """Create requirements.txt for development dependencies"""
         requirements = """# TurboShells Development Requirements
 
-# Testing Framework
+# Core Testing Framework
 pytest>=7.0.0
-coverage>=6.0.0
 pytest-cov>=3.0.0
+coverage>=6.0.0
 
-# Code Quality
+# Code Quality Tools
 flake8>=4.0.0
 black>=22.0.0
 isort>=5.0.0
+
+# Pre-commit Framework
+pre-commit>=2.20.0
 
 # Performance Monitoring
 psutil>=5.8.0
 memory-profiler>=0.60.0
 
 # Development Tools
-pre-commit>=2.20.0
+wheel>=0.37.0
+setuptools>=60.0.0
 """
         
         requirements_file = self.project_root / "requirements-dev.txt"

@@ -55,6 +55,33 @@ class ComprehensiveTestRunner:
             'result': None
         }
     
+    def register_coverage_analysis(self, coverage_module_path: str = "scripts.coverage_analysis"):
+        """Register coverage analysis"""
+        self.coverage_module = coverage_module_path
+    
+    def run_coverage_analysis(self, test_type: str = "quick") -> Optional[Dict[str, Any]]:
+        """Run coverage analysis"""
+        try:
+            # Import coverage integration
+            from scripts.coverage_analysis import CoverageIntegration
+            
+            integration = CoverageIntegration()
+            report = integration.run_coverage_with_tests(test_type)
+            
+            if report:
+                return {
+                    "overall_coverage": report.overall_coverage,
+                    "goals_met": sum(1 for met in report.goals_met.values() if met),
+                    "total_goals": len(report.goals_met),
+                    "module_count": len(report.module_metrics)
+                }
+            else:
+                return None
+                
+        except ImportError:
+            print("⚠️  Coverage analysis not available")
+            return None
+    
     def run_suite(self, suite_name: str, verbosity: int = 2) -> TestSuiteResult:
         """Run a specific test suite"""
         if suite_name not in self.suites:
@@ -137,7 +164,7 @@ class ComprehensiveTestRunner:
         
         for suite_name in self.suites:
             print(f"\n📋 Running {suite_name}...")
-            result = self.run_suite(suite_name, verbosity)
+            result = runner.run_suite(suite_name, verbosity)
             suite_results.append(result)
             
             total_tests += result.tests_run
@@ -146,6 +173,17 @@ class ComprehensiveTestRunner:
             
             status = "✅ PASS" if result.passed else "❌ FAIL"
             print(f"{status} {result.tests_run} tests, {result.failures} failures, {result.errors} errors ({result.success_rate:.1f}%) - {result.execution_time:.2f}s")
+        
+        print(f"\n📊 Running coverage analysis...")
+        coverage_result = runner.run_coverage_analysis("full")
+        
+        if coverage_result:
+            print(f"✅ Coverage analysis completed")
+            print(f"   Overall coverage: {coverage_result['overall_coverage']:.1f}%")
+            print(f"   Goals met: {coverage_result['goals_met']}/{coverage_result['total_goals']}")
+            print(f"   Modules analyzed: {coverage_result['module_count']}")
+        else:
+            print("⚠️  Coverage analysis skipped")
         
         # Calculate overall success rate
         overall_success_rate = (total_tests - total_failures - total_errors) / total_tests * 100 if total_tests > 0 else 0
@@ -362,6 +400,9 @@ def main():
     runner.register_suite('integration_tests', 'tests.integration_test_suite')
     runner.register_suite('ui_tests', 'tests.ui_testing_framework')
     runner.register_suite('performance_tests', 'tests.performance_test_suite')
+    
+    # Register coverage analysis
+    runner.register_coverage_analysis()
     
     # Check command line arguments
     if len(sys.argv) > 1:

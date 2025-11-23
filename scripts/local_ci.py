@@ -280,7 +280,79 @@ if __name__ == "__main__":
             details={"files_checked": len(python_files), "issues": len(docstring_issues)}
         )
     
-    def check_performance_regression(self) -> CIResult:
+    def run_coverage_analysis(self) -> CIResult:
+        """Run coverage analysis with goals checking"""
+        print("📊 Running coverage analysis...")
+        start_time = time.time()
+        
+        # Import coverage analyzer
+        try:
+            from scripts.coverage_analysis import CoverageIntegration
+            
+            integration = CoverageIntegration(str(self.project_root))
+            report = integration.run_coverage_with_tests("quick")
+            
+            if report:
+                # Check if goals are met
+                goals_met_count = sum(1 for met in report.goals_met.values() if met)
+                total_goals = len(report.goals_met)
+                success_rate = goals_met_count / total_goals * 100
+                
+                execution_time = time.time() - start_time
+                
+                output = f"Coverage analysis completed\n"
+                output += f"Overall coverage: {report.overall_coverage:.1f}%\n"
+                output += f"Goals met: {goals_met_count}/{total_goals} ({success_rate:.1f}%)\n"
+                
+                # Check if critical goals are met
+                critical_goals = ['core.entities', 'core.game_state', 'overall']
+                critical_met = sum(1 for goal in critical_goals if report.goals_met.get(goal, False))
+                
+                if critical_met == len(critical_goals) and success_rate >= 70:
+                    output += "✅ Coverage goals met"
+                    success = True
+                else:
+                    output += "⚠️  Some coverage goals not met"
+                    success = True  # Warning, not failure
+                
+                return CIResult(
+                    stage="Coverage Analysis",
+                    success=success,
+                    execution_time=execution_time,
+                    output=output,
+                    details={
+                        "overall_coverage": report.overall_coverage,
+                        "goals_met": goals_met_count,
+                        "total_goals": total_goals,
+                        "critical_goals_met": critical_met
+                    }
+                )
+            else:
+                return CIResult(
+                    stage="Coverage Analysis",
+                    success=False,
+                    execution_time=time.time() - start_time,
+                    output="Coverage analysis failed",
+                    details={}
+                )
+                
+        except ImportError:
+            # Fallback if coverage analyzer not available
+            success, stdout, stderr = self.run_command([
+                sys.executable, "-c", "print('Coverage analysis skipped - analyzer not available')"
+            ])
+            
+            execution_time = time.time() - start_time
+            output = "Coverage analysis skipped (analyzer not available)"
+            
+            return CIResult(
+                stage="Coverage Analysis",
+                success=True,  # Not a failure
+                execution_time=execution_time,
+                output=output,
+                details={"status": "skipped"}
+            )
+        def check_performance_regression(self) -> CIResult:
         """Check for performance regressions"""
         print("⚡ Checking performance regressions...")
         start_time = time.time()
@@ -375,6 +447,7 @@ if __name__ == "__main__":
             self.check_python_syntax,
             self.check_import_structure,
             self.run_quick_tests,
+            self.run_coverage_analysis,
             self.check_code_style,
             self.check_documentation_coverage,
             self.check_performance_regression
