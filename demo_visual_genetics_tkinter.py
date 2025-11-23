@@ -275,7 +275,7 @@ class VisualGeneticsDemo:
         pool_stats = self.pool_manager.get_genetic_pool_status()
         
         stats_text = f"Votes Cast: {status['completed_votes']}/{status['total_designs']}\n"
-        stats_text += f"Total Earned: ${status['total_earned']}\n"
+        stats_text += f"Potential Earnings: ${status['potential_earnings']}\n"
         stats_text += f"Genetic Pool Influence: {pool_stats['average_weight']:.2f} average weight\n"
         
         if pool_stats['most_influenced_traits']:

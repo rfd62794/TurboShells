@@ -156,9 +156,11 @@ class TkinterSVGRenderer:
             with open(temp_svg, 'w', encoding='utf-8') as f:
                 f.write(svg_string)
             
-            # Convert to PNG
+            # Convert to PNG using subprocess
+            import subprocess
             temp_png = os.path.join(self.temp_dir, f"temp_{id(svg_string)}.png")
-            svg2png.svg2png(inputfile=temp_svg, output_file=temp_png)
+            cmd = ['python', '-c', f'import svg2png; svg2png.svg2png("{temp_svg}", "{temp_png}")']
+            subprocess.run(cmd, capture_output=True)
             
             # Load with PIL
             if os.path.exists(temp_png):
