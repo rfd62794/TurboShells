@@ -1,7 +1,6 @@
 import pygame
 from settings import *
 import ui.layout as layout
-from core.rendering.direct_turtle_renderer import get_direct_renderer
 import math
 
 
@@ -92,7 +91,7 @@ def draw_race_result(screen, font, game_state):
 
 
 def draw_turtle_sprite(screen, font, turtle, y_pos, race_direction="horizontal"):
-    """Draw turtle using flexible rendering system with rotation support"""
+    """Draw turtle using universal pygame renderer with rotation support"""
     # Convert Logical Distance (1500) to Screen Pixels (700)
     if race_direction == "horizontal":
         screen_x = (turtle.race_distance / TRACK_LENGTH_LOGIC) * TRACK_LENGTH_PIXELS
@@ -102,90 +101,55 @@ def draw_turtle_sprite(screen, font, turtle, y_pos, race_direction="horizontal")
         # Invert Y for bottom-to-top racing
         screen_y = SCREEN_HEIGHT - 50 - (turtle.race_distance / TRACK_LENGTH_LOGIC) * (SCREEN_HEIGHT - 150)
 
-    # Get turtle renderer
-    renderer = get_direct_renderer()
-    
     try:
-        # Render turtle with genetics-based appearance
-        pil_image = renderer.render_turtle_to_photoimage(turtle.get_all_genetics(), 60)
+        # Use universal pygame renderer
+        from core.rendering.pygame_turtle_renderer import render_turtle_pygame
+        # Generate small turtle image (60x60) for race
+        turtle_surface = render_turtle_pygame(turtle, size=60)
         
-        if pil_image and isinstance(pil_image, str):
-            # If it's a file path, load and rotate
-            try:
-                turtle_surface = pygame.image.load(pil_image)
-                # Rotate based on race direction
-                if race_direction == "horizontal":
-                    turtle_surface = pygame.transform.rotate(turtle_surface, -90)  # Face right
-                else:
-                    turtle_surface = pygame.transform.rotate(turtle_surface, 0)    # Face up (no rotation)
-                
-                # Add energy bar overlay
-                bar_width = 60
-                pct = turtle.current_energy / turtle.stats['max_energy']
-                fill_width = int(pct * bar_width)
-                
-                # Draw energy bar above/below turtle based on direction
-                if race_direction == "horizontal":
-                    pygame.draw.rect(screen, RED, (screen_x, screen_y - 15, bar_width, 5))
-                    pygame.draw.rect(screen, GREEN, (screen_x, screen_y - 15, fill_width, 5))
-                else:
-                    pygame.draw.rect(screen, RED, (screen_x - 30, screen_y - 10, bar_width, 5))
-                    pygame.draw.rect(screen, GREEN, (screen_x - 30, screen_y - 10, fill_width, 5))
-                
-                # Draw turtle
-                screen.blit(turtle_surface, (screen_x, screen_y))
-                return
-            except:
-                pass
-        elif pil_image:
-            # Convert PIL to PyGame and rotate
-            try:
-                turtle_surface = pygame.image.fromstring(
-                    pil_image.tobytes(), pil_image.size, pil_image.mode
-                )
-                # Rotate based on race direction
-                if race_direction == "horizontal":
-                    turtle_surface = pygame.transform.rotate(turtle_surface, -90)  # Face right
-                else:
-                    turtle_surface = pygame.transform.rotate(turtle_surface, 0)    # Face up (no rotation)
-                
-                # Add energy bar overlay
-                bar_width = 60
-                pct = turtle.current_energy / turtle.stats['max_energy']
-                fill_width = int(pct * bar_width)
-                
-                # Draw energy bar above/below turtle based on direction
-                if race_direction == "horizontal":
-                    pygame.draw.rect(screen, RED, (screen_x, screen_y - 15, bar_width, 5))
-                    pygame.draw.rect(screen, GREEN, (screen_x, screen_y - 15, fill_width, 5))
-                else:
-                    pygame.draw.rect(screen, RED, (screen_x - 30, screen_y - 10, bar_width, 5))
-                    pygame.draw.rect(screen, GREEN, (screen_x - 30, screen_y - 10, fill_width, 5))
-                
-                # Draw turtle
-                screen.blit(turtle_surface, (screen_x, screen_y))
-                return
-            except:
-                pass
-    except:
-        pass
-    
-    # Fallback to simple rectangle if rendering fails
-    color = GREEN if not turtle.is_resting else BLUE
-    
-    if race_direction == "horizontal":
-        pygame.draw.rect(screen, color, (screen_x, screen_y, 40, 30))
-        # Draw Energy Bar above head
+        # Rotate based on race direction
+        if race_direction == "horizontal":
+            turtle_surface = pygame.transform.rotate(turtle_surface, -90)  # Face right
+        else:
+            turtle_surface = pygame.transform.rotate(turtle_surface, 0)    # Face up (no rotation)
+        
+        # Add energy bar overlay
+        bar_width = 60
+        pct = turtle.current_energy / turtle.stats['max_energy']
+        fill_width = int(pct * bar_width)
+        
+        # Draw energy bar above/below turtle based on direction
+        if race_direction == "horizontal":
+            pygame.draw.rect(screen, RED, (screen_x, screen_y - 15, bar_width, 5))
+            pygame.draw.rect(screen, GREEN, (screen_x, screen_y - 15, fill_width, 5))
+        else:
+            pygame.draw.rect(screen, RED, (screen_x - 30, screen_y - 10, bar_width, 5))
+            pygame.draw.rect(screen, GREEN, (screen_x - 30, screen_y - 10, fill_width, 5))
+        
+        # Draw turtle
+        screen.blit(turtle_surface, (screen_x, screen_y))
+        return
+        
+    except Exception as e:
+        print(f"Error rendering race turtle: {e}")
+        # Fallback: draw simple colored rectangle
+        turtle_color = (100, 150, 200)  # Blue fallback
+        turtle_rect = pygame.Rect(screen_x, screen_y, 40, 30)
+        pygame.draw.rect(screen, turtle_color, turtle_rect)
+        
+        # Add energy bar for fallback
         bar_width = 40
         pct = turtle.current_energy / turtle.stats['max_energy']
         fill_width = int(pct * bar_width)
-        pygame.draw.rect(screen, RED, (screen_x, screen_y - 10, bar_width, 5))
-        pygame.draw.rect(screen, color, (screen_x, screen_y - 10, fill_width, 5))
-    else:
-        pygame.draw.rect(screen, color, (screen_x, screen_y, 30, 40))
-        # Draw Energy Bar to the left
-        bar_width = 40
-        pct = turtle.current_energy / turtle.stats['max_energy']
-        fill_width = int(pct * bar_width)
-        pygame.draw.rect(screen, RED, (screen_x - 10, screen_y, 5, bar_width))
-        pygame.draw.rect(screen, color, (screen_x - 10, screen_y, 5, fill_width))
+        
+        if race_direction == "horizontal":
+            pygame.draw.rect(screen, RED, (screen_x, screen_y - 10, bar_width, 3))
+            pygame.draw.rect(screen, GREEN, (screen_x, screen_y - 10, fill_width, 3))
+        else:
+            pygame.draw.rect(screen, RED, (screen_x - 20, screen_y - 8, bar_width, 3))
+            pygame.draw.rect(screen, GREEN, (screen_x - 20, screen_y - 8, fill_width, 3))
+        
+        # Draw turtle name on fallback
+        name_font = pygame.font.SysFont("Arial", 10)
+        name_txt = name_font.render(turtle.name[:8], True, WHITE)
+        screen.blit(name_txt, (screen_x + 2, screen_y + 8))

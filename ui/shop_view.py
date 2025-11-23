@@ -28,10 +28,11 @@ def draw_shop(screen, font, game_state):
         # Draw Card
         pygame.draw.rect(screen, GRAY, card_rect, 2)
 
-        # Draw tiny turtle image at top
+        # Draw tiny turtle image at top using universal renderer
         try:
-            # Generate tiny turtle image (40x40)
-            turtle_img = turtle.genetics_system.render_turtle(turtle, size=40)
+            from core.rendering.pygame_turtle_renderer import render_turtle_pygame
+            # Generate tiny turtle image (40x40) using universal renderer
+            turtle_img = render_turtle_pygame(turtle, size=40)
             img_x = card_rect.x + (card_rect.width - 40) // 2
             img_y = card_rect.y + 10
             screen.blit(turtle_img, (img_x, img_y))
@@ -61,11 +62,13 @@ def draw_shop(screen, font, game_state):
             screen.blit(stat_txt, (stat_x, y_offset))
             y_offset += 25
 
-        # Cost at bottom
+        # Cost at bottom - better alignment
         cost_val = getattr(turtle, "shop_cost", 50)
         cost_txt = font.render(f"${cost_val}", True, GREEN)
         cost_x = card_rect.x + (card_rect.width - cost_txt.get_width()) // 2
-        screen.blit(cost_txt, (cost_x, card_rect.y + 230))
+        # Position cost just above the BUY button
+        cost_y = card_rect.y + card_rect.height - 35
+        screen.blit(cost_txt, (cost_x, cost_y))
 
         # BUY button (visual) using layout.SHOP_BTN_BUY_RECT (relative to card)
         buy_rel = layout.SHOP_BTN_BUY_RECT
