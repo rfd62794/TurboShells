@@ -53,14 +53,14 @@ def draw_breeding(screen, font, game_state):
     # Combined breeding pool: active + retired turtles
     candidates = [t for t in game_state.roster if t is not None] + list(game_state.retired_roster)
     
-    # Create breeding slots in a grid layout (2 rows of 3) - adjusted Y position
+    # Create breeding slots in a grid layout (2 rows of 3) - adjusted Y position and more space
     breeding_slots = [
-        pygame.Rect(50, 140, 220, 180),   # Top row - moved down from 120 to 140
-        pygame.Rect(290, 140, 220, 180),
-        pygame.Rect(530, 140, 220, 180),
-        pygame.Rect(50, 340, 220, 180),   # Bottom row - moved down from 320 to 340
-        pygame.Rect(290, 340, 220, 180),
-        pygame.Rect(530, 340, 220, 180),
+        pygame.Rect(50, 140, 230, 190),   # Top row - increased width from 220 to 230, height from 180 to 190
+        pygame.Rect(280, 140, 230, 190),  # Adjusted X for more spacing
+        pygame.Rect(530, 140, 230, 190),
+        pygame.Rect(50, 350, 230, 190),   # Bottom row - adjusted Y for more spacing
+        pygame.Rect(280, 350, 230, 190),
+        pygame.Rect(530, 350, 230, 190),
     ]
     
     # Draw breeding candidates
@@ -76,7 +76,7 @@ def draw_breeding(screen, font, game_state):
                 slot_color = WHITE
             pygame.draw.rect(screen, slot_color, slot_rect, 2)
             
-            # Draw selection indicator with parent number
+            # Draw selection indicator with parent number (moved to bottom)
             if is_selected:
                 pygame.draw.rect(screen, GREEN, slot_rect, 4)
                 
@@ -84,20 +84,29 @@ def draw_breeding(screen, font, game_state):
                 parent_num = "1" if game_state.breeding_parents[0] == turtle else "2"
                 parent_color = (100, 255, 100) if parent_num == "1" else (255, 100, 100)  # Green for P1, Red for P2
                 
-                select_txt = font.render(f"PARENT {parent_num}", True, parent_color)
-                screen.blit(select_txt, (slot_rect.x + 5, slot_rect.y + 5))
+                # Draw colored background bar at bottom
+                bar_rect = pygame.Rect(slot_rect.x + 5, slot_rect.y + slot_rect.height - 35, slot_rect.width - 10, 30)
+                pygame.draw.rect(screen, parent_color, bar_rect)
+                pygame.draw.rect(screen, WHITE, bar_rect, 1)
                 
-                # Add warning for parent 2 (will be lost)
+                # White text on colored background
+                select_txt = font.render(f"PARENT {parent_num}", True, WHITE)
+                text_x = bar_rect.x + (bar_rect.width - select_txt.get_width()) // 2
+                text_y = bar_rect.y + (bar_rect.height - select_txt.get_height()) // 2
+                screen.blit(select_txt, (text_x, text_y))
+                
+                # Add warning for parent 2 (will be lost) - below the bar
                 if parent_num == "2":
-                    warning_txt = font.render("(WILL BE LOST)", True, (255, 150, 150))
-                    screen.blit(warning_txt, (slot_rect.x + 5, slot_rect.y + 25))
+                    warning_txt = font.render("WILL BE LOST", True, (255, 150, 150))
+                    warning_x = slot_rect.x + (slot_rect.width - warning_txt.get_width()) // 2
+                    screen.blit(warning_txt, (warning_x, slot_rect.y + slot_rect.height - 25))
             
             # Draw turtle info
             draw_breeding_turtle_card(screen, font, turtle, slot_rect, is_retired)
             
-            # Draw selection number (1, 2, 3...)
+            # Draw selection number (1, 2, 3...) - moved to top right
             num_txt = font.render(str(idx + 1), True, WHITE)
-            screen.blit(num_txt, (slot_rect.x + 5, slot_rect.y + slot_rect.height - 25))
+            screen.blit(num_txt, (slot_rect.x + slot_rect.width - 25, slot_rect.y + 5))
         else:
             # Empty slot
             pygame.draw.rect(screen, GRAY, slot_rect, 1)

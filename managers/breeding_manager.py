@@ -24,14 +24,14 @@ class BreedingManager:
         # Otherwise, treat clicks as parent selection from the breeding grid
         candidates = self._get_breeding_candidates()
         
-        # Check breeding slot clicks (2x3 grid) - updated positions
+        # Check breeding slot clicks (2x3 grid) - updated positions and sizes
         breeding_slots = [
-            pygame.Rect(50, 140, 220, 180),   # Top row
-            pygame.Rect(290, 140, 220, 180),
-            pygame.Rect(530, 140, 220, 180),
-            pygame.Rect(50, 340, 220, 180),   # Bottom row
-            pygame.Rect(290, 340, 220, 180),
-            pygame.Rect(530, 340, 220, 180),
+            pygame.Rect(50, 140, 230, 190),   # Top row
+            pygame.Rect(280, 140, 230, 190),
+            pygame.Rect(530, 140, 230, 190),
+            pygame.Rect(50, 350, 230, 190),   # Bottom row
+            pygame.Rect(280, 350, 230, 190),
+            pygame.Rect(530, 350, 230, 190),
         ]
         
         for idx, slot_rect in enumerate(breeding_slots):
