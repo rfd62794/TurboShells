@@ -1,10 +1,62 @@
 # TurboShells Test Suite
 
-Comprehensive testing infrastructure for TurboShells game systems.
+Comprehensive testing infrastructure for TurboShells game systems with 95%+ coverage goals.
 
 ## 📁 Test Files
 
-### **Integration Tests**
+### **🧪 Unit Test Framework**
+- **`unit_test_framework.py`** - Comprehensive unit tests for all core systems
+  - Turtle entity testing (creation, physics, training, edge cases)
+  - Game state testing (generation, cost calculation, breeding)
+  - Race track testing (generation, terrain modifiers, reproducibility)
+  - State handler testing (initialization, mode flags, click routing)
+  - Manager class testing (roster, race, shop, breeding managers)
+  - Integration helpers and mock game state creation
+
+### **🔄 Integration Test Suite**
+- **`integration_test_suite.py`** - End-to-end testing for complete game workflows
+  - New game workflow (initialization, first race, training, shop visits)
+  - Mid-game workflow (full roster management, breeding, advanced races)
+  - Late-game workflow (advanced breeding, economic management)
+  - Error handling workflows (empty roster, insufficient funds, breeding constraints)
+  - Performance workflows (large rosters, big races, stress testing)
+
+### **🎨 UI Testing Framework**
+- **`ui_testing_framework.py`** - Automated testing for user interfaces
+  - UI component testing (buttons, toggle buttons, turtle cards)
+  - Layout system testing (position consistency, responsive calculations)
+  - UI rendering testing (menu rendering, button rendering, turtle card rendering)
+  - UI interaction testing (mouse clicks, hover effects, drag-and-drop)
+  - Responsiveness testing (window resize, centering, button scaling)
+  - Accessibility testing (keyboard navigation, screen reader support, color contrast)
+
+### **⚡ Performance Test Suite**
+- **`performance_test_suite.py`** - Benchmark testing and regression detection
+  - Core performance testing (turtle creation, race simulation, breeding)
+  - UI performance testing (rendering, layout calculations)
+  - Memory performance testing (storage efficiency, leak detection)
+  - Stress testing (extreme roster sizes, extreme race conditions)
+  - Benchmark registry and regression detection
+  - Performance monitoring and reporting
+
+### **🎭 Mock Data Generator**
+- **`mock_data_generator.py`** - Realistic test data generation for all scenarios
+  - Turtle data generation with realistic stat distributions
+  - Roster generation (active and retired turtles)
+  - Shop inventory generation with quality levels
+  - Race data generation with terrain distributions
+  - Breeding parent generation
+  - Test scenario generation (new game, mid game, late game)
+
+### **📊 Comprehensive Test Runner**
+- **`comprehensive_test_runner.py`** - Unified test execution and reporting
+  - Integration of all test frameworks
+  - Comprehensive reporting with coverage and performance metrics
+  - Quick test mode for rapid feedback
+  - Individual suite execution
+  - JSON report generation and saving
+
+### **📋 Legacy Tests**
 - **`test_genetics_integration.py`** - Tests genetics system integration with core game mechanics
   - Turtle creation with genetics
   - Shop generation compatibility
@@ -28,7 +80,7 @@ Comprehensive testing infrastructure for TurboShells game systems.
   - Genetic pool updates
   - Design integration
 
-### **UI Tests**
+### **🎨 UI Tests**
 - **`test_ui_centered_settings.py`** - Tests centered settings menu and responsive layout
   - Perfect centering across screen sizes
   - Window resizing support
@@ -55,7 +107,7 @@ Comprehensive testing infrastructure for TurboShells game systems.
   - Visual validation
   - Screenshot testing
 
-### **Visual Tests**
+### **👁️ Visual Tests**
 - **`test_visual_genetics.py`** - Validates all 19 genetic traits render correctly
   - All genetic trait validation
   - Trait variation testing
@@ -63,13 +115,199 @@ Comprehensive testing infrastructure for TurboShells game systems.
   - Mutation system testing
   - Rendering integration
 
-### **Performance Tests**
+### **⚡ Performance Tests**
 - **`test_genetics_performance.py`** - Benchmarks genetics operations performance
   - Turtle creation performance
   - Shop generation performance
   - Breeding operation performance
   - Genetics operations performance
   - Rendering performance
+
+## 🚀 Usage
+
+### **Run All Tests**
+```bash
+python tests/comprehensive_test_runner.py
+```
+
+### **Run Quick Tests**
+```bash
+python tests/comprehensive_test_runner.py --quick
+```
+
+### **Run Specific Suite**
+```bash
+python tests/comprehensive_test_runner.py --suite unit_tests
+python tests/comprehensive_test_runner.py --suite integration_tests
+python tests/comprehensive_test_runner.py --suite ui_tests
+python tests/comprehensive_test_runner.py --suite performance_tests
+```
+
+### **Run Individual Test Files**
+```bash
+python tests/unit_test_framework.py
+python tests/integration_test_suite.py
+python tests/ui_testing_framework.py
+python tests/performance_test_suite.py
+python tests/mock_data_generator.py
+```
+
+### **Run Legacy Tests**
+```bash
+python tests/run_all_tests.py
+```
+
+## 📊 Coverage Goals
+
+### **Target Coverage Levels**
+- **Core Game Logic**: 95%+ coverage
+  - Turtle entity: 95%+
+  - Game state: 95%+
+  - Race track: 90%+
+  - State handler: 90%+
+
+- **Manager Classes**: 90%+ coverage
+  - Roster manager: 90%+
+  - Race manager: 90%+
+  - Shop manager: 90%+
+  - Breeding manager: 90%+
+
+- **UI Components**: 85%+ coverage
+  - Button components: 85%+
+  - Turtle card components: 85%+
+  - Layout system: 85%+
+  - Rendering system: 80%+
+
+- **Integration Points**: 90%+ coverage
+  - End-to-end workflows: 90%+
+  - System interactions: 90%+
+  - Error handling: 85%+
+
+## 📈 Performance Benchmarks
+
+### **Target Performance Metrics**
+- **Turtle Creation**: 100+ turtles/second
+- **Race Simulation**: 10,000+ steps/second
+- **UI Rendering**: 5,000+ elements/second
+- **Layout Calculations**: 10,000+ layouts/second
+- **Memory Usage**: <0.01 MB per turtle
+- **Memory Growth**: <0.1 MB per iteration
+
+## 🔧 Test Framework Features
+
+### **Mock Data Generation**
+- Realistic turtle stat distributions
+- Configurable test scenarios
+- Reproducible test data with seeds
+- Comprehensive test data export
+
+### **Performance Monitoring**
+- Execution time tracking
+- Memory usage monitoring
+- Benchmark registry
+- Regression detection
+- Performance trend analysis
+
+### **UI Testing**
+- Component-level testing
+- Interaction simulation
+- Responsiveness validation
+- Accessibility testing
+- Visual regression testing
+
+### **Integration Testing**
+- End-to-end workflow testing
+- Error scenario testing
+- Performance stress testing
+- System interaction validation
+
+## 📋 Test Organization
+
+### **Test Categories**
+1. **Unit Tests** - Individual component testing
+2. **Integration Tests** - System interaction testing
+3. **UI Tests** - User interface testing
+4. **Performance Tests** - Benchmark and regression testing
+5. **Visual Tests** - Rendering and visual validation
+6. **Legacy Tests** - Existing test compatibility
+
+### **Naming Conventions**
+- Unit tests: `Test*` classes
+- Integration tests: `Test*Workflow` classes
+- UI tests: `TestUI*` classes
+- Performance tests: `Test*Performance` classes
+- Mock data: `Mock*` classes and functions
+
+### **File Organization**
+```
+tests/
+├── README.md                           # This file
+├── run_all_tests.py                    # Legacy test runner
+├── comprehensive_test_runner.py        # New comprehensive runner
+├── mock_data_generator.py              # Test data generation
+├── unit_test_framework.py              # Unit test framework
+├── integration_test_suite.py           # Integration test suite
+├── ui_testing_framework.py             # UI testing framework
+├── performance_test_suite.py          # Performance test suite
+├── test_*.py                           # Legacy and specific tests
+├── benchmark_results.json              # Performance benchmarks
+└── comprehensive_report.json           # Test reports
+```
+
+## 🎯 Quality Gates
+
+### **Before Release**
+- All tests must pass (95%+ success rate)
+- Coverage must meet targets (77%+ overall)
+- Performance must meet benchmarks
+- No critical errors or failures
+
+### **Continuous Integration**
+- Quick tests run on every commit
+- Full test suite runs on pull requests
+- Performance benchmarks tracked over time
+- Coverage trends monitored
+
+### **Regression Detection**
+- Performance regression detection (5% threshold)
+- Coverage regression detection
+- Test failure trend analysis
+- Automated issue creation for failures
+
+## 🔍 Debugging and Troubleshooting
+
+### **Common Issues**
+1. **Import Errors**: Ensure project root is in Python path
+2. **Module Not Found**: Install required dependencies (pygame, psutil)
+3. **Test Failures**: Check mock data generation and test setup
+4. **Performance Issues**: Verify system resources and close other applications
+
+### **Test Development**
+1. Use `MockDataGenerator` for consistent test data
+2. Follow naming conventions for new tests
+3. Include performance metrics for new features
+4. Add coverage for new code paths
+5. Update documentation for new test files
+
+## 📞 Contributing
+
+### **Adding New Tests**
+1. Create appropriate test file in correct category
+2. Follow existing test patterns and structure
+3. Include performance benchmarks where relevant
+4. Update this README.md with new test information
+5. Register new tests in comprehensive_test_runner.py
+
+### **Test Maintenance**
+1. Update tests when code changes
+2. Maintain coverage targets
+3. Update performance benchmarks
+4. Fix failing tests promptly
+5. Review and refactor test code regularly
+
+---
+
+**TurboShells Test Suite: Comprehensive testing infrastructure for reliable game development!** 🧪
   - Memory usage testing
 
 ## 🚀 Usage
