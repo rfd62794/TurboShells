@@ -354,7 +354,7 @@ class VotingView:
     def _draw_star_rating_scrolled(self, surface: pygame.Surface, x: int, y: int, rating: float, category_name: str, interactive: bool = True):
         """Draw interactive star rating on a surface"""
         star_size = 20
-        star_spacing = 35  # Increased from 25 for better spacing
+        star_spacing = 45  # Increased from 35 for more space between stars
         
         # Check hover position for preview (adjust for surface position)
         hover_star = -1
@@ -366,8 +366,10 @@ class VotingView:
             for i in range(5):
                 star_screen_x = screen_x + i * star_spacing
                 star_screen_y = screen_y
-                if (star_screen_x <= self.mouse_pos[0] <= star_screen_x + star_size and 
-                    star_screen_y <= self.mouse_pos[1] <= star_screen_y + star_size):
+                # Make hover detection more forgiving with larger padding
+                hover_padding = 10
+                if (star_screen_x - hover_padding <= self.mouse_pos[0] <= star_screen_x + star_size + hover_padding and 
+                    star_screen_y - hover_padding <= self.mouse_pos[1] <= star_screen_y + star_size + hover_padding):
                     hover_star = i
                     break
         
@@ -952,11 +954,11 @@ class VotingView:
                     # Check if this star row is visible on screen
                     if star_y_screen + 20 >= 200 and star_y_screen <= self.height:
                         for i in range(5):
-                            star_spacing = 35
+                            star_spacing = 45  # Match drawing spacing
                             star_x_screen = self.left_panel_width + 30 + 30 + i * star_spacing  # left_panel + 30 + star_start_x
                             
                             # Make click area larger and more forgiving
-                            click_padding = 8  # Increased from 2 to 8 for better detection
+                            click_padding = 8
                             if (star_x_screen - click_padding <= x <= star_x_screen + 20 + click_padding and 
                                 star_y_screen - click_padding <= y <= star_y_screen + 20 + click_padding):
                                 # Set rating for this category
