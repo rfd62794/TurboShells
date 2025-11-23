@@ -5,7 +5,9 @@ Complete voting interface for design evaluation with PyGame integration
 
 import pygame
 import math
+import io
 from typing import Dict, Any, Optional, List, Tuple
+from PIL import Image
 from core.voting.voting_system import VotingSystem, DesignPackage
 from core.rendering.direct_turtle_renderer import get_direct_renderer
 
@@ -21,6 +23,11 @@ class VotingView:
         self.game_state = game_state
         self.voting_system = VotingSystem()
         self.turtle_renderer = get_direct_renderer()
+        
+        # Helper method to convert PIL to PyGame
+        self._pil_to_pygame = lambda pil_image: pygame.image.fromstring(
+            pil_image.tobytes(), pil_image.size, pil_image.mode
+        ) if pil_image else None
         
         # UI state
         self.current_design_index = 0
@@ -143,12 +150,42 @@ class VotingView:
         pygame.draw.rect(self.screen, self.card_color, card_rect, border_radius=10)
         pygame.draw.rect(self.screen, self.accent_color, card_rect, 3, border_radius=10)
         
-        # Draw turtle placeholder (using simple shape for now)
+        # Draw turtle using the same rendering system as the main game
         try:
-            # Draw a simple turtle placeholder
-            turtle_x = card_x + card_width // 2
-            turtle_y = card_y + 80
-            self._draw_placeholder_turtle(turtle_x, turtle_y)
+            genetics = current_design.genetics
+            if genetics:
+                # Use the same direct renderer as the main game
+                pil_image = self.turtle_renderer.render_turtle_to_photoimage(
+                    genetics, self.design_size
+                )
+                
+                if pil_image and isinstance(pil_image, str):
+                    # If it's a file path, load it
+                    try:
+                        turtle_surface = pygame.image.load(pil_image)
+                        # Center the turtle in the card
+                        turtle_x = card_x + (card_width - self.design_size) // 2
+                        turtle_y = card_y + 30
+                        self.screen.blit(turtle_surface, (turtle_x, turtle_y))
+                    except:
+                        self._draw_placeholder_turtle(card_x + card_width // 2, card_y + 80)
+                elif pil_image:
+                    # Convert PIL to PyGame surface
+                    try:
+                        turtle_surface = self._pil_to_pygame(pil_image)
+                        if turtle_surface:
+                            # Center the turtle in the card
+                            turtle_x = card_x + (card_width - self.design_size) // 2
+                            turtle_y = card_y + 30
+                            self.screen.blit(turtle_surface, (turtle_x, turtle_y))
+                        else:
+                            self._draw_placeholder_turtle(card_x + card_width // 2, card_y + 80)
+                    except:
+                        self._draw_placeholder_turtle(card_x + card_width // 2, card_y + 80)
+                else:
+                    self._draw_placeholder_turtle(card_x + card_width // 2, card_y + 80)
+            else:
+                self._draw_placeholder_turtle(card_x + card_width // 2, card_y + 80)
                 
         except Exception as e:
             print(f"Error rendering turtle: {e}")
