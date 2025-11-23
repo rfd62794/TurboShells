@@ -97,7 +97,7 @@ def draw_training(screen, font, game_state):
         "• Each training session ages the turtle by 1",
         "• Primary stat always improves by +1",
         "• 20% chance for other stats to improve",
-        "• Turtles auto-retire at age 100",
+        f"• Turtles auto-retire at age {MAX_AGE}",
     ]
 
     for i, line in enumerate(info_lines):

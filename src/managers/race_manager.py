@@ -148,7 +148,7 @@ class RaceManager:
 
             # Aging: each completed race counts as 1 day
             t.age += 1
-            if t.age >= 100 and t.is_active:
+            if t.age >= MAX_AGE and t.is_active:
                 # Auto-retire to retired_roster
                 t.is_active = False
                 self.game_state.roster[i] = None

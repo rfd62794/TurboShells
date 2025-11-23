@@ -85,8 +85,8 @@ class RosterManager:
             # Train Speed for now (could be random stat in future)
             if t.train("speed"):
                 print(f"Trained {t.name}! Speed is now {t.stats['speed']}")
-                # Auto-retire turtles that reach age 100 via training
-                if t.age >= 100:
+                # Auto-retire turtles that reach max age via training
+                if t.age >= MAX_AGE:
                     self.retire_turtle(index)
                 # Auto-save after training
                 self.game_state.auto_save("training")

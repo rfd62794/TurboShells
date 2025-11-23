@@ -1,0 +1,28 @@
+2025-11-23 14:06:56,528 - monitoring_system - INFO - Integrated monitoring system initialized
+2025-11-23 14:06:56,611 - managers.save_manager - INFO - SaveManager initialized with directory: C:\Users\cheat\AppData\Roaming\TurboShells
+2025-11-23 14:06:56,612 - managers.save_manager - INFO - SaveManager initialized with directory: C:\Users\cheat\AppData\Roaming\TurboShells
+2025-11-23 14:06:56,620 - core.config - INFO - Configuration loaded successfully
+2025-11-23 14:06:56,621 - core.graphics_manager - INFO - Loaded graphics settings: 1024x768
+2025-11-23 14:06:56,687 - core.graphics_manager - INFO - Display initialized: (1024, 768), Fullscreen: False
+2025-11-23 14:06:56,688 - core.audio_manager - INFO - Loaded audio settings: Master Volume 0.5, Enabled True
+2025-11-23 14:06:57,118 - core.audio_manager - INFO - Audio system initialized successfully
+2025-11-23 14:06:57,125 - overlay - ERROR - Failed to initialize overlay: font not initialized
+2025-11-23 14:06:57,218 - main - INFO - Initializing TurboShells game...
+2025-11-23 14:06:57,219 - monitoring - WARNING - Low FPS: 0.0
+2025-11-23 14:06:57,219 - monitoring - INFO - Real-time monitoring started
+2025-11-23 14:06:57,219 - statistics - INFO - New gaming session started
+2025-11-23 14:06:57,219 - monitoring_system - INFO - Monitoring system started
+2025-11-23 14:06:57,219 - main - INFO - Monitoring system started
+2025-11-23 14:06:57,222 - ui.settings_view - INFO - Settings view initialized
+2025-11-23 14:06:57,222 - managers.settings_manager - INFO - Settings manager initialized
+2025-11-23 14:06:57,223 - managers.save_manager - INFO - SaveManager initialized with directory: C:\Users\cheat\AppData\Roaming\TurboShells
+2025-11-23 14:06:57,234 - core.auto_load_system - INFO - Save file found at C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 14:06:57,234 - core.auto_load_system - INFO - Attempting to restore game state from save file
+2025-11-23 14:06:57,253 - managers.save_manager - INFO - Game loaded successfully from C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 14:06:57,255 - core.auto_load_system - INFO - Successfully restored game state for player player_20251123_112134
+2025-11-23 14:07:02,795 - statistics - INFO - Race recorded: Won, $50.00, Position 1
+2025-11-23 14:07:02,806 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 14:07:02,809 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 14:07:07,111 - statistics - INFO - Race recorded: Won, $50.00, Position 1
+2025-11-23 14:07:07,119 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 14:07:07,121 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json

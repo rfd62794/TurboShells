@@ -43,3 +43,6 @@ BET_LEVELS = [0, 5, 10]
 
 # Auto-save
 AUTO_SAVE_INTERVAL = 300  # 5 minutes in seconds
+
+# Turtle Aging
+MAX_AGE = 100  # Turtles retire at age 100
