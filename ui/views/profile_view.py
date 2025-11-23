@@ -31,17 +31,14 @@ def draw_profile(screen, font, game_state):
     # LEFT PANEL - Turtle Visual (future image area)
     pygame.draw.rect(screen, GRAY, layout.PROFILE_VISUAL_PANEL_RECT, 2)
     
-    # Draw actual turtle image
+    # Draw actual turtle image using PIL-to-pygame port (preserves customizations)
     try:
-        # Check if genetics system exists and has render method
-        if hasattr(turtle, 'genetics_system') and hasattr(turtle.genetics_system, 'render_turtle'):
-            # Generate turtle image (120x120 for profile view)
-            turtle_img = turtle.genetics_system.render_turtle(turtle, size=120)
-            img_x = layout.PROFILE_TURTLE_IMAGE_POS[0] - 60  # Center the image
-            img_y = layout.PROFILE_TURTLE_IMAGE_POS[1] - 60
-            screen.blit(turtle_img, (img_x, img_y))
-        else:
-            raise AttributeError("Genetics system not available")
+        from core.rendering.pygame_turtle_renderer import render_turtle_pygame
+        # Generate turtle image (120x120 for profile view) using existing renderer
+        turtle_img = render_turtle_pygame(turtle, size=120)
+        img_x = layout.PROFILE_TURTLE_IMAGE_POS[0] - 60  # Center the image
+        img_y = layout.PROFILE_TURTLE_IMAGE_POS[1] - 60
+        screen.blit(turtle_img, (img_x, img_y))
     except Exception as e:
         # Fallback: draw a simple colored circle with turtle info
         pygame.draw.circle(screen, (100, 150, 200), layout.PROFILE_TURTLE_IMAGE_POS, 80, 0)
