@@ -961,12 +961,15 @@ class VotingView:
                 for category_name in categories:
                     star_y = y_offset + 55  # Stars are at y_offset + 55
                     
+                    # Stars are drawn starting at surface position (30, y_offset) with 35px spacing
+                    # So the actual star positions on the surface are:
+                    # Star 1: (30, star_y), Star 2: (65, star_y), Star 3: (100, star_y), Star 4: (135, star_y), Star 5: (170, star_y)
                     for i in range(5):
-                        star_spacing = 35  # Match drawing spacing
-                        star_x = i * star_spacing  # Stars start at x=0 with 35px spacing
+                        star_spacing = 35
+                        star_x = 30 + i * star_spacing  # Start at x=30, not x=0!
                         
                         # Click area exactly matches star size (20px) with small padding
-                        click_padding = 2  # Reduced from 5 to avoid extending beyond 5th star
+                        click_padding = 2
                         print(f"  Star {i+1}: surface ({star_x}, {star_y}) click area ({star_x-click_padding}-{star_x+20+click_padding}, {star_y-click_padding}-{star_y+20+click_padding})")
                         
                         if (star_x - click_padding <= relative_x <= star_x + 20 + click_padding and 
