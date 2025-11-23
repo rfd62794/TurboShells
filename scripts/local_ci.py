@@ -71,7 +71,7 @@ class LocalCI:
         if syntax_errors:
             output += f"\nSyntax errors found:\n" + "\n".join(syntax_errors)
         else:
-            output += "\n✅ No syntax errors found"
+            output += "\n[PASS] No syntax errors found"
         
         return CIResult(
             stage="Python Syntax Check",
@@ -94,9 +94,9 @@ class LocalCI:
         
         output = stdout if stdout else stderr
         if success:
-            output += "\n✅ Quick tests passed"
+            output += "\n[PASS] Quick tests passed"
         else:
-            output += "\n❌ Quick tests failed"
+            output += "\n[FAIL] Quick tests failed"
         
         return CIResult(
             stage="Quick Tests",
@@ -146,7 +146,7 @@ if __name__ == "__main__":
             print(f"  {error}")
         sys.exit(1)
     else:
-        print("✅ All imports successful")
+        print("[PASS] All imports successful")
         sys.exit(0)
 """
         
@@ -215,7 +215,7 @@ if __name__ == "__main__":
             if len(style_issues) > 10:
                 output += f"\n... and {len(style_issues) - 10} more issues"
         else:
-            output += "\n✅ No style issues found"
+            output += "\n[PASS] No style issues found"
         
         return CIResult(
             stage="Code Style Check",
@@ -270,7 +270,7 @@ if __name__ == "__main__":
             if len(docstring_issues) > 10:
                 output += f"\n... and {len(docstring_issues) - 10} more issues"
         else:
-            output += "\n✅ Good documentation coverage"
+            output += "\n[PASS] Good documentation coverage"
         
         return CIResult(
             stage="Documentation Coverage",
@@ -282,7 +282,7 @@ if __name__ == "__main__":
     
     def run_coverage_analysis(self) -> CIResult:
         """Run coverage analysis with goals checking"""
-        print("📊 Running coverage analysis...")
+        print("Running coverage analysis...")
         start_time = time.time()
         
         # Import coverage analyzer
@@ -309,10 +309,10 @@ if __name__ == "__main__":
                 critical_met = sum(1 for goal in critical_goals if report.goals_met.get(goal, False))
                 
                 if critical_met == len(critical_goals) and success_rate >= 70:
-                    output += "✅ Coverage goals met"
+                    output += "[PASS] Coverage goals met"
                     success = True
                 else:
-                    output += "⚠️  Some coverage goals not met"
+                    output += "[WARN] Some coverage goals not met"
                     success = True  # Warning, not failure
                 
                 return CIResult(
@@ -355,7 +355,7 @@ if __name__ == "__main__":
     
     def check_performance_regression(self) -> CIResult:
         """Check for performance regressions"""
-        print("⚡ Checking performance regressions...")
+        print("Checking performance regressions...")
         start_time = time.time()
         
         benchmark_file = self.project_root / "tests" / "benchmark_results.json"
@@ -385,7 +385,7 @@ if __name__ == "__main__":
             )
         
         # Simple regression check (would be more sophisticated in real implementation)
-        output = stdout + "\n✅ Performance tests completed"
+        output = stdout + "\n[PASS] Performance tests completed"
         
         return CIResult(
             stage="Performance Regression Check",
@@ -434,13 +434,13 @@ if __name__ == "__main__":
         try:
             with open(report_file, 'w') as f:
                 json.dump(report, f, indent=2)
-            print(f"\n📄 CI report saved to {report_file}")
+            print(f"\n[REPORT] CI report saved to {report_file}")
         except Exception as e:
             print(f"Error saving CI report: {e}")
     
     def run_full_ci(self) -> bool:
         """Run complete CI pipeline"""
-        print("🚀 Starting Local CI Pipeline")
+        print("Starting Local CI Pipeline")
         print("=" * 50)
         
         # Run all CI stages
@@ -458,12 +458,12 @@ if __name__ == "__main__":
             result = stage_func()
             self.results.append(result)
             
-            status = "✅ PASS" if result.success else "❌ FAIL"
+            status = "[PASS]" if result.success else "[FAIL]"
             print(f"{status} {result.stage} ({result.execution_time:.2f}s)")
             
             if not result.success:
                 print(f"Output: {result.output}")
-                print("\n🚨 CI Pipeline Failed - Fix issues before committing")
+                print("\n[FAIL] CI Pipeline Failed - Fix issues before committing")
                 return False
         
         # Generate and save report
@@ -471,17 +471,17 @@ if __name__ == "__main__":
         self.save_ci_report(report)
         
         # Print summary
-        print(f"\n📊 CI Pipeline Summary:")
+        print(f"\nCI Pipeline Summary:")
         print(f"Stages Passed: {report['summary']['passed_stages']}/{report['summary']['total_stages']}")
         print(f"Success Rate: {report['summary']['success_rate']:.1f}%")
         print(f"Total Time: {report['summary']['total_execution_time']:.2f}s")
         
-        print("\n🎉 CI Pipeline Passed - Ready to commit!")
+        print("\n[PASS] CI Pipeline Passed - Ready to commit!")
         return True
     
     def run_pre_commit_check(self) -> bool:
         """Run pre-commit checks (subset of full CI)"""
-        print("🔒 Running Pre-Commit Checks")
+        print("Running Pre-Commit Checks")
         print("=" * 30)
         
         # Run essential pre-commit stages
@@ -494,15 +494,15 @@ if __name__ == "__main__":
         for stage_func in stages:
             result = stage_func()
             
-            status = "✅" if result.success else "❌"
+            status = "[PASS]" if result.success else "[FAIL]"
             print(f"{status} {result.stage}")
             
             if not result.success:
                 print(f"Output: {result.output}")
-                print("\n🚨 Pre-commit checks failed - Fix issues before committing")
+                print("\n[FAIL] Pre-commit checks failed - Fix issues before committing")
                 return False
         
-        print("\n✅ Pre-commit checks passed!")
+        print("\n[PASS] Pre-commit checks passed!")
         return True
 
 def main():

@@ -9,6 +9,7 @@ import sys
 import os
 import time
 import json
+import importlib.util
 from typing import List, Dict, Any, Optional
 from dataclasses import dataclass
 from pathlib import Path
@@ -154,7 +155,7 @@ class ComprehensiveTestRunner:
     
     def run_all_suites(self, verbosity: int = 2) -> ComprehensiveReport:
         """Run all registered test suites"""
-        print("🧪 Running Comprehensive Test Suite")
+        print("Running Comprehensive Test Suite")
         print("=" * 60)
         
         suite_results = []
@@ -163,27 +164,27 @@ class ComprehensiveTestRunner:
         total_errors = 0
         
         for suite_name in self.suites:
-            print(f"\n📋 Running {suite_name}...")
-            result = runner.run_suite(suite_name, verbosity)
+            print(f"\nRunning {suite_name}...")
+            result = self.run_suite(suite_name, verbosity)
             suite_results.append(result)
             
             total_tests += result.tests_run
             total_failures += result.failures
             total_errors += result.errors
             
-            status = "✅ PASS" if result.passed else "❌ FAIL"
+            status = "[PASS]" if result.passed else "[FAIL]"
             print(f"{status} {result.tests_run} tests, {result.failures} failures, {result.errors} errors ({result.success_rate:.1f}%) - {result.execution_time:.2f}s")
         
-        print(f"\n📊 Running coverage analysis...")
-        coverage_result = runner.run_coverage_analysis("full")
+        print(f"\nRunning coverage analysis...")
+        coverage_result = self.run_coverage_analysis("full")
         
         if coverage_result:
-            print(f"✅ Coverage analysis completed")
+            print(f"Coverage analysis completed")
             print(f"   Overall coverage: {coverage_result['overall_coverage']:.1f}%")
             print(f"   Goals met: {coverage_result['goals_met']}/{coverage_result['total_goals']}")
             print(f"   Modules analyzed: {coverage_result['module_count']}")
         else:
-            print("⚠️  Coverage analysis skipped")
+            print("Coverage analysis skipped")
         
         # Calculate overall success rate
         overall_success_rate = (total_tests - total_failures - total_errors) / total_tests * 100 if total_tests > 0 else 0
@@ -252,7 +253,7 @@ class ComprehensiveTestRunner:
     
     def generate_report(self, report: ComprehensiveReport):
         """Generate comprehensive test report"""
-        print(f"\n📊 Comprehensive Test Report")
+        print(f"\nComprehensive Test Report")
         print("=" * 60)
         
         # Overall summary
@@ -262,36 +263,36 @@ class ComprehensiveTestRunner:
         print(f"Overall Success Rate: {report.overall_success_rate:.1f}%")
         
         # Suite breakdown
-        print(f"\n📋 Suite Breakdown:")
+        print(f"\nSuite Breakdown:")
         for result in report.suite_results:
-            status = "✅ PASS" if result.passed else "❌ FAIL"
+            status = "[PASS]" if result.passed else "[FAIL]"
             print(f"  {status} {result.name}: {result.tests_run} tests ({result.success_rate:.1f}%) - {result.execution_time:.2f}s")
         
         # Coverage metrics
-        print(f"\n📈 Coverage Metrics:")
+        print(f"\nCoverage Metrics:")
         for module, coverage in report.coverage_metrics.items():
-            status = "✅" if coverage >= 80 else "⚠️" if coverage >= 60 else "❌"
+            status = "[OK]" if coverage >= 80 else "[WARN]" if coverage >= 60 else "[FAIL]"
             print(f"  {status} {module}: {coverage:.1f}%")
         
         # Performance metrics
-        print(f"\n⚡ Performance Metrics:")
+        print(f"\nPerformance Metrics:")
         for metric, value in report.performance_metrics.items():
-            print(f"  📊 {metric}: {value:.1f}")
+            print(f"  {metric}: {value:.1f}")
         
         # Recommendations
-        print(f"\n💡 Recommendations:")
+        print(f"\nRecommendations:")
         if report.overall_success_rate < 90:
-            print("  🚨 Address failing tests to improve reliability")
+            print("  Address failing tests to improve reliability")
         
         low_coverage_modules = [m for m, c in report.coverage_metrics.items() if c < 80]
         if low_coverage_modules:
-            print(f"  📈 Improve coverage for: {', '.join(low_coverage_modules)}")
+            print(f"  Improve coverage for: {', '.join(low_coverage_modules)}")
         
         if report.total_errors > 0:
-            print("  🔧 Fix test errors to improve test stability")
+            print("  Fix test errors to improve test stability")
         
         if report.overall_success_rate >= 95 and all(c >= 80 for c in report.coverage_metrics.values()):
-            print("  🎉 Excellent test coverage and reliability!")
+            print("  Excellent test coverage and reliability!")
     
     def save_report(self, report: ComprehensiveReport, filename: str = "tests/comprehensive_report.json"):
         """Save comprehensive report to file"""
@@ -324,14 +325,14 @@ class ComprehensiveTestRunner:
             with open(filename, 'w') as f:
                 json.dump(report_dict, f, indent=2)
             
-            print(f"\n💾 Report saved to {filename}")
+            print(f"\nReport saved to {filename}")
             
         except Exception as e:
             print(f"Error saving report: {e}")
     
     def run_quick_tests(self) -> ComprehensiveReport:
         """Run quick subset of tests for rapid feedback"""
-        print("🚀 Running Quick Test Suite")
+        print("Running Quick Test Suite")
         print("=" * 40)
         
         # Define quick test suites
@@ -347,7 +348,7 @@ class ComprehensiveTestRunner:
         total_errors = 0
         
         for suite_name, module_path, test_class_name in quick_suites:
-            print(f"\n📋 Running {suite_name}...")
+            print(f"\nRunning {suite_name}...")
             
             # Temporarily register and run suite
             self.register_suite(suite_name, module_path, test_class_name)
@@ -358,7 +359,7 @@ class ComprehensiveTestRunner:
             total_failures += result.failures
             total_errors += result.errors
             
-            status = "✅ PASS" if result.passed else "❌ FAIL"
+            status = "[PASS]" if result.passed else "[FAIL]"
             print(f"{status} {result.tests_run} tests ({result.success_rate:.1f}%)")
         
         # Calculate overall success rate
@@ -377,14 +378,14 @@ class ComprehensiveTestRunner:
         )
         
         # Quick summary
-        print(f"\n📊 Quick Test Summary:")
+        print(f"\nQuick Test Summary:")
         print(f"Tests Run: {total_tests}")
         print(f"Success Rate: {overall_success_rate:.1f}%")
         
         if overall_success_rate >= 95:
-            print("🎉 Quick tests passed - Ready for full suite!")
+            print("Quick tests passed - Ready for full suite!")
         else:
-            print("⚠️ Quick tests have issues - Fix before running full suite")
+            print("Quick tests have issues - Fix before running full suite")
         
         return report
 
@@ -416,7 +417,7 @@ def main():
                 suite_name = sys.argv[2]
                 if suite_name in runner.suites:
                     result = runner.run_suite(suite_name)
-                    print(f"\n📊 {suite_name} Results:")
+                    print(f"\n{suite_name} Results:")
                     print(f"Tests Run: {result.tests_run}")
                     print(f"Success Rate: {result.success_rate:.1f}%")
                     print(f"Execution Time: {result.execution_time:.2f}s")
@@ -446,10 +447,10 @@ def main():
     
     # Exit with appropriate code
     if report.overall_success_rate >= 95:
-        print("\n🎉 All tests passed successfully!")
+        print("\nAll tests passed successfully!")
         sys.exit(0)
     else:
-        print("\n⚠️ Some tests failed - Check report for details")
+        print("Some tests failed - Check report for details")
         sys.exit(1)
 
 if __name__ == "__main__":
