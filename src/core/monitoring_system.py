@@ -16,7 +16,7 @@ from collections import deque
 import json
 
 from .logging_config import get_logger, GameLogger
-from .profiler import GameLoopProfiler, performance_tracker
+from .profiler import GameLoopProfiler, performance_tracker, game_loop_profiler
 
 
 @dataclass

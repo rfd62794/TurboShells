@@ -1,0 +1,4 @@
+2025-11-23 13:02:34,099 - monitoring_system - INFO - Integrated monitoring system initialized
+2025-11-23 13:02:34,100 - statistics - INFO - Race recorded: Won, $50.00, Position 2
+2025-11-23 13:02:34,100 - statistics - INFO - Turtle bred (total: 1)
+2025-11-23 13:02:34,101 - error_monitor - ERROR - ValueError in test_context: Test error for monitoring

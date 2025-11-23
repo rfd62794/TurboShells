@@ -1,0 +1,11 @@
+2025-11-23 13:02:11,129 - monitoring_system - INFO - Integrated monitoring system initialized
+2025-11-23 13:02:11,131 - monitoring - ERROR - Error collecting metrics: name 'game_loop_profiler' is not defined
+2025-11-23 13:02:11,131 - monitoring - INFO - Real-time monitoring started
+2025-11-23 13:02:11,131 - monitoring - WARNING - Low FPS: 0.0
+2025-11-23 13:02:11,131 - statistics - INFO - New gaming session started
+2025-11-23 13:02:11,131 - monitoring_system - INFO - Monitoring system started
+2025-11-23 13:02:11,132 - statistics - INFO - Race recorded: Won, $100.00, Position 1
+2025-11-23 13:02:11,132 - statistics - INFO - Turtle bred (total: 1)
+2025-11-23 13:02:12,132 - monitoring - INFO - Real-time monitoring stopped
+2025-11-23 13:02:12,133 - statistics - INFO - Session ended: {'start_time': '2025-11-23T13:02:11.131660', 'duration_minutes': 0, 'races_completed': 1, 'races_won': 1, 'earnings': 100.0}
+2025-11-23 13:02:12,133 - monitoring_system - INFO - Monitoring system stopped
