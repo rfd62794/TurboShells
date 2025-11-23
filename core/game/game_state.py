@@ -59,8 +59,8 @@ def generate_balanced_opponent(player_turtle):
     swim = 1
     climb = 1
     
-    # Use player's total points as budget (include base points in calculation)
-    budget = player_points  # Use full player points, no subtraction
+    # Use player's total points as budget (subtract base points since we start with them)
+    budget = player_points - 9  # Subtract base points (1+1+1+1+5=9)
     
     # Randomly distribute points
     while budget > 0:
