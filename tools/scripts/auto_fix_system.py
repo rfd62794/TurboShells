@@ -129,7 +129,10 @@ class CICDAutoFixer:
 
     def _create_missing_module(self, module_path: str):
         """Create a missing core module"""
-        full_path = self.project_root / module_path
+        project_root = Path(__file__).parent.parent.parent
+        sys.path.insert(0, str(project_root))
+        sys.path.insert(0, str(project_root / "src"))
+        full_path = project_root / module_path
         full_path.parent.mkdir(exist_ok=True)
 
         if module_path == 'core/entities.py':
