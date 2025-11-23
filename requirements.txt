@@ -1,7 +1,19 @@
+# Core Dependencies
 pygame-ce>=2.5
 
-# Development Tools
+# Development Tools - Code Quality
 black>=23.0.0
 pylint>=3.0.0
+
+# Development Tools - Testing
 pytest>=7.0.0
 pytest-cov>=4.0.0
+
+# Development Tools - Optional Enhancements
+coverage>=7.0.0
+isort>=5.12.0
+mypy>=1.0.0
+
+# Documentation (optional)
+sphinx>=5.0.0
+sphinx-rtd-theme>=1.2.0
