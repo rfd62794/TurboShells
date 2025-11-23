@@ -363,9 +363,10 @@ class TestMemoryOptimization:
         obj4 = pool.acquire()
         
         # Should reuse the same objects (order may vary)
-        reused_objects = {obj1, obj2}
-        acquired_objects = {obj3, obj4}
-        assert reused_objects == acquired_objects
+        # Check by ID since dicts aren't hashable
+        reused_ids = {id(obj1), id(obj2)}
+        acquired_ids = {id(obj3), id(obj4)}
+        assert reused_ids == acquired_ids
 
     @pytest.mark.unit
     def test_memory_cleanup(self):
