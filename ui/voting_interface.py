@@ -28,11 +28,20 @@ def draw_voting(screen, font, game_state):
     money_text = font.render(f"$ {game_state.money}", True, (255, 255, 255))
     screen.blit(money_text, (650, 10))
     
-    # Back button
+    # Back button with better styling
     back_rect = pygame.Rect(700, 5, 80, 30)
-    pygame.draw.rect(screen, (100, 100, 100), back_rect)
+    
+    # Hover effect
+    mouse_pos = getattr(game_state, 'mouse_pos', None)
+    back_color = (150, 50, 50) if mouse_pos and back_rect.collidepoint(mouse_pos) else (100, 100, 100)
+    
+    pygame.draw.rect(screen, back_color, back_rect)
+    pygame.draw.rect(screen, (200, 200, 200), back_rect, 2)  # Border
+    
     back_text = font.render("BACK", True, (255, 255, 255))
-    screen.blit(back_text, (715, 10))
+    text_x = back_rect.x + (back_rect.width - back_text.get_width()) // 2
+    text_y = back_rect.y + (back_rect.height - back_text.get_height()) // 2
+    screen.blit(back_text, (text_x, text_y))
     
     # Draw voting content
     game_state.voting_view.draw()
