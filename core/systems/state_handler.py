@@ -232,3 +232,11 @@ class StateHandler:
                 self.game.save_manager.auto_save()
         elif result == "back":
             self.game.state = STATE_MENU
+    
+    def handle_mouse_wheel(self, button):
+        """Handle mouse wheel events."""
+        if self.game.state == STATE_VOTING:
+            if hasattr(self.game, 'voting_view'):
+                self.game.voting_view.handle_event(pygame.event.Event(
+                    pygame.MOUSEBUTTONDOWN, {'button': button}
+                ))

@@ -82,6 +82,8 @@ class TurboShellsGame:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1: # Left Click
                     self.state_handler.handle_click(event.pos)
+                elif event.button in [4, 5]: # Mouse wheel
+                    self.state_handler.handle_mouse_wheel(event.button)
 
             if event.type == pygame.KEYDOWN:
                 self.keyboard_handler.handle_keydown(event)
