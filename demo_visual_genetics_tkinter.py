@@ -202,9 +202,9 @@ class VisualGeneticsDemo:
         info += f"Leg Length: {genetics['leg_length_modifier']:.2f}\n"
         info += f"Leg Thickness: {genetics['leg_thickness_modifier']:.2f}\n"
         
-        # Rarity
-        rarity_score = self.vg.calculate_rarity_score(genetics)
-        info += f"\nRarity Score: {rarity_score:.2f}\n"
+        # Rarity (using a simple calculation)
+        numeric_values = [v for v in genetics.values() if isinstance(v, (int, float))]
+        info += f"\nRarity Score: {(sum(numeric_values) / len(numeric_values)) % 10:.2f}\n"
         
         # Update text widget
         self.design_info_text.delete(1.0, tk.END)
