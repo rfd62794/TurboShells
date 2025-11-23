@@ -1,0 +1,42 @@
+{
+  "timestamp": 1763927328.4763615,
+  "execution_time": 1.1900742053985596,
+  "suite_results": [
+    {
+      "name": "default",
+      "total_tests": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "duration": 0.0,
+      "success_rate": 0.0,
+      "test_results": []
+    }
+  ],
+  "coverage_report": {
+    "total_lines": 0,
+    "covered_lines": 0,
+    "missing_lines": 0,
+    "coverage_percentage": 0.0,
+    "file_coverage": {}
+  },
+  "quality_metrics": {
+    "code_coverage": 0.0,
+    "test_success_rate": 0.0,
+    "performance_score": 100,
+    "maintainability_index": 0.0,
+    "technical_debt_ratio": 100.0
+  },
+  "summary": {
+    "overall_status": "PASS",
+    "critical_issues": 0,
+    "warnings": 0,
+    "recommendations": [
+      "Increase code coverage from 0.0% to 80%+ by adding more unit tests",
+      "Fix 0 failing tests to improve success rate",
+      "Improve code maintainability by refactoring complex modules and improving test coverage",
+      "Address technical debt by refactoring legacy code and improving test infrastructure"
+    ]
+  }
+}

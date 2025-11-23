@@ -20,7 +20,7 @@ sys.path.insert(0, str(project_root))
 sys.path.insert(0, str(project_root / "src"))
 
 # Import game modules for fixtures
-from src.core.entities import Turtle
+from src.core.game.entities import Turtle
 from src.core.game_state import generate_random_turtle, breed_turtles, compute_turtle_cost, generate_track, get_terrain_at
 from tests.mock_data_generator import MockDataGenerator
 
@@ -255,18 +255,19 @@ class AssertHelpers:
     def assert_valid_turtle(turtle: Turtle):
         """Assert turtle has valid attributes"""
         assert isinstance(turtle.name, str) and len(turtle.name) > 0
-        assert 1.0 <= turtle.speed <= 10.0
-        assert 50.0 <= turtle.energy <= 150.0
-        assert 0.5 <= turtle.recovery <= 5.0
-        assert 0.5 <= turtle.swim <= 3.0
-        assert 0.5 <= turtle.climb <= 3.0
+        assert hasattr(turtle, 'stats')
+        assert 1.0 <= turtle.stats['speed'] <= 10.0
+        assert 50.0 <= turtle.stats['max_energy'] <= 150.0
+        assert 0.5 <= turtle.stats['recovery'] <= 5.0
+        assert 0.5 <= turtle.stats['swim'] <= 3.0
+        assert 0.5 <= turtle.stats['climb'] <= 3.0
         assert 0 <= turtle.age <= 20
         assert isinstance(turtle.is_active, bool)
         assert turtle.current_energy >= 0
         assert turtle.race_distance >= 0
         assert isinstance(turtle.is_resting, bool)
         assert isinstance(turtle.finished, bool)
-        assert turtle.rank >= 0
+        assert turtle.rank is None or turtle.rank >= 0
     
     @staticmethod
     def assert_valid_race_result(results: List[Dict]):
@@ -345,20 +346,6 @@ class TestDataFactory:
     """Factory for creating test data"""
     
     @staticmethod
-    def create_extreme_turtle(name: str = "Extreme") -> Turtle:
-        """Create turtle with extreme stats for edge case testing"""
-        return Turtle(
-            name=name,
-            speed=10.0,  # Maximum
-            energy=150.0,  # Maximum
-            recovery=5.0,  # Maximum
-            swim=3.0,  # Maximum
-            climb=3.0,  # Maximum
-            age=20,  # Maximum
-            is_active=True
-        )
-    
-    @staticmethod
     def create_minimal_turtle(name: str = "Minimal") -> Turtle:
         """Create turtle with minimal stats for edge case testing"""
         return Turtle(
@@ -368,15 +355,25 @@ class TestDataFactory:
             recovery=0.5,  # Minimum
             swim=0.5,  # Minimum
             climb=0.5,  # Minimum
-            age=0,  # Minimum
-            is_active=True
         )
-    
+
+    @staticmethod
+    def create_extreme_turtle(name: str = "Extreme") -> Turtle:
+        """Create turtle with maximum stats for testing"""
+        return Turtle(
+            name=name,
+            speed=10.0,  # Maximum
+            energy=150.0,  # Maximum
+            recovery=5.0,  # Maximum
+            swim=3.0,  # Maximum
+            climb=3.0,  # Maximum
+        )
+
     @staticmethod
     def create_exhausted_turtle(name: str = "Exhausted") -> Turtle:
-        """Create exhausted turtle for testing recovery mechanics"""
+        """Create turtle with zero energy for testing recovery"""
         turtle = TestDataFactory.create_minimal_turtle(name)
-        turtle.current_energy = 1.0
+        turtle.current_energy = 0.0
         turtle.is_resting = True
         return turtle
 

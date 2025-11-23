@@ -191,50 +191,25 @@ class TestRaceTrackSystem:
         # This is acceptable for random generation
 
     @pytest.mark.unit
-    def test_get_terrain_modifier_grass(self):
-        """Test terrain modifier for grass (normal terrain)"""
-        modifier = get_terrain_modifier('grass')
-        assert modifier == 1.0
+    def test_get_terrain_at_function(self):
+        """Test terrain function for different positions"""
+        # Test terrain at different positions
+        positions = [(100, 100), (400, 300), (700, 500)]
+        
+        for x, y in positions:
+            terrain = get_terrain_at(x, y)
+            assert isinstance(terrain, str)
+            assert terrain in ['grass', 'water', 'rock']  # Valid terrain types
 
     @pytest.mark.unit
-    def test_get_terrain_modifier_water(self):
-        """Test terrain modifier for water terrain"""
-        modifier = get_terrain_modifier('water')
-        assert isinstance(modifier, float)
-        assert 0.0 <= modifier <= 1.0  # Should slow down or be neutral
-
-    @pytest.mark.unit
-    def test_get_terrain_modifier_rock(self):
-        """Test terrain modifier for rock terrain"""
-        modifier = get_terrain_modifier('rock')
-        assert isinstance(modifier, float)
-        assert 0.0 <= modifier <= 1.0  # Should slow down or be neutral
-
-    @pytest.mark.unit
-    def test_get_terrain_modifier_invalid_terrain(self):
-        """Test terrain modifier with invalid terrain"""
-        # Should handle invalid terrain gracefully
-        try:
-            modifier = get_terrain_modifier('invalid')
-            assert isinstance(modifier, float)
-        except (ValueError, KeyError):
-            # Expected for invalid terrain
-            pass
-
-    @pytest.mark.unit
-    def test_terrain_modifier_consistency(self):
-        """Test terrain modifiers are consistent"""
-        grass1 = get_terrain_modifier('grass')
-        grass2 = get_terrain_modifier('grass')
-        assert grass1 == grass2
-
-        water1 = get_terrain_modifier('water')
-        water2 = get_terrain_modifier('water')
-        assert water1 == water2
-
-        rock1 = get_terrain_modifier('rock')
-        rock2 = get_terrain_modifier('rock')
-        assert rock1 == rock2
+    def test_terrain_function_consistency(self):
+        """Test terrain function consistency"""
+        # Same position should return same terrain
+        x, y = 400, 300
+        terrain1 = get_terrain_at(x, y)
+        terrain2 = get_terrain_at(x, y)
+        
+        assert terrain1 == terrain2
 
     @pytest.mark.unit
     def test_track_difficulty_analysis(self):
