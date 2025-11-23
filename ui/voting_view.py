@@ -957,8 +957,8 @@ class VotingView:
                             star_spacing = 45  # Match drawing spacing
                             star_x_screen = self.left_panel_width + 30 + 30 + i * star_spacing  # left_panel + 30 + star_start_x
                             
-                            # Make click area larger and more forgiving
-                            click_padding = 8
+                            # Reduce click padding to prevent overlap
+                            click_padding = 6  # Reduced from 8 to 6
                             if (star_x_screen - click_padding <= x <= star_x_screen + 20 + click_padding and 
                                 star_y_screen - click_padding <= y <= star_y_screen + 20 + click_padding):
                                 # Set rating for this category
