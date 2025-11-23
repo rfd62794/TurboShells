@@ -36,6 +36,11 @@ class Turtle:
         self.is_resting = False
         self.finished = False
         self.rank = None
+        
+        # Race History (new feature)
+        self.race_history = []
+        self.total_races = 0
+        self.total_earnings = 0
 
     def reset_for_race(self):
         """Call this before a race starts."""
@@ -101,8 +106,48 @@ class Turtle:
         for stat in other_stats:
             if random.random() < 0.2:  # 20% chance
                 self.stats[stat] += 1
+    
+    def add_race_result(self, position, earnings, race_number=None):
+        """
+        Record race result in history
+        """
+        if race_number is None:
+            race_number = self.total_races + 1
         
-        return True
-
+        result = {
+            'number': race_number,
+            'position': position,
+            'earnings': earnings,
+            'age_at_race': self.age
+        }
+        
+        self.race_history.append(result)
+        self.total_races += 1
+        self.total_earnings += earnings
+        
+        # Keep only last 20 races to prevent memory issues
+        if len(self.race_history) > 20:
+            self.race_history = self.race_history[-20:]
+    
+    @property
+    def speed(self):
+        return self.stats["speed"]
+    
+    @property
+    def max_energy(self):
+        return self.stats["max_energy"]
+    
+    @property
+    def recovery(self):
+        return self.stats["recovery"]
+    
+    @property
+    def swim(self):
+        return self.stats["swim"]
+    
+    @property
+    def climb(self):
+        return self.stats["climb"]
+        
     def __repr__(self):
         return f"<{self.name} (Spd:{self.stats['speed']})>"
