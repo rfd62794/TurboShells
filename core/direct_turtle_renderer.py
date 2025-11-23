@@ -58,7 +58,6 @@ class DirectTurtleRenderer:
         scale = size / 200.0
         
         # Seed random generator with genetics hash so the texture is consistent per turtle
-        # but unique between turtles
         gene_seed = hash(str(genetics)) 
         random.seed(gene_seed)
 
@@ -70,47 +69,47 @@ class DirectTurtleRenderer:
         # Colors
         skin_shadow = self.get_variant_color(skin_base, 0.7)
         shell_shadow = self.get_variant_color(shell_base, 0.6)
-        shell_highlight = self.get_variant_color(shell_base, 1.2)
-
-        # --- 1. Drop Shadow (gives the sprite "lift") ---
+        
+        # --- 1. Drop Shadow ---
         shadow_y_offset = int(5 * scale)
         draw.ellipse([
             center_x - int(75 * scale), center_y - int(45 * scale) + shadow_y_offset,
             center_x + int(75 * scale), center_y + int(45 * scale) + shadow_y_offset
         ], fill=(0, 0, 0, 60))
 
-        # --- 2. Limbs & Tail (Draw underneath shell) ---
-        self._draw_limbs(draw, center_x, center_y, scale, skin_base, skin_shadow)
+        # --- 2. Limbs & Tail ---
+        # FIXED: Now passing 'genetics' as the last argument
+        self._draw_limbs(draw, center_x, center_y, scale, skin_base, skin_shadow, genetics)
         self._draw_tail(draw, center_x, center_y, scale, skin_base, skin_shadow)
         self._draw_head(draw, center_x, center_y, scale, skin_base, skin_shadow, genetics)
 
-        # --- 3. Shell Body (The main dome) ---
+        # --- 3. Shell Body ---
         shell_w = int(85 * scale)
         shell_h = int(65 * scale)
         
-        # Shell Rim (Darker outline/bottom)
+        # Shell Rim 
         draw.ellipse([
             center_x - shell_w, center_y - shell_h,
             center_x + shell_w, center_y + shell_h
         ], fill=shell_shadow)
 
-        # Main Shell Dome (Slightly smaller, offset up for pseudo-3D)
+        # Main Shell Dome
         dome_offset = int(4 * scale)
         draw.ellipse([
             center_x - shell_w + 2, center_y - shell_h,
             center_x + shell_w - 2, center_y + shell_h - dome_offset
         ], fill=shell_base)
 
-        # --- 4. Shell Scutes (The Pattern) ---
+        # --- 4. Shell Scutes ---
         self._draw_shell_pattern(draw, center_x, center_y, shell_w, shell_h, scale, shell_base, pattern_color)
 
-        # --- 5. Shell Highlight (Shiny top) ---
+        # --- 5. Shell Highlight ---
         highlight_w = int(shell_w * 0.6)
         highlight_h = int(shell_h * 0.4)
         draw.ellipse([
             center_x - highlight_w, center_y - highlight_h - int(10 * scale),
             center_x - highlight_w + int(20 * scale), center_y - highlight_h + int(10 * scale)
-        ], fill=(255, 255, 255, 40)) # Translucent white
+        ], fill=(255, 255, 255, 40))
 
     def _draw_limbs(self, draw, cx, cy, scale, color, outline, genetics):
         """Draws textured flippers"""
