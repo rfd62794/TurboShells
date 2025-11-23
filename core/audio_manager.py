@@ -405,12 +405,20 @@ class AudioManager:
         
         if self.initialized:
             mixer_info = pygame.mixer.get_init()
-            if mixer_info:
+            if mixer_info and len(mixer_info) >= 4:
                 info.update({
                     "frequency": mixer_info[0],
                     "size": mixer_info[1],
                     "channels": mixer_info[2],
                     "buffer": mixer_info[3]
+                })
+            elif mixer_info:
+                # Handle case where tuple has fewer elements
+                info.update({
+                    "frequency": mixer_info[0] if len(mixer_info) > 0 else 0,
+                    "size": mixer_info[1] if len(mixer_info) > 1 else 0,
+                    "channels": mixer_info[2] if len(mixer_info) > 2 else 0,
+                    "buffer": mixer_info[3] if len(mixer_info) > 3 else 0
                 })
         
         return info
