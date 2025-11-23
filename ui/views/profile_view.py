@@ -2,7 +2,6 @@ import pygame
 from settings import *
 import ui.layouts.positions as layout
 from ui.components.button import Button
-from core.game_state import format_turtle_label_basic
 
 def draw_profile(screen, font, game_state):
     """Draw the profile view for a single turtle with navigation"""
