@@ -4,7 +4,18 @@ Centralizes all keyboard input logic and makes it easily maintainable.
 """
 
 import pygame
-from settings import *
+
+# Import settings with fallback
+try:
+    from settings import *
+except ImportError:
+    try:
+        from src.settings import *
+    except ImportError:
+        # Define basic settings if import fails
+        SCREEN_WIDTH = 800
+        SCREEN_HEIGHT = 600
+        FPS = 60
 
 
 class KeyboardHandler:
