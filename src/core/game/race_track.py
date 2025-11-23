@@ -5,7 +5,15 @@ consistent Grass/Water/Rock distribution and behavior.
 """
 
 import random
-from settings import TRACK_LENGTH_LOGIC
+
+# Import settings with fallback
+try:
+    from settings import TRACK_LENGTH_LOGIC
+except ImportError:
+    try:
+        from src.settings import TRACK_LENGTH_LOGIC
+    except ImportError:
+        TRACK_LENGTH_LOGIC = 100  # Default value
 
 SEGMENT_LENGTH = 10
 

@@ -4,8 +4,31 @@ Handles all game state transitions and logic in a centralized way.
 """
 
 import pygame
-from settings import *
-import ui.layouts.positions as layout
+
+# Import settings with fallback
+try:
+    from settings import *
+except ImportError:
+    try:
+        from src.settings import *
+    except ImportError:
+        # Define basic settings if import fails
+        SCREEN_WIDTH = 800
+        SCREEN_HEIGHT = 600
+        FPS = 60
+        STATE_MENU = "menu"
+        STATE_ROSTER = "roster"
+        STATE_RACE = "race"
+        STATE_RACE_RESULT = "race_result"
+        STATE_SHOP = "shop"
+        STATE_BREEDING = "breeding"
+        STATE_PROFILE = "profile"
+        STATE_VOTING = "voting"
+
+try:
+    import ui.layouts.positions as layout
+except ImportError:
+    layout = None
 
 
 class StateHandler:

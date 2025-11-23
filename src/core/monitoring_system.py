@@ -5,7 +5,6 @@ performance tracking, error monitoring, and development tools.
 """
 
 import time
-import psutil
 import threading
 import traceback
 from datetime import datetime, timedelta
@@ -14,6 +13,14 @@ from typing import Dict, List, Any, Optional, Callable
 from dataclasses import dataclass, field
 from collections import deque
 import json
+
+# Make psutil optional
+try:
+    import psutil
+    PSUTIL_AVAILABLE = True
+except ImportError:
+    psutil = None
+    PSUTIL_AVAILABLE = False
 
 from .logging_config import get_logger, GameLogger
 from .profiler import GameLoopProfiler, performance_tracker
