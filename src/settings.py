@@ -40,3 +40,6 @@ REWARD_PARTICIPATION = 5
 
 # Betting (MVP)
 BET_LEVELS = [0, 5, 10]
+
+# Auto-save
+AUTO_SAVE_INTERVAL = 300  # 5 minutes in seconds
