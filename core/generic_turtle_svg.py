@@ -13,62 +13,99 @@ class GenericTurtleSVG:
     """
     
     def __init__(self):
-        # Base turtle SVG template - simple but recognizable turtle shape
+        # Improved turtle SVG template with realistic anatomy
         self.turtle_template = '''<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
-  <!-- Shadow -->
-  <ellipse cx="100" cy="180" rx="60" ry="15" fill="#000000" opacity="0.2" />
+<svg width="200" height="200" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    {pattern_defs}
+  </defs>
   
-  <!-- Shell -->
-  <ellipse cx="100" cy="100" rx="70" ry="50" fill="{shell_color}" stroke="{shell_outline}" stroke-width="2" />
-  
-  <!-- Shell pattern -->
-  {shell_pattern}
-  
-  <!-- Head -->
-  <ellipse cx="100" cy="50" rx="25" ry="20" fill="{head_color}" stroke="{head_outline}" stroke-width="2" />
-  
-  <!-- Eyes -->
-  <circle cx="90" cy="45" r="5" fill="{eye_color}" />
-  <circle cx="110" cy="45" r="5" fill="{eye_color}" />
-  <circle cx="90" cy="45" r="2" fill="black" />
-  <circle cx="110" cy="45" r="2" fill="black" />
-  
-  <!-- Legs -->
-  <rect x="50" y="120" width="12" height="30" rx="6" fill="{leg_color}" stroke="{leg_outline}" stroke-width="1" />
-  <rect x="138" y="120" width="12" height="30" rx="6" fill="{leg_color}" stroke="{leg_outline}" stroke-width="1" />
-  <rect x="70" y="140" width="12" height="25" rx="6" fill="{leg_color}" stroke="{leg_outline}" stroke-width="1" />
-  <rect x="118" y="140" width="12" height="25" rx="6" fill="{leg_color}" stroke="{leg_outline}" stroke-width="1" />
-  
-  <!-- Tail -->
-  <path d="M 100 150 Q 80 170 60 160" fill="none" stroke="{tail_color}" stroke-width="8" stroke-linecap="round" />
+  <g id="turtle-base" fill="#8B4513" stroke="black" stroke-width="0.5">
+    <!-- Carapace (Shell) -->
+    <path
+      id="carapace"
+      d="M 20,40 C 5,50 5,80 20,90 L 80,90 C 95,80 95,50 80,40 Z"
+      fill="{shell_fill}"
+      stroke-width="2"
+    />
+
+    <!-- Head -->
+    <path
+      id="head"
+      d="M 40,30 C 45,15 55,15 60,30 C 55,35 45,35 40,30 Z"
+      fill="{head_color}"
+    />
+
+    <!-- Front Right Flipper -->
+    <path
+      id="front-right-flipper"
+      d="M 75,45 C 85,35 90,50 85,60 Z"
+      fill="{flipper_color}"
+    />
+
+    <!-- Front Left Flipper -->
+    <path
+      id="front-left-flipper"
+      d="M 25,45 C 15,35 10,50 15,60 Z"
+      fill="{flipper_color}"
+    />
+
+    <!-- Back Right Flipper -->
+    <path
+      id="back-right-flipper"
+      d="M 70,85 C 80,90 75,100 65,95 Z"
+      fill="{flipper_color}"
+    />
+
+    <!-- Back Left Flipper -->
+    <path
+      id="back-left-flipper"
+      d="M 30,85 C 20,90 25,100 35,95 Z"
+      fill="{flipper_color}"
+    />
+
+    <!-- Eyes -->
+    <circle cx="45" cy="25" r="2" fill="{eye_color}" />
+    <circle cx="55" cy="25" r="2" fill="{eye_color}" />
+    
+    <!-- Eye pupils -->
+    <circle cx="45" cy="25" r="1" fill="black" />
+    <circle cx="55" cy="25" r="1" fill="black" />
+  </g>
 </svg>'''
         
-        # Pattern templates
+        # Pattern templates for the carapace
         self.patterns = {
-            'stripes': '''<rect x="60" y="85" width="80" height="5" fill="{pattern_color}" opacity="0.6" />
-<rect x="60" y="95" width="80" height="5" fill="{pattern_color}" opacity="0.6" />
-<rect x="60" y="105" width="80" height="5" fill="{pattern_color}" opacity="0.6" />
-<rect x="60" y="115" width="80" height="5" fill="{pattern_color}" opacity="0.6" />''',
+            'stripes': '''<pattern id="stripes" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
+    <rect x="0" y="0" width="5" height="10" fill="{pattern_color}" opacity="0.7" />
+    <rect x="5" y="0" width="5" height="10" fill="{pattern_color}" opacity="0.3" />
+</pattern>''',
             
-            'spots': '''<circle cx="75" cy="90" r="8" fill="{pattern_color}" opacity="0.6" />
-<circle cx="125" cy="90" r="8" fill="{pattern_color}" opacity="0.6" />
-<circle cx="100" cy="110" r="8" fill="{pattern_color}" opacity="0.6" />
-<circle cx="85" cy="115" r="6" fill="{pattern_color}" opacity="0.6" />
-<circle cx="115" cy="115" r="6" fill="{pattern_color}" opacity="0.6" />''',
+            'spots': '''<pattern id="spots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+    <circle cx="5" cy="5" r="3" fill="{pattern_color}" opacity="0.6" />
+    <circle cx="15" cy="15" r="3" fill="{pattern_color}" opacity="0.6" />
+    <circle cx="15" cy="5" r="2" fill="{pattern_color}" opacity="0.4" />
+    <circle cx="5" cy="15" r="2" fill="{pattern_color}" opacity="0.4" />
+</pattern>''',
             
-            'spiral': '''<path d="M 100 100 Q 110 90 120 100 T 100 120 Q 90 110 80 100 T 100 80" 
-               fill="none" stroke="{pattern_color}" stroke-width="3" opacity="0.6" />''',
+            'spiral': '''<pattern id="spiral" x="0" y="0" width="30" height="30" patternUnits="userSpaceOnUse">
+    <path d="M 15,15 Q 20,10 25,15 T 15,25 Q 10,20 5,15 T 15,5" 
+          fill="none" stroke="{pattern_color}" stroke-width="2" opacity="0.6" />
+</pattern>''',
             
-            'geometric': '''<polygon points="100,70 120,90 120,110 100,130 80,110 80,90" 
-               fill="{pattern_color}" opacity="0.6" />
-<circle cx="100" cy="100" r="15" fill="{pattern_color}" opacity="0.4" />''',
+            'geometric': '''<pattern id="geometric" x="0" y="0" width="15" height="15" patternUnits="userSpaceOnUse">
+    <polygon points="7.5,2 12,7 12,12 7.5,17 3,12 3,7" 
+             fill="{pattern_color}" opacity="0.5" />
+    <circle cx="7.5" cy="9.5" r="3" fill="{pattern_color}" opacity="0.3" />
+</pattern>''',
             
-            'complex': '''<path d="M 70 85 Q 100 75 130 85 L 130 115 Q 100 125 70 115 Z" 
-               fill="{pattern_color}" opacity="0.3" />
-<circle cx="85" cy="95" r="5" fill="{pattern_color}" opacity="0.5" />
-<circle cx="115" cy="95" r="5" fill="{pattern_color}" opacity="0.5" />
-<circle cx="100" cy="110" r="5" fill="{pattern_color}" opacity="0.5" />''',
+            'complex': '''<pattern id="complex" x="0" y="0" width="25" height="25" patternUnits="userSpaceOnUse">
+    <path d="M 5,5 Q 12.5,2 20,5 L 20,20 Q 12.5,23 5,20 Z" 
+          fill="{pattern_color}" opacity="0.3" />
+    <circle cx="8" cy="8" r="2" fill="{pattern_color}" opacity="0.6" />
+    <circle cx="17" cy="8" r="2" fill="{pattern_color}" opacity="0.6" />
+    <circle cx="12.5" cy="17" r="2" fill="{pattern_color}" opacity="0.6" />
+</pattern>''',
             
             'solid': '''<!-- No pattern for solid shell -->'''
         }
