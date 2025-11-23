@@ -1,0 +1,15 @@
+2025-11-23 09:43:05,796 - core.config - INFO - Configuration loaded successfully
+2025-11-23 09:43:05,798 - core.graphics_manager - INFO - Loaded graphics settings: 1024x768
+2025-11-23 09:43:05,903 - core.graphics_manager - INFO - Display initialized: (1024, 768), Fullscreen: False
+2025-11-23 09:43:05,907 - core.audio_manager - INFO - Loaded audio settings: Master Volume 0.5, Enabled True
+2025-11-23 09:43:06,499 - core.audio_manager - INFO - Audio system initialized successfully
+2025-11-23 09:43:06,506 - core.config - INFO - Configuration saved successfully
+2025-11-23 09:43:06,507 - core.audio_manager - INFO - Master volume set to 0.50
+2025-11-23 09:43:06,515 - core.save_protection - INFO - Backup registry loaded successfully
+2025-11-23 09:43:06,518 - core.save_protection - INFO - Backup registry loaded successfully
+2025-11-23 09:43:06,529 - core.save_protection - INFO - Backup created: test_save_20251123_094306_test.json
+2025-11-23 09:43:06,532 - core.save_protection - WARNING - Corruption detected in test_save.json: JSONDecodeError: test
+2025-11-23 09:43:06,535 - core.save_protection - INFO - Save file exported: test_save.json -> saves\exported_save.json
+2025-11-23 09:43:06,541 - core.config - INFO - Configuration saved successfully
+2025-11-23 09:43:06,545 - core.config - INFO - Configuration loaded successfully
+2025-11-23 09:43:06,549 - core.config - INFO - Configuration saved successfully
