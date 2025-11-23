@@ -10,14 +10,15 @@
 
 ### **IMMEDIATE PRIORITY (Current Sprint)**
 1. **Phase 12.5: Genetics System Integration** ✅ **COMPLETED** - Wire modular genetics into main game systems
-2. **Test Suite Phase** - Comprehensive testing infrastructure and validation
-3. **Pond/Glade Screen** - Ambient turtle viewing environment
-4. **Save System** - Persist game state between sessions
+2. **Test Suite Phase** ✅ **COMPLETED** - Comprehensive testing infrastructure and validation
+3. **Phase 13: Voting Integration & Auto-Save** - Main menu voting integration with persistence
+4. **Pond/Glade Screen** - Ambient turtle viewing environment
+5. **Save System** - Persist game state between sessions
 
 ### **High Priority (Next Sprint)**
-5. **AI Community Store** - Single-player marketplace with AI traders
-6. **Enhanced UI** - Improved animations and transitions
-7. **Sound Effects** - Audio feedback for user actions
+1. **AI Community Store** - Single-player marketplace with AI traders
+2. **Enhanced UI** - Improved animations and transitions
+3. **Sound Effects** - Audio feedback for user actions
 
 ### **Medium Priority (Future Sprint)**
 7. **Advanced Genetics** - Complex genetic interactions
@@ -96,7 +97,65 @@
 - [ ] **Cross-Platform Testing** - Windows/macOS/Linux compatibility
 - [ ] **User Acceptance Testing** - End-to-end user workflow validation
 
-### **Phase 13: Pond / Glade Screen** - 0% COMPLETE
+### **🗳️ Phase 13: Voting Integration & Auto-Save** - **0% COMPLETE**
+
+#### **🎯 Main Menu Voting Integration**
+- [ ] **Menu Button Addition** - Add "Design Voting" button to main menu
+- [ ] **State Management** - Add VOTING state to game state system
+- [ ] **Navigation Integration** - Seamless transition between menu and voting
+- [ ] **View Controller** - Integrate VotingView with main game loop
+- [ ] **UI Consistency** - Ensure voting view matches game UI style
+
+#### **💰 Reward System Integration**
+- [ ] **$1 Per Vote** - Implement monetary reward for completed votes
+- [ ] **Money Tracking** - Update game state money balance after voting
+- [ ] **Visual Feedback** - Show reward confirmation on vote completion
+- [ ] **Balance Display** - Update money display in voting interface
+- [ ] **Transaction Logging** - Track voting rewards for statistics
+
+#### **💾 Auto-Save System**
+- [ ] **Save File Format** - Design comprehensive save data structure
+- [ ] **Auto-Save Trigger** - Save on critical events (vote, race, breeding)
+- [ ] **Save Location** - Use user directory for persistent storage
+- [ ] **File Management** - Handle save file creation, backup, and cleanup
+- [ ] **Error Handling** - Graceful handling of save failures
+
+#### **🔄 Auto-Load System**
+- [ ] **Startup Detection** - Check for existing save file on game launch
+- [ ] **Data Validation** - Verify save file integrity and compatibility
+- [ ] **State Restoration** - Restore complete game state from save
+- [ ] **Fallback Handling** - Handle corrupted or missing save files
+- [ ] **User Notification** - Inform user when save is loaded
+
+#### **📊 Save Data Structure**
+- [ ] **Game State** - Money, current phase, unlocked features
+- [ ] **Roster Data** - All turtles with genetics and stats
+- [ ] **Race History** - Complete race records and statistics
+- [ ] **Voting History** - Previous votes and reward tracking
+- [ ] **System State** - Voting pool, genetic influence, timestamps
+
+#### **🔧 Technical Implementation**
+- [ ] **Save Manager Class** - Centralized save/load operations
+- [ ] **JSON Serialization** - Human-readable save file format
+- [ ] **Version Compatibility** - Handle save file versioning
+- [ ] **Compression** - Optional save file compression
+- [ ] **Encryption** - Basic save file protection
+
+#### **🎮 User Experience**
+- [ ] **Save Indicators** - Visual feedback when game is saved
+- [ ] **Load Confirmation** - Notify user when save is loaded
+- [ ] **Save Slots** - Multiple save slot support (optional)
+- [ ] **Reset Option** - Allow users to reset game progress
+- [ ] **Backup Creation** - Automatic backup before major changes
+
+#### **🧪 Testing & Validation**
+- [ ] **Save/Load Testing** - Verify data persistence accuracy
+- [ ] **Edge Case Testing** - Handle corrupted save files
+- [ ] **Performance Testing** - Ensure save/load is fast
+- [ ] **Integration Testing** - Test voting rewards with save system
+- [ ] **User Testing** - Validate user experience flow
+
+### **Phase 14: Pond / Glade Screen** - 0% COMPLETE
 - Pond overview with ambient turtle behavior
 - Clickable turtles with stat tooltips
 - Profile shortcut integration
