@@ -13,25 +13,30 @@ class BreedingManager:
         if layout.BREED_BACK_BTN_RECT.collidepoint(pos):
             return "GOTO_MENU"
 
-        # Check Breed button (mouse equivalent of pressing Enter)
-        if layout.BREED_BTN_RECT.collidepoint(pos):
+        # Check Breed button at new position (next to instructions)
+        breed_rect = pygame.Rect(250, 55, 100, 35)
+        if breed_rect.collidepoint(pos):
             if len(self.parents) == 2:
                 if self.breed():
                     return "GOTO_MENU"
             return None
 
-        # Otherwise, treat clicks as parent selection rows from the combined pool
+        # Otherwise, treat clicks as parent selection from the breeding grid
         candidates = self._get_breeding_candidates()
-
-        for i, turtle in enumerate(candidates):
-            y_pos = layout.BREEDING_LIST_START_Y + (i * layout.BREEDING_SLOT_HEIGHT)
-            row_rect = pygame.Rect(
-                layout.BREEDING_ROW_X,
-                y_pos,
-                layout.BREEDING_ROW_WIDTH,
-                layout.BREEDING_SLOT_HEIGHT,
-            )
-            if row_rect.collidepoint(pos):
+        
+        # Check breeding slot clicks (2x3 grid)
+        breeding_slots = [
+            pygame.Rect(50, 120, 220, 180),   # Top row
+            pygame.Rect(290, 120, 220, 180),
+            pygame.Rect(530, 120, 220, 180),
+            pygame.Rect(50, 320, 220, 180),   # Bottom row
+            pygame.Rect(290, 320, 220, 180),
+            pygame.Rect(530, 320, 220, 180),
+        ]
+        
+        for idx, slot_rect in enumerate(breeding_slots):
+            if idx < len(candidates) and slot_rect.collidepoint(pos):
+                turtle = candidates[idx]
                 self._toggle_parent_by_turtle(turtle)
                 return None
         
