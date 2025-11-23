@@ -20,6 +20,12 @@ from core.systems.game_state_manager import GameStateManager
 from managers.save_manager import SaveManager
 from managers.settings_manager import SettingsManager
 
+# Monitoring system imports
+from core.monitoring_system import monitoring_system
+from core.monitoring_overlay import monitoring_overlay
+from core.profiler import game_loop_profiler
+from core.logging_config import GameLogger
+
 # --- MAIN GAME CLASS ---
 
 
@@ -32,6 +38,14 @@ class TurboShellsGame:
         pygame.display.set_caption("Turbo Shells MVP")
         self.clock = pygame.time.Clock()
         self.font = pygame.font.SysFont("Arial", 24)
+        
+        # Initialize monitoring system
+        self.game_logger = GameLogger("main")
+        self.game_logger.info("Initializing TurboShells game...")
+        
+        # Start monitoring
+        monitoring_system.start()
+        self.game_logger.info("Monitoring system started")
 
         self.state = STATE_MENU
 
@@ -85,6 +99,9 @@ class TurboShellsGame:
 
     def handle_input(self):
         for event in pygame.event.get():
+            # Handle monitoring overlay input first
+            monitoring_overlay.handle_key_event(event)
+            
             # Handle settings input first (it overlays everything)
             if self.settings_manager.is_visible():
                 if self.settings_manager.handle_event(event):
@@ -92,6 +109,7 @@ class TurboShellsGame:
 
             if event.type == pygame.QUIT:
                 self.save_on_exit()
+                monitoring_system.stop()
                 pygame.quit()
                 sys.exit()
 
@@ -129,15 +147,36 @@ class TurboShellsGame:
             self.settings_manager.draw(self.screen)
 
     def update(self):
-        # Update settings manager (always active)
-        self.settings_manager.update(1.0 / FPS)
+        # Start frame profiling
+        game_loop_profiler.start_frame()
+        
+        try:
+            # Update monitoring overlay
+            current_time = pygame.time.get_ticks() / 1000.0
+            monitoring_overlay.update(current_time)
+            
+            # Update settings manager (always active)
+            self.settings_manager.update(1.0 / FPS)
 
-        if self.state == STATE_SHOP:
-            self.shop_manager.update()
-
-        if self.state == STATE_RACE:
-            if self.race_manager.update():
-                self.state = STATE_RACE_RESULT
+            if self.state == STATE_SHOP:
+                self.shop_manager.update()
+                
+            # Auto-save periodically
+            if pygame.time.get_ticks() % (AUTO_SAVE_INTERVAL * 1000) < 16:  # Every AUTO_SAVE_INTERVAL seconds
+                self.auto_save("periodic")
+                
+        except Exception as e:
+            # Report error to monitoring system
+            monitoring_system.error_monitor.report_error(e, "game_update", {
+                "state": self.state,
+                "money": self.money,
+                "roster_size": len([t for t in self.roster if t is not None])
+            })
+            self.game_logger.error(f"Error in game update: {e}")
+            raise
+        finally:
+            # End frame profiling
+            game_loop_profiler.end_frame()
 
     def draw(self):
         self.screen.fill(BLACK)
@@ -163,6 +202,9 @@ class TurboShellsGame:
         # Draw settings overlay on top of everything
         if self.settings_manager.is_visible():
             self.settings_manager.draw(self.screen)
+            
+        # Draw monitoring overlay on top of everything
+        monitoring_overlay.render(self.screen)
 
         pygame.display.flip()  # Make sure we update the display
 
@@ -207,18 +249,30 @@ class TurboShellsGame:
 if __name__ == "__main__":
     try:
         game = TurboShellsGame()
+        
+        # Log game start
+        game.game_logger.info("Starting TurboShells main game loop")
+        
         while True:
             game.handle_input()
             game.update()
             game.draw()
             game.clock.tick(FPS)
+            
     except KeyboardInterrupt:
         print("\nGame closed by user.")
         game.save_on_exit()
+        monitoring_system.stop()
         pygame.quit()
         sys.exit(0)
     except Exception as e:
         print(f"An error occurred: {e}")
+        # Report error to monitoring system
+        try:
+            monitoring_system.error_monitor.report_error(e, "main_loop")
+        except:
+            pass  # Monitoring system might not be available
         game.save_on_exit()
+        monitoring_system.stop()
         pygame.quit()
         sys.exit(1)  # Quality check test

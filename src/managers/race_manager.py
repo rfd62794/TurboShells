@@ -2,6 +2,7 @@ from core.game.game_state import generate_random_turtle, generate_balanced_oppon
 from settings import *
 import ui.layout as layout
 from core.game.race_track import generate_track, get_terrain_at
+from core.monitoring_system import monitoring_system
 
 
 class RaceManager:
@@ -127,6 +128,13 @@ class RaceManager:
             # Record race result in player's history (update original turtle)
             total_earnings = reward + payout
             player_turtle.add_race_result(rank, total_earnings)
+            
+            # Track race statistics in monitoring system
+            monitoring_system.stats_tracker.record_race_result(
+                won=(rank == 1),
+                earnings=total_earnings,
+                position=rank
+            )
 
             # Auto-save after race completion
             self.game_state.auto_save("race_completion")

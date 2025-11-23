@@ -2,6 +2,7 @@ from core.game.game_state import breed_turtles
 from settings import *
 import pygame  # Needed for Rect
 import ui.layout as layout
+from core.monitoring_system import monitoring_system
 
 
 class BreedingManager:
@@ -115,6 +116,9 @@ class BreedingManager:
             # Create the child and place it in the freed slot
             child = breed_turtles(parent_a, parent_b, use_influenced_genetics=True)
             self.game_state.roster[slot_idx] = child
+            
+            # Track breeding statistics in monitoring system
+            monitoring_system.stats_tracker.record_turtle_bred()
 
             # Clear breeding selection
             self.parents = []
