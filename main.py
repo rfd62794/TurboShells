@@ -139,10 +139,15 @@ class TurboShellsGame:
 
     def auto_save(self, trigger="manual"):
         """Auto-save game state using GameStateManager"""
-        return self.game_state_manager.auto_save(
+        print(f"[DEBUG] Auto-save triggered: {trigger}")
+        print(f"[DEBUG] Roster before save: {[t.name if t else None for t in self.roster]}")
+        print(f"[DEBUG] Money: ${self.money}")
+        result = self.game_state_manager.auto_save(
             self.roster, self.retired_roster, self.money, self.state, 
             self.race_results, trigger
         )
+        print(f"[DEBUG] Auto-save result: {result}")
+        return result
     
     def save_on_exit(self):
         """Save game when exiting"""
