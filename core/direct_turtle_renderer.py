@@ -172,13 +172,13 @@ class DirectTurtleRenderer:
         # 3. Get Pattern Style for cohesion
         pat_style = self._get_pattern_style()
 
-        # 4. Draw Specific Style
+        # 4. Draw Specific Style (FIXED: passing leg_len, not len_mod)
         if style == 'feet':
-            self._draw_limbs_feet(draw, cx, cy, scale, color, outline, len_mod, pattern_color, pat_style)
+            self._draw_limbs_feet(draw, cx, cy, scale, color, outline, leg_len, pattern_color, pat_style)
         elif style == 'fins':
-            self._draw_limbs_fins(draw, cx, cy, scale, color, outline, len_mod, pattern_color, pat_style)
+            self._draw_limbs_fins(draw, cx, cy, scale, color, outline, leg_len, pattern_color, pat_style)
         else:
-            self._draw_limbs_flippers(draw, cx, cy, scale, color, outline, len_mod, pattern_color, pat_style)
+            self._draw_limbs_flippers(draw, cx, cy, scale, color, outline, leg_len, pattern_color, pat_style)
 
     # --- Pattern applicators for limbs ---
     def _apply_limb_pattern_poly(self, draw, points, pat_color, pat_style, scale):
