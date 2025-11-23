@@ -1,0 +1,5 @@
+2025-11-23 11:54:52,247 - core.config - INFO - Configuration loaded successfully
+2025-11-23 11:54:52,249 - core.graphics_manager - INFO - Loaded graphics settings: 1024x768
+2025-11-23 11:54:52,305 - core.graphics_manager - INFO - Display initialized: (1024, 768), Fullscreen: False
+2025-11-23 11:54:52,307 - core.audio_manager - INFO - Loaded audio settings: Master Volume 0.5, Enabled True
+2025-11-23 11:54:52,534 - core.audio_manager - INFO - Audio system initialized successfully
