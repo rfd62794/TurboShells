@@ -66,7 +66,11 @@ def run_auto_fix(changed_files: List[Path]) -> bool:
         
         for file_path in changed_files:
             # Fix Unicode issues in file
-            original_content = file_path.read_text(encoding='utf-8', errors='ignore')
+            try:
+                original_content = file_path.read_text(encoding='utf-8', errors='ignore')
+            except Exception as e:
+                print_status("WARN", f"Could not read {file_path}: {e}")
+                continue
             
             # Replace common issues
             content = original_content
@@ -95,10 +99,16 @@ def run_auto_fix(changed_files: List[Path]) -> bool:
                     content = content.replace(emoji, replacement)
                     fixes_applied += 1
             
+            # Fix common formatting issues
+            content = fix_common_formatting_issues(content)
+            
             # Write back if changed
             if content != original_content:
-                file_path.write_text(content, encoding='utf-8')
-                print_status("FIX", f"Fixed Unicode in {file_path.relative_to(Path.cwd())}")
+                try:
+                    file_path.write_text(content, encoding='utf-8')
+                    print_status("FIX", f"Fixed formatting in {file_path.relative_to(Path.cwd())}")
+                except Exception as e:
+                    print_status("WARN", f"Could not write fixes to {file_path}: {e}")
         
         if fixes_applied > 0:
             print_status("FIX", f"Applied {fixes_applied} auto-fixes")
@@ -113,6 +123,24 @@ def run_auto_fix(changed_files: List[Path]) -> bool:
     except Exception as e:
         print_status("WARN", f"Auto-fix failed: {e}")
         return False
+
+def fix_common_formatting_issues(content: str) -> str:
+    """Fix common formatting issues in Python code"""
+    lines = content.split('\n')
+    fixed_lines = []
+    
+    for line in lines:
+        # Remove trailing whitespace
+        line = line.rstrip()
+        
+        # Fix multiple consecutive blank lines
+        if line.strip() == '' and fixed_lines and fixed_lines[-1].strip() == '':
+            continue
+        
+        # Add line back
+        fixed_lines.append(line)
+    
+    return '\n'.join(fixed_lines)
 
 def run_auto_lint(changed_files: List[Path]) -> bool:
     """Run auto-linting on changed files"""
@@ -151,8 +179,24 @@ def check_syntax(changed_files: List[Path]) -> bool:
     syntax_errors = 0
     for file_path in changed_files:
         try:
-            with open(file_path, 'rb') as f:
-                compile(f.read(), str(file_path), 'exec')
+            # Try to read file with proper encoding
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    content = f.read()
+            except UnicodeDecodeError:
+                # Fallback to latin-1 if UTF-8 fails
+                with open(file_path, 'r', encoding='latin-1') as f:
+                    content = f.read()
+            
+            # Check for null bytes and other issues
+            if '\x00' in content:
+                print_status("FAIL", f"Null bytes found in {file_path}")
+                syntax_errors += 1
+                continue
+            
+            # Compile to check syntax
+            compile(content, str(file_path), 'exec')
+            
         except SyntaxError as e:
             print_status("FAIL", f"Syntax error in {file_path}: {e}")
             syntax_errors += 1
@@ -233,6 +277,49 @@ def run_focused_tests(changed_files: List[Path]) -> bool:
         print_status("WARN", f"Focused tests failed: {e}")
         return True  # Don't block commit on test failures
 
+def check_code_quality(changed_files: List[Path]) -> bool:
+    """Check for common code quality issues"""
+    print_status("INFO", "Checking code quality...")
+    
+    quality_issues = 0
+    for file_path in changed_files:
+        try:
+            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                content = f.read()
+                lines = content.split('\n')
+            
+            # Check for common issues
+            for i, line in enumerate(lines, 1):
+                # Check for TODO/FIXME comments without ticket numbers
+                if 'TODO:' in line and not any(char.isdigit() for char in line):
+                    print_status("WARN", f"TODO without ticket in {file_path}:{i}")
+                    quality_issues += 1
+                
+                # Check for print statements (should use logging)
+                if 'print(' in line and not 'print_status(' in line and not line.strip().startswith('#'):
+                    print_status("WARN", f"print() statement in {file_path}:{i}")
+                    quality_issues += 1
+                
+                # Check for very long lines
+                if len(line) > 150:
+                    print_status("WARN", f"Very long line ({len(line)} chars) in {file_path}:{i}")
+                    quality_issues += 1
+                
+                # Check for hardcoded paths
+                if any(path in line for path in ['C:\\', '/home/', '/var/']) and not line.strip().startswith('#'):
+                    print_status("WARN", f"Hardcoded path in {file_path}:{i}")
+                    quality_issues += 1
+        
+        except Exception as e:
+            print_status("WARN", f"Could not check quality for {file_path}: {e}")
+    
+    if quality_issues == 0:
+        print_status("PASS", f"Code quality check ({len(changed_files)} files)")
+        return True
+    else:
+        print_status("WARN", f"Code quality check ({quality_issues} warnings)")
+        return True  # Don't block commit on quality warnings
+
 def check_imports(changed_files: List[Path]) -> bool:
     """Check imports in changed files"""
     print_status("INFO", "Checking imports...")
@@ -293,7 +380,10 @@ def main():
     # 4. Check imports (non-blocking)
     check_imports(changed_files)
     
-    # 5. Run focused tests (non-blocking)
+    # 5. Check code quality (non-blocking)
+    check_code_quality(changed_files)
+    
+    # 6. Run focused tests (non-blocking)
     run_focused_tests(changed_files)
     
     # Final result

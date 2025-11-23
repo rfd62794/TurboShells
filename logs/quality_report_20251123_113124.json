@@ -1,0 +1,35 @@
+{
+  "timestamp": "2025-11-23T11:31:24.839447",
+  "project_root": "C:\\Users\\cheat\\OneDrive\\Documents\\GitHub\\TurboShells",
+  "results": {
+    "syntax": {
+      "total_files": 107,
+      "syntax_errors": [
+        "Null bytes found in C:\\Users\\cheat\\OneDrive\\Documents\\GitHub\\TurboShells\\src\\main.py"
+      ],
+      "warnings": [],
+      "passed": false
+    },
+    "imports": {
+      "modules_checked": 8,
+      "failed_imports": [],
+      "passed": true
+    },
+    "style": {
+      "passed": false,
+      "issues": []
+    },
+    "tests": {
+      "passed": false,
+      "return_code": 2,
+      "output": "============================= test session starts =============================\nplatform win32 -- Python 3.14.0, pytest-9.0.1, pluggy-1.6.0 -- C:\\Python314\\python.exe\ncachedir: .pytest_cache\nrootdir: C:\\Users\\cheat\\OneDrive\\Documents\\GitHub\\TurboShells\nconfigfile: pyproject.toml\nplugins: cov-7.0.0\ncollecting ... collected 27 items / 5 errors / 1 skipped\n\n=================================== ERRORS ====================================\n_____________ ERROR collecting tests/test_ui_centered_settings.py _____________\nImportError while importing test module 'C:\\Users\\cheat\\OneDrive\\Documents\\GitHub\\TurboShells\\tests\\test_ui_centered_settings.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\nC:\\Python314\\Lib\\importlib\\__init__.py:88: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests\\test_ui_centered_settings.py:8: in <module>\n    from settings import *\nE   ModuleNotFoundError: No module named 'settings'\n_______________ ERROR collecting tests/test_ui_final_layout.py ________________\nImportError while importing test module 'C:\\Users\\cheat\\OneDrive\\Documents\\GitHub\\TurboShells\\tests\\test_ui_final_layout.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\nC:\\Python314\\Lib\\importlib\\__init__.py:88: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests\\test_ui_final_layout.py:8: in <module>\n    from settings import *\nE   ModuleNotFoundError: No module named 'settings'\n_______________ ERROR collecting tests/test_ui_menu_changes.py ________________\nImportError while importing test module 'C:\\Users\\cheat\\OneDrive\\Documents\\GitHub\\TurboShells\\tests\\test_ui_menu_changes.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\nC:\\Python314\\Lib\\importlib\\__init__.py:88: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests\\test_ui_menu_changes.py:11: in <module>\n    from settings import *\nE   ModuleNotFoundError: No module named 'settings'\n______________ ERROR collecting tests/test_ui_settings_button.py ______________\nImportError while importing test module 'C:\\Users\\cheat\\OneDrive\\Documents\\GitHub\\TurboShells\\tests\\test_ui_settings_button.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\nC:\\Python314\\Lib\\importlib\\__init__.py:88: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests\\test_ui_settings_button.py:8: in <module>\n    from settings import *\nE   ModuleNotFoundError: No module named 'settings'\n_______________ ERROR collecting tests/test_voting_influence.py _______________\nImportError while importing test module 'C:\\Users\\cheat\\OneDrive\\Documents\\GitHub\\TurboShells\\tests\\test_voting_influence.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\nC:\\Python314\\Lib\\importlib\\__init__.py:88: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests\\test_voting_influence.py:4: in <module>\n    from core.systems import GeneticPoolManager\nE   ModuleNotFoundError: No module named 'core'\n=========================== short test summary info ===========================\nERROR tests/test_ui_centered_settings.py\nERROR tests/test_ui_final_layout.py\nERROR tests/test_ui_menu_changes.py\nERROR tests/test_ui_settings_button.py\nERROR tests/test_voting_influence.py\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 5 failures !!!!!!!!!!!!!!!!!!!!!!!!!!\n!!!!!!!!!!!!!!!!!!! Interrupted: 5 errors during collection !!!!!!!!!!!!!!!!!!!\n======================== 1 skipped, 5 errors in 0.34s =========================\n",
+      "errors": ""
+    },
+    "structure": {
+      "passed": true,
+      "missing_dirs": [],
+      "missing_files": []
+    }
+  },
+  "overall_passed": false
+}
