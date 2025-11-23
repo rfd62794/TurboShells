@@ -149,7 +149,9 @@ class GeneticPool:
     
     def _generate_continuous_value(self, visual_genetics: VisualGenetics) -> float:
         """Generate continuous value influenced by pool"""
-        gene_def = visual_genetics.gene_definitions.get(self.gene_name, {})
+        gene_def = visual_genetics.gene_definitions.get_gene_definition(self.gene_name)
+        if gene_def is None:
+            return 0.5
         value_range = gene_def.get('range', (0.0, 1.0))
         
         # Use target value with variation
