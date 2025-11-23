@@ -19,6 +19,7 @@
   - Phase 21: Test Suite Extension → [phases/Phase_21_Test_Suite_Extension.md](phases/Phase_21_Test_Suite_Extension.md)
   - Phase 11: Advanced Genetics → [phases/Phase_11_Advanced_Genetics.md](phases/Phase_11_Advanced_Genetics.md)
   - Phase 12: Tournament & League System → [phases/Phase_12_Tournament_League_System.md](phases/Phase_12_Tournament_League_System.md)
+  - Phase 13: Economic Expansion → [phases/Phase_13_Economic_Expansion.md](phases/Phase_13_Economic_Expansion.md)
 
 ---
 
@@ -169,11 +170,8 @@
 > Comprehensive tournament system with season structure, championship events, sponsorship mechanics, and Hall of Fame recognition
 
 ### **Phase 13: Economic Expansion** - **0% COMPLETE**
-- AI community simulation with 50+ traders
-- Dynamic pricing and market analytics
-- AI communication and reputation systems
-- Complex economic events and market cycles
-- Advanced trading strategies and AI behaviors
+> 📋 **Detailed Plan**: See [phases/Phase_13_Economic_Expansion.md](phases/Phase_13_Economic_Expansion.md)
+> Complete economic simulation with 50+ AI traders, dynamic pricing, market cycles, and advanced trading strategies
 
 ---
 
