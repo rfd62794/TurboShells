@@ -182,6 +182,10 @@ class TurboShellsGame:
 
             if self.state == STATE_SHOP:
                 self.shop_manager.update()
+            elif self.state == STATE_RACE:
+                race_finished = self.race_manager.update()
+                if race_finished:
+                    self.state = STATE_RACE_RESULT
                 
             # Auto-save periodically
             if pygame.time.get_ticks() % (AUTO_SAVE_INTERVAL * 1000) < 16:  # Every AUTO_SAVE_INTERVAL seconds
