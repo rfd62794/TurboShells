@@ -919,7 +919,7 @@ class VotingView:
         
         return "voting"
     
-    def _handle_click(self, pos: Tuple[int, int]):
+    def handle_click(self, pos: Tuple[int, int]):
         """Handle mouse click"""
         x, y = pos
         print(f"Click at ({x}, {y})")
