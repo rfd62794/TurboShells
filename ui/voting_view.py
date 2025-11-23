@@ -954,6 +954,10 @@ class VotingView:
                             star_spacing = 35
                             star_x_screen = self.left_panel_width + 30 + 30 + i * star_spacing  # left_panel + 30 + star_start_x
                             
+                            # Debug 5th star specifically
+                            if i == 4:  # 5th star (0-indexed)
+                                print(f"5th star: screen_x={star_x_screen}, click_x={x}, range={star_x_screen-2}-{star_x_screen+22}")
+                            
                             # Click area exactly matches star size (20px) with small padding
                             click_padding = 2
                             if (star_x_screen - click_padding <= x <= star_x_screen + 20 + click_padding and 
