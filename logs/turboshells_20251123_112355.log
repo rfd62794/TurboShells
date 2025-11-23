@@ -1,0 +1,18 @@
+2025-11-23 11:23:55,346 - core.config - INFO - Configuration loaded successfully
+2025-11-23 11:23:55,348 - core.graphics_manager - INFO - Loaded graphics settings: 1024x768
+2025-11-23 11:23:55,409 - core.graphics_manager - INFO - Display initialized: (1024, 768), Fullscreen: False
+2025-11-23 11:23:55,410 - core.audio_manager - INFO - Loaded audio settings: Master Volume 1.0, Enabled True
+2025-11-23 11:23:56,019 - core.audio_manager - INFO - Audio system initialized successfully
+2025-11-23 11:23:56,093 - ui.settings_view - INFO - Settings view initialized
+2025-11-23 11:23:56,093 - managers.settings_manager - INFO - Settings manager initialized
+2025-11-23 11:23:56,094 - managers.save_manager - INFO - SaveManager initialized with directory: C:\Users\cheat\AppData\Roaming\TurboShells
+2025-11-23 11:23:56,110 - core.auto_load_system - INFO - Save file found at C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 11:23:56,111 - core.auto_load_system - INFO - Attempting to restore game state from save file
+2025-11-23 11:23:56,127 - managers.save_manager - INFO - Game loaded successfully from C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 11:23:56,128 - core.auto_load_system - INFO - Successfully restored game state for player player_20251123_112134
+2025-11-23 11:24:03,085 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 11:24:03,086 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 11:24:13,896 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 11:24:13,898 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 11:24:18,284 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 11:24:18,285 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
