@@ -84,13 +84,28 @@ class RaceManager:
         return False
 
     def process_rewards(self):
+        print(f"[DEBUG] Processing rewards - Results: {[f'Turtle {i+1}: Rank {t.rank}' for i, t in enumerate(self.results)]}")
+        
         # Find player rank based on selected active racer
         idx = getattr(self.game_state, "active_racer_index", 0)
         player_turtle = None
         if 0 <= idx < len(self.game_state.roster):
             player_turtle = self.game_state.roster[idx]
-        if player_turtle in self.results:
-            rank = player_turtle.rank
+        
+        print(f"[DEBUG] Player turtle: {player_turtle.name if player_turtle else 'None'} (index {idx})")
+        
+        # Find the player's race turtle by name (since race uses copies)
+        player_race_turtle = None
+        if player_turtle:
+            for race_turtle in self.results:
+                if race_turtle.name == player_turtle.name:
+                    player_race_turtle = race_turtle
+                    break
+        
+        print(f"[DEBUG] Player race turtle found: {player_race_turtle.name if player_race_turtle else 'None'}")
+        
+        if player_race_turtle:
+            rank = player_race_turtle.rank
             reward = 0
             if rank == 1:
                 reward = REWARD_1ST
@@ -110,12 +125,14 @@ class RaceManager:
             self.game_state.money += reward + payout
             print(f"Player finished {rank}. Reward: ${reward} | Bet Payout: ${payout}")
 
-            # Record race result in player's history
+            # Record race result in player's history (update original turtle)
             total_earnings = reward + payout
             player_turtle.add_race_result(rank, total_earnings)
 
             # Auto-save after race completion
             self.game_state.auto_save("race_completion")
+        else:
+            print("[DEBUG] Player race turtle not found in results - no reward given")
 
         # Post-race cleanup: recover energy and age turtles
         for i, t in enumerate(self.game_state.roster):
