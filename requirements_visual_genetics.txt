@@ -1,0 +1,20 @@
+# Visual Genetics System Dependencies for TurboShells
+# Install with: pip install -r requirements_visual_genetics.txt
+
+# Core SVG Generation
+drawsvg>=1.6.0
+svgwrite>=1.4.3
+
+# SVG to PyGame Conversion
+cairosvg>=2.5.2
+pillow>=9.0.0
+
+# PyGame (already in main requirements, but included for completeness)
+pygame>=2.1.0
+
+# Optional: For advanced SVG manipulation
+lxml>=4.6.0
+
+# Development and Testing
+pytest>=6.0.0
+pytest-cov>=3.0.0
