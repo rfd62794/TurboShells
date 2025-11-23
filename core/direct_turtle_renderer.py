@@ -23,6 +23,7 @@ class DirectTurtleRenderer:
         self.max_cache_size = 100
         self.cache_hits = 0
         self.cache_misses = 0
+        self.current_genetics = {} # Store for helper access
         print("Direct Turtle Renderer: Initialized Procedural Engine")
     
     # --- Color Utilities ---
@@ -67,7 +68,10 @@ class DirectTurtleRenderer:
         center_y = size // 2
         scale = size / 200.0
         
-        # Seed random generator with genetics hash
+        # Save genetics for sub-routines
+        self.current_genetics = genetics
+
+        # Seed random generator with genetics hash so the texture is consistent per turtle
         gene_seed = hash(str(genetics)) 
         random.seed(gene_seed)
 
@@ -87,14 +91,14 @@ class DirectTurtleRenderer:
             center_x + int(60 * scale), center_y + int(50 * scale) + shadow_y_offset
         ], fill=(0, 0, 0, 60))
 
-        # --- 2. Limbs & Tail ---
+        # --- 2. Limbs & Tail (EXTENDED) ---
         self._draw_limbs(draw, center_x, center_y, scale, skin_base, skin_shadow, genetics)
         self._draw_tail(draw, center_x, center_y, scale, skin_base, skin_shadow)
         
-        # --- 3. Head ---
+        # --- 3. Head (EXTENDED) ---
         self._draw_head(draw, center_x, center_y, scale, skin_base, skin_shadow, genetics)
 
-        # --- 4. Shell Body ---
+        # --- 4. Shell Body (SHRUNK to reveal limbs) ---
         shell_w = int(65 * scale) 
         shell_h = int(55 * scale)
         
@@ -111,21 +115,35 @@ class DirectTurtleRenderer:
             center_x + shell_w - 3, center_y + shell_h - dome_offset
         ], fill=shell_base)
 
-        # --- 5. Shell Scutes ---
+        # --- 5. Shell Scutes / Pattern ---
         self._draw_shell_pattern(draw, center_x, center_y, shell_w, shell_h, scale, shell_base, pattern_color)
+
+        # --- 6. Shell Highlight (Soft Gloss) ---
+        shine_w = int(shell_w * 0.5)
+        shine_h = int(shell_h * 0.3)
+        shine_x = center_x - int(shell_w * 0.6)
+        shine_y = center_y - int(shell_h * 0.65)
+        
+        # Draw soft shine
+        draw.ellipse([
+            shine_x, shine_y,
+            shine_x + shine_w, shine_y + shine_h
+        ], fill=(255, 255, 255, 30))
+        
+        # Tiny hotspot
+        draw.ellipse([
+            shine_x + int(shine_w*0.2), shine_y + int(shine_h*0.2),
+            shine_x + int(shine_w*0.5), shine_y + int(shine_h*0.6)
+        ], fill=(255, 255, 255, 45))
 
     def _draw_limbs(self, draw, cx, cy, scale, color, outline, genetics):
         """Draws textured flippers extended for visibility"""
-        # Pushed coordinates outward (larger offsets)
+        # Pushed coordinates outward
         offsets = [
-            # Front Right (Extended out to x+55)
-            (45, -35, 85, -55, 75, -5),   
-            # Front Left
-            (-45, -35, -85, -55, -75, -5), 
-            # Back Right
-            (35, 35, 60, 55, 40, 65),     
-            # Back Left
-            (-35, 35, -60, 55, -40, 65)   
+            (45, -35, 85, -55, 75, -5),    # Front Right
+            (-45, -35, -85, -55, -75, -5), # Front Left
+            (35, 35, 60, 55, 40, 65),      # Back Right
+            (-35, 35, -60, 55, -40, 65)    # Back Left
         ]
 
         for p1x, p1y, p2x, p2y, p3x, p3y in offsets:
@@ -134,10 +152,9 @@ class DirectTurtleRenderer:
                 (cx + int(p2x * scale), cy + int(p2y * scale)),
                 (cx + int(p3x * scale), cy + int(p3y * scale))
             ]
-            # Draw Limb
             draw.polygon(points, fill=color, outline=outline)
             
-            # Draw Texture (Scales)
+            # Draw Texture
             min_x = min(p[0] for p in points)
             max_x = max(p[0] for p in points)
             min_y = min(p[1] for p in points)
@@ -147,9 +164,9 @@ class DirectTurtleRenderer:
     def _draw_tail(self, draw, cx, cy, scale, color, outline):
         tail_len = int(25 * scale)
         points = [
-            (cx - int(5 * scale), cy + int(55 * scale)),
-            (cx + int(5 * scale), cy + int(55 * scale)),
-            (cx, cy + int(55 * scale) + tail_len)
+            (cx - int(5 * scale), cy + int(50 * scale)),
+            (cx + int(5 * scale), cy + int(50 * scale)),
+            (cx, cy + int(50 * scale) + tail_len)
         ]
         draw.polygon(points, fill=color, outline=outline)
 
@@ -157,11 +174,10 @@ class DirectTurtleRenderer:
         head_w = int(32 * scale)
         head_h = int(35 * scale)
         
-        # Pushed head UP (more negative Y) so it clears the shell
-        # Old was cy - 55 (hidden), New is cy - 75 (visible)
+        # Pushed head UP so it clears the shell
         head_y = cy - int(75 * scale) 
         
-        # Neck connection (Thicker and longer)
+        # Neck connection
         draw.rectangle([
             cx - int(12 * scale), head_y + int(15 * scale),
             cx + int(12 * scale), cy - int(20 * scale)
@@ -171,89 +187,117 @@ class DirectTurtleRenderer:
         bbox = [cx - head_w//2, head_y, cx + head_w//2, head_y + head_h]
         draw.ellipse(bbox, fill=color, outline=outline)
         
-        # Skin Texture on Head
+        # Skin Texture
         self.draw_organic_scales(draw, bbox, color, density=0.6)
 
-        # Eyes (More distinct)
+        # Eyes
         eye_color = genetics.get('eye_color', (0, 0, 0))
-        eye_size = int(5 * scale) # Bigger eyes
+        eye_size = int(5 * scale)
         eye_y = head_y + int(8 * scale)
         
-        for offset in [-11, 11]: # Wider set eyes
+        for offset in [-11, 11]: 
             ex = cx + int(offset * scale)
-            # Eye White
             draw.ellipse([ex - eye_size, eye_y - eye_size, ex + eye_size, eye_y + eye_size], fill=(240, 240, 200))
-            # Pupil
             pupil_s = int(2.5 * scale)
             draw.ellipse([ex - pupil_s, eye_y - pupil_s, ex + pupil_s, eye_y + pupil_s], fill=eye_color)
 
     def _draw_shell_pattern(self, draw, cx, cy, w, h, scale, base_color, pat_color):
-        """Draws a hex/scute pattern based on geometry"""
+        """Draws different patterns based on genetics or fallback to seed"""
         
-        # 1. Central Ridge (The Vertebral Scutes)
+        # 1. Determine Style from Genetics
+        styles = ['hex', 'spots', 'stripes', 'rings']
+        
+        # Flexible extraction: Handle if it's a string "stripes" or a dict {'type': 'stripes'}
+        raw_pattern = self.current_genetics.get('shell_pattern', None)
+        
+        style = 'hex' # Default
+        
+        if raw_pattern:
+            if isinstance(raw_pattern, dict):
+                style = raw_pattern.get('type', 'hex')
+            else:
+                style = str(raw_pattern).lower()
+        
+        # If style isn't recognized (or missing), fallback to random seed consistency
+        if style not in styles:
+            style_idx = hash(str(self.current_genetics)) % len(styles)
+            style = styles[style_idx]
+
+        # 2. Draw the specific style
+        if style == 'spots':
+            self._draw_pattern_spots(draw, cx, cy, w, h, scale, pat_color)
+        elif style == 'stripes':
+            self._draw_pattern_stripes(draw, cx, cy, w, h, scale, pat_color)
+        elif style == 'rings':
+            self._draw_pattern_rings(draw, cx, cy, w, h, scale, pat_color)
+        else:
+            self._draw_pattern_hex(draw, cx, cy, w, h, scale, base_color, pat_color)
+
+    # --- Pattern Drawers ---
+    def _draw_pattern_spots(self, draw, cx, cy, w, h, scale, color):
+        num_spots = 12
+        for _ in range(num_spots):
+            sx = cx + int(random.randint(int(-w*0.6), int(w*0.6)))
+            sy = cy + int(random.randint(int(-h*0.6), int(h*0.6)))
+            r = int(random.randint(4, 9) * scale)
+            draw.ellipse([sx-r, sy-r, sx+r, sy+r], fill=color)
+
+    def _draw_pattern_stripes(self, draw, cx, cy, w, h, scale, color):
+        num_stripes = 5
+        for i in range(num_stripes):
+            y = cy - int(h*0.6) + (i * int(h*0.3))
+            stripe_w = int(w * (0.9 - abs(i-2)*0.2)) 
+            thick = int(6 * scale)
+            draw.line([cx - stripe_w, y, cx + stripe_w, y], fill=color, width=thick)
+
+    def _draw_pattern_rings(self, draw, cx, cy, w, h, scale, color):
+        draw.ellipse([cx - int(w*0.7), cy - int(h*0.7), cx + int(w*0.7), cy + int(h*0.7)], outline=color, width=int(3*scale))
+        draw.ellipse([cx - int(w*0.4), cy - int(h*0.4), cx + int(w*0.4), cy + int(h*0.4)], outline=color, width=int(3*scale))
+        r = int(5*scale)
+        draw.ellipse([cx-r, cy-r, cx+r, cy+r], fill=color)
+
+    def _draw_pattern_hex(self, draw, cx, cy, w, h, scale, base_color, pat_color):
         scute_size = int(20 * scale)
         for i in range(3):
             y_pos = cy - int(25 * scale) + (i * int(22 * scale))
-            
-            # Draw a Hexagon-ish shape for central scutes
             poly = [
-                (cx, y_pos - scute_size + 5),
-                (cx + scute_size - 5, y_pos),
-                (cx + scute_size - 5, y_pos + scute_size - 5),
-                (cx, y_pos + scute_size),
-                (cx - scute_size + 5, y_pos + scute_size - 5),
-                (cx - scute_size + 5, y_pos)
+                (cx, y_pos - scute_size + 5), (cx + scute_size - 5, y_pos),
+                (cx + scute_size - 5, y_pos + scute_size - 5), (cx, y_pos + scute_size),
+                (cx - scute_size + 5, y_pos + scute_size - 5), (cx - scute_size + 5, y_pos)
             ]
-            
-            # Gradient fill for scute (Darker center, lighter edge)
             draw.polygon(poly, fill=self.get_variant_color(base_color, 1.05), outline=pat_color)
-            
-            # Inner "growth ring" details
-            smaller_poly = [(x + (cx-x)*0.3, y + (y_pos+10-y)*0.3) for x, y in poly] # simple shrink
+            smaller_poly = [(x + (cx-x)*0.3, y + (y_pos+10-y)*0.3) for x, y in poly] 
             draw.line(poly + [poly[0]], fill=pat_color, width=int(2*scale))
 
-        # 2. Side Scutes (Costal Scutes)
         sides = [-1, 1]
         for side in sides:
             for i in range(2):
                 sx = cx + (int(35 * scale) * side)
                 sy = cy - int(15 * scale) + (i * int(30 * scale))
-                
-                # Draw curved scute representation
-                bbox = [
-                    sx - int(15 * scale), sy - int(15 * scale),
-                    sx + int(15 * scale), sy + int(15 * scale)
-                ]
+                bbox = [sx - int(15 * scale), sy - int(15 * scale), sx + int(15 * scale), sy + int(15 * scale)]
                 draw.chord(bbox, 0, 360, fill=self.get_variant_color(base_color, 0.95), outline=pat_color, width=int(2*scale))
 
     # --- Cache System ---
     def render_turtle_to_photoimage(self, genetics: Dict[str, Any], size: Optional[int] = None) -> Optional[ImageTk.PhotoImage]:
         img_size = size or 200
-        
-        # Check cache first
         cache_key = f"turtle_{hash(str(genetics))}_{img_size}"
+        
         if cache_key in self.cache:
             self.cache_hits += 1
             return self.cache[cache_key]
         
         self.cache_misses += 1
         
-        # Create PIL image (Transparent background)
         pil_image = Image.new('RGBA', (img_size, img_size), (0, 0, 0, 0)) 
         draw = ImageDraw.Draw(pil_image)
-        
-        # Draw procedural turtle
         self.draw_realistic_turtle(draw, genetics, img_size)
         
-        # Convert to PhotoImage
         try:
             photo_image = ImageTk.PhotoImage(pil_image)
             self.cache_image(cache_key, photo_image)
             return photo_image
-            
         except RuntimeError as e:
             if "no default root window" in str(e):
-                # Save to temp file and return path
                 temp_file = os.path.join(self.temp_dir, f"turtle_{id(genetics)}.png")
                 pil_image.save(temp_file)
                 return temp_file 
@@ -262,10 +306,7 @@ class DirectTurtleRenderer:
     
     def cache_image(self, cache_key: str, photo_image: ImageTk.PhotoImage) -> None:
         if len(self.cache) >= self.max_cache_size:
-            # Remove oldest entry
-            oldest_key = next(iter(self.cache))
-            del self.cache[oldest_key]
-        
+            del self.cache[next(iter(self.cache))]
         self.cache[cache_key] = photo_image
     
     def clear_cache(self) -> None:
@@ -274,9 +315,6 @@ class DirectTurtleRenderer:
         self.cache_misses = 0
 
     def get_rendering_capabilities(self) -> Dict[str, Any]:
-        """
-        Get information about rendering capabilities
-        """
         return {
             'renderer_type': 'procedural_pil',
             'pil_drawing': True,
@@ -289,12 +327,8 @@ class DirectTurtleRenderer:
         }
 
     def get_cache_stats(self) -> Dict[str, Any]:
-        """
-        Get cache statistics
-        """
         total_requests = self.cache_hits + self.cache_misses
         hit_rate = (self.cache_hits / total_requests * 100) if total_requests > 0 else 0
-        
         return {
             'size': len(self.cache),
             'max_size': self.max_cache_size,
@@ -304,45 +338,26 @@ class DirectTurtleRenderer:
             'usage_percentage': (len(self.cache) / self.max_cache_size) * 100
         }
 
-
 # ==========================================
 # GLOBAL HELPER FUNCTIONS
 # ==========================================
 
-# Global renderer instance
 _renderer_instance = None
 
-
 def get_direct_renderer() -> DirectTurtleRenderer:
-    """
-    Get global direct turtle renderer instance
-    """
     global _renderer_instance
     if _renderer_instance is None:
         _renderer_instance = DirectTurtleRenderer()
     return _renderer_instance
 
-
-def render_turtle_directly(genetics: Dict[str, Any], 
-                           size: Optional[int] = None) -> Optional[ImageTk.PhotoImage]:
-    """
-    Render turtle directly from genetics using PIL
-    """
+def render_turtle_directly(genetics: Dict[str, Any], size: Optional[int] = None) -> Optional[ImageTk.PhotoImage]:
     renderer = get_direct_renderer()
     return renderer.render_turtle_to_photoimage(genetics, size)
 
-
 def clear_direct_cache() -> None:
-    """
-    Clear direct renderer cache
-    """
     renderer = get_direct_renderer()
     renderer.clear_cache()
 
-
 def get_direct_cache_stats() -> Dict[str, Any]:
-    """
-    Get direct renderer cache statistics
-    """
     renderer = get_direct_renderer()
     return renderer.get_cache_stats()
