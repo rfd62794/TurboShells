@@ -50,10 +50,13 @@ class RosterManager:
                 if self.game_state.roster[i]:
                     if train_rect.collidepoint(pos):
                         self.train_turtle(i)
+                        return  # Don't continue to slot check
                     elif retire_rect.collidepoint(pos):
                         self.retire_turtle(i)
-                # Then check for slot selection
-                elif slot_rect.collidepoint(pos):
+                        return  # Don't continue to slot check
+                
+                # Then check for slot selection (profile view or select turtle)
+                if slot_rect.collidepoint(pos):
                     # Check for turtle card click (profile view access)
                     if self.game_state.roster[i]:
                         return "PROFILE"
