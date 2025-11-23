@@ -64,26 +64,19 @@ class RaceManager:
 
     def update(self):
         active_turtles = self.race_roster if hasattr(self, "race_roster") else []
-        
-        print(f"[DEBUG] Race update: {len(active_turtles)} turtles, speed multiplier: {self.game_state.race_speed_multiplier}")
 
         for _ in range(self.game_state.race_speed_multiplier):
             for t in active_turtles:
                 # 1. Determine Terrain using shared RaceTrack helper
                 terrain = get_terrain_at(self.track, t.race_distance)
-                
-                print(f"[DEBUG] Turtle {t.name} at distance {t.race_distance}, terrain: {terrain}")
 
                 # 2. UPDATE PHYSICS (Using the Shared Class)
                 move_amt = t.update_physics(terrain)
                 t.race_distance += move_amt
-                
-                print(f"[DEBUG] Turtle {t.name} moved {move_amt}, total distance: {t.race_distance}")
 
                 # 3. Check Finish
                 if t.race_distance >= TRACK_LENGTH_LOGIC and not t.finished:
                     t.finished = True
-                    print(f"[DEBUG] Turtle {t.name} finished!")
                     t.rank = len(self.results) + 1
                     self.results.append(t)
 

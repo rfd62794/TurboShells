@@ -94,9 +94,6 @@ class Turtle:
 
         # 2. MOVEMENT LOGIC
         move_speed = self.stats["speed"]
-        
-        # Debug logging
-        print(f"[DEBUG] Turtle {self.name}: terrain={terrain_type}, base_speed={move_speed}, energy={self.current_energy}")
 
         # Apply Terrain Modifiers
         if terrain_type == "water":
@@ -113,7 +110,6 @@ class Turtle:
             self.current_energy = 0
             self.is_resting = True
 
-        print(f"[DEBUG] Turtle {self.name}: final_speed={move_speed}, energy_after={self.current_energy}, is_resting={self.is_resting}")
         return move_speed
 
     def train(self, stat_name):
