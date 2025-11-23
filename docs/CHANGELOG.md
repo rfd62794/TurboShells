@@ -1,5 +1,50 @@
 # TurboShells ChangeLog
 
+## Version 2.3 - Race Balance & UI Fixes 🎉
+
+### **🏁 Race Balance System** - ✅ **COMPLETED**
+- **Balanced Opponent Generation**: Equal total stat points to player turtle
+  - **Point Calculation Fix**: Corrected budget calculation for equal stat totals (146 points each)
+  - **Stat Distribution Logic**: 30% speed bias for competitive but fair races
+  - **Debug System**: Race position tracking and result verification
+  - **Performance Testing**: Verified balanced competition through extensive testing
+- **Race Competition Analysis**: Deep investigation of win/loss patterns
+  - **Speed Specialist Issue**: Identified player advantage from S50 vs balanced opponents
+  - **Opponent Tuning**: Progressive adjustment from 60% → 45% → 35% → 30% speed bias
+  - **Fair Competition**: Perfect balance where player wins most but not all races
+- **Stat Variety**: Different opponent specializations each race
+  - **Speed-focused**: Some opponents prioritize speed like player
+  - **Balanced builds**: Mixed stat distributions for variety
+  - **Energy specialists**: Some opponents focus on energy for endurance
+
+### **🔧 UI Bug Fixes** - ✅ **COMPLETED**
+- **Breeding Menu Button**: Fixed menu button click detection in breeding screen
+  - **Missing Handler**: Added menu button detection to breeding manager
+  - **Position Consistency**: Used same coordinates (700, 5, 80, 30) as other views
+  - **State Routing**: Proper "GOTO_MENU" response to state handler
+- **Navigation Consistency**: Aligned menu button behavior across all views
+  - **Click Detection**: Fixed collision detection and positioning
+  - **User Experience**: Seamless navigation back to main menu
+  - **Cross-View Consistency**: Menu buttons work identically in all screens
+
+### **⚖️ Game Balance Improvements**
+- **Opponent Generation**: Refined stat distribution algorithm
+  - **Equal Points**: All opponents have exactly same total points as player
+  - **Speed Bias**: Optimized 30% speed focus for competitive gameplay
+  - **Stat Variety**: Random distribution creates diverse opponent builds
+- **Race Fairness**: Eliminated "always win" and "always lose" scenarios
+  - **Competitive Racing**: Close finishes with varied outcomes
+  - **Strategic Depth**: Energy management and terrain matter more
+  - **Player Agency**: Skill and strategy affect race results
+
+### **🔧 Technical Achievements**
+- **Debug Infrastructure**: Added race position tracking and result logging
+- **Balance Testing**: Comprehensive testing of opponent generation
+- **Code Cleanup**: Removed debug output after balance verification
+- **UI Consistency**: Standardized menu button behavior across all views
+
+---
+
 ## Version 2.2 - Voting UI Refinement & Star Detection Fix 🎉
 
 ### **🗳️ Voting UI Enhancement** - ✅ **COMPLETED**
