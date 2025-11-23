@@ -4,7 +4,7 @@ import ui.layouts.positions as layout
 from ui.components.button import Button
 
 def draw_profile(screen, font, game_state):
-    """Draw the profile view for a single turtle with navigation"""
+    """Draw the profile view for a single turtle with navigation (image-ready design)"""
     
     # Header
     pygame.draw.rect(screen, DARK_GREY, layout.PROFILE_HEADER_RECT)
@@ -28,11 +28,23 @@ def draw_profile(screen, font, game_state):
     
     turtle = all_turtles[current_index]
     
-    # Main turtle card
-    pygame.draw.rect(screen, GRAY, layout.PROFILE_TURTLE_CARD_RECT, 2)
+    # LEFT PANEL - Turtle Visual (future image area)
+    pygame.draw.rect(screen, GRAY, layout.PROFILE_VISUAL_PANEL_RECT, 2)
     
-    # Turtle name
-    name_txt = font.render(turtle.name, True, WHITE)
+    # Placeholder for future turtle image/SVG
+    placeholder_font = pygame.font.SysFont("Arial", 16)
+    placeholder_txt = placeholder_font.render("TURTLE IMAGE", True, GRAY)
+    screen.blit(placeholder_txt, (layout.PROFILE_TURTLE_IMAGE_POS[0] - 50, layout.PROFILE_TURTLE_IMAGE_POS[1]))
+    
+    # Draw a simple placeholder circle where the image will go
+    pygame.draw.circle(screen, DARK_GREY, layout.PROFILE_TURTLE_IMAGE_POS, 80, 2)
+    
+    # RIGHT PANEL - Detailed Information
+    pygame.draw.rect(screen, GRAY, layout.PROFILE_INFO_PANEL_RECT, 2)
+    
+    # Turtle name (larger font)
+    name_font = pygame.font.SysFont("Arial", 28)
+    name_txt = name_font.render(turtle.name, True, WHITE)
     screen.blit(name_txt, layout.PROFILE_TURTLE_NAME_POS)
     
     # Status and age
@@ -44,21 +56,11 @@ def draw_profile(screen, font, game_state):
     age_txt = font.render(f"Age: {turtle.age}", True, WHITE)
     screen.blit(age_txt, layout.PROFILE_TURTLE_AGE_POS)
     
-    # Energy bar (for active turtles)
-    if turtle.is_active:
-        energy_pct = turtle.current_energy / turtle.max_energy
-        pygame.draw.rect(screen, DARK_GREY, layout.PROFILE_TURTLE_ENERGY_BG_RECT)
-        energy_width = int(400 * energy_pct)
-        energy_rect = pygame.Rect(70, 190, energy_width, 20)
-        pygame.draw.rect(screen, GREEN, energy_rect)
-        energy_txt = font.render(f"Energy: {turtle.current_energy}/{turtle.max_energy}", True, WHITE)
-        screen.blit(energy_txt, (480, 190))
-    
     # Stats section
     stats_header = font.render("DETAILED STATS", True, WHITE)
     screen.blit(stats_header, layout.PROFILE_STATS_HEADER_POS)
     
-    # Detailed stat breakdown
+    # Detailed stat breakdown with visual bars
     stats = [
         ("Speed", turtle.speed, "How fast the turtle runs on grass"),
         ("Max Energy", turtle.max_energy, "Total stamina for racing"),
@@ -70,31 +72,45 @@ def draw_profile(screen, font, game_state):
     y_pos = layout.PROFILE_STATS_START_Y
     for stat_name, stat_value, description in stats:
         # Stat name and value
-        stat_txt = font.render(f"{stat_name}: {stat_value}", True, WHITE)
-        screen.blit(stat_txt, (70, y_pos))
+        stat_txt = font.render(f"{stat_name}:", True, WHITE)
+        screen.blit(stat_txt, (390, y_pos))
         
-        # Description (smaller font if available, otherwise same)
-        desc_font = pygame.font.Font(None, 18) if pygame.font.get_fonts() else font
-        desc_txt = desc_font.render(description, True, GRAY)
-        screen.blit(desc_txt, (250, y_pos + 3))
+        value_txt = font.render(str(stat_value), True, WHITE)
+        screen.blit(value_txt, (480, y_pos))
         
         # Visual bar for stat value
-        bar_width = min(stat_value * 3, 200)  # Scale stat to visual bar
-        bar_rect = pygame.Rect(550, y_pos, bar_width, 15)
+        bar_width = min(stat_value * 2, layout.PROFILE_STATS_BAR_WIDTH)  # Scale to fit
+        bar_rect = pygame.Rect(layout.PROFILE_STATS_BAR_X, y_pos, bar_width, 15)
         pygame.draw.rect(screen, BLUE, bar_rect)
         
         y_pos += layout.PROFILE_STATS_HEIGHT
     
-    # Race history section
-    history_header = font.render("RACE HISTORY", True, WHITE)
+    # Energy section (for active turtles)
+    if turtle.is_active:
+        energy_header = font.render("ENERGY STATUS", True, WHITE)
+        screen.blit(energy_header, layout.PROFILE_ENERGY_HEADER_POS)
+        
+        energy_pct = turtle.current_energy / turtle.max_energy
+        pygame.draw.rect(screen, DARK_GREY, layout.PROFILE_ENERGY_BG_RECT)
+        energy_width = int(300 * energy_pct)
+        energy_rect = pygame.Rect(390, 390, energy_width, 20)
+        pygame.draw.rect(screen, GREEN, energy_rect)
+        
+        energy_txt = font.render(f"{turtle.current_energy}/{turtle.max_energy}", True, WHITE)
+        screen.blit(energy_txt, (390, 415))
+    
+    # BOTTOM SECTION - Race History
+    pygame.draw.rect(screen, GRAY, layout.PROFILE_HISTORY_PANEL_RECT, 2)
+    
+    history_header = font.render("RACE HISTORY (Last 5)", True, WHITE)
     screen.blit(history_header, layout.PROFILE_HISTORY_HEADER_POS)
     
-    # Display race history (placeholder for now)
+    # Display race history
     race_history = getattr(turtle, 'race_history', [])
     if race_history:
         y_pos = layout.PROFILE_HISTORY_START_Y
         for i, race in enumerate(race_history[-5:]):  # Show last 5 races
-            race_txt = font.render(f"Race {race.get('number', '?')}: Position {race.get('position', '?')} - ${race.get('earnings', 0)}", True, WHITE)
+            race_txt = font.render(f"Race {race.get('number', '?')}: Pos {race.get('position', '?')} - ${race.get('earnings', 0)}", True, WHITE)
             screen.blit(race_txt, (70, y_pos))
             y_pos += layout.PROFILE_HISTORY_HEIGHT
     else:
