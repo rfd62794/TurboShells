@@ -352,7 +352,8 @@ if __name__ == "__main__":
                 output=output,
                 details={"status": "skipped"}
             )
-        def check_performance_regression(self) -> CIResult:
+    
+    def check_performance_regression(self) -> CIResult:
         """Check for performance regressions"""
         print("⚡ Checking performance regressions...")
         start_time = time.time()
