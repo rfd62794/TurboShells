@@ -1,5 +1,53 @@
 # TurboShells ChangeLog
 
+## Version 2.5 - UI Flexibility & Responsive Design 🎉
+
+### **🎨 Phase 20.1: UI Flexibility & Responsive Design** - ✅ **COMPLETED**
+
+#### **🎯 Centered Settings Menu** - ✅ **COMPLETED**
+- **Perfect Centering**: Settings panel now centered both horizontally and vertically
+- **Mathematical Precision**: Uses `(screen_width - panel_width) // 2` for exact centering
+- **All Screen Sizes Tested**: 800x600, 1024x768, 1280x720, 1920x1080 all perfectly centered
+- **Responsive Sizing**: Panel width = 70% of screen width (max 800px), height = 80% (max 600px)
+- **Smart Constraints**: Prevents panel from becoming too large on big screens
+
+#### **📱 Window Resizing Support** - ✅ **COMPLETED**
+- **Real-time Updates**: Settings menu re-centers when window is resized
+- **Event Handling**: `pygame.VIDEORESIZE` events properly processed in main loop
+- **Layout Recalculation**: All UI elements repositioned on resize
+- **Seamless Experience**: No visual glitches during resizing
+- **Resizable Window**: `pygame.RESIZABLE` flag enabled for window flexibility
+
+#### **🔧 Dynamic Layout System** - ✅ **COMPLETED**
+- **`update_layout()` Method**: Recalculates all positions on resize in SettingsView
+- **UI Reinitialization**: All tabs and elements properly repositioned
+- **State Preservation**: Active tab and settings maintained during resize
+- **Settings Manager Integration**: `update_screen_rect()` method for responsive updates
+- **Main Game Integration**: Window resize events propagate to settings manager
+
+#### **📊 Comprehensive Testing** - ✅ **COMPLETED**
+- **Multi-Resolution Tests**: Verified centering across 4 different screen sizes
+- **Resize Simulation**: Tested dynamic re-centering after window size changes
+- **Responsive Limits**: Confirmed max width/height constraints work correctly
+- **Integration Tests**: Full game integration with resizable window support
+- **Performance Validation**: No performance impact from responsive features
+
+#### **🎮 User Experience Enhancements** - ✅ **COMPLETED**
+- **Professional Appearance**: Settings menu always centered regardless of window size
+- **Balanced Layout**: 70/80 screen utilization provides optimal viewing
+- **Consistent Design**: Maintains professional appearance across all resolutions
+- **Flexibility**: Users can resize window freely with perfect UI adaptation
+- **Future-Ready**: Prepared for different display configurations
+
+### **🔧 Technical Achievements**
+- **Responsive UI Framework**: Complete dynamic positioning and scaling system
+- **Component-Based Architecture**: Modular UI components with single responsibilities
+- **Multi-Resolution Support**: Full window resizing with real-time adaptation
+- **Perfect Centering Algorithm**: Mathematical precision for UI positioning
+- **Event-Driven Updates**: Efficient resize event handling and layout recalculation
+
+---
+
 ## Version 2.4 - Voting Integration & Auto-Save System 🎉
 
 ### **🗳️ Phase 13: Voting Integration & Auto-Save** - ✅ **COMPLETED**
