@@ -14,6 +14,7 @@
   - Phase 9: Turtle Personalities → [phases/Phase_09_Turtle_Personalities.md](phases/Phase_09_Turtle_Personalities.md)
   - Phase 3: Basic Monitoring & Debugging → [phases/Phase_03_Monitoring_Debugging.md](phases/Phase_03_Monitoring_Debugging.md)
   - Phase 20: UI Flexibility & Responsive Design → [phases/Phase_20_UI_Flexibility_Responsive_Design.md](phases/Phase_20_UI_Flexibility_Responsive_Design.md)
+  - Phase 4: Performance Optimization → [phases/Phase_04_Performance_Optimization.md](phases/Phase_04_Performance_Optimization.md)
 
 ---
 
@@ -109,27 +110,8 @@
 > Real-time performance tracking, error logging, and development debugging tools
 
 ### **Phase 4: Performance Optimization** - **0% COMPLETE**
-
-#### **⚡ Game Performance**
-- [ ] **Code Optimization**: Identify and fix performance bottlenecks
-- [ ] **Memory Management**: Optimize memory usage and prevent leaks
-- [ ] **Rendering Optimization**: Improve graphics rendering performance
-- [ ] **AI Performance**: Optimize opponent decision-making
-- [ ] **Loading Times**: Reduce game startup and screen transition times
-
-#### **📈 Simple Caching**
-- [ ] **Asset Caching**: Cache frequently used game assets
-- [ ] **Image Caching**: Cache turtle renders and UI elements
-- [ ] **Data Caching**: Cache game data and calculations
-- [ ] **Save File Caching**: Optimize save/load operations
-- [ ] **Performance Monitoring**: Simple FPS and memory tracking
-
-#### **🧪 Performance Testing**
-- [ ] **Benchmark Tools**: Simple performance measurement tools
-- [ ] **Stress Testing**: Test game with many turtles/races
-- [ ] **Memory Testing**: Check for memory leaks over time
-- [ ] **Loading Testing**: Test save/load performance
-- [ ] **Performance Regression**: Catch performance regressions
+> 📋 **Detailed Plan**: See [phases/Phase_04_Performance_Optimization.md](phases/Phase_04_Performance_Optimization.md)
+> Comprehensive performance optimization across all game systems with caching and monitoring
 
 ### **Phase 5: Testing & Quality Assurance** - **0% COMPLETE**
 
