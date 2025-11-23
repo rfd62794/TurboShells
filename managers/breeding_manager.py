@@ -9,6 +9,12 @@ class BreedingManager:
         self.parents = []
 
     def handle_click(self, pos):
+        """Handle mouse clicks in the breeding view."""
+        # Check for Menu button in header (same position as other views)
+        menu_rect = pygame.Rect(700, 5, 80, 30)
+        if menu_rect.collidepoint(pos):
+            return "GOTO_MENU"
+
         # Check navigation buttons first
         if layout.BREED_BACK_BTN_RECT.collidepoint(pos):
             return "GOTO_MENU"
