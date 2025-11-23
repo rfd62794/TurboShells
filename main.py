@@ -116,22 +116,8 @@ class TurboShellsGame:
                     continue
 
             # Handle other input based on game state
-            if self.state == STATE_MENU:
-                self._handle_menu_input(event)
-            elif self.state == STATE_ROSTER:
-                self._handle_roster_input(event)
-            elif self.state == STATE_SHOP:
-                self._handle_shop_input(event)
-            elif self.state == STATE_BREEDING:
-                self._handle_breeding_input(event)
-            elif self.state == STATE_RACE:
-                self._handle_race_input(event)
-            elif self.state == STATE_RACE_RESULT:
-                self._handle_race_result_input(event)
-            elif self.state == STATE_PROFILE:
-                self._handle_profile_input(event)
-            elif self.state == STATE_VOTING:
-                self._handle_voting_input(event)
+            # StateHandler handles clicks through handle_click() method above
+            # No need for separate input handlers for each state
 
         # Draw settings overlay on top of everything
         if self.settings_manager.is_visible():

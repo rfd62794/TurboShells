@@ -1,0 +1,14 @@
+2025-11-23 11:10:29,903 - core.config - INFO - Configuration loaded successfully
+2025-11-23 11:10:29,905 - core.graphics_manager - INFO - Loaded graphics settings: 1024x768
+2025-11-23 11:10:30,062 - core.graphics_manager - INFO - Display initialized: (1024, 768), Fullscreen: False
+2025-11-23 11:10:30,065 - core.audio_manager - INFO - Loaded audio settings: Master Volume 1.0, Enabled True
+2025-11-23 11:10:30,663 - core.audio_manager - INFO - Audio system initialized successfully
+2025-11-23 11:10:30,779 - ui.settings_view - INFO - Settings view initialized
+2025-11-23 11:10:30,780 - managers.settings_manager - INFO - Settings manager initialized
+2025-11-23 11:10:30,784 - managers.save_manager - INFO - SaveManager initialized with directory: C:\Users\cheat\AppData\Roaming\TurboShells
+2025-11-23 11:10:30,806 - core.auto_load_system - INFO - Save file found at C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 11:10:30,806 - core.auto_load_system - INFO - Attempting to restore game state from save file
+2025-11-23 11:10:30,825 - managers.save_manager - INFO - Game loaded successfully from C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 11:10:30,826 - core.auto_load_system - INFO - Successfully restored game state for player player_20251122_235300
+2025-11-23 11:10:40,997 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 11:10:40,999 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
