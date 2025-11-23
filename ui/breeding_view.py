@@ -95,21 +95,20 @@ def draw_breeding(screen, font, game_state):
                 text_y = bar_rect.y + (bar_rect.height - select_txt.get_height()) // 2
                 screen.blit(select_txt, (text_x, text_y))
                 
-                # Add diagonal "WILL BE LOST" across the turtle image for Parent 2
+                # Add red X over the turtle image for Parent 2
                 if parent_num == "2":
-                    # Create diagonal text
-                    warning_font = pygame.font.SysFont("Arial", 18, bold=True)  # Larger font
-                    warning_txt = warning_font.render("WILL BE LOST", True, (255, 0, 0))  # Bright red
+                    # Draw red X over the turtle image area
+                    x_center = slot_rect.x + 70  # Center of turtle image area
+                    y_center = slot_rect.y + 85  # Center of turtle image area
+                    x_size = 50  # Size of the X
                     
-                    # Rotate the text for diagonal effect
-                    rotated_text = pygame.transform.rotate(warning_txt, -25)  # Even less steep angle
-                    
-                    # Position from top-left corner, more up and left
-                    text_x = slot_rect.x + 5   # Very close to left edge
-                    text_y = slot_rect.y + 25  # Much higher up, near top
-                    
-                    # Draw the diagonal text
-                    screen.blit(rotated_text, (text_x, text_y))
+                    # Draw thick red X lines
+                    pygame.draw.line(screen, (255, 0, 0), 
+                                   (x_center - x_size, y_center - x_size), 
+                                   (x_center + x_size, y_center + x_size), 5)
+                    pygame.draw.line(screen, (255, 0, 0), 
+                                   (x_center + x_size, y_center - x_size), 
+                                   (x_center - x_size, y_center + x_size), 5)
             
             # Draw turtle info
             draw_breeding_turtle_card(screen, font, turtle, slot_rect, is_retired)
