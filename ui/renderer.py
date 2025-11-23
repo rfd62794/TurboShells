@@ -7,7 +7,7 @@ from ui.race_view import draw_race as draw_race_view, draw_race_result as draw_r
 from ui.shop_view import draw_shop as draw_shop_view
 from ui.breeding_view import draw_breeding as draw_breeding_view
 from ui.views.profile_view import draw_profile as draw_profile_view
-from ui.voting_view import draw_voting as draw_voting_view
+from ui.voting_interface import draw_voting as draw_voting_view
 
 class Renderer:
     def __init__(self, screen, font):
