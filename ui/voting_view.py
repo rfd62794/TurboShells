@@ -369,8 +369,8 @@ class VotingView:
                 star_screen_x = self.left_panel_width + 30 + 30 + i * star_spacing
                 star_screen_y = screen_y
                 
-                # Reduce hover padding to match click detection spacing
-                hover_padding = 6  # Reduced from 10 to 6
+                # Match hover padding exactly to click padding
+                hover_padding = 4  # Same as click padding
                 if (star_screen_x - hover_padding <= self.mouse_pos[0] <= star_screen_x + star_size + hover_padding and 
                     star_screen_y - hover_padding <= self.mouse_pos[1] <= star_screen_y + star_size + hover_padding):
                     hover_star = i
