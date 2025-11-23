@@ -26,20 +26,20 @@ def draw_breeding(screen, font, game_state):
         screen.blit(menu_txt, (menu_x, menu_rect.y + 5))
 
     # Instructions
-    msg = font.render("Select 2 Parents (Press 1, 2, 3...) then ENTER to Breed", True, GREEN)
+    msg = font.render("Select 2 Parents", True, GREEN)
     screen.blit(msg, (50, 60))
 
     # Combined breeding pool: active + retired turtles
     candidates = [t for t in game_state.roster if t is not None] + list(game_state.retired_roster)
     
-    # Create breeding slots in a grid layout (2 rows of 3)
+    # Create breeding slots in a grid layout (2 rows of 3) - taller cards
     breeding_slots = [
-        pygame.Rect(50, 120, 220, 140),   # Top row
-        pygame.Rect(290, 120, 220, 140),
-        pygame.Rect(530, 120, 220, 140),
-        pygame.Rect(50, 280, 220, 140),   # Bottom row
-        pygame.Rect(290, 280, 220, 140),
-        pygame.Rect(530, 280, 220, 140),
+        pygame.Rect(50, 120, 220, 180),   # Top row - increased height from 140 to 180
+        pygame.Rect(290, 120, 220, 180),
+        pygame.Rect(530, 120, 220, 180),
+        pygame.Rect(50, 320, 220, 180),   # Bottom row - adjusted Y position
+        pygame.Rect(290, 320, 220, 180),
+        pygame.Rect(530, 320, 220, 180),
     ]
     
     # Draw breeding candidates
