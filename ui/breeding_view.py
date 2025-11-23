@@ -36,7 +36,7 @@ def draw_breeding(screen, font, game_state):
     # Breed button (only if 2 parents selected) - positioned next to instructions
     if len(game_state.breeding_parents) == 2:
         breed_color = GREEN
-        breed_rect = pygame.Rect(250, 55, 100, 35)  # Smaller, next to text
+        breed_rect = pygame.Rect(250, 65, 100, 35)  # Adjusted Y position
         if mouse_pos and breed_rect.collidepoint(mouse_pos):
             breed_color = WHITE
         
@@ -48,19 +48,19 @@ def draw_breeding(screen, font, game_state):
         # Show breeding info
         parent1, parent2 = game_state.breeding_parents
         info_txt = font.render(f"Breeding: {parent1.name} + {parent2.name}", True, WHITE)
-        screen.blit(info_txt, (50, 90))
+        screen.blit(info_txt, (50, 110))  # Moved down to make space
 
     # Combined breeding pool: active + retired turtles
     candidates = [t for t in game_state.roster if t is not None] + list(game_state.retired_roster)
     
-    # Create breeding slots in a grid layout (2 rows of 3) - taller cards
+    # Create breeding slots in a grid layout (2 rows of 3) - adjusted Y position
     breeding_slots = [
-        pygame.Rect(50, 120, 220, 180),   # Top row - increased height from 140 to 180
-        pygame.Rect(290, 120, 220, 180),
-        pygame.Rect(530, 120, 220, 180),
-        pygame.Rect(50, 320, 220, 180),   # Bottom row - adjusted Y position
-        pygame.Rect(290, 320, 220, 180),
-        pygame.Rect(530, 320, 220, 180),
+        pygame.Rect(50, 140, 220, 180),   # Top row - moved down from 120 to 140
+        pygame.Rect(290, 140, 220, 180),
+        pygame.Rect(530, 140, 220, 180),
+        pygame.Rect(50, 340, 220, 180),   # Bottom row - moved down from 320 to 340
+        pygame.Rect(290, 340, 220, 180),
+        pygame.Rect(530, 340, 220, 180),
     ]
     
     # Draw breeding candidates
