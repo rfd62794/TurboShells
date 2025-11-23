@@ -1,56 +1,92 @@
 # Test Organization Structure
 
 ## Overview
-The TurboShells test suite has been reorganized for better maintainability and clarity.
+The TurboShells test suite has been reorganized to mirror the `src/` directory structure for better maintainability and clarity.
 
 ## Directory Structure
 
+### SRC-MIRRORED Structure (Recommended)
 ```
 tests/
-├── unit/                          # Individual component tests
-│   ├── test_game_state.py        # Turtle generation, breeding, cost
-│   ├── test_race_track.py        # Track generation, terrain, checkpoints
-│   ├── test_core_mechanics.py    # Turtle physics, energy, movement
-│   ├── test_genetics_system.py   # Genetics, inheritance, mutation
-│   ├── test_data_structures.py   # Data validation, serialization
-│   └── test_error_handling.py    # Error recovery, logging
+├── src/                           # Tests mirroring src/ structure
+│   ├── core/                      # Core system tests
+│   │   ├── game/                  # Game-specific tests
+│   │   │   ├── test_game_state.py # Turtle generation, breeding, cost
+│   │   │   ├── test_race_track.py # Track generation, terrain, checkpoints
+│   │   │   └── test_core_mechanics.py # Turtle physics, energy, movement
+│   │   ├── test_data_structures.py # Data validation, serialization
+│   │   └── test_error_handling.py # Error recovery, logging
+│   ├── genetics/                  # Genetics system tests
+│   │   └── test_genetics_system.py # Genetics, inheritance, mutation
+│   ├── managers/                  # Manager tests (future)
+│   └── ui/                        # UI tests (future)
 ├── integration/                   # Workflow and system interaction tests
 │   └── test_game_logic.py        # Complete game workflows
 ├── performance/                   # Performance and optimization tests
 │   └── test_performance_optimization.py  # Caching, lazy loading, monitoring
+├── unit/                         # Legacy unit tests (deprecated)
 ├── conftest.py                   # Shared fixtures and utilities
-├── run_organized_tests.py        # New organized test runner
+├── run_src_mirrored_tests.py     # New SRC-mirrored test runner (recommended)
+├── run_organized_tests.py       # Legacy organized test runner
 └── run_tests.py                  # Legacy test runner
+```
+
+### Legacy Structure (Deprecated)
+```
+tests/
+├── unit/                          # Individual component tests
+├── integration/                   # Workflow and system interaction tests
+├── performance/                   # Performance and optimization tests
+└── run_organized_tests.py        # Legacy organized test runner
 ```
 
 ## Test Categories
 
-### Unit Tests (125+ passing)
-- **Purpose**: Test individual functions and classes in isolation
-- **Focus**: Fast, focused testing of specific functionality
-- **Coverage**: Core game mechanics, data structures, error handling
+### Core Game Tests (src/core/game/)
+- **Purpose**: Test game-specific functionality
+- **Files**: 
+  - `test_game_state.py` - Turtle generation, breeding, economics
+  - `test_race_track.py` - Track generation, terrain, checkpoints
+  - `test_core_mechanics.py` - Turtle physics, energy, movement
 
-### Integration Tests (8 passing)
+### Core System Tests (src/core/)
+- **Purpose**: Test core system functionality
+- **Files**: 
+  - `test_data_structures.py` - Data validation, serialization
+  - `test_error_handling.py` - Error recovery, logging
+
+### Genetics Tests (src/genetics/)
+- **Purpose**: Test genetics system functionality
+- **Files**: 
+  - `test_genetics_system.py` - Genetics, inheritance, mutation
+
+### Integration Tests (integration/)
 - **Purpose**: Test complete workflows and system interactions
 - **Focus**: Real-world usage scenarios
 - **Coverage**: Game logic, breeding programs, economics simulation
 
-### Performance Tests (19 passing)
+### Performance Tests (performance/)
 - **Purpose**: Test performance characteristics and optimizations
 - **Focus**: Caching, memory management, algorithm efficiency
 - **Coverage**: Lazy loading, object pooling, search algorithms
 
 ## Running Tests
 
-### Organized Test Runner (Recommended)
+### SRC-Mirrored Test Runner (Recommended)
 ```bash
-python tests/run_organized_tests.py
+python tests/run_src_mirrored_tests.py
 ```
 
 ### Individual Test Suites
 ```bash
-# Unit tests with coverage
-python -m pytest tests/unit/ --cov=src
+# Core game tests with coverage
+python -m pytest tests/src/core/game/ --cov=src
+
+# Core system tests
+python -m pytest tests/src/core/
+
+# Genetics tests
+python -m pytest tests/src/genetics/
 
 # Integration tests
 python -m pytest tests/integration/
@@ -59,40 +95,42 @@ python -m pytest tests/integration/
 python -m pytest tests/performance/
 ```
 
-### Legacy Test Runner
+### Legacy Test Runners
 ```bash
+# Legacy organized runner
+python tests/run_organized_tests.py
+
+# Original runner
 python tests/run_tests.py
 ```
 
 ## Test Statistics
 
-- **Total Tests**: 152+
-- **Pass Rate**: 99%+
+- **Total Tests**: 154+
+- **Pass Rate**: 100%
 - **Coverage**: 17% (focused on core components)
 - **Execution Time**: ~5 seconds
 
 ## Key Improvements
 
-1. **Separation of Concerns**: Tests are grouped by purpose and scope
-2. **Better Organization**: Clear directory structure and naming
-3. **Focused Testing**: Each test file has a specific responsibility
-4. **Maintainability**: Easier to find and modify relevant tests
-5. **Scalability**: Easy to add new tests in appropriate categories
+1. **SRC Structure Mirroring**: Tests follow the same structure as source code
+2. **Better Organization**: Clear mapping between source and test files
+3. **Maintainability**: Easy to find tests for specific modules
+4. **Scalability**: Simple to add tests for new modules
+5. **Logical Grouping**: Related tests are grouped together
 
-## Migration Notes
+## Migration Benefits
 
-- `test_game_systems.py` was broken up into:
-  - `unit/test_game_state.py` (turtle generation, breeding, economics)
-  - `unit/test_race_track.py` (track generation, terrain)
-  - `integration/test_game_logic.py` (complete workflows)
-
-- Performance tests moved to dedicated `performance/` directory
-
-- Error handling and data structure tests moved to `unit/` directory
+- **Developer Experience**: Developers can easily find tests for the code they're working on
+- **Code Navigation**: IDE navigation between source and test files is intuitive
+- **Test Discovery**: Easy to run tests for specific modules
+- **Documentation**: Test structure serves as documentation of system architecture
 
 ## Future Enhancements
 
-- Add UI component tests to `unit/` directory
-- Expand integration test coverage
-- Add end-to-end tests for complete game sessions
-- Improve test coverage for more components
+- Add tests for `src/managers/` modules
+- Add tests for `src/ui/` components  
+- Add tests for `src/core/data/` modules
+- Add tests for `src/core/systems/` modules
+- Add tests for `src/core/rendering/` modules
+- Expand test coverage for all components
