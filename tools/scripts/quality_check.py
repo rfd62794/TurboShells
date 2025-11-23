@@ -76,6 +76,122 @@ def check_python_syntax() -> Dict[str, Any]:
         'passed': len(syntax_errors) == 0
     }
 
+def check_code_formatting() -> Dict[str, Any]:
+    """Check code formatting with Black"""
+    print_section("Code Formatting Check (Black)")
+    
+    try:
+        # Check if code is properly formatted with Black
+        result = subprocess.run([
+            sys.executable, '-m', 'black',
+            '--check', '--diff', 'src/', 'tests/'
+        ], capture_output=True, text=True, cwd=project_root)
+        
+        if result.returncode == 0:
+            print("✅ Code is properly formatted with Black")
+            return {'passed': True, 'issues': []}
+        else:
+            print("⚠️  Code formatting issues found:")
+            # Show first few lines of diff
+            diff_lines = result.stdout.split('\n')[:20]
+            for line in diff_lines:
+                if line.strip():
+                    print(f"  {line}")
+            
+            return {'passed': False, 'issues': result.stdout}
+            
+    except FileNotFoundError:
+        print("ℹ️  Black not available, skipping formatting check")
+        return {'passed': True, 'issues': [], 'skipped': True}
+    except Exception as e:
+        print(f"❌ Formatting check failed: {e}")
+        return {'passed': False, 'issues': [str(e)]}
+
+def check_code_quality() -> Dict[str, Any]:
+    """Check code quality with Pylint"""
+    print_section("Code Quality Check (Pylint)")
+    
+    try:
+        # Run Pylint with project configuration
+        result = subprocess.run([
+            sys.executable, '-m', 'pylint',
+            '--reports=no', 'src/'
+        ], capture_output=True, text=True, cwd=project_root)
+        
+        # Extract score from Pylint output
+        score = 0.0
+        if "rated at" in result.stdout:
+            import re
+            score_match = re.search(r'rated at ([\d.]+)/10', result.stdout)
+            if score_match:
+                score = float(score_match.group(1))
+        
+        print(f"📊 Pylint score: {score}/10")
+        
+        # Count issues
+        issues = result.stdout.split('\n') if result.stdout else []
+        issues = [line for line in issues if line.strip() and not line.startswith('*************')]
+        
+        if score >= 8.0:
+            print("✅ Code quality check passed")
+            return {'passed': True, 'score': score, 'issues': issues}
+        else:
+            print(f"⚠️  Code quality issues found (score: {score}/10)")
+            # Show first 10 issues
+            for issue in issues[:10]:
+                if issue.strip():
+                    print(f"  - {issue}")
+            if len(issues) > 10:
+                print(f"  ... and {len(issues) - 10} more")
+            
+            return {'passed': False, 'score': score, 'issues': issues}
+            
+    except FileNotFoundError:
+        print("ℹ️  Pylint not available, skipping quality check")
+        return {'passed': True, 'issues': [], 'skipped': True}
+    except Exception as e:
+        print(f"❌ Quality check failed: {e}")
+        return {'passed': False, 'issues': [str(e)]}
+
+def check_test_coverage() -> Dict[str, Any]:
+    """Check test coverage"""
+    print_section("Test Coverage Check")
+    
+    try:
+        # Run tests with coverage
+        result = subprocess.run([
+            sys.executable, '-m', 'pytest',
+            'tests/', '--cov=src', '--cov-report=term-missing',
+            '--cov-fail-under=70', '--tb=short'
+        ], capture_output=True, text=True, cwd=project_root, timeout=180)
+        
+        # Extract coverage percentage
+        coverage = 0.0
+        if "TOTAL" in result.stdout:
+            import re
+            coverage_match = re.search(r'TOTAL\s+(\d+)%', result.stdout)
+            if coverage_match:
+                coverage = float(coverage_match.group(1))
+        
+        print(f"📊 Test coverage: {coverage}%")
+        
+        if result.returncode == 0:
+            print("✅ Test coverage check passed")
+            return {'passed': True, 'coverage': coverage, 'output': result.stdout}
+        else:
+            print(f"⚠️  Test coverage below threshold (70%)")
+            return {'passed': False, 'coverage': coverage, 'output': result.stdout}
+            
+    except subprocess.TimeoutExpired:
+        print("❌ Coverage check timed out")
+        return {'passed': False, 'timeout': True}
+    except FileNotFoundError:
+        print("ℹ️  pytest-cov not available, skipping coverage check")
+        return {'passed': True, 'coverage': 0, 'skipped': True}
+    except Exception as e:
+        print(f"❌ Coverage check failed: {e}")
+        return {'passed': False, 'error': str(e)}
+
 def check_import_structure() -> Dict[str, Any]:
     """Check import structure and dependencies"""
     print_section("Import Structure Check")
@@ -269,8 +385,10 @@ def main():
     # Run all checks
     results = {
         'syntax': check_python_syntax(),
+        'formatting': check_code_formatting(),
+        'quality': check_code_quality(),
+        'coverage': check_test_coverage(),
         'imports': check_import_structure(),
-        'style': check_code_style(),
         'tests': run_tests(),
         'structure': check_file_structure()
     }
