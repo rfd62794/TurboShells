@@ -13,10 +13,10 @@ import os
 # Add project root to path
 sys.path.insert(0, os.path.dirname(__file__))
 
-from core.genetics import VisualGenetics
-from core.direct_turtle_renderer import get_direct_renderer
-from core.voting_system import VotingSystem
-from core.genetic_pool_manager import GeneticPoolManager
+from genetics import VisualGenetics
+from core.rendering import get_direct_renderer
+from core.voting import VotingSystem
+from core.systems import GeneticPoolManager
 
 
 class VisualGeneticsDemo:

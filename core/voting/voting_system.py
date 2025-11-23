@@ -6,7 +6,7 @@ Complete design voting system with player-exclusive voting and genetic impact
 import json
 from datetime import datetime, date, timedelta
 from typing import Dict, Any, List, Optional, Tuple
-from .genetics import VisualGenetics
+from genetics import VisualGenetics
 
 
 class DesignPackage:
