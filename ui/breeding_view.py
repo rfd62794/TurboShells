@@ -13,46 +13,65 @@ def draw_breeding(screen, font, game_state):
     money_txt = font.render(f"$ {game_state.money}", True, WHITE)
     screen.blit(money_txt, layout.HEADER_MONEY_POS)
 
+    # Menu button in header
     mouse_pos = getattr(game_state, "mouse_pos", None)
+    menu_color = GREEN
+    if mouse_pos:
+        menu_rect = pygame.Rect(700, 5, 80, 30)
+        if menu_rect.collidepoint(mouse_pos):
+            menu_color = WHITE
+        pygame.draw.rect(screen, menu_color, menu_rect, 2)
+        menu_txt = font.render("MENU", True, WHITE)
+        menu_x = menu_rect.x + (menu_rect.width - menu_txt.get_width()) // 2
+        screen.blit(menu_txt, (menu_x, menu_rect.y + 5))
 
     # Instructions
     msg = font.render("Select 2 Parents (Press 1, 2, 3...) then ENTER to Breed", True, GREEN)
     screen.blit(msg, (50, 60))
 
-    # Combined breeding pool: active + retired
+    # Combined breeding pool: active + retired turtles
     candidates = [t for t in game_state.roster if t is not None] + list(game_state.retired_roster)
-
-    # Draw turtle cards for breeding candidates
-    for i, turtle in enumerate(candidates):
-        if i >= 6:  # Limit to 6 candidates for display
-            break
+    
+    # Create breeding slots in a grid layout (2 rows of 3)
+    breeding_slots = [
+        pygame.Rect(50, 120, 220, 140),   # Top row
+        pygame.Rect(290, 120, 220, 140),
+        pygame.Rect(530, 120, 220, 140),
+        pygame.Rect(50, 280, 220, 140),   # Bottom row
+        pygame.Rect(290, 280, 220, 140),
+        pygame.Rect(530, 280, 220, 140),
+    ]
+    
+    # Draw breeding candidates
+    for idx, slot_rect in enumerate(breeding_slots):
+        if idx < len(candidates):
+            turtle = candidates[idx]
+            is_selected = turtle in game_state.breeding_parents
+            is_retired = turtle in game_state.retired_roster
             
-        # Create a card position
-        card_x = 50 + (i % 3) * 230  # Further reduced spacing
-        card_y = 120 + (i // 3) * 150
-        card_rect = pygame.Rect(card_x, card_y, 200, 120)  # Slightly narrower cards
-
-        # Determine if this turtle is selected
-        is_selected = turtle in game_state.breeding_parents
-        is_retired = turtle in game_state.retired_roster
-
-        # Draw the turtle card
-        draw_stable_turtle_slot(screen, font, game_state, turtle, card_rect, is_selected, mouse_pos)
-
-        # Add selection indicator
-        if is_selected:
-            pygame.draw.rect(screen, GREEN, card_rect, 4)
-            select_txt = font.render("SELECTED", True, GREEN)
-            screen.blit(select_txt, (card_rect.x + 5, card_rect.y + 5))
-
-    # Menu button
-    menu_color = GREEN
-    if mouse_pos and layout.BREED_BACK_BTN_RECT.collidepoint(mouse_pos):
-        menu_color = WHITE
-    pygame.draw.rect(screen, menu_color, layout.BREED_BACK_BTN_RECT, 2)
-    menu_txt = font.render("MENU", True, WHITE)
-    menu_x = layout.BREED_BACK_BTN_RECT.x + (layout.BREED_BACK_BTN_RECT.width - menu_txt.get_width()) // 2
-    screen.blit(menu_txt, (menu_x, layout.BREED_BACK_BTN_RECT.y + 15))
+            # Draw slot background
+            slot_color = DARK_GREY if is_selected else GRAY
+            if mouse_pos and slot_rect.collidepoint(mouse_pos):
+                slot_color = WHITE
+            pygame.draw.rect(screen, slot_color, slot_rect, 2)
+            
+            # Draw selection indicator
+            if is_selected:
+                pygame.draw.rect(screen, GREEN, slot_rect, 4)
+                select_txt = font.render("SELECTED", True, GREEN)
+                screen.blit(select_txt, (slot_rect.x + 5, slot_rect.y + 5))
+            
+            # Draw turtle info
+            draw_breeding_turtle_card(screen, font, turtle, slot_rect, is_retired)
+            
+            # Draw selection number (1, 2, 3...)
+            num_txt = font.render(str(idx + 1), True, WHITE)
+            screen.blit(num_txt, (slot_rect.x + 5, slot_rect.y + slot_rect.height - 25))
+        else:
+            # Empty slot
+            pygame.draw.rect(screen, GRAY, slot_rect, 1)
+            empty_txt = font.render("EMPTY", True, GRAY)
+            screen.blit(empty_txt, (slot_rect.centerx - empty_txt.get_width()//2, slot_rect.centery))
 
     # Breed button (only if 2 parents selected)
     if len(game_state.breeding_parents) == 2:
@@ -63,3 +82,43 @@ def draw_breeding(screen, font, game_state):
         breed_txt = font.render("BREED", True, WHITE)
         breed_x = layout.BREED_BTN_RECT.x + (layout.BREED_BTN_RECT.width - breed_txt.get_width()) // 2
         screen.blit(breed_txt, (breed_x, layout.BREED_BTN_RECT.y + 15))
+        
+        # Show breeding info
+        parent1, parent2 = game_state.breeding_parents
+        info_txt = font.render(f"Breeding: {parent1.name} + {parent2.name}", True, WHITE)
+        screen.blit(info_txt, (50, 480))
+
+
+def draw_breeding_turtle_card(screen, font, turtle, rect, is_retired):
+    """Draw a compact turtle card for breeding selection"""
+    if not turtle:
+        return
+    
+    # Small turtle picture area (placeholder - could be sprite)
+    pic_rect = pygame.Rect(rect.x + 10, rect.y + 25, 60, 60)
+    pygame.draw.rect(screen, BLUE, pic_rect)
+    pygame.draw.rect(screen, WHITE, pic_rect, 1)
+    
+    # Turtle name
+    name_color = GRAY if is_retired else WHITE
+    name_txt = font.render(turtle.name, True, name_color)
+    screen.blit(name_txt, (rect.x + 80, rect.y + 10))
+    
+    if is_retired:
+        retired_txt = font.render("(RETIRED)", True, GRAY)
+        screen.blit(retired_txt, (rect.x + 80, rect.y + 30))
+    
+    # Vertical stats list
+    stats = [
+        f"Speed: {turtle.speed}",
+        f"Energy: {turtle.max_energy}",
+        f"Recovery: {turtle.recovery}",
+        f"Swim: {turtle.swim}",
+        f"Climb: {turtle.climb}"
+    ]
+    
+    y_offset = rect.y + 30 if not is_retired else rect.y + 50
+    for stat in stats:
+        stat_txt = font.render(stat, True, WHITE)
+        screen.blit(stat_txt, (rect.x + 80, y_offset))
+        y_offset += 18
