@@ -102,6 +102,11 @@ class StateHandler:
             self.game.state = STATE_SHOP
         elif action == "GOTO_BREEDING":
             self.game.state = STATE_BREEDING
+        elif action == "PROFILE":
+            # Transition to profile view
+            self.game.state = STATE_PROFILE
+            # Set profile turtle index based on clicked turtle
+            self._set_profile_turtle_index(pos)
     
     def _handle_shop_clicks(self, pos):
         """Handle clicks in shop state."""
@@ -114,6 +119,36 @@ class StateHandler:
         action = self.game.breeding_manager.handle_click(pos)
         if action == "GOTO_MENU":
             self.game.state = STATE_MENU
+    
+    def _set_profile_turtle_index(self, pos):
+        """Set the profile turtle index based on click position."""
+        from ui.views.profile_view import get_all_turtles
+        
+        all_turtles = get_all_turtles(self.game)
+        if not all_turtles:
+            return
+        
+        # Check which turtle was clicked
+        show_retired = getattr(self.game, "show_retired_view", False)
+        
+        if not show_retired:
+            # Active roster view
+            for i, slot_rect in enumerate(layout.SLOT_RECTS):
+                if slot_rect.collidepoint(pos) and i < len(self.game.roster) and self.game.roster[i]:
+                    # Find this turtle in the all_turtles list
+                    for j, turtle in enumerate(all_turtles):
+                        if turtle == self.game.roster[i]:
+                            self.game.profile_turtle_index = j
+                            return
+        else:
+            # Retired view
+            for i, slot_rect in enumerate(layout.SLOT_RECTS):
+                if slot_rect.collidepoint(pos) and i < len(self.game.retired_roster):
+                    # Find this turtle in the all_turtles list
+                    for j, turtle in enumerate(all_turtles):
+                        if turtle == self.game.retired_roster[i]:
+                            self.game.profile_turtle_index = j
+                            return
     
     def _handle_profile_clicks(self, pos):
         """Handle clicks in profile state."""
