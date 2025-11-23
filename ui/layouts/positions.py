@@ -75,10 +75,11 @@ PROFILE_DOTS_START_X = 340
 PROFILE_DOTS_Y = 590
 
 # 6. Main Menu Layout
-MENU_ROSTER_RECT = pygame.Rect(200, 150, 400, 80)
-MENU_SHOP_RECT = pygame.Rect(200, 250, 400, 80)
-MENU_BREEDING_RECT = pygame.Rect(200, 350, 400, 80)
-MENU_RACE_RECT = pygame.Rect(200, 450, 400, 80)
+MENU_ROSTER_RECT = pygame.Rect(200, 120, 400, 70)
+MENU_SHOP_RECT = pygame.Rect(200, 210, 400, 70)
+MENU_BREEDING_RECT = pygame.Rect(200, 300, 400, 70)
+MENU_RACE_RECT = pygame.Rect(200, 390, 400, 70)
+MENU_VOTING_RECT = pygame.Rect(200, 480, 400, 70)
 
 # 4. Shop Layout
 SHOP_SLOT_1_RECT = pygame.Rect(50, 100, 200, 300)
