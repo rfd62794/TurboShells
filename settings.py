@@ -21,6 +21,7 @@ STATE_SHOP = "SHOP"
 STATE_BREEDING = "BREEDING"
 STATE_PROFILE = "PROFILE"  # Turtle Profile View (new)
 STATE_VOTING = "VOTING"  # Design Voting View (new)
+STATE_SETTINGS = "SETTINGS"  # Settings Menu (new)
 
 # Gameplay Constants
 TRACK_LENGTH_LOGIC = 1500

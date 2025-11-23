@@ -8,6 +8,12 @@
 
 ## **DEVELOPMENT PRIORITIES**
 
+### User Provided Phases
+1. Test Suite Extension
+2. SRP Seperation
+3. PyGame Separation
+4. Proper Organization Plan
+
 ### **IMMEDIATE PRIORITY (Next 1-2 months)**
 1. **Phase 1: Personal Development Setup** - Foundation for all future work
 2. **Phase 2: Game Configuration & Settings** - Essential user experience

@@ -18,6 +18,7 @@ from core.systems.state_handler import StateHandler
 from core.game.keyboard_handler import KeyboardHandler
 from core.systems.game_state_manager import GameStateManager
 from managers.save_manager import SaveManager
+from managers.settings_manager import SettingsManager
 
 # --- MAIN GAME CLASS ---
 class TurboShellsGame:
@@ -63,6 +64,7 @@ class TurboShellsGame:
         self.shop_manager = ShopManager(self)
         self.race_manager = RaceManager(self)
         self.breeding_manager = BreedingManager(self)
+        self.settings_manager = SettingsManager(self.screen.get_rect())
         
         # Initialize shop with stock
         self.shop_manager.refresh_stock(free=True)
@@ -78,6 +80,11 @@ class TurboShellsGame:
 
     def handle_input(self):
         for event in pygame.event.get():
+            # Handle settings input first (it overlays everything)
+            if self.settings_manager.is_visible():
+                if self.settings_manager.handle_event(event):
+                    continue  # Event was handled by settings
+            
             if event.type == pygame.QUIT:
                 self.save_on_exit()
                 pygame.quit()
@@ -94,9 +101,19 @@ class TurboShellsGame:
                     self.state_handler.handle_mouse_wheel(event.button)
 
             if event.type == pygame.KEYDOWN:
-                self.keyboard_handler.handle_keydown(event)
+                # Check for settings toggle
+                if event.key == pygame.K_ESCAPE:
+                    if self.settings_manager.is_visible():
+                        self.settings_manager.hide_settings()
+                    else:
+                        self.settings_manager.show_settings()
+                else:
+                    self.keyboard_handler.handle_keydown(event)
 
     def update(self):
+        # Update settings manager (always active)
+        self.settings_manager.update(1.0 / FPS)
+        
         if self.state == STATE_SHOP:
             self.shop_manager.update()
 
@@ -107,6 +124,7 @@ class TurboShellsGame:
     def draw(self):
         self.screen.fill(BLACK)
         
+        # Draw game content based on state
         if self.state == STATE_MENU:
             self.renderer.draw_main_menu(self)
         elif self.state == STATE_ROSTER:
@@ -123,6 +141,10 @@ class TurboShellsGame:
             self.renderer.draw_profile(self)
         elif self.state == STATE_VOTING:
             self.renderer.draw_voting(self)
+        
+        # Draw settings overlay on top of everything
+        if self.settings_manager.is_visible():
+            self.settings_manager.draw(self.screen)
         
         pygame.display.flip()  # Make sure we update the display
     

@@ -10,7 +10,7 @@ from typing import Dict, List, Tuple, Optional, Any
 from dataclasses import dataclass
 
 from ui.settings_view import SettingsView, SettingsTab
-from ui.components import Button, Checkbox, Slider, Dropdown, Panel, ComponentStyle
+from ui.ui_components import Button, Checkbox, Slider, Dropdown, Panel, ComponentStyle
 from core.config import config_manager
 from core.graphics_manager import graphics_manager
 from core.audio_manager import audio_manager

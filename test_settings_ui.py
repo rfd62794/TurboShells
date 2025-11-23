@@ -58,7 +58,7 @@ def test_ui_components():
     print("🧪 Testing UI Components...")
     
     try:
-        from ui.components import Button, Checkbox, Slider, Dropdown, Label, Panel, ComponentStyle
+        from ui.ui_components import Button, Checkbox, Slider, Dropdown, Label, Panel, ComponentStyle
         
         # Initialize pygame for testing
         pygame.init()

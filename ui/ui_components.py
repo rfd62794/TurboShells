@@ -538,15 +538,24 @@ class TooltipManager:
     
     def __init__(self):
         """Initialize tooltip manager."""
-        self.font = pygame.font.Font(None, 12)
+        self.font = None
         self.tooltip_text = ""
         self.tooltip_rect = pygame.Rect(0, 0, 0, 0)
         self.visible = False
         self.show_delay = 500  # milliseconds
         self.hover_start_time = 0
     
+    def _ensure_font(self):
+        """Ensure font is initialized."""
+        if self.font is None:
+            try:
+                self.font = pygame.font.Font(None, 12)
+            except:
+                self.font = pygame.font.SysFont("Arial", 12)
+    
     def show_tooltip(self, text: str, pos: Tuple[int, int]) -> None:
         """Show a tooltip at the specified position."""
+        self._ensure_font()
         self.tooltip_text = text
         self.hover_start_time = pygame.time.get_ticks()
         self.visible = True
@@ -575,6 +584,8 @@ class TooltipManager:
         """Draw the tooltip if visible."""
         if not self.visible or pygame.time.get_ticks() - self.hover_start_time < self.show_delay:
             return
+        
+        self._ensure_font()
         
         # Draw tooltip background
         pygame.draw.rect(screen, (40, 40, 40), self.tooltip_rect)
