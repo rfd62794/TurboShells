@@ -7,23 +7,22 @@ Test script to verify the main menu changes:
 """
 
 # Add project root to path
-import ui.menu_view as menu_view
 import ui.layouts.positions as layout
-import sys
-sys.path.insert(0, ".")
-sys.path.insert(0, "src")
-import sys
-sys.path.insert(0, ".")
-sys.path.insert(0, "src")
+import ui.menu_view as menu_view
 from settings import *
+from pathlib import Path
 import pygame
 import sys
-from pathlib import Path
+sys.path.insert(0, ".")
+sys.path.insert(0, "src")
+sys.path.insert(0, ".")
+sys.path.insert(0, "src")
+sys.path.insert(0, ".")
+sys.path.insert(0, "src")
 
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 sys.path.insert(0, str(project_root / "src"))
-
 
 sys.path.insert(0, ".")
 sys.path.insert(0, "src")
