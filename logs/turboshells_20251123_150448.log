@@ -22,3 +22,5 @@
 2025-11-23 15:04:49,266 - core.auto_load_system - INFO - Successfully restored game state for player player_20251123_112134
 2025-11-23 15:04:50,746 - ui.settings_view - INFO - Settings view shown
 2025-11-23 15:04:50,746 - managers.settings_manager - INFO - Settings shown, tab: graphics
+2025-11-23 15:09:48,401 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 15:09:48,403 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json

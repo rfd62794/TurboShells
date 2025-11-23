@@ -96,17 +96,17 @@ class SettingsView:
         self.tab_content: Dict[SettingsTab, List[UIElement]] = {}
         self.buttons: List[UIElement] = []
 
-        # Layout dimensions - Responsive and centered
+        # Layout dimensions - Upper-left corner positioning for better tab fit
         panel_width = min(
-            screen_rect.width * 0.7, 800
-        )  # 70% of screen width, max 800px
+            screen_rect.width * 0.9, 900
+        )  # 90% of screen width, max 900px for more space
         panel_height = min(
-            screen_rect.height * 0.8, 600
-        )  # 80% of screen height, max 600px
+            screen_rect.height * 0.85, 650
+        )  # 85% of screen height, max 650px for more space
 
         self.panel_rect = pygame.Rect(
-            (screen_rect.width - panel_width) // 2,  # Centered X
-            (screen_rect.height - panel_height) // 2,  # Centered Y
+            50,  # Upper-left corner X position
+            50,  # Upper-left corner Y position  
             panel_width,
             panel_height,
         )
@@ -138,15 +138,15 @@ class SettingsView:
 
         # Recalculate panel dimensions
         panel_width = min(
-            screen_rect.width * 0.7, 800
-        )  # 70% of screen width, max 800px
+            screen_rect.width * 0.9, 900
+        )  # 90% of screen width, max 900px for more space
         panel_height = min(
-            screen_rect.height * 0.8, 600
-        )  # 80% of screen height, max 600px
+            screen_rect.height * 0.85, 650
+        )  # 85% of screen height, max 650px for more space
 
         self.panel_rect = pygame.Rect(
-            (screen_rect.width - panel_width) // 2,  # Centered X
-            (screen_rect.height - panel_height) // 2,  # Centered Y
+            50,  # Upper-left corner X position
+            50,  # Upper-left corner Y position
             panel_width,
             panel_height,
         )
@@ -191,10 +191,6 @@ class SettingsView:
 
     def _initialize_tabs(self) -> None:
         """Initialize tab navigation elements."""
-        tab_width = 100
-        tab_height = 35
-        tab_spacing = 5
-
         tab_configs = [
             (SettingsTab.GRAPHICS, "Graphics"),
             (SettingsTab.AUDIO, "Audio"),
@@ -207,8 +203,16 @@ class SettingsView:
             (SettingsTab.PRIVACY, "Privacy"),
         ]
 
+        # Calculate tab width to fit all tabs in the available space
+        num_tabs = len(tab_configs)
+        available_width = self.tab_bar_rect.width - 20  # Leave some padding
+        tab_spacing = 3  # Reduced spacing for better fit
+        tab_width = (available_width - (num_tabs - 1) * tab_spacing) // num_tabs
+        tab_width = max(80, min(tab_width, 110))  # Ensure reasonable min/max width
+        tab_height = 35
+
         for i, (tab, label) in enumerate(tab_configs):
-            x = self.tab_bar_rect.x + i * (tab_width + tab_spacing)
+            x = self.tab_bar_rect.x + 10 + i * (tab_width + tab_spacing)
             y = self.tab_bar_rect.y
 
             rect = pygame.Rect(x, y, tab_width, tab_height)
@@ -931,12 +935,28 @@ class SettingsView:
             pygame.draw.rect(screen, color, element.rect)
             pygame.draw.rect(screen, self.COLORS["border"], element.rect, 1)
 
-            # Draw tab label
+            # Draw tab label with appropriate font size
             label_color = (
                 self.COLORS["text"] if tab == self.active_tab else self.COLORS["text"]
             )
-            label_text = self.fonts["tab"].render(element.label, True, label_color)
+            
+            # Use smaller font for narrow tabs
+            if element.rect.width < 90:
+                font_size = 12
+            else:
+                font_size = 14
+            
+            tab_font = pygame.font.Font(None, font_size)
+            label_text = tab_font.render(element.label, True, label_color)
             label_rect = label_text.get_rect(center=element.rect.center)
+            
+            # Truncate text if still too wide
+            if label_rect.width > element.rect.width - 4:
+                # Truncate and add ellipsis
+                truncated_label = element.label[:7] + "..." if len(element.label) > 7 else element.label
+                label_text = tab_font.render(truncated_label, True, label_color)
+                label_rect = label_text.get_rect(center=element.rect.center)
+            
             screen.blit(label_text, label_rect)
 
     def _draw_tab_content(self, screen: pygame.Surface) -> None:
