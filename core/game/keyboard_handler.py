@@ -119,14 +119,24 @@ class KeyboardHandler:
     def _handle_breeding_keys(self, event):
         """Handle keys in breeding state."""
         breeding_actions = {
-            pygame.K_1: lambda: self.game.breeding_manager.toggle_parent(0),
-            pygame.K_2: lambda: self.game.breeding_manager.toggle_parent(1),
-            pygame.K_3: lambda: self.game.breeding_manager.toggle_parent(2),
+            pygame.K_1: lambda: self._toggle_breeding_parent(0),
+            pygame.K_2: lambda: self._toggle_breeding_parent(1),
+            pygame.K_3: lambda: self._toggle_breeding_parent(2),
+            pygame.K_4: lambda: self._toggle_breeding_parent(3),
+            pygame.K_5: lambda: self._toggle_breeding_parent(4),
+            pygame.K_6: lambda: self._toggle_breeding_parent(5),
             pygame.K_RETURN: lambda: self._attempt_breeding(),
         }
         
         if event.key in breeding_actions:
             breeding_actions[event.key]()
+    
+    def _toggle_breeding_parent(self, index):
+        """Toggle parent selection by index from breeding candidates."""
+        candidates = self.game.breeding_manager._get_breeding_candidates()
+        if index < len(candidates):
+            turtle = candidates[index]
+            self.game.breeding_manager._toggle_parent_by_turtle(turtle)
     
     def _attempt_breeding(self):
         """Attempt breeding and return to menu if successful."""
