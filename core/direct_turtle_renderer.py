@@ -38,27 +38,18 @@ class DirectTurtleRenderer:
     # --- TEXTURE ENGINES ---
     
     def _draw_triangle_texture(self, draw, points, color, density=0.4):
-        """
-        Draws scales strictly inside a triangle using Barycentric coordinates.
-        This prevents dots from floating in the empty space outside the flipper.
-        """
+        """Draws scales strictly inside a triangle using Barycentric coordinates."""
         p1, p2, p3 = points
-        
-        # Calculate area to determine how many dots to draw
         area = 0.5 * abs((p1[0]*(p2[1]-p3[1]) + p2[0]*(p3[1]-p1[1]) + p3[0]*(p1[1]-p2[1])))
         num_dots = int(area * 0.005 * density)
-        
         scale_color = self.get_variant_color(color, 1.1)
         
         for _ in range(num_dots):
-            # Barycentric coordinate generation (guarantees point is inside triangle)
             r1 = random.random()
             r2 = random.random()
             sqrt_r1 = math.sqrt(r1)
-            
             x = (1 - sqrt_r1) * p1[0] + (sqrt_r1 * (1 - r2)) * p2[0] + (sqrt_r1 * r2) * p3[0]
             y = (1 - sqrt_r1) * p1[1] + (sqrt_r1 * (1 - r2)) * p2[1] + (sqrt_r1 * r2) * p3[1]
-            
             size = random.randint(1, 2)
             draw.ellipse([x, y, x+size, y+size], fill=scale_color)
 
@@ -67,7 +58,6 @@ class DirectTurtleRenderer:
         x1, y1, x2, y2 = bbox
         w, h = x2 - x1, y2 - y1
         cx, cy = (x1 + x2) / 2, (y1 + y2) / 2
-        
         num_dots = int((w * h) * 0.005 * density)
         scale_color = self.get_variant_color(color, 1.1)
         
@@ -75,11 +65,8 @@ class DirectTurtleRenderer:
         attempts = 0
         while count < num_dots and attempts < num_dots * 3:
             attempts += 1
-            # Pick random point in box
             rx = random.randint(int(x1), int(x2))
             ry = random.randint(int(y1), int(y2))
-            
-            # Check if inside ellipse equation
             if ((rx - cx) / (w/2))**2 + ((ry - cy) / (h/2))**2 <= 0.8:
                 size = random.randint(1, 2)
                 draw.ellipse([rx, ry, rx+size, ry+size], fill=scale_color)
@@ -110,24 +97,22 @@ class DirectTurtleRenderer:
             center_x + int(60 * scale), center_y + int(50 * scale) + shadow_y_offset
         ], fill=(0, 0, 0, 60))
 
-        # --- 2. Limbs & Tail (Textured) ---
+        # --- 2. Limbs & Tail (Dynamic Shapes) ---
         self._draw_limbs(draw, center_x, center_y, scale, skin_base, skin_shadow)
         self._draw_tail(draw, center_x, center_y, scale, skin_base, skin_shadow)
         
-        # --- 3. Head (Textured) ---
+        # --- 3. Head ---
         self._draw_head(draw, center_x, center_y, scale, skin_base, skin_shadow, genetics)
 
         # --- 4. Shell Body ---
         shell_w = int(65 * scale) 
         shell_h = int(55 * scale)
         
-        # Shell Rim 
         draw.ellipse([
             center_x - shell_w, center_y - shell_h,
             center_x + shell_w, center_y + shell_h
         ], fill=shell_shadow)
 
-        # Main Shell Dome
         dome_offset = int(5 * scale)
         draw.ellipse([
             center_x - shell_w + 3, center_y - shell_h,
@@ -138,24 +123,107 @@ class DirectTurtleRenderer:
         self._draw_shell_pattern(draw, center_x, center_y, shell_w, shell_h, scale, shell_base, pattern_color)
 
     def _draw_limbs(self, draw, cx, cy, scale, color, outline):
-        """Draws flippers with strict internal texture"""
-        offsets = [
-            (45, -35, 85, -55, 75, -5),    # Front Right
-            (-45, -35, -85, -55, -75, -5), # Front Left
-            (35, 35, 60, 55, 40, 65),      # Back Right
-            (-35, 35, -60, 55, -40, 65)    # Back Left
+        """Draws randomized limb shapes (Flippers, Feet, or Fins)"""
+        
+        # 1. Determine Limb Style
+        styles = ['flippers', 'feet', 'fins']
+        keys_to_check = ['limb_shape', 'leg_shape', 'limb_type', 'leg_style']
+        style = None
+        for k in keys_to_check:
+            if k in self.current_genetics:
+                val = self.current_genetics[k]
+                style = val.get('type', 'flippers') if isinstance(val, dict) else str(val).lower()
+                break
+        
+        if not style or style not in styles:
+            # Fallback to hash if gene is missing
+            style_idx = hash(str(self.current_genetics)) % len(styles)
+            style = styles[style_idx]
+
+        # 2. Determine Leg Length (Scaling)
+        leg_len = 1.0
+        if 'leg_length' in self.current_genetics:
+            try:
+                leg_len = float(self.current_genetics['leg_length'])
+            except:
+                pass
+        
+        # Clamp leg length to sane values (0.5 to 1.5)
+        leg_len = max(0.5, min(1.5, leg_len))
+
+        # 3. Draw Specific Style
+        if style == 'feet':
+            self._draw_limbs_feet(draw, cx, cy, scale, color, outline, leg_len)
+        elif style == 'fins':
+            self._draw_limbs_fins(draw, cx, cy, scale, color, outline, leg_len)
+        else:
+            self._draw_limbs_flippers(draw, cx, cy, scale, color, outline, leg_len)
+
+    def _draw_limbs_flippers(self, draw, cx, cy, scale, color, outline, len_mod):
+        """Standard Triangular Flippers"""
+        # We apply len_mod to the distance from center
+        def adjust(x, y):
+            dx, dy = x - cx, y - cy
+            return (cx + int(dx * len_mod), cy + int(dy * len_mod))
+
+        # Base coords (before scaling)
+        coords = [
+             # FR
+             [(cx+45*scale, cy-35*scale), (cx+85*scale, cy-55*scale), (cx+75*scale, cy-5*scale)],
+             # FL
+             [(cx-45*scale, cy-35*scale), (cx-85*scale, cy-55*scale), (cx-75*scale, cy-5*scale)],
+             # BR
+             [(cx+35*scale, cy+35*scale), (cx+60*scale, cy+55*scale), (cx+40*scale, cy+65*scale)],
+             # BL
+             [(cx-35*scale, cy+35*scale), (cx-60*scale, cy+55*scale), (cx-40*scale, cy+65*scale)]
         ]
 
-        for p1x, p1y, p2x, p2y, p3x, p3y in offsets:
-            points = [
-                (cx + int(p1x * scale), cy + int(p1y * scale)),
-                (cx + int(p2x * scale), cy + int(p2y * scale)),
-                (cx + int(p3x * scale), cy + int(p3y * scale))
-            ]
+        for poly_raw in coords:
+            # Apply length modifier
+            points = [adjust(px, py) for px, py in poly_raw]
             draw.polygon(points, fill=color, outline=outline)
-            
-            # Triangle Texture Logic
             self._draw_triangle_texture(draw, points, color)
+
+    def _draw_limbs_fins(self, draw, cx, cy, scale, color, outline, len_mod):
+        """Swept-back Aerodynamic Fins (Longer, sharper)"""
+        def adjust(x, y):
+            dx, dy = x - cx, y - cy
+            return (cx + int(dx * len_mod), cy + int(dy * len_mod))
+
+        coords = [
+             # FR (Swept back)
+             [(cx+35*scale, cy-25*scale), (cx+95*scale, cy-55*scale), (cx+55*scale, cy-5*scale)],
+             # FL
+             [(cx-35*scale, cy-25*scale), (cx-95*scale, cy-55*scale), (cx-55*scale, cy-5*scale)],
+             # BR (Sharp spikes)
+             [(cx+30*scale, cy+40*scale), (cx+65*scale, cy+70*scale), (cx+45*scale, cy+45*scale)],
+             # BL
+             [(cx-30*scale, cy+40*scale), (cx-65*scale, cy+70*scale), (cx-45*scale, cy+45*scale)]
+        ]
+
+        for poly_raw in coords:
+            points = [adjust(px, py) for px, py in poly_raw]
+            draw.polygon(points, fill=color, outline=outline)
+            self._draw_triangle_texture(draw, points, color)
+
+    def _draw_limbs_feet(self, draw, cx, cy, scale, color, outline, len_mod):
+        """Rounded Tortoise Feet"""
+        # Feet use bounding boxes
+        w = 30 * scale * len_mod
+        h = 25 * scale * len_mod
+        
+        # Centers for feet
+        positions = [
+            (cx + 45*scale, cy - 35*scale), # FR
+            (cx - 45*scale, cy - 35*scale), # FL
+            (cx + 40*scale, cy + 45*scale), # BR
+            (cx - 40*scale, cy + 45*scale)  # BL
+        ]
+        
+        for px, py in positions:
+            bbox = [px - w/2, py - h/2, px + w/2, py + h/2]
+            draw.ellipse(bbox, fill=color, outline=outline)
+            self._draw_ellipse_texture(draw, bbox, color)
 
     def _draw_tail(self, draw, cx, cy, scale, color, outline):
         tail_len = int(25 * scale)
@@ -172,20 +240,15 @@ class DirectTurtleRenderer:
         head_h = int(35 * scale)
         head_y = cy - int(75 * scale) 
         
-        # Neck
         draw.rectangle([
             cx - int(12 * scale), head_y + int(15 * scale),
             cx + int(12 * scale), cy - int(20 * scale)
         ], fill=color)
 
-        # Head Shape
         bbox = [cx - head_w//2, head_y, cx + head_w//2, head_y + head_h]
         draw.ellipse(bbox, fill=color, outline=outline)
-        
-        # Ellipse Texture Logic
         self._draw_ellipse_texture(draw, bbox, color)
 
-        # Eyes
         eye_color = genetics.get('eye_color', (0, 0, 0))
         eye_size = int(5 * scale)
         eye_y = head_y + int(8 * scale)
@@ -199,11 +262,8 @@ class DirectTurtleRenderer:
     def _draw_shell_pattern(self, draw, cx, cy, w, h, scale, base_color, pat_color):
         styles = ['hex', 'spots', 'stripes', 'rings']
         
-        # --- FIXED LOGIC: CHECK MULTIPLE KEYS ---
         keys_to_check = ['shell_pattern', 'shell_pattern_type', 'pattern_type', 'pattern']
         raw_pattern = None
-        
-        # Look for the first matching key in genetics
         for k in keys_to_check:
             if k in self.current_genetics:
                 raw_pattern = self.current_genetics[k]
@@ -216,12 +276,10 @@ class DirectTurtleRenderer:
             else:
                 style = str(raw_pattern).lower()
         
-        # If style is not recognized, fallback to hash
         if style not in styles:
             style_idx = hash(str(self.current_genetics)) % len(styles)
             style = styles[style_idx]
 
-        # Draw specific style
         if style == 'spots':
             self._draw_pattern_spots(draw, cx, cy, w, h, scale, pat_color)
         elif style == 'stripes':
