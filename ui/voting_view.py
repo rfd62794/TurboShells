@@ -356,8 +356,6 @@ class VotingView:
         star_size = 20
         star_spacing = 35  # Increased from 25 for better spacing
         
-        print(f"Drawing stars for '{category_name}' at surface ({x}, {y})")
-        
         # Check hover position for preview (adjust for surface position)
         hover_star = -1
         if interactive:
@@ -376,12 +374,6 @@ class VotingView:
         for i in range(5):
             star_x = x + i * star_spacing
             star_y = y
-            
-            # Calculate screen position for this star
-            screen_star_x = self.left_panel_width + 30 + star_x
-            screen_star_y = 200 + star_y - self.scroll_offset
-            
-            print(f"  Star {i+1}: surface ({star_x}, {star_y}) -> screen ({screen_star_x}, {screen_star_y}) size {star_size}x{star_size}")
             
             # Determine star color with proper hover preview
             if i < rating:
@@ -945,39 +937,30 @@ class VotingView:
         
         current_design = designs[self.current_design_index]
         
-        # Check star ratings (matching new scrolled layout)
+        # Check star ratings using screen coordinates directly
         if current_design.voting_status == 'pending':
             categories = current_design.rating_categories
             
             # Check if click is in right panel scrollable area
             if x >= self.left_panel_width + 30 and y >= 200:
-                # Calculate relative position within scrollable content
-                relative_x = x - self.left_panel_width - 30
-                relative_y = y - 200 + self.scroll_offset
-                
-                print(f"Click at screen ({x}, {y}) -> relative ({relative_x}, {relative_y})")
-                
                 y_offset = 0
                 for category_name in categories:
-                    star_y = y_offset + 55  # Stars are at y_offset + 55
+                    # Calculate screen position for this category's stars
+                    star_y_screen = 200 + y_offset + 55 - self.scroll_offset
                     
-                    # Stars are drawn starting at surface position (30, y_offset) with 35px spacing
-                    # So the actual star positions on the surface are:
-                    # Star 1: (30, star_y), Star 2: (65, star_y), Star 3: (100, star_y), Star 4: (135, star_y), Star 5: (170, star_y)
-                    for i in range(5):
-                        star_spacing = 35
-                        star_x = 30 + i * star_spacing  # Start at x=30, not x=0!
-                        
-                        # Click area exactly matches star size (20px) with small padding
-                        click_padding = 2
-                        print(f"  Star {i+1}: surface ({star_x}, {star_y}) click area ({star_x-click_padding}-{star_x+20+click_padding}, {star_y-click_padding}-{star_y+20+click_padding})")
-                        
-                        if (star_x - click_padding <= relative_x <= star_x + 20 + click_padding and 
-                            star_y - click_padding <= relative_y <= star_y + 20 + click_padding):
-                            # Set rating for this category
-                            print(f"  >>> CLICKED STAR {i+1} for {category_name}")
-                            self.selected_ratings[category_name] = i + 1
-                            return
+                    # Check if this star row is visible on screen
+                    if star_y_screen + 20 >= 200 and star_y_screen <= self.height:
+                        for i in range(5):
+                            star_spacing = 35
+                            star_x_screen = self.left_panel_width + 30 + 30 + i * star_spacing  # left_panel + 30 + star_start_x
+                            
+                            # Click area exactly matches star size (20px) with small padding
+                            click_padding = 2
+                            if (star_x_screen - click_padding <= x <= star_x_screen + 20 + click_padding and 
+                                star_y_screen - click_padding <= y <= star_y_screen + 20 + click_padding):
+                                # Set rating for this category
+                                self.selected_ratings[category_name] = i + 1
+                                return
                     
                     y_offset += 120  # 120px per category
         
