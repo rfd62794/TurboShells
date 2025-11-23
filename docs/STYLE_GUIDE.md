@@ -2,6 +2,8 @@
 
 This guide establishes coding standards for the TurboShells project to ensure consistency, readability, and maintainability across all code.
 
+> **Note**: TurboShells is a personal passion project and portfolio piece. While we maintain high code quality standards, the focus is on demonstrating clean, maintainable code rather than production-level enterprise standards.
+
 ## 📋 Table of Contents
 
 1. [Core Principles](#core-principles)

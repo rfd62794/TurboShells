@@ -1,6 +1,8 @@
 # 🐢 Turbo Shells
 
-**Turbo Shells** is a minimal management simulation game built with Python and PyGame. The goal is simple: breed the ultimate racing turtle.
+**Turbo Shells** is a personal passion project and portfolio piece - a minimal management simulation game built with Python and PyGame. The goal is simple: breed the ultimate racing turtle.
+
+> This project demonstrates clean, maintainable game development practices and serves as a portfolio showcase of Python game development skills.
 
 In this game, you don't control the racer—you manage the *racer*. Balance your economy, train your turtles to improve their stats, and make high-stakes decisions on when to retire a champion to breed the next generation.
 
