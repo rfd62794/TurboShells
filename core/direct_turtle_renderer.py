@@ -35,7 +35,7 @@ class DirectTurtleRenderer:
         """Adjust brightness safely"""
         return tuple(max(0, min(255, int(c * factor))) for c in rgb)
 
-    # --- TEXTURE ENGINES (Fixed for strict bounds) ---
+    # --- TEXTURE ENGINES ---
     
     def _draw_triangle_texture(self, draw, points, color, density=0.4):
         """
@@ -137,9 +137,6 @@ class DirectTurtleRenderer:
         # --- 5. Shell Pattern ---
         self._draw_shell_pattern(draw, center_x, center_y, shell_w, shell_h, scale, shell_base, pattern_color)
 
-        # --- 6. HIGHLIGHT REMOVED (Per User Request) ---
-        # No more circle stamp.
-
     def _draw_limbs(self, draw, cx, cy, scale, color, outline):
         """Draws flippers with strict internal texture"""
         offsets = [
@@ -157,7 +154,7 @@ class DirectTurtleRenderer:
             ]
             draw.polygon(points, fill=color, outline=outline)
             
-            # USE NEW TRIANGLE TEXTURE LOGIC
+            # Triangle Texture Logic
             self._draw_triangle_texture(draw, points, color)
 
     def _draw_tail(self, draw, cx, cy, scale, color, outline):
@@ -168,7 +165,6 @@ class DirectTurtleRenderer:
             (cx, cy + int(50 * scale) + tail_len)
         ]
         draw.polygon(points, fill=color, outline=outline)
-        # Tail is also a triangle, so it gets the fix too
         self._draw_triangle_texture(draw, points, color)
 
     def _draw_head(self, draw, cx, cy, scale, color, outline, genetics):
@@ -186,7 +182,7 @@ class DirectTurtleRenderer:
         bbox = [cx - head_w//2, head_y, cx + head_w//2, head_y + head_h]
         draw.ellipse(bbox, fill=color, outline=outline)
         
-        # USE ELLIPSE TEXTURE LOGIC
+        # Ellipse Texture Logic
         self._draw_ellipse_texture(draw, bbox, color)
 
         # Eyes
@@ -202,7 +198,16 @@ class DirectTurtleRenderer:
 
     def _draw_shell_pattern(self, draw, cx, cy, w, h, scale, base_color, pat_color):
         styles = ['hex', 'spots', 'stripes', 'rings']
-        raw_pattern = self.current_genetics.get('shell_pattern', None)
+        
+        # --- FIXED LOGIC: CHECK MULTIPLE KEYS ---
+        keys_to_check = ['shell_pattern', 'shell_pattern_type', 'pattern_type', 'pattern']
+        raw_pattern = None
+        
+        # Look for the first matching key in genetics
+        for k in keys_to_check:
+            if k in self.current_genetics:
+                raw_pattern = self.current_genetics[k]
+                break
         
         style = 'hex'
         if raw_pattern:
@@ -211,10 +216,12 @@ class DirectTurtleRenderer:
             else:
                 style = str(raw_pattern).lower()
         
+        # If style is not recognized, fallback to hash
         if style not in styles:
             style_idx = hash(str(self.current_genetics)) % len(styles)
             style = styles[style_idx]
 
+        # Draw specific style
         if style == 'spots':
             self._draw_pattern_spots(draw, cx, cy, w, h, scale, pat_color)
         elif style == 'stripes':
