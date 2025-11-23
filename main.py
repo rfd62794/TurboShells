@@ -184,16 +184,22 @@ class TurboShellsGame:
             else:
                 # Keep default state for new game
                 print(f"Starting new game: {error or 'No save file found'}")
+                # Ensure we have a starter turtle
+                if not any(self.roster):  # If all slots are empty
+                    self.roster[0] = Turtle("Starter", speed=5, energy=100, recovery=5, swim=5, climb=5)
                 
         except Exception as e:
             print(f"Error during game state initialization: {e}")
-            # Keep default state
+            # Keep default state and ensure starter turtle
             self.load_notification = {
                 "type": "load_notification",
                 "success": False,
                 "message": f"Initialization error: {e}",
                 "timestamp": "2025-11-22T00:00:00Z"
             }
+            # Ensure we have a starter turtle
+            if not any(self.roster):  # If all slots are empty
+                self.roster[0] = Turtle("Starter", speed=5, energy=100, recovery=5, swim=5, climb=5)
 
     def _create_save_data(self):
         """Convert current game state to save data structures"""

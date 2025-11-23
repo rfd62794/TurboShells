@@ -28,15 +28,44 @@ def draw_shop(screen, font, game_state):
         # Draw Card
         pygame.draw.rect(screen, GRAY, card_rect, 2)
 
+        # Draw tiny turtle image at top
+        try:
+            # Generate tiny turtle image (40x40)
+            turtle_img = turtle.genetics_system.render_turtle(turtle, size=40)
+            img_x = card_rect.x + (card_rect.width - 40) // 2
+            img_y = card_rect.y + 10
+            screen.blit(turtle_img, (img_x, img_y))
+        except:
+            # Fallback: draw a simple colored square
+            pygame.draw.rect(screen, (100, 150, 200), 
+                           (card_rect.x + (card_rect.width - 40) // 2, card_rect.y + 10, 40, 40))
+
+        # Name below image
         name_txt = font.render(turtle.name, True, WHITE)
-        stats_txt = font.render(format_turtle_label_basic(turtle), True, WHITE)
-        # Expect cost to be computed in ShopManager when needed; fall back to 50.
+        name_x = card_rect.x + (card_rect.width - name_txt.get_width()) // 2
+        screen.blit(name_txt, (name_x, card_rect.y + 60))
+
+        # Vertical stats layout
+        stats_lines = [
+            f"Speed: {turtle.stats['speed']}",
+            f"Energy: {turtle.stats['max_energy']}",
+            f"Recovery: {turtle.stats['recovery']}",
+            f"Swim: {turtle.stats['swim']}",
+            f"Climb: {turtle.stats['climb']}"
+        ]
+        
+        y_offset = card_rect.y + 90
+        for line in stats_lines:
+            stat_txt = font.render(line, True, WHITE)
+            stat_x = card_rect.x + (card_rect.width - stat_txt.get_width()) // 2
+            screen.blit(stat_txt, (stat_x, y_offset))
+            y_offset += 25
+
+        # Cost at bottom
         cost_val = getattr(turtle, "shop_cost", 50)
         cost_txt = font.render(f"${cost_val}", True, GREEN)
-
-        screen.blit(name_txt, (card_rect.x + 20, card_rect.y + 20))
-        screen.blit(stats_txt, (card_rect.x + 20, card_rect.y + 60))
-        screen.blit(cost_txt, (card_rect.x + 20, card_rect.y + 250))
+        cost_x = card_rect.x + (card_rect.width - cost_txt.get_width()) // 2
+        screen.blit(cost_txt, (cost_x, card_rect.y + 230))
 
         # BUY button (visual) using layout.SHOP_BTN_BUY_RECT (relative to card)
         buy_rel = layout.SHOP_BTN_BUY_RECT
