@@ -395,9 +395,12 @@
 - [ ] **Notification System**: Non-intrusive alerts and status updates
 - [ ] **Help System**: Integrated tooltips and help documentation
 
-### **Phase 21: Test Suite Extension** - **0% COMPLETE**
+### **Phase 21: Test Suite Extension** - **10% COMPLETE**
 
 #### **🧪 Comprehensive Testing Infrastructure**
+- [x] **Surface-Level Test Migration**: Moved all root-level tests to organized test suite
+- [x] **UI Test Organization**: Categorized UI tests with descriptive naming
+- [x] **Feature Test Organization**: Organized feature-specific tests
 - [ ] **Unit Test Framework**: Complete test coverage for all core systems
 - [ ] **Integration Test Suite**: End-to-end testing for game workflows
 - [ ] **UI Testing Framework**: Automated testing for user interfaces
@@ -410,19 +413,34 @@
 - [ ] **Regression Testing**: Automated detection of broken functionality
 - [ ] **Stress Testing**: Performance testing under extreme conditions
 - [ ] **Visual Regression Testing**: Screenshot comparison for UI changes
+- [ ] **Test Organization**: Proper test categorization and naming conventions
+- [ ] **Test Documentation**: Comprehensive test documentation and examples
+- [ ] **Continuous Integration**: Automated testing on code changes
 
 #### **📋 Testing Process Automation**
-- [ ] **Continuous Integration**: Automated testing on code changes
 - [ ] **Test Environment Setup**: Automated test environment provisioning
 - [ ] **Test Report Generation**: Comprehensive test result documentation
 - [ ] **Bug Tracking Integration**: Automatic bug report creation for failed tests
 - [ ] **Quality Gates**: Automated quality checks before releases
+- [ ] **Test Suite Maintenance**: Regular test updates and refactoring
+- [ ] **Performance Benchmarking**: Automated performance regression detection
+- [ ] **Code Quality Integration**: Test coverage requirements for code quality
+- [ ] **Release Validation**: Automated testing before version releases
+
+#### **🎯 Test Coverage Goals**
+- [ ] **Core Game Logic**: 95%+ coverage for entities, game_state, race_track
+- [ ] **Manager Classes**: 90%+ coverage for all manager functionality
+- [ ] **UI Components**: 85%+ coverage for UI rendering and interaction
+- [ ] **State Management**: 100% coverage for state transitions and handlers
+- [ ] **Data Models**: 95%+ coverage for data structures and validation
+- [ ] **Edge Cases**: Comprehensive testing of error conditions and edge cases
+- [ ] **Integration Points**: Testing of all component interactions
+- [ ] **User Workflows**: End-to-end testing of complete user journeys
 
 ### **Phase 22: SRP Separation** - **0% COMPLETE**
 
 #### **🏗️ Single Responsibility Principle Refactoring**
 - [ ] **Class Responsibility Analysis**: Identify and document class responsibilities
-- [ ] **Code Decomposition**: Break large classes into focused, single-purpose classes
 - [ ] **Interface Segregation**: Create focused interfaces for specific client needs
 - [ ] **Dependency Injection**: Remove hard-coded dependencies and improve testability
 - [ ] **Module Boundaries**: Clear separation between different system concerns
