@@ -39,7 +39,7 @@ class VotingView:
         # UI layout
         self.width = screen.get_width()
         self.height = screen.get_height()
-        self.design_size = min(200, self.width // 3)
+        self.design_size = min(150, self.width // 4)  # Smaller design size for better layout
         
         # Colors
         self.bg_color = (240, 248, 255)  # Alice blue
@@ -691,39 +691,45 @@ class VotingView:
         """Handle mouse clicks in the voting interface"""
         x, y = pos
         
-        # Check submit button
+        # Check submit button (matching actual draw position)
         if self._can_submit_ratings():
-            submit_rect = pygame.Rect(self.width // 2 - 100, self.height - 80, 200, 50)
+            button_x = (self.width - 180) // 2
+            button_y = 580
+            submit_rect = pygame.Rect(button_x, button_y, 180, 40)
             if submit_rect.collidepoint(pos):
                 result = self._submit_ratings()
                 if result:
                     return "vote_completed"
         
-        # Check navigation buttons
+        # Check navigation buttons (matching actual draw positions)
         if self.current_design_index > 0:
-            prev_rect = pygame.Rect(50, self.height // 2 - 25, 50, 50)
+            prev_rect = pygame.Rect(50, 350, 40, 40)  # Match _draw_nav_button position
             if prev_rect.collidepoint(pos):
                 self.current_design_index -= 1
                 return None
         
         designs = self.voting_system.daily_designs
         if self.current_design_index < len(designs) - 1:
-            next_rect = pygame.Rect(self.width - 100, self.height // 2 - 25, 50, 50)
+            next_rect = pygame.Rect(self.width - 90, 350, 40, 40)  # Match _draw_nav_button position
             if next_rect.collidepoint(pos):
                 self.current_design_index += 1
                 return None
         
-        # Check rating stars
+        # Check rating stars (matching actual draw positions)
         current_design = designs[self.current_design_index]
         if current_design.voting_status != 'completed':
-            categories = ['appearance', 'functionality', 'creativity']
-            for i, category in enumerate(categories):
-                star_y = 300 + i * 60
+            controls_x = 50
+            controls_y = 420
+            y_offset = 0
+            categories = current_design.rating_categories
+            for category_name, category_data in categories.items():
+                star_x = controls_x + 200
+                star_y = controls_y + y_offset
                 for star in range(1, 6):
-                    star_x = 300 + star * 40
-                    star_rect = pygame.Rect(star_x, star_y, 30, 30)
+                    star_rect = pygame.Rect(star_x + (star - 1) * 35, star_y, 30, 30)  # Match _draw_star_rating
                     if star_rect.collidepoint(pos):
-                        self.selected_ratings[category] = star
+                        self.selected_ratings[category_name] = star
                         return None
+                y_offset += 55
         
         return None
