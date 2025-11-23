@@ -56,6 +56,37 @@ Comprehensive testing infrastructure for TurboShells game systems with 95%+ cove
   - Individual suite execution
   - JSON report generation and saving
 
+### **🔧 Local CI/CD Automation**
+- **`../scripts/local_ci.py`** - Local continuous integration pipeline
+  - Python syntax checking
+  - Import structure validation
+  - Quick test execution
+  - Code style checking
+  - Documentation coverage analysis
+  - Performance regression detection
+  - Comprehensive CI reporting
+
+- **`../scripts/git_hooks.py`** - Git hooks automation
+  - Pre-commit hooks for quality checks
+  - Pre-push hooks for full test suite
+  - Commit message validation
+  - Automated hook installation
+
+- **`../scripts/dev_automation.py`** - Development workflow automation
+  - Development environment setup
+  - Daily quality checks
+  - Pre-commit workflows
+  - Release preparation
+  - Development report generation
+  - Development shortcut creation
+
+- **`../scripts/cicd_setup.py`** - Complete CI/CD infrastructure setup
+  - Directory structure creation
+  - Development dependencies configuration
+  - VS Code integration setup
+  - Makefile for common tasks
+  - Development documentation
+
 ### **📋 Legacy Tests**
 - **`test_genetics_integration.py`** - Tests genetics system integration with core game mechanics
   - Turtle creation with genetics
@@ -125,17 +156,18 @@ Comprehensive testing infrastructure for TurboShells game systems with 95%+ cove
 
 ## 🚀 Usage
 
-### **Run All Tests**
+### **🧪 Test Execution**
+#### **Run All Tests**
 ```bash
 python tests/comprehensive_test_runner.py
 ```
 
-### **Run Quick Tests**
+#### **Run Quick Tests**
 ```bash
 python tests/comprehensive_test_runner.py --quick
 ```
 
-### **Run Specific Suite**
+#### **Run Specific Suite**
 ```bash
 python tests/comprehensive_test_runner.py --suite unit_tests
 python tests/comprehensive_test_runner.py --suite integration_tests
@@ -143,7 +175,7 @@ python tests/comprehensive_test_runner.py --suite ui_tests
 python tests/comprehensive_test_runner.py --suite performance_tests
 ```
 
-### **Run Individual Test Files**
+#### **Run Individual Test Files**
 ```bash
 python tests/unit_test_framework.py
 python tests/integration_test_suite.py
@@ -152,9 +184,80 @@ python tests/performance_test_suite.py
 python tests/mock_data_generator.py
 ```
 
-### **Run Legacy Tests**
+#### **Run Legacy Tests**
 ```bash
 python tests/run_all_tests.py
+```
+
+### **🔧 CI/CD Automation**
+#### **Setup Development Environment**
+```bash
+# Complete CI/CD infrastructure setup
+python scripts/cicd_setup.py
+
+# Development environment setup
+python scripts/dev_automation.py --setup
+
+# Install git hooks
+python scripts/git_hooks.py --install
+
+# Create development shortcuts
+python scripts/dev_automation.py --shortcuts
+```
+
+#### **Local Continuous Integration**
+```bash
+# Full CI pipeline
+python scripts/local_ci.py
+
+# Pre-commit checks (quick)
+python scripts/local_ci.py --pre-commit
+```
+
+#### **Development Workflows**
+```bash
+# Daily quality checks
+python scripts/dev_automation.py --daily-check
+
+# Pre-commit workflow
+python scripts/dev_automation.py --pre-commit
+
+# Release preparation
+python scripts/dev_automation.py --release
+
+# Generate development report
+python scripts/dev_automation.py --report
+```
+
+#### **Using Make Commands**
+```bash
+# Setup and installation
+make setup              # Set up development environment
+make install-hooks      # Install git hooks
+make install           # Install development dependencies
+
+# Testing
+make test-quick        # Run quick tests
+make test-full         # Run full test suite
+
+# CI and quality
+make ci-quick          # Run quick CI checks
+make ci                # Run full CI pipeline
+
+# Development
+make dev-report        # Generate development report
+make clean             # Clean temporary files
+```
+
+### **🎯 Development Shortcuts**
+After running `python scripts/dev_automation.py --shortcuts`, you can use:
+```bash
+# Windows batch files
+test.bat              # Quick tests
+full-test.bat         # Full test suite
+ci.bat                # CI checks
+pre-commit.bat        # Pre-commit workflow
+perf.bat              # Performance tests
 ```
 
 ## 📊 Coverage Goals
