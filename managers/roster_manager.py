@@ -54,7 +54,7 @@ class RosterManager:
                 # Then check for action buttons (only if this slot is selected and has a turtle)
                 elif is_active_racer and self.game_state.roster[i]:
                     if train_rect.collidepoint(pos):
-                        self.train_turtle(i)
+                        return "TRAINING"
                     elif retire_rect.collidepoint(pos):
                         self.retire_turtle(i)
             else:

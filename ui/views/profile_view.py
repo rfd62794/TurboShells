@@ -31,13 +31,23 @@ def draw_profile(screen, font, game_state):
     # LEFT PANEL - Turtle Visual (future image area)
     pygame.draw.rect(screen, GRAY, layout.PROFILE_VISUAL_PANEL_RECT, 2)
     
-    # Placeholder for future turtle image/SVG
-    placeholder_font = pygame.font.SysFont("Arial", 16)
-    placeholder_txt = placeholder_font.render("TURTLE IMAGE", True, GRAY)
-    screen.blit(placeholder_txt, (layout.PROFILE_TURTLE_IMAGE_POS[0] - 50, layout.PROFILE_TURTLE_IMAGE_POS[1]))
-    
-    # Draw a simple placeholder circle where the image will go
-    pygame.draw.circle(screen, DARK_GREY, layout.PROFILE_TURTLE_IMAGE_POS, 80, 2)
+    # Draw actual turtle image
+    try:
+        # Generate turtle image (120x120 for profile view)
+        turtle_img = turtle.genetics_system.render_turtle(turtle, size=120)
+        img_x = layout.PROFILE_TURTLE_IMAGE_POS[0] - 60  # Center the image
+        img_y = layout.PROFILE_TURTLE_IMAGE_POS[1] - 60
+        screen.blit(turtle_img, (img_x, img_y))
+    except:
+        # Fallback: draw a simple colored circle
+        pygame.draw.circle(screen, (100, 150, 200), layout.PROFILE_TURTLE_IMAGE_POS, 80, 0)
+        pygame.draw.circle(screen, GRAY, layout.PROFILE_TURTLE_IMAGE_POS, 80, 2)
+        
+        # Fallback text
+        placeholder_font = pygame.font.SysFont("Arial", 16)
+        placeholder_txt = placeholder_font.render(turtle.name, True, WHITE)
+        text_rect = placeholder_txt.get_rect(center=layout.PROFILE_TURTLE_IMAGE_POS)
+        screen.blit(placeholder_txt, text_rect)
     
     # RIGHT PANEL - Detailed Information
     pygame.draw.rect(screen, GRAY, layout.PROFILE_INFO_PANEL_RECT, 2)

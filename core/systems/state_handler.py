@@ -18,6 +18,7 @@ class StateHandler:
             STATE_ROSTER: self._handle_roster_clicks,
             STATE_SHOP: self._handle_shop_clicks,
             STATE_BREEDING: self._handle_breeding_clicks,
+            STATE_TRAINING: self._handle_training_clicks,
             STATE_RACE: self._handle_race_clicks,
             STATE_RACE_RESULT: self._handle_race_result_clicks,
             STATE_PROFILE: self._handle_profile_clicks,
@@ -104,6 +105,9 @@ class StateHandler:
             self.game.state = STATE_SHOP
         elif action == "GOTO_BREEDING":
             self.game.state = STATE_BREEDING
+        elif action == "TRAINING":
+            # Transition to training view
+            self.game.state = STATE_TRAINING
         elif action == "PROFILE":
             # Transition to profile view
             self.game.state = STATE_PROFILE
@@ -151,6 +155,47 @@ class StateHandler:
                         if turtle == self.game.retired_roster[i]:
                             self.game.profile_turtle_index = j
                             return
+    
+    def _handle_training_clicks(self, pos):
+        """Handle clicks in training state."""
+        # Check for Menu button in header
+        menu_rect = pygame.Rect(700, 5, 80, 30)
+        if menu_rect.collidepoint(pos):
+            self.game.state = STATE_ROSTER
+            return
+        
+        # Get the selected turtle
+        active_racer_index = getattr(self.game, "active_racer_index", 0)
+        turtle = self.game.roster[active_racer_index]
+        
+        if not turtle:
+            return
+        
+        # Training buttons
+        button_y = 250  # Starting y position for training buttons
+        training_buttons = [
+            ("speed", 50, button_y),
+            ("energy", 300, button_y),
+            ("recovery", 50, button_y + 60),
+            ("swim", 300, button_y + 60),
+            ("climb", 50, button_y + 120)
+        ]
+        
+        for stat, x, y in training_buttons:
+            button_rect = pygame.Rect(x, y, 200, 40)
+            if button_rect.collidepoint(pos):
+                # Perform training
+                if turtle.train(stat):
+                    print(f"Trained {turtle.name}! {stat.capitalize()} is now {turtle.stats[stat]}")
+                    # Auto-retire turtles that reach age 100 via training
+                    if turtle.age >= 100:
+                        self.game.roster_manager.retire_turtle(active_racer_index)
+                        print(f"{turtle.name} retired due to age!")
+                    # Auto-save after training
+                    self.game.auto_save("training")
+                else:
+                    print(f"{turtle.name} is too tired to train!")
+                return
     
     def _handle_profile_clicks(self, pos):
         """Handle clicks in profile state."""

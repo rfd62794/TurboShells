@@ -93,7 +93,7 @@ class AutoLoadSystem:
             self.logger.error(f"Save file validation error: {e}")
             return False, f"Validation error: {e}"
     
-    def restore_game_state(self) -> Tuple[bool, Optional[str], Optional[Tuple[GameData, list[TurtleData], PlayerPreferences]]]:
+    def restore_game_state(self) -> Tuple[bool, Optional[str], Optional[Tuple[dict, list[dict], dict]]]:
         """Restore complete game state from save"""
         try:
             self.logger.info("Attempting to restore game state from save file")
@@ -106,19 +106,40 @@ class AutoLoadSystem:
             
             game_data, turtles, preferences = result
             
-            # Validate loaded data
-            game_valid, game_error = self.validator.validate_game_data(game_data.__dict__)
-            if not game_valid:
-                return False, f"Invalid game data: {game_error}", None
+            # Validate loaded data (they should already be dictionaries)
+            if isinstance(game_data, dict):
+                game_valid, game_error = self.validator.validate_game_data(game_data)
+                if not game_valid:
+                    return False, f"Invalid game data: {game_error}", None
+            else:
+                # Convert dataclass to dict if needed
+                game_valid, game_error = self.validator.validate_game_data(game_data.__dict__)
+                if not game_valid:
+                    return False, f"Invalid game data: {game_error}", None
+                game_data = game_data.__dict__
             
             for i, turtle in enumerate(turtles):
-                turtle_valid, turtle_error = self.validator.validate_turtle_data(turtle.__dict__)
-                if not turtle_valid:
-                    return False, f"Invalid turtle data for turtle {i+1}: {turtle_error}", None
+                if isinstance(turtle, dict):
+                    turtle_valid, turtle_error = self.validator.validate_turtle_data(turtle)
+                    if not turtle_valid:
+                        return False, f"Invalid turtle data for turtle {i+1}: {turtle_error}", None
+                else:
+                    # Convert dataclass to dict if needed
+                    turtle_valid, turtle_error = self.validator.validate_turtle_data(turtle.__dict__)
+                    if not turtle_valid:
+                        return False, f"Invalid turtle data for turtle {i+1}: {turtle_error}", None
+                    turtles[i] = turtle.__dict__
             
-            pref_valid, pref_error = self.validator.validate_preference_data(preferences.__dict__)
-            if not pref_valid:
-                return False, f"Invalid preference data: {pref_error}", None
+            if isinstance(preferences, dict):
+                pref_valid, pref_error = self.validator.validate_preference_data(preferences)
+                if not pref_valid:
+                    return False, f"Invalid preference data: {pref_error}", None
+            else:
+                # Convert dataclass to dict if needed
+                pref_valid, pref_error = self.validator.validate_preference_data(preferences.__dict__)
+                if not pref_valid:
+                    return False, f"Invalid preference data: {pref_error}", None
+                preferences = preferences.__dict__
             
             # Store loaded data
             self.loaded_data = (game_data, turtles, preferences)
@@ -128,7 +149,8 @@ class AutoLoadSystem:
             # Get save file info
             self.save_file_info = self.save_manager.get_save_info()
             
-            self.logger.info(f"Successfully restored game state for player {game_data.player_id}")
+            player_id = game_data.get("player_id", "unknown")
+            self.logger.info(f"Successfully restored game state for player {player_id}")
             return True, None, (game_data, turtles, preferences)
             
         except Exception as e:

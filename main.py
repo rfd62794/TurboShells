@@ -112,6 +112,8 @@ class TurboShellsGame:
             self.renderer.draw_main_menu(self)
         elif self.state == STATE_ROSTER:
             self.renderer.draw_menu(self)
+        elif self.state == STATE_TRAINING:
+            self.renderer.draw_training(self)
         elif self.state == STATE_RACE:
             self.renderer.draw_race(self)
         elif self.state == STATE_RACE_RESULT:
@@ -140,45 +142,49 @@ class TurboShellsGame:
                 game_data, turtles, preferences = loaded_data
                 
                 # Store player_id for save operations
-                self.player_id = game_data.player_id
+                self.player_id = game_data.get("player_id", "unknown")
                 
                 # Restore game state from loaded data
-                self.money = game_data.game_state.money
-                self.state = game_data.game_state.current_phase
+                self.money = game_data.get("game_state", {}).get("money", 100)
+                self.state = game_data.get("game_state", {}).get("current_phase", STATE_MENU)
                 
                 # Convert turtle data to game entities
                 self.roster = [None] * 3  # Initialize empty roster
                 self.retired_roster = []
                 
                 # Load active turtles
-                for i, turtle_id in enumerate(game_data.roster.active_turtles[:3]):
+                active_turtle_ids = game_data.get("roster", {}).get("active_turtles", [])
+                for i, turtle_id in enumerate(active_turtle_ids[:3]):
                     if i < 3:
                         # Find corresponding turtle data
-                        turtle_data = next((t for t in turtles if t.turtle_id == turtle_id), None)
+                        turtle_data = next((t for t in turtles if t.get("turtle_id") == turtle_id), None)
                         if turtle_data:
+                            turtle_stats = turtle_data.get("stats", {})
                             self.roster[i] = Turtle(
-                                turtle_data.name,
-                                speed=turtle_data.stats.speed,
-                                energy=turtle_data.stats.energy,
-                                recovery=turtle_data.stats.recovery,
-                                swim=turtle_data.stats.swim,
-                                climb=turtle_data.stats.climb
+                                turtle_data.get("name", "Unknown"),
+                                speed=turtle_stats.get("speed", 5),
+                                energy=turtle_stats.get("energy", 100),
+                                recovery=turtle_stats.get("recovery", 5),
+                                swim=turtle_stats.get("swim", 5),
+                                climb=turtle_stats.get("climb", 5)
                             )
                 
                 # Load retired turtles
-                for turtle_id in game_data.roster.retired_turtles:
-                    turtle_data = next((t for t in turtles if t.turtle_id == turtle_id), None)
+                retired_turtle_ids = game_data.get("roster", {}).get("retired_turtles", [])
+                for turtle_id in retired_turtle_ids:
+                    turtle_data = next((t for t in turtles if t.get("turtle_id") == turtle_id), None)
                     if turtle_data:
+                        turtle_stats = turtle_data.get("stats", {})
                         self.retired_roster.append(Turtle(
-                            turtle_data.name,
-                            speed=turtle_data.stats.speed,
-                            energy=turtle_data.stats.energy,
-                            recovery=turtle_data.stats.recovery,
-                            swim=turtle_data.stats.swim,
-                            climb=turtle_data.stats.climb
+                            turtle_data.get("name", "Unknown"),
+                            speed=turtle_stats.get("speed", 5),
+                            energy=turtle_stats.get("energy", 100),
+                            recovery=turtle_stats.get("recovery", 5),
+                            swim=turtle_stats.get("swim", 5),
+                            climb=turtle_stats.get("climb", 5)
                         ))
                 
-                print(f"Game loaded successfully for player {game_data.player_id}")
+                print(f"Game loaded successfully for player {self.player_id}")
                 print(f"Money: ${self.money}, Active turtles: {len([t for t in self.roster if t])}")
                 
             else:
@@ -215,24 +221,24 @@ class TurboShellsGame:
         if not self.player_id:
             self.player_id = f"player_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
         
-        # Convert game state
-        game_state = GameStateData(
-            money=self.money,
-            current_phase=self.state,
-            unlocked_features=["roster", "racing", "voting"],  # TODO: Track actual unlocked features
-            tutorial_progress={
+        # Convert game state to dictionary
+        game_state_dict = {
+            "money": self.money,
+            "current_phase": self.state,
+            "unlocked_features": ["roster", "racing", "voting"],  # TODO: Track actual unlocked features
+            "tutorial_progress": {
                 "roster_intro": True,
                 "racing_basics": True,
                 "breeding_intro": False,
                 "voting_system": True
             },
-            session_stats=SessionStats(
-                total_playtime_minutes=0,  # TODO: Track actual playtime
-                races_completed=len(self.race_results),
-                turtles_bred=0,  # TODO: Track breeding count
-                votes_cast=0  # TODO: Track voting count
-            )
-        )
+            "session_stats": {
+                "total_playtime_minutes": 0,  # TODO: Track actual playtime
+                "races_completed": len(self.race_results),
+                "turtles_bred": 0,  # TODO: Track breeding count
+                "votes_cast": 0  # TODO: Track voting count
+            }
+        }
         
         # Convert turtles to data structures
         active_turtles = []
@@ -245,105 +251,120 @@ class TurboShellsGame:
                 turtle_id = f"turtle_{i:03d}"
                 active_turtles.append(turtle_id)
                 
-                turtle_data = TurtleData(
-                    turtle_id=turtle_id,
-                    name=turtle.name,
-                    generation=0,  # TODO: Track actual generation
-                    created_timestamp="2025-11-22T00:00:00Z",  # TODO: Track actual creation time
-                    parents=None,  # TODO: Track actual parents
-                    genetics={
-                        "shell_pattern": GeneTrait("hex", 1.0, "random"),
-                        "shell_color": GeneTrait("#4A90E2", 1.0, "random"),
-                        "pattern_color": GeneTrait("#E74C3C", 1.0, "random"),
-                        "limb_shape": GeneTrait("flippers", 1.0, "random"),
-                        "limb_length": GeneTrait(1.0, 1.0, "random"),
-                        "head_size": GeneTrait(1.0, 1.0, "random"),
-                        "eye_color": GeneTrait("#2ECC71", 1.0, "random"),
-                        "skin_texture": GeneTrait("smooth", 1.0, "random")
+                turtle_dict = {
+                    "turtle_id": turtle_id,
+                    "name": turtle.name,
+                    "generation": 0,  # TODO: Track actual generation
+                    "created_timestamp": "2025-11-22T00:00:00Z",  # TODO: Track actual creation time
+                    "parents": None,  # TODO: Track actual parents
+                    "genetics": {
+                        "shell_pattern": {"value": "hex", "dominance": 1.0, "mutation_source": "random"},
+                        "shell_color": {"value": "#4A90E2", "dominance": 1.0, "mutation_source": "random"},
+                        "pattern_color": {"value": "#E74C3C", "dominance": 1.0, "mutation_source": "random"},
+                        "limb_shape": {"value": "flippers", "dominance": 1.0, "mutation_source": "random"},
+                        "limb_length": {"value": 1.0, "dominance": 1.0, "mutation_source": "random"},
+                        "head_size": {"value": 1.0, "dominance": 1.0, "mutation_source": "random"},
+                        "eye_color": {"value": "#2ECC71", "dominance": 1.0, "mutation_source": "random"},
+                        "skin_texture": {"value": "smooth", "dominance": 1.0, "mutation_source": "random"}
                     },
-                    stats=TurtleStats(
-                        speed=turtle.speed,
-                        energy=turtle.energy,
-                        recovery=turtle.recovery,
-                        swim=turtle.swim,
-                        climb=turtle.climb,
-                        base_stats=BaseStats(turtle.speed, turtle.energy, turtle.recovery, turtle.swim, turtle.climb),
-                        genetic_modifiers=GeneticModifiers(0, 0, 0, 0, 0)
-                    ),
-                    performance=TurtlePerformance(
-                        race_history=[],
-                        total_races=0,
-                        wins=0,
-                        average_position=0.0,
-                        total_earnings=0
-                    )
-                )
-                turtle_data_list.append(turtle_data)
+                    "stats": {
+                        "speed": turtle.speed,
+                        "energy": turtle.energy,
+                        "recovery": turtle.recovery,
+                        "swim": turtle.swim,
+                        "climb": turtle.climb,
+                        "base_stats": {
+                            "speed": turtle.speed,
+                            "energy": turtle.energy,
+                            "recovery": turtle.recovery,
+                            "swim": turtle.swim,
+                            "climb": turtle.climb
+                        },
+                        "genetic_modifiers": {"speed": 0, "energy": 0, "recovery": 0, "swim": 0, "climb": 0}
+                    },
+                    "performance": {
+                        "race_history": [],
+                        "total_races": 0,
+                        "wins": 0,
+                        "average_position": 0.0,
+                        "total_earnings": 0
+                    }
+                }
+                turtle_data_list.append(turtle_dict)
         
         # Process retired roster
         for i, turtle in enumerate(self.retired_roster):
             turtle_id = f"turtle_retired_{i:03d}"
             retired_turtles.append(turtle_id)
             
-            turtle_data = TurtleData(
-                turtle_id=turtle_id,
-                name=turtle.name,
-                generation=0,
-                created_timestamp="2025-11-22T00:00:00Z",
-                parents=None,
-                genetics={
-                    "shell_pattern": GeneTrait("hex", 1.0, "random"),
-                    "shell_color": GeneTrait("#4A90E2", 1.0, "random"),
-                    "pattern_color": GeneTrait("#E74C3C", 1.0, "random"),
-                    "limb_shape": GeneTrait("flippers", 1.0, "random"),
-                    "limb_length": GeneTrait(1.0, 1.0, "random"),
-                    "head_size": GeneTrait(1.0, 1.0, "random"),
-                    "eye_color": GeneTrait("#2ECC71", 1.0, "random"),
-                    "skin_texture": GeneTrait("smooth", 1.0, "random")
+            turtle_dict = {
+                "turtle_id": turtle_id,
+                "name": turtle.name,
+                "generation": 0,
+                "created_timestamp": "2025-11-22T00:00:00Z",
+                "parents": None,
+                "genetics": {
+                    "shell_pattern": {"value": "hex", "dominance": 1.0, "mutation_source": "random"},
+                    "shell_color": {"value": "#4A90E2", "dominance": 1.0, "mutation_source": "random"},
+                    "pattern_color": {"value": "#E74C3C", "dominance": 1.0, "mutation_source": "random"},
+                    "limb_shape": {"value": "flippers", "dominance": 1.0, "mutation_source": "random"},
+                    "limb_length": {"value": 1.0, "dominance": 1.0, "mutation_source": "random"},
+                    "head_size": {"value": 1.0, "dominance": 1.0, "mutation_source": "random"},
+                    "eye_color": {"value": "#2ECC71", "dominance": 1.0, "mutation_source": "random"},
+                    "skin_texture": {"value": "smooth", "dominance": 1.0, "mutation_source": "random"}
                 },
-                stats=TurtleStats(
-                    speed=turtle.speed,
-                    energy=turtle.energy,
-                    recovery=turtle.recovery,
-                    swim=turtle.swim,
-                    climb=turtle.climb,
-                    base_stats=BaseStats(turtle.speed, turtle.energy, turtle.recovery, turtle.swim, turtle.climb),
-                    genetic_modifiers=GeneticModifiers(0, 0, 0, 0, 0)
-                ),
-                performance=TurtlePerformance(
-                    race_history=[],
-                    total_races=0,
-                    wins=0,
-                    average_position=0.0,
-                    total_earnings=0
-                )
-            )
-            turtle_data_list.append(turtle_data)
+                "stats": {
+                    "speed": turtle.speed,
+                    "energy": turtle.energy,
+                    "recovery": turtle.recovery,
+                    "swim": turtle.swim,
+                    "climb": turtle.climb,
+                    "base_stats": {
+                        "speed": turtle.speed,
+                        "energy": turtle.energy,
+                        "recovery": turtle.recovery,
+                        "swim": turtle.swim,
+                        "climb": turtle.climb
+                    },
+                    "genetic_modifiers": {"speed": 0, "energy": 0, "recovery": 0, "swim": 0, "climb": 0}
+                },
+                "performance": {
+                    "race_history": [],
+                    "total_races": 0,
+                    "wins": 0,
+                    "average_position": 0.0,
+                    "total_earnings": 0
+                }
+            }
+            turtle_data_list.append(turtle_dict)
         
-        # Create game data
-        game_data = GameData(
-            version="2.2.0",
-            timestamp=datetime.now(timezone.utc).isoformat(),
-            player_id=self.player_id,
-            game_state=game_state,
-            economy=EconomicData(
-                total_earned=self.money,  # TODO: Track actual earnings
-                total_spent=0,  # TODO: Track actual spending
-                transaction_history=[]
-            ),
-            roster=RosterData(
-                active_slots=3,
-                active_turtles=active_turtles,
-                retired_turtles=retired_turtles,
-                max_retired=20
-            ),
-            last_sessions=[]
-        )
+        # Create game data dictionary
+        game_data_dict = {
+            "version": "2.2.0",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "player_id": self.player_id,
+            "game_state": game_state_dict,
+            "economy": {
+                "total_earned": self.money,  # TODO: Track actual earnings
+                "total_spent": 0,  # TODO: Track actual spending
+                "transaction_history": []
+            },
+            "roster": {
+                "active_slots": 3,
+                "active_turtles": active_turtles,
+                "retired_turtles": retired_turtles,
+                "max_retired": 20
+            },
+            "last_sessions": []
+        }
         
-        # Get or create preferences
-        preferences = create_default_preference_data(self.player_id)
+        # Get or create preferences dictionary
+        preferences_dict = create_default_preference_data(self.player_id)
+        if hasattr(preferences_dict, '__dict__'):
+            # Convert dataclass to dict if needed
+            preferences_dict = preferences_dict.__dict__
         
-        return game_data, turtle_data_list, preferences
+        return game_data_dict, turtle_data_list, preferences_dict
     
     def auto_save(self, trigger="manual"):
         """Auto-save game state"""
