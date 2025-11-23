@@ -42,7 +42,7 @@ class TurboShellsGame:
             None
         ]
         self.retired_roster = []
-        self.money = 100
+        self.money = 200
 
         # State-specific data containers
         self.shop_inventory = []
@@ -54,6 +54,7 @@ class TurboShellsGame:
 
         self.breeding_parents = []
         self.current_bet = 0
+        self.select_racer_mode = False
 
         # Stable view mode: False = Active roster, True = Retired view
         self.show_retired_view = False
