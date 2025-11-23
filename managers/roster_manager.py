@@ -54,7 +54,7 @@ class RosterManager:
                 # Then check for action buttons (only if this slot is selected and has a turtle)
                 elif is_active_racer and self.game_state.roster[i]:
                     if train_rect.collidepoint(pos):
-                        return "TRAINING"
+                        self.train_turtle(i)
                     elif retire_rect.collidepoint(pos):
                         self.retire_turtle(i)
             else:
@@ -69,12 +69,14 @@ class RosterManager:
     def train_turtle(self, index):
         if self.game_state.roster[index]:
             t = self.game_state.roster[index]
-            # Train Speed for now
+            # Train Speed for now (could be random stat in future)
             if t.train("speed"):
                 print(f"Trained {t.name}! Speed is now {t.stats['speed']}")
                 # Auto-retire turtles that reach age 100 via training
                 if t.age >= 100:
                     self.retire_turtle(index)
+                # Auto-save after training
+                self.game_state.auto_save("training")
             else:
                 print(f"{t.name} is too tired to train!")
 

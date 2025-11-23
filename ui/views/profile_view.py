@@ -33,21 +33,30 @@ def draw_profile(screen, font, game_state):
     
     # Draw actual turtle image
     try:
-        # Generate turtle image (120x120 for profile view)
-        turtle_img = turtle.genetics_system.render_turtle(turtle, size=120)
-        img_x = layout.PROFILE_TURTLE_IMAGE_POS[0] - 60  # Center the image
-        img_y = layout.PROFILE_TURTLE_IMAGE_POS[1] - 60
-        screen.blit(turtle_img, (img_x, img_y))
-    except:
-        # Fallback: draw a simple colored circle
+        # Check if genetics system exists and has render method
+        if hasattr(turtle, 'genetics_system') and hasattr(turtle.genetics_system, 'render_turtle'):
+            # Generate turtle image (120x120 for profile view)
+            turtle_img = turtle.genetics_system.render_turtle(turtle, size=120)
+            img_x = layout.PROFILE_TURTLE_IMAGE_POS[0] - 60  # Center the image
+            img_y = layout.PROFILE_TURTLE_IMAGE_POS[1] - 60
+            screen.blit(turtle_img, (img_x, img_y))
+        else:
+            raise AttributeError("Genetics system not available")
+    except Exception as e:
+        # Fallback: draw a simple colored circle with turtle info
         pygame.draw.circle(screen, (100, 150, 200), layout.PROFILE_TURTLE_IMAGE_POS, 80, 0)
         pygame.draw.circle(screen, GRAY, layout.PROFILE_TURTLE_IMAGE_POS, 80, 2)
         
-        # Fallback text
+        # Fallback text with turtle name
         placeholder_font = pygame.font.SysFont("Arial", 16)
         placeholder_txt = placeholder_font.render(turtle.name, True, WHITE)
         text_rect = placeholder_txt.get_rect(center=layout.PROFILE_TURTLE_IMAGE_POS)
         screen.blit(placeholder_txt, text_rect)
+        
+        # Show age below name
+        age_txt = placeholder_font.render(f"Age {turtle.age}", True, GRAY)
+        age_rect = age_txt.get_rect(center=(layout.PROFILE_TURTLE_IMAGE_POS[0], layout.PROFILE_TURTLE_IMAGE_POS[1] + 20))
+        screen.blit(age_txt, age_rect)
     
     # RIGHT PANEL - Detailed Information
     pygame.draw.rect(screen, GRAY, layout.PROFILE_INFO_PANEL_RECT, 2)

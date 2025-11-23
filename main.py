@@ -112,8 +112,6 @@ class TurboShellsGame:
             self.renderer.draw_main_menu(self)
         elif self.state == STATE_ROSTER:
             self.renderer.draw_menu(self)
-        elif self.state == STATE_TRAINING:
-            self.renderer.draw_training(self)
         elif self.state == STATE_RACE:
             self.renderer.draw_race(self)
         elif self.state == STATE_RACE_RESULT:
