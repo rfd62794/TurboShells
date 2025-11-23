@@ -64,26 +64,14 @@ class AutoLoadSystem:
             
             # Try to read and validate the data structure
             try:
+                # Use SaveManager's built-in validation and loading
                 result = self.save_manager.load_game()
                 if result is None:
                     return False, "Failed to load save file data"
                 
                 game_data, turtles, preferences = result
                 
-                # Validate each component
-                game_valid, game_error = self.validator.validate_game_data(game_data.__dict__)
-                if not game_valid:
-                    return False, f"Game data validation failed: {game_error}"
-                
-                for i, turtle in enumerate(turtles):
-                    turtle_valid, turtle_error = self.validator.validate_turtle_data(turtle.__dict__)
-                    if not turtle_valid:
-                        return False, f"Turtle {i+1} validation failed: {turtle_error}"
-                
-                pref_valid, pref_error = self.validator.validate_preference_data(preferences.__dict__)
-                if not pref_valid:
-                    return False, f"Preference data validation failed: {pref_error}"
-                
+                # SaveManager already validates the data, so if we got here it's valid
                 return True, None
                 
             except Exception as e:
