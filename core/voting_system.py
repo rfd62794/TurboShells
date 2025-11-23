@@ -7,7 +7,6 @@ import json
 from datetime import datetime, date, timedelta
 from typing import Dict, Any, List, Optional, Tuple
 from .visual_genetics import VisualGenetics
-from .turtle_svg_generator import TurtleSVGGenerator
 
 
 class DesignPackage:
@@ -96,7 +95,7 @@ class VotingSystem:
         
         # System components
         self.visual_genetics = VisualGenetics()
-        self.svg_generator = TurtleSVGGenerator()
+        # SVG generator no longer needed - using direct renderer
         
         # Configuration
         self.daily_design_count = 5
@@ -134,9 +133,8 @@ class VotingSystem:
             # Generate random genetics
             random_genetics = self.visual_genetics.generate_random_genetics()
             
-            # Generate SVG
-            svg_drawing = self.svg_generator.generate_turtle_svg(random_genetics)
-            svg_content = svg_drawing.as_svg() if svg_drawing else ""
+            # Generate SVG (no longer needed - using direct renderer)
+            svg_content = ""  # Empty since we're not using SVG
             
             # Create feature breakdown
             feature_breakdown = self._create_feature_breakdown(random_genetics)
@@ -480,7 +478,7 @@ class VotingSystem:
         # Validate components
         try:
             self.visual_genetics.generate_random_genetics()
-            self.svg_generator.generate_random_turtle()
+            # Direct renderer test not needed here
         except:
             validation['components_available'] = False
         

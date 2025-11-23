@@ -14,8 +14,6 @@ import os
 sys.path.insert(0, os.path.dirname(__file__))
 
 from core.visual_genetics import VisualGenetics
-from core.genetic_svg_mapper import GeneticToSVGMapper
-from core.turtle_svg_generator import TurtleSVGGenerator
 from core.direct_turtle_renderer import get_direct_renderer
 from core.voting_system import VotingSystem
 from core.genetic_pool_manager import GeneticPoolManager
@@ -31,8 +29,6 @@ class VisualGeneticsDemo:
         
         # Initialize systems
         self.vg = VisualGenetics()
-        self.mapper = GeneticToSVGMapper()
-        self.generator = TurtleSVGGenerator()
         self.renderer = get_direct_renderer()  # Use direct renderer
         self.voting_system = VotingSystem()
         self.pool_manager = GeneticPoolManager()
