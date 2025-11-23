@@ -4,6 +4,56 @@ Comprehensive testing infrastructure for TurboShells game systems with 95%+ cove
 
 ## 📁 Test Files
 
+### **🧪 Modern Pytest Framework**
+- **`conftest.py`** - Comprehensive pytest configuration and fixtures
+  - Test data fixtures and factories
+  - Mock data generators with seeds
+  - Performance tracking utilities
+  - Custom assertion helpers
+  - Test environment setup
+
+- **`test_core_entities.py`** - Unit tests for core game entities
+  - Turtle entity comprehensive testing
+  - Edge cases and error conditions
+  - Performance and memory testing
+  - State persistence testing
+
+- **`test_game_systems.py`** - Unit tests for game systems
+  - Game state helper functions
+  - Race track generation and terrain
+  - Integration with core entities
+  - Performance benchmarks
+
+- **`test_integration_workflows.py`** - End-to-end workflow testing
+  - Complete game workflows
+  - Economic cycles and tournaments
+  - Save/load operations
+  - Error handling scenarios
+
+- **`test_performance.py`** - Comprehensive performance testing
+  - System performance under load
+  - Memory leak detection
+  - Resource usage monitoring
+  - Stress testing scenarios
+
+- **`test_ui_components.py`** - UI component and interaction testing
+  - UI rendering and interactions
+  - Component lifecycle testing
+  - Accessibility features
+  - Performance optimization
+
+- **`pytest_runner.py`** - Enhanced test runner with reporting
+  - Comprehensive test execution
+  - Coverage analysis and reporting
+  - Quality metrics calculation
+  - JSON and HTML report generation
+
+- **`pytest.ini`** - Pytest configuration file
+  - Test discovery settings
+  - Coverage configuration
+  - Parallel execution setup
+  - Marker definitions
+
 ### **🧪 Unit Test Framework**
 - **`unit_test_framework.py`** - Comprehensive unit tests for all core systems
   - Turtle entity testing (creation, physics, training, edge cases)
@@ -156,7 +206,51 @@ Comprehensive testing infrastructure for TurboShells game systems with 95%+ cove
 
 ## 🚀 Usage
 
-### **🧪 Test Execution**
+### **🧪 Modern Pytest Framework (Recommended)**
+#### **Run All Tests with Enhanced Reporting**
+```bash
+python tests/pytest_runner.py
+```
+
+#### **Run Specific Test Categories**
+```bash
+python tests/pytest_runner.py --categories unit integration
+python tests/pytest_runner.py --categories performance
+python tests/pytest_runner.py --categories ui
+```
+
+#### **Run with Pytest Directly**
+```bash
+# Run all tests with coverage
+pytest tests/ --cov=. --cov-report=html
+
+# Run specific test types
+pytest tests/ -m unit
+pytest tests/ -m integration  
+pytest tests/ -m performance
+pytest tests/ -m ui
+
+# Run with parallel execution
+pytest tests/ -n auto
+
+# Run specific test file
+pytest tests/test_core_entities.py
+pytest tests/test_game_systems.py
+pytest tests/test_integration_workflows.py
+pytest tests/test_performance.py
+pytest tests/test_ui_components.py
+```
+
+#### **Coverage Reports**
+```bash
+# Generate HTML coverage report
+pytest tests/ --cov=. --cov-report=html --cov-report=term-missing
+
+# View coverage report
+open htmlcov/index.html
+```
+
+### **🧪 Legacy Test Framework**
 #### **Run All Tests**
 ```bash
 python tests/comprehensive_test_runner.py
@@ -345,6 +439,14 @@ perf.bat              # Performance tests
 ```
 tests/
 ├── README.md                           # This file
+├── conftest.py                         # Pytest configuration and fixtures
+├── pytest.ini                         # Pytest settings
+├── pytest_runner.py                   # Enhanced test runner
+├── test_core_entities.py               # Core entity unit tests
+├── test_game_systems.py                # Game system unit tests
+├── test_integration_workflows.py       # Integration workflow tests
+├── test_performance.py                 # Performance tests
+├── test_ui_components.py               # UI component tests
 ├── run_all_tests.py                    # Legacy test runner
 ├── comprehensive_test_runner.py        # New comprehensive runner
 ├── mock_data_generator.py              # Test data generation
@@ -354,7 +456,8 @@ tests/
 ├── performance_test_suite.py          # Performance test suite
 ├── test_*.py                           # Legacy and specific tests
 ├── benchmark_results.json              # Performance benchmarks
-└── comprehensive_report.json           # Test reports
+├── comprehensive_report.json           # Test reports
+└── htmlcov/                            # Coverage reports directory
 ```
 
 ## 🎯 Quality Gates
