@@ -48,16 +48,16 @@ class SettingsManager:
         self.state = SettingsState()
         self.pending_changes = {}
         
-        # Settings view
+        # Initialize settings view
         self.settings_view = SettingsView(screen_rect)
         
-        # UI components for enhanced interaction
-        self.components: Dict[str, Any] = {}
-        
-        # Initialize components
-        self._initialize_components()
-        
         self.logger.info("Settings manager initialized")
+    
+    def update_screen_rect(self, screen_rect: pygame.Rect) -> None:
+        """Update screen rectangle and adjust layout."""
+        self.screen_rect = screen_rect
+        self.settings_view.update_layout(screen_rect)
+        self.logger.info(f"Settings manager updated for screen size {screen_rect.width}x{screen_rect.height}")
     
     def _initialize_components(self) -> None:
         """Initialize UI components for settings."""

@@ -100,12 +100,15 @@ class SettingsView:
         self.tab_content: Dict[SettingsTab, List[UIElement]] = {}
         self.buttons: List[UIElement] = []
         
-        # Layout dimensions
+        # Layout dimensions - Responsive and centered
+        panel_width = min(screen_rect.width * 0.7, 800)  # 70% of screen width, max 800px
+        panel_height = min(screen_rect.height * 0.8, 600)  # 80% of screen height, max 600px
+        
         self.panel_rect = pygame.Rect(
-            screen_rect.width // 4,
-            screen_rect.height // 8,
-            screen_rect.width // 2,
-            screen_rect.height * 3 // 4
+            (screen_rect.width - panel_width) // 2,  # Centered X
+            (screen_rect.height - panel_height) // 2,  # Centered Y
+            panel_width,
+            panel_height
         )
         
         self.tab_bar_rect = pygame.Rect(
@@ -128,6 +131,44 @@ class SettingsView:
         self._initialize_tab_content()
         
         self.logger.info("Settings view initialized")
+    
+    def update_layout(self, screen_rect: pygame.Rect) -> None:
+        """Update layout to match new screen dimensions."""
+        self.screen_rect = screen_rect
+        
+        # Recalculate panel dimensions
+        panel_width = min(screen_rect.width * 0.7, 800)  # 70% of screen width, max 800px
+        panel_height = min(screen_rect.height * 0.8, 600)  # 80% of screen height, max 600px
+        
+        self.panel_rect = pygame.Rect(
+            (screen_rect.width - panel_width) // 2,  # Centered X
+            (screen_rect.height - panel_height) // 2,  # Centered Y
+            panel_width,
+            panel_height
+        )
+        
+        # Update child rectangles
+        self.tab_bar_rect = pygame.Rect(
+            self.panel_rect.x + 10,
+            self.panel_rect.y + 10,
+            self.panel_rect.width - 20,
+            40
+        )
+        
+        self.content_rect = pygame.Rect(
+            self.panel_rect.x + 10,
+            self.tab_bar_rect.bottom + 10,
+            self.panel_rect.width - 20,
+            self.panel_rect.height - self.tab_bar_rect.height - 60
+        )
+        
+        # Reinitialize UI elements with new layout
+        self._initialize_tabs()
+        self._initialize_buttons()
+        self._initialize_tab_content()
+        
+        self.needs_redraw = True
+        self.logger.info(f"Settings layout updated to {screen_rect.width}x{screen_rect.height}")
     
     def _initialize_fonts(self) -> Dict[str, pygame.font.Font]:
         """Initialize fonts for the settings interface."""
