@@ -33,20 +33,21 @@ class RosterManager:
             # No, Y is 15. That's definitely relative to the slot.
             
             # We need to calculate absolute rects for buttons
+            slot_x = slot_rect.x
             slot_y = slot_rect.y
             
-            train_rect = pygame.Rect(layout.SLOT_BTN_TRAIN_RECT.x, slot_y + layout.SLOT_BTN_TRAIN_RECT.y, 
+            train_rect = pygame.Rect(slot_x + layout.SLOT_BTN_TRAIN_RECT.x, slot_y + layout.SLOT_BTN_TRAIN_RECT.y, 
                                      layout.SLOT_BTN_TRAIN_RECT.width, layout.SLOT_BTN_TRAIN_RECT.height)
             
-            retire_rect = pygame.Rect(layout.SLOT_BTN_RETIRE_RECT.x, slot_y + layout.SLOT_BTN_RETIRE_RECT.y, 
+            retire_rect = pygame.Rect(slot_x + layout.SLOT_BTN_RETIRE_RECT.x, slot_y + layout.SLOT_BTN_RETIRE_RECT.y, 
                                       layout.SLOT_BTN_RETIRE_RECT.width, layout.SLOT_BTN_RETIRE_RECT.height)
 
             # Check if this slot is the active racer
             is_active_racer = i == getattr(self.game_state, "active_racer_index", 0)
             
             if not getattr(self.game_state, "show_retired_view", False):
-                # First check for action buttons (only if this slot is selected and has a turtle)
-                if is_active_racer and self.game_state.roster[i]:
+                # First check for action buttons (for any turtle with a train button)
+                if self.game_state.roster[i]:
                     if train_rect.collidepoint(pos):
                         self.train_turtle(i)
                     elif retire_rect.collidepoint(pos):

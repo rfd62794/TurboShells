@@ -21,8 +21,8 @@ SLOT_NAME_POS = (20, 10)
 SLOT_STATS_POS = (20, 35)
 SLOT_ENERGY_BG_RECT = pygame.Rect(20, 65, 400, 15)
 SLOT_ENERGY_FILL_POS = (22, 67) # Width is variable, Height is 11
-SLOT_BTN_TRAIN_RECT = pygame.Rect(550, 15, 80, 28)
-SLOT_BTN_RETIRE_RECT = pygame.Rect(550, 48, 80, 28)
+SLOT_BTN_TRAIN_RECT = pygame.Rect(540, 15, 90, 32)  # Larger and more to the left
+SLOT_BTN_RETIRE_RECT = pygame.Rect(540, 52, 90, 32)  # Larger and more to the left
 
 # View toggles
 VIEW_ACTIVE_RECT = pygame.Rect(50, 480, 100, 35)

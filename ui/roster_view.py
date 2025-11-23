@@ -48,8 +48,8 @@ def draw_roster(screen, font, game_state):
         is_active_racer = (not show_retired) and idx == getattr(game_state, "active_racer_index", 0)
         draw_stable_turtle_slot(screen, font, game_state, turtle, slot_rect, is_active_racer, mouse_pos)
 
-        # Train button (only for active roster turtles and not in select racer mode)
-        if turtle and is_active_racer and not show_retired and not select_racer_mode:
+        # Train button (for all active roster turtles, not in select racer mode)
+        if turtle and not show_retired and not select_racer_mode:
             train_btn = layout.SLOT_BTN_TRAIN_RECT
             train_rect = pygame.Rect(slot_rect.x + train_btn.x, slot_rect.y + train_btn.y, train_btn.width, train_btn.height)
 
