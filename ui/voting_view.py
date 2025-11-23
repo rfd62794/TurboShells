@@ -364,8 +364,11 @@ class VotingView:
             screen_y = 200 + y - self.scroll_offset
             
             for i in range(5):
-                star_screen_x = screen_x + i * star_spacing
+                # Stars are drawn at surface position (30 + i*45, y)
+                # So screen position is left_panel + 30 + 30 + i*45
+                star_screen_x = self.left_panel_width + 30 + 30 + i * star_spacing
                 star_screen_y = screen_y
+                
                 # Make hover detection more forgiving with larger padding
                 hover_padding = 10
                 if (star_screen_x - hover_padding <= self.mouse_pos[0] <= star_screen_x + star_size + hover_padding and 
