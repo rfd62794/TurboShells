@@ -1,25 +1,25 @@
 {
-  "timestamp": "2025-11-23T11:07:22.367215",
+  "timestamp": "2025-11-23T11:08:42.770399",
   "project_stats": {
-    "python_files": 102,
-    "total_lines_of_code": 25792,
+    "python_files": 104,
+    "total_lines_of_code": 26154,
     "test_files": 19
   },
   "recent_activity": [],
   "test_results": {
     "tests/comprehensive_report.json": {
       "total_tests": 70,
-      "total_failures": 0,
-      "total_errors": 70,
+      "total_failures": 2,
+      "total_errors": 68,
       "overall_success_rate": 0.0,
       "suite_results": [
         {
           "name": "unit_tests",
           "tests_run": 26,
-          "failures": 0,
-          "errors": 26,
+          "failures": 2,
+          "errors": 24,
           "success_rate": 0.0,
-          "execution_time": 0.5639877319335938,
+          "execution_time": 0.7436649799346924,
           "passed": false
         },
         {
@@ -28,7 +28,7 @@
           "failures": 0,
           "errors": 14,
           "success_rate": 0.0,
-          "execution_time": 0.012518644332885742,
+          "execution_time": 0.009130477905273438,
           "passed": false
         },
         {
@@ -37,7 +37,7 @@
           "failures": 0,
           "errors": 21,
           "success_rate": 0.0,
-          "execution_time": 1.4227490425109863,
+          "execution_time": 1.2919964790344238,
           "passed": false
         },
         {
@@ -46,7 +46,7 @@
           "failures": 0,
           "errors": 9,
           "success_rate": 0.0,
-          "execution_time": 0.11573100090026855,
+          "execution_time": 0.10078978538513184,
           "passed": false
         }
       ],
@@ -61,7 +61,7 @@
         "overall_coverage": 77.0
       },
       "performance_metrics": {},
-      "timestamp": 1763914023.13645
+      "timestamp": 1763914101.5505157
     },
     "tests/benchmark_results.json": {}
   },
