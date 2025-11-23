@@ -89,7 +89,7 @@ def main():
                                 status = voting_system.get_daily_status()
                                 if status['completed_votes'] == status['total_designs']:
                                     demo_complete = True
-                                    print(f"\n🎉 Demo Complete! You earned ${status['potential_earnings']}")
+                                    print(f"\n*** Demo Complete! You earned ${status['potential_earnings']} ***")
                                     print(f"Your votes have influenced the genetic pool!")
         
         # Clear screen
@@ -121,7 +121,7 @@ def main():
             
             # Status
             if design.voting_status == 'completed':
-                status_text = "✓ VOTED"
+                status_text = "* VOTED"
                 status_color = (34, 139, 34)
             else:
                 status_text = "PENDING VOTE"
