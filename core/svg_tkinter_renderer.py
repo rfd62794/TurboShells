@@ -159,8 +159,14 @@ class TkinterSVGRenderer:
             # Convert to PNG using subprocess
             import subprocess
             temp_png = os.path.join(self.temp_dir, f"temp_{id(svg_string)}.png")
-            cmd = ['python', '-c', f'import svg2png; svg2png.svg2png("{temp_svg}", "{temp_png}")']
-            subprocess.run(cmd, capture_output=True)
+            
+            # Use svg2png directly with file paths
+            try:
+                svg2png.svg2png(temp_svg, temp_png)
+            except TypeError:
+                # Try alternative API
+                cmd = ['python', '-c', f'import svg2png; svg2png.svg2png("{temp_svg}", "{temp_png}")']
+                subprocess.run(cmd, capture_output=True)
             
             # Load with PIL
             if os.path.exists(temp_png):
@@ -221,64 +227,78 @@ class TkinterSVGRenderer:
         """
         Create a fallback PhotoImage when SVG conversion fails
         """
-        # Create PIL image with turtle drawing
-        pil_image = Image.new('RGBA', (size, size), (240, 248, 255, 255))
-        
-        # Draw turtle using PIL
-        from PIL import ImageDraw
-        draw = ImageDraw.Draw(pil_image)
-        
-        center_x = size // 2
-        center_y = size // 2
-        scale = size / 200.0
-        
-        # Shell
-        shell_width = int(80 * scale)
-        shell_height = int(60 * scale)
-        shell_bbox = [
-            center_x - shell_width//2, center_y - shell_height//2,
-            center_x + shell_width//2, center_y + shell_height//2
-        ]
-        draw.ellipse(shell_bbox, fill=(34, 139, 34), outline=(0, 100, 0))
-        
-        # Head
-        head_radius = int(20 * scale)
-        head_bbox = [
-            center_x - head_radius, center_y - int(40 * scale) - head_radius,
-            center_x + head_radius, center_y - int(40 * scale) + head_radius
-        ]
-        draw.ellipse(head_bbox, fill=(139, 90, 43), outline=(100, 60, 20))
-        
-        # Eyes
-        eye_size = max(2, int(3 * scale))
-        draw.ellipse([
-            center_x - int(8 * scale) - eye_size, center_y - int(40 * scale) - eye_size,
-            center_x - int(8 * scale) + eye_size, center_y - int(40 * scale) + eye_size
-        ], fill=(0, 0, 0))
-        draw.ellipse([
-            center_x + int(8 * scale) - eye_size, center_y - int(40 * scale) - eye_size,
-            center_x + int(8 * scale) + eye_size, center_y - int(40 * scale) + eye_size
-        ], fill=(0, 0, 0))
-        
-        # Legs
-        leg_width = int(8 * scale)
-        leg_length = int(30 * scale)
-        leg_positions = [
-            (center_x - int(60 * scale), center_y + int(20 * scale)),
-            (center_x + int(60 * scale), center_y + int(20 * scale)),
-            (center_x - int(40 * scale), center_y + int(40 * scale)),
-            (center_x + int(40 * scale), center_y + int(40 * scale))
-        ]
-        
-        for leg_x, leg_y in leg_positions:
-            draw.rectangle([
-                leg_x - leg_width//2, leg_y,
-                leg_x + leg_width//2, leg_y + leg_length
-            ], fill=(101, 67, 33))
-        
-        # Convert to PhotoImage
-        photo_image = ImageTk.PhotoImage(pil_image)
-        return photo_image
+        try:
+            # Create PIL image with turtle drawing
+            pil_image = Image.new('RGBA', (size, size), (240, 248, 255, 255))
+            
+            # Draw turtle using PIL
+            from PIL import ImageDraw
+            draw = ImageDraw.Draw(pil_image)
+            
+            center_x = size // 2
+            center_y = size // 2
+            scale = size / 200.0
+            
+            # Shell
+            shell_width = int(80 * scale)
+            shell_height = int(60 * scale)
+            shell_bbox = [
+                center_x - shell_width//2, center_y - shell_height//2,
+                center_x + shell_width//2, center_y + shell_height//2
+            ]
+            draw.ellipse(shell_bbox, fill=(34, 139, 34), outline=(0, 100, 0))
+            
+            # Head
+            head_radius = int(20 * scale)
+            head_bbox = [
+                center_x - head_radius, center_y - int(40 * scale) - head_radius,
+                center_x + head_radius, center_y - int(40 * scale) + head_radius
+            ]
+            draw.ellipse(head_bbox, fill=(139, 90, 43), outline=(100, 60, 20))
+            
+            # Eyes
+            eye_size = max(2, int(3 * scale))
+            draw.ellipse([
+                center_x - int(8 * scale) - eye_size, center_y - int(40 * scale) - eye_size,
+                center_x - int(8 * scale) + eye_size, center_y - int(40 * scale) + eye_size
+            ], fill=(0, 0, 0))
+            draw.ellipse([
+                center_x + int(8 * scale) - eye_size, center_y - int(40 * scale) - eye_size,
+                center_x + int(8 * scale) + eye_size, center_y - int(40 * scale) + eye_size
+            ], fill=(0, 0, 0))
+            
+            # Legs
+            leg_width = int(8 * scale)
+            leg_length = int(30 * scale)
+            leg_positions = [
+                (center_x - int(60 * scale), center_y + int(20 * scale)),
+                (center_x + int(60 * scale), center_y + int(20 * scale)),
+                (center_x - int(40 * scale), center_y + int(40 * scale)),
+                (center_x + int(40 * scale), center_y + int(40 * scale))
+            ]
+            
+            for leg_x, leg_y in leg_positions:
+                draw.rectangle([
+                    leg_x - leg_width//2, leg_y,
+                    leg_x + leg_width//2, leg_y + leg_length
+                ], fill=(101, 67, 33))
+            
+            # Convert to PhotoImage - handle Tkinter root window requirement
+            try:
+                photo_image = ImageTk.PhotoImage(pil_image)
+                return photo_image
+            except RuntimeError as e:
+                if "no default root window" in str(e):
+                    # Save to temp file and load later
+                    temp_file = os.path.join(self.temp_dir, f"fallback_{id(self)}.png")
+                    pil_image.save(temp_file)
+                    return temp_file  # Return file path instead
+                else:
+                    raise e
+                    
+        except Exception as e:
+            print(f"Error creating fallback image: {e}")
+            return None
     
     def cache_image(self, cache_key: str, photo_image: ImageTk.PhotoImage) -> None:
         """
