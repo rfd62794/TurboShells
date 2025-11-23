@@ -70,42 +70,53 @@ class BreedingManager:
 
     def breed(self):
         if len(self.parents) == 2:
-            # Check for empty slot
+            parent_a = self.parents[0]
+            parent_b = self.parents[1]
+            
+            # Always remove parent_b to make space for the child
+            # Find parent_b in the active roster and remove it
             slot_idx = -1
-            for i in range(len(self.game_state.roster)):
-                if self.game_state.roster[i] is None:
-                    slot_idx = i
+            for i, t in enumerate(self.game_state.roster):
+                if t is parent_b:
+                    self.game_state.roster[i] = None
+                    slot_idx = i  # Use this slot for the child
                     break
             
-            if slot_idx != -1:
-                parent_a = self.parents[0]
-                parent_b = self.parents[1]
-                
-                child = breed_turtles(parent_a, parent_b)
-                self.game_state.roster[slot_idx] = child
-                
-                # Remove parents from their respective pools (active roster or retired_roster)
-                # Keep parent_a in roster, remove parent_b
-                for i, t in enumerate(self.game_state.roster):
-                    if t is parent_b:
-                        self.game_state.roster[i] = None
-                        break
-                
-                # If parent_b is in the retired roster, remove it from there
+            # If parent_b wasn't in active roster, try retired roster
+            if slot_idx == -1:
                 if parent_b in self.game_state.retired_roster:
                     self.game_state.retired_roster.remove(parent_b)
+                    # Find first empty slot in active roster
+                    for i, t in enumerate(self.game_state.roster):
+                        if t is None:
+                            slot_idx = i
+                            break
                 
-                # If parent_a is in the retired roster (shouldn't happen for breeding), keep it
-
-                self.parents = []
-                self.game_state.breeding_parents = []
-                
-                print(f"Bred {child.name}!")
-                
-                # Auto-save after breeding
-                self.game_state.auto_save("breeding")
-                
-                return True # Success
-            else:
-                print("No Roster Space!")
+                # If still no slot, remove parent_a instead to make space
+                if slot_idx == -1:
+                    for i, t in enumerate(self.game_state.roster):
+                        if t is parent_a:
+                            self.game_state.roster[i] = None
+                            slot_idx = i
+                            break
+            
+            # If we still don't have a slot (shouldn't happen), can't breed
+            if slot_idx == -1:
+                print("Error: Could not find space for breeding!")
+                return False
+            
+            # Create the child and place it in the freed slot
+            child = breed_turtles(parent_a, parent_b)
+            self.game_state.roster[slot_idx] = child
+            
+            # Clear breeding selection
+            self.parents = []
+            self.game_state.breeding_parents = []
+            
+            print(f"Bred {child.name}!")
+            
+            # Auto-save after breeding
+            self.game_state.auto_save("breeding")
+            
+            return True # Success
         return False
