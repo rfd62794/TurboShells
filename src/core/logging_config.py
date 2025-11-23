@@ -1,12 +1,18 @@
 """
 Logging configuration for TurboShells game.
 Provides centralized logging setup for development and debugging.
+
+This is a portfolio project - logging focuses on development needs
+rather than production monitoring.
 """
 
 import logging
 import os
+import sys
+import traceback
 from datetime import datetime
 from pathlib import Path
+from typing import Optional, Dict, Any
 
 
 def setup_logging(log_level=logging.INFO, log_to_file=True, log_to_console=True):
@@ -98,18 +104,130 @@ def log_error(error, context="", level=logging.ERROR):
         logger.log(level, f"Error: {error}")
 
 
-def log_performance(operation, duration, details="", level=logging.DEBUG):
+def log_debug_info(context: str, data: Dict[str, Any] = None) -> None:
     """
-    Log performance information.
-
+    Log detailed debug information for development.
+    
     Args:
-        operation: Operation being measured
-        duration: Duration in seconds
-        details: Additional details
-        level: Logging level
+        context: Context where debug info is being logged
+        data: Dictionary of debug data to log
+    """
+    logger = get_logger("debug")
+    logger.debug(f"DEBUG INFO - {context}")
+    if data:
+        for key, value in data.items():
+            logger.debug(f"  {key}: {value}")
+
+
+def log_exception_with_context(
+    exception: Exception, 
+    context: str = "", 
+    user_data: Dict[str, Any] = None
+) -> None:
+    """
+    Log an exception with full traceback and context.
+    
+    Args:
+        exception: The exception that occurred
+        context: Context where the exception occurred
+        user_data: Additional user/game state data
+    """
+    logger = get_logger("exceptions")
+    
+    # Log the exception with full traceback
+    exc_info = (type(exception), exception, exception.__traceback__)
+    logger.error(f"Exception in {context}: {exception}", exc_info=exc_info)
+    
+    # Log additional context if provided
+    if user_data:
+        logger.error("Context data:")
+        for key, value in user_data.items():
+            logger.error(f"  {key}: {value}")
+
+
+def log_game_state(state: Dict[str, Any], level: int = logging.DEBUG) -> None:
+    """
+    Log current game state for debugging.
+    
+    Args:
+        state: Game state dictionary
+        level: Logging level to use
+    """
+    logger = get_logger("game_state")
+    logger.log(level, "Current game state:")
+    for key, value in state.items():
+        logger.log(level, f"  {key}: {value}")
+
+
+def create_development_logger(name: str) -> logging.Logger:
+    """
+    Create a logger specifically configured for development debugging.
+    
+    Args:
+        name: Logger name
+        
+    Returns:
+        Logger configured for development
+    """
+    logger = get_logger(f"dev.{name}")
+    logger.setLevel(logging.DEBUG)
+    return logger
+
+
+def setup_performance_logging() -> logging.Logger:
+    """
+    Set up a dedicated performance logger.
+    
+    Returns:
+        Logger for performance monitoring
     """
     logger = get_logger("performance")
-    logger.log(level, f"Performance - {operation}: {duration:.3f}s {details}")
+    logger.setLevel(logging.DEBUG)
+    return logger
+
+
+class GameLogger:
+    """
+    Convenience class for game-specific logging operations.
+    Provides easy access to different logging contexts.
+    """
+    
+    def __init__(self, module_name: str):
+        """Initialize with module name."""
+        self.module_name = module_name
+        self.logger = get_logger(module_name)
+        self.debug_logger = create_development_logger(module_name)
+        self.perf_logger = setup_performance_logging()
+    
+    def debug(self, message: str, data: Dict[str, Any] = None) -> None:
+        """Log debug message with optional data."""
+        self.debug_logger.debug(message)
+        if data:
+            for key, value in data.items():
+                self.debug_logger.debug(f"  {key}: {value}")
+    
+    def info(self, message: str) -> None:
+        """Log info message."""
+        self.logger.info(message)
+    
+    def warning(self, message: str) -> None:
+        """Log warning message."""
+        self.logger.warning(message)
+    
+    def error(self, message: str, exception: Optional[Exception] = None) -> None:
+        """Log error message with optional exception."""
+        if exception:
+            log_exception_with_context(exception, self.module_name)
+        else:
+            self.logger.error(message)
+    
+    def game_event(self, event_type: str, details: str) -> None:
+        """Log a game event."""
+        log_game_event(event_type, details)
+    
+    def performance(self, operation: str, duration: float, details: str = "") -> None:
+        """Log performance information."""
+        log_performance(operation, duration, details)
 
 
 # Initialize logging when module is imported
