@@ -262,25 +262,19 @@ class GameStateManager:
         
         turtle_data_list = []
         
-        print(f"[DEBUG] Converting turtles to save data: roster={len(roster)}, retired={len(retired_roster)}")
-        print(f"[DEBUG] Roster contents: {[t.name if t else None for t in roster]}")
-        
         # Process active roster
         for i, turtle in enumerate(roster):
             if turtle:
                 turtle_id = f"turtle_{i:03d}"
-                print(f"[DEBUG] Converting active turtle {i}: {turtle.name} -> {turtle_id}")
                 turtle_data = self._create_turtle_data(turtle, turtle_id)
                 turtle_data_list.append(turtle_data)
         
         # Process retired roster
         for i, turtle in enumerate(retired_roster):
             turtle_id = f"turtle_retired_{i:03d}"
-            print(f"[DEBUG] Converting retired turtle {i}: {turtle.name} -> {turtle_id}")
             turtle_data = self._create_turtle_data(turtle, turtle_id)
             turtle_data_list.append(turtle_data)
         
-        print(f"[DEBUG] Total turtle data objects created: {len(turtle_data_list)}")
         return turtle_data_list
     
     def _create_turtle_data(self, turtle: Turtle, turtle_id: str) -> Any:
