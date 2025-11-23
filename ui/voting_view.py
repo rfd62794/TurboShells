@@ -36,6 +36,12 @@ class VotingView:
         self.current_feedback = None
         self.feedback_timer = 0
         
+        # Scrolling state
+        self.scroll_offset = 0
+        self.max_scroll = 0
+        self.scrollbar_width = 12
+        self.scrollbar_visible = False
+        
         # UI layout
         self.width = screen.get_width()
         self.height = screen.get_height()
@@ -254,15 +260,175 @@ class VotingView:
         # Draw navigation controls at the top of right panel
         self._draw_navigation_controls()
         
-        # Draw voting controls
+        # Create a clipping surface for scrollable content
+        content_area = pygame.Rect(self.left_panel_width, 200, self.right_panel_width - 20, self.height - 210)
+        clip_surface = pygame.Surface((content_area.width, content_area.height), pygame.SRCALPHA)
+        clip_surface.fill((0, 0, 0, 0))
+        
+        # Calculate content height and update scroll limits
+        categories = current_design.rating_categories
+        content_height = len(categories) * 120 + 100  # 120px per category + submit button space
+        self._update_scroll_limits(content_height)
+        
+        # Draw voting controls with clipping
         if current_design.voting_status == 'completed':
-            self._draw_completed_ratings(current_design)
+            self._draw_completed_ratings_scrolled(clip_surface, current_design)
         else:
-            self._draw_rating_controls()
+            self._draw_rating_controls_scrolled(clip_surface, current_design)
+        
+        # Blit the clipped content
+        self.screen.blit(clip_surface, (content_area.x, content_area.y))
+        
+        # Draw scrollbar if needed
+        self._draw_scrollbar()
+    
+    def _draw_rating_controls_scrolled(self, surface: pygame.Surface, current_design):
+        """Draw rating controls with scrolling support"""
+        categories = current_design.rating_categories
+        
+        if current_design.voting_status == 'completed':
+            return
+        
+        # Rating controls area (relative to surface)
+        controls_x = 30
+        controls_y = -self.scroll_offset  # Apply scroll offset
+        controls_width = self.right_panel_width - 60
+        
+        # Draw category names and star ratings
+        y_offset = 0
+        for category_name, category_data in categories.items():
+            # Category name
+            category_text = category_data['display_name']
+            text_surface = self.normal_font.render(category_text, True, self.text_color)
+            surface.blit(text_surface, (controls_x, controls_y + y_offset))
+            
+            # Draw description
+            desc_text = category_data['description']
+            desc_surface = self.small_font.render(desc_text, True, (100, 100, 100))
+            surface.blit(desc_surface, (controls_x, controls_y + y_offset + 25))
+            
+            # Draw stars (more space in right panel)
+            star_rating = self.selected_ratings.get(category_name, 0)
+            self._draw_star_rating_scrolled(surface, controls_x, controls_y + y_offset + 55, 
+                                          star_rating, category_name)
+            
+            y_offset += 120
         
         # Draw submit button if ratings are complete
         if self._can_submit_ratings():
-            self._draw_submit_button()
+            self._draw_submit_button_scrolled(surface, controls_x, controls_y + y_offset)
+    
+    def _draw_completed_ratings_scrolled(self, surface: pygame.Surface, current_design):
+        """Draw completed ratings display with scrolling support"""
+        if not current_design.ratings:
+            return
+        
+        controls_x = 30
+        controls_y = -self.scroll_offset  # Apply scroll offset
+        
+        # Title
+        title_text = "Your Ratings:"
+        title_surface = self.header_font.render(title_text, True, self.success_color)
+        surface.blit(title_surface, (controls_x, controls_y))
+        
+        # Display ratings
+        y_offset = 40
+        for category_name, rating in current_design.ratings.items():
+            category_data = current_design.rating_categories.get(category_name, {})
+            category_text = category_data.get('display_name', category_name)
+            
+            # Category name
+            text_surface = self.normal_font.render(category_text, True, self.text_color)
+            surface.blit(text_surface, (controls_x, controls_y + y_offset))
+            
+            # Stars
+            self._draw_star_rating_scrolled(surface, controls_x, controls_y + y_offset, rating, category_name, interactive=False)
+            
+            # Rating value
+            rating_text = f"{rating:.1f}/5.0"
+            rating_surface = self.normal_font.render(rating_text, True, self.text_color)
+            surface.blit(rating_surface, (controls_x + 150, controls_y + y_offset))
+            
+            y_offset += 35
+    
+    def _draw_star_rating_scrolled(self, surface: pygame.Surface, x: int, y: int, rating: float, category_name: str, interactive: bool = True):
+        """Draw interactive star rating on a surface"""
+        star_size = 20
+        star_spacing = 25
+        
+        # Check hover position for preview (adjust for surface position)
+        hover_star = -1
+        if interactive:
+            # Convert surface coordinates to screen coordinates
+            screen_x = self.left_panel_width + 200 + x
+            screen_y = 200 + y
+            
+            for i in range(5):
+                star_screen_x = screen_x + i * star_spacing
+                star_screen_y = screen_y
+                if (star_screen_x <= self.mouse_pos[0] <= star_screen_x + star_size and 
+                    star_screen_y <= self.mouse_pos[1] <= star_screen_y + star_size):
+                    hover_star = i
+                    break
+        
+        for i in range(5):
+            star_x = x + i * star_spacing
+            star_y = y
+            
+            # Determine star color with proper hover preview
+            if i < rating:
+                # Already rated stars
+                star_color = self.star_color
+            elif hover_star >= 0 and i <= hover_star:
+                # Hover preview - show what rating would be
+                star_color = self.star_hover_color
+            else:
+                # Empty stars
+                star_color = self.star_empty_color
+            
+            # Draw star on surface
+            self._draw_star_on_surface(surface, star_x, star_y, star_size, star_color)
+    
+    def _draw_star_on_surface(self, surface: pygame.Surface, x: int, y: int, size: int, color: Tuple[int, int, int]):
+        """Draw a star shape on a surface"""
+        points = []
+        for i in range(10):
+            angle = math.pi * i / 5
+            if i % 2 == 0:
+                radius = size
+            else:
+                radius = size * 0.5
+            
+            px = x + size + radius * math.cos(angle - math.pi / 2)
+            py = y + size + radius * math.sin(angle - math.pi / 2)
+            points.append((px, py))
+        
+        pygame.draw.polygon(surface, color, points)
+    
+    def _draw_submit_button_scrolled(self, surface: pygame.Surface, x: int, y: int):
+        """Draw submit button on a surface"""
+        button_width = 200
+        button_height = 50
+        button_x = x + (self.right_panel_width - 60 - button_width) // 2
+        button_y = y
+        
+        # Pulsing effect
+        pulse_factor = abs(math.sin(self.pulse_phase))
+        base_color = (50, 150, 50)
+        button_color = tuple(min(255, int(c + c * pulse_factor)) for c in base_color)
+        
+        # Draw button
+        pygame.draw.rect(surface, button_color, 
+                        (button_x, button_y, button_width, button_height), border_radius=8)
+        pygame.draw.rect(surface, self.text_color, 
+                        (button_x, button_y, button_width, button_height), 2, border_radius=8)
+        
+        # Button text
+        button_text = "Submit & Earn $1"
+        text_surface = self.normal_font.render(button_text, True, (255, 255, 255))
+        text_rect = text_surface.get_rect(centerx=button_x + button_width // 2, 
+                                         centery=button_y + button_height // 2)
+        surface.blit(text_surface, text_rect)
     
     def _draw_rating_controls(self):
         """Draw rating controls in right panel"""
@@ -504,22 +670,30 @@ class VotingView:
         star_size = 20
         star_spacing = 25
         
+        # Check hover position for preview
+        hover_star = -1
+        if interactive:
+            for i in range(5):
+                star_x = x + i * star_spacing
+                star_y = y
+                if (star_x <= self.mouse_pos[0] <= star_x + star_size and 
+                    star_y <= self.mouse_pos[1] <= star_y + star_size):
+                    hover_star = i
+                    break
+        
         for i in range(5):
             star_x = x + i * star_spacing
             star_y = y
             
-            # Check if mouse is over this star
-            is_hovered = False
-            if interactive:
-                is_hovered = (star_x <= self.mouse_pos[0] <= star_x + star_size and 
-                             star_y <= self.mouse_pos[1] <= star_y + star_size)
-            
-            # Determine star color
+            # Determine star color with proper hover preview
             if i < rating:
+                # Already rated stars
                 star_color = self.star_color
-            elif is_hovered and interactive:
+            elif hover_star >= 0 and i <= hover_star:
+                # Hover preview - show what rating would be
                 star_color = self.star_hover_color
             else:
+                # Empty stars
                 star_color = self.star_empty_color
             
             # Draw star
@@ -665,6 +839,58 @@ class VotingView:
         close_rect = close_surface.get_rect(centerx=popup_x + popup_width // 2, y=popup_y + 150)
         self.screen.blit(close_surface, close_rect)
     
+    def _scroll_up(self):
+        """Scroll up the right panel content"""
+        if self.scroll_offset > 0:
+            self.scroll_offset -= 30
+            self.scroll_offset = max(0, self.scroll_offset)
+    
+    def _scroll_down(self):
+        """Scroll down the right panel content"""
+        if self.scroll_offset < self.max_scroll:
+            self.scroll_offset += 30
+            self.scroll_offset = min(self.max_scroll, self.scroll_offset)
+    
+    def _update_scroll_limits(self, content_height: int):
+        """Update scroll limits based on content height"""
+        available_height = self.height - 200  # Leave space for title and navigation
+        if content_height > available_height:
+            self.max_scroll = content_height - available_height
+            self.scrollbar_visible = True
+        else:
+            self.max_scroll = 0
+            self.scrollbar_visible = False
+            self.scroll_offset = 0
+    
+    def _draw_scrollbar(self):
+        """Draw scrollbar if needed"""
+        if not self.scrollbar_visible:
+            return
+        
+        # Scrollbar position
+        scrollbar_x = self.width - self.scrollbar_width - 5
+        scrollbar_y = 200  # Start below navigation
+        scrollbar_height = self.height - 210  # Leave space at bottom
+        
+        # Calculate thumb position
+        if self.max_scroll > 0:
+            thumb_ratio = (self.height - 210) / (self.height - 210 + self.max_scroll)
+            thumb_height = max(30, int(scrollbar_height * thumb_ratio))
+            thumb_y = scrollbar_y + int((self.scroll_offset / self.max_scroll) * (scrollbar_height - thumb_height))
+        else:
+            thumb_height = scrollbar_height
+            thumb_y = scrollbar_y
+        
+        # Draw scrollbar background
+        pygame.draw.rect(self.screen, (200, 200, 200), 
+                        (scrollbar_x, scrollbar_y, self.scrollbar_width, scrollbar_height), 
+                        border_radius=6)
+        
+        # Draw scrollbar thumb
+        pygame.draw.rect(self.screen, (150, 150, 150), 
+                        (scrollbar_x, thumb_y, self.scrollbar_width, thumb_height), 
+                        border_radius=6)
+    
     def handle_event(self, event: pygame.event.Event) -> str:
         """Handle pygame events"""
         if event.type == pygame.MOUSEMOTION:
@@ -674,6 +900,10 @@ class VotingView:
             if event.button == 1:  # Left click
                 self.mouse_clicked = True
                 self._handle_click(event.pos)
+            elif event.button == 4:  # Scroll up
+                self._scroll_up()
+            elif event.button == 5:  # Scroll down
+                self._scroll_down()
                 
         elif event.type == pygame.MOUSEBUTTONUP:
             if event.button == 1:
