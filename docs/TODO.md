@@ -102,12 +102,38 @@
 - Clickable turtles with stat tooltips
 - Profile shortcut integration
 
-### **Phase 15: Advanced Genetics & Evolution** - 0% COMPLETE**
+### **Phase 15: Advanced Training System** - 0% COMPLETE**
+
+#### **🏃‍♂️ Training Course Mode**
+- [ ] **Random Terrain Generation** - Procedural course creation with grass/water/rock mix
+- [ ] **Automatic Turtle Running** - Physics-based turtle navigation with AI pathfinding
+- [ ] **Experience Gain System** - Performance-based XP awards with terrain mastery bonuses
+- [ ] **Terrain-Specific Stat Improvements** - Swim training from water, climb from rocks, speed from grass
+- [ ] **Visual Course Preview** - Interactive terrain overview with difficulty indicators
+- [ ] **Training Results Summary** - Detailed performance metrics and improvement tracking
+
+#### **🎯 Training Implementation Details**
+- [ ] **Course Generation Algorithm** - Balanced terrain distribution with difficulty scaling
+- [ ] **Turtle AI Runner** - Intelligent movement based on turtle stats and terrain modifiers
+- [ ] **Performance Scoring** - Time, energy efficiency, and terrain mastery calculations
+- [ ] **Experience Calculation** - Dynamic XP based on course difficulty and turtle performance
+- [ ] **Stat Improvement Logic** - Targeted stat gains based on completed terrain types
+- [ ] **Course Preview UI** - Visual representation with hover tooltips for terrain effects
+- [ ] **Results Screen** - Comprehensive summary with stats gained and next training recommendations
+
+#### **🔧 Technical Components**
+- [ ] **Training State Management** - New game state for training interface
+- [ ] **Terrain Engine** - Extend existing race terrain system for training courses
+- [ ] **AI Movement System** - Automatic turtle navigation with stat-based performance
+- [ ] **Experience Tracking** - Persistent XP system with level progression
+- [ ] **Training History** - Log of completed courses and performance trends
+
+### **Phase 16: Advanced Genetics & Evolution** - 0% COMPLETE**
 - Complex genetic interactions and trait inheritance
 - Evolution engine and genetic drift simulation
 - Natural selection and genetic engineering tools
 
-### **Phase 16: AI Community Store & Economic System** - 0% COMPLETE**
+### **Phase 17: AI Community Store & Economic System** - 0% COMPLETE**
 - AI community simulation with 50+ traders
 - Dynamic pricing and market analytics
 - AI communication and reputation systems
