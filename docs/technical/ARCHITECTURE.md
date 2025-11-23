@@ -19,7 +19,8 @@ The project follows a clean, component-based architecture with proper separation
 │   ├── roster_manager.py     # Roster and turtle management
 │   ├── race_manager.py       # Race simulation and execution
 │   ├── shop_manager.py       # Shop inventory and transactions
-│   └── breeding_manager.py    # Breeding logic and parent selection
+│   ├── breeding_manager.py    # Breeding logic and parent selection
+│   └── settings_manager.py   # Settings system with responsive UI
 ├── ui/                        # User interface components and views
 │   ├── layouts/              # Pure positioning data
 │   │   └── positions.py       # All UI rects and positions
@@ -31,7 +32,8 @@ The project follows a clean, component-based architecture with proper separation
 │   │   ├── roster_view.py    # Roster management interface
 │   │   ├── race_view.py      # Race visualization
 │   │   ├── shop_view.py      # Shop interface
-│   │   └── breeding_view.py  # Breeding center interface
+│   │   ├── breeding_view.py  # Breeding center interface
+│   │   └── settings_view.py  # Settings interface with responsive layout
 │   └── renderer.py           # View delegator and coordinator
 ├── docs/                      # Documentation
 │   ├── ARCHITECTURE.md        # This file
