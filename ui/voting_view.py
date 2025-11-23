@@ -279,9 +279,9 @@ class VotingView:
         
         categories = current_design.rating_categories
         
-        # Rating controls area (right panel)
+        # Rating controls area (right panel) - start below navigation controls
         controls_x = self.left_panel_width + 30
-        controls_y = 120
+        controls_y = 200  # Start below navigation (which ends around y=180)
         controls_width = self.right_panel_width - 60
         
         # Draw category names and star ratings
@@ -893,7 +893,7 @@ class VotingView:
         current_design = designs[self.current_design_index]
         if current_design.voting_status != 'completed':
             controls_x = self.left_panel_width + 30
-            controls_y = 120
+            controls_y = 200  # Updated to match new positioning
             y_offset = 0
             categories = current_design.rating_categories
             for category_name, category_data in categories.items():
