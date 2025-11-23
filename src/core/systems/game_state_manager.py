@@ -508,6 +508,7 @@ class GameStateManager:
                             "recovery": turtle.recovery,
                             "swim": turtle.swim,
                             "climb": turtle.climb,
+                            "age": getattr(turtle, 'age', 0),  # Include turtle age
                         }
                         if turtle
                         else None
@@ -522,6 +523,7 @@ class GameStateManager:
                         "recovery": turtle.recovery,
                         "swim": turtle.swim,
                         "climb": turtle.climb,
+                        "age": getattr(turtle, 'age', 0),  # Include turtle age
                     }
                     for turtle in retired_roster
                 ],
@@ -571,6 +573,8 @@ class GameStateManager:
                         swim=turtle_data["swim"],
                         climb=turtle_data["climb"],
                     )
+                    # Restore turtle age
+                    turtle.age = turtle_data.get("age", 0)
                     active_roster.append(turtle)
                 else:
                     active_roster.append(None)
@@ -585,6 +589,9 @@ class GameStateManager:
                     swim=turtle_data["swim"],
                     climb=turtle_data["climb"],
                 )
+                # Restore turtle age and mark as retired
+                turtle.age = turtle_data.get("age", 0)
+                turtle.is_active = False
                 retired_roster.append(turtle)
 
             print(
