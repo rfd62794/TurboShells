@@ -21,6 +21,7 @@ class StateHandler:
             STATE_RACE: self._handle_race_clicks,
             STATE_RACE_RESULT: self._handle_race_result_clicks,
             STATE_PROFILE: self._handle_profile_clicks,
+            STATE_VOTING: self._handle_voting_clicks,
         }
     
     def handle_click(self, pos):
@@ -38,6 +39,7 @@ class StateHandler:
             (layout.MENU_SHOP_RECT, STATE_SHOP),  # SHOP
             (layout.MENU_BREEDING_RECT, STATE_BREEDING),  # BREEDING
             (layout.MENU_RACE_RECT, STATE_RACE),  # RACE
+            (layout.MENU_VOTING_RECT, STATE_VOTING),  # VOTING
         ]
         
         for rect, new_state in menu_rects:
@@ -214,3 +216,23 @@ class StateHandler:
             self.game.state = STATE_RACE
             return True
         return False
+    
+    def _handle_voting_clicks(self, pos):
+        """Handle clicks in voting state."""
+        # Check for back button
+        back_rect = pygame.Rect(700, 5, 80, 30)
+        if back_rect.collidepoint(pos):
+            self.game.state = STATE_MENU
+            return
+        
+        # Handle voting view clicks
+        if hasattr(self.game, 'voting_view'):
+            result = self.game.voting_view.handle_click(pos)
+            if result == "vote_completed":
+                # Award $1 for completed vote
+                self.game.money += 1
+                # Auto-save after vote
+                if hasattr(self.game, 'save_manager'):
+                    self.game.save_manager.auto_save()
+            elif result == "back_to_menu":
+                self.game.state = STATE_MENU
