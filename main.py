@@ -13,9 +13,9 @@ from managers.shop_manager import ShopManager
 from managers.race_manager import RaceManager
 from managers.breeding_manager import BreedingManager
 from managers.roster_manager import RosterManager
-from core.game_state import generate_random_turtle
-from core.state_handler import StateHandler
-from core.keyboard_handler import KeyboardHandler
+from core.game.game_state import generate_random_turtle
+from core.systems.state_handler import StateHandler
+from core.game.keyboard_handler import KeyboardHandler
 
 # --- MAIN GAME CLASS ---
 class TurboShellsGame:

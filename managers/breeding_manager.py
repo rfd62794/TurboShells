@@ -1,4 +1,4 @@
-from core.game_state import breed_turtles
+from core.game.game_state import breed_turtles
 from settings import *
 import pygame # Needed for Rect
 import ui.layout as layout
