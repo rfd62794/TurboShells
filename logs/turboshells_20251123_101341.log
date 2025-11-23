@@ -1,0 +1,20 @@
+2025-11-23 10:13:41,784 - core.config - INFO - Configuration loaded successfully
+2025-11-23 10:13:41,786 - core.graphics_manager - INFO - Loaded graphics settings: 1024x768
+2025-11-23 10:13:41,938 - core.graphics_manager - INFO - Display initialized: (1024, 768), Fullscreen: False
+2025-11-23 10:13:41,942 - core.audio_manager - INFO - Loaded audio settings: Master Volume 1.0, Enabled True
+2025-11-23 10:13:42,481 - core.audio_manager - INFO - Audio system initialized successfully
+2025-11-23 10:13:42,648 - ui.settings_view - INFO - Settings view initialized
+2025-11-23 10:13:42,649 - managers.settings_manager - INFO - Settings manager initialized
+2025-11-23 10:13:42,651 - managers.save_manager - INFO - SaveManager initialized with directory: C:\Users\cheat\AppData\Roaming\TurboShells
+2025-11-23 10:13:42,672 - core.auto_load_system - INFO - Save file found at C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 10:13:42,673 - core.auto_load_system - INFO - Attempting to restore game state from save file
+2025-11-23 10:13:42,698 - managers.save_manager - INFO - Game loaded successfully from C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 10:13:42,699 - core.auto_load_system - INFO - Successfully restored game state for player player_20251122_235300
+2025-11-23 10:13:49,305 - ui.settings_view - INFO - Settings view shown
+2025-11-23 10:13:49,306 - managers.settings_manager - INFO - Settings shown, tab: graphics
+2025-11-23 10:13:50,152 - ui.settings_view - INFO - Settings view hidden
+2025-11-23 10:13:50,153 - managers.settings_manager - INFO - Settings hidden
+2025-11-23 10:13:50,642 - ui.settings_view - INFO - Settings view shown
+2025-11-23 10:13:50,643 - managers.settings_manager - INFO - Settings shown, tab: graphics
+2025-11-23 10:13:51,011 - ui.settings_view - INFO - Settings view hidden
+2025-11-23 10:13:51,011 - managers.settings_manager - INFO - Settings hidden
