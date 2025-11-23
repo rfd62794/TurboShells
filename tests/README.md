@@ -13,6 +13,48 @@ Comprehensive testing infrastructure for TurboShells game systems.
   - Rendering compatibility
   - Voting system integration
 
+- **`test_main_game.py`** - Tests main game loop and core functionality
+  - Game initialization
+  - State management
+  - Basic game flow
+
+- **`test_config_system.py`** - Tests configuration and settings system
+  - Settings persistence
+  - Configuration loading
+  - Default values
+
+- **`test_voting_influence.py`** - Tests voting system influence on genetics
+  - Voting mechanics
+  - Genetic pool updates
+  - Design integration
+
+### **UI Tests**
+- **`test_ui_centered_settings.py`** - Tests centered settings menu and responsive layout
+  - Perfect centering across screen sizes
+  - Window resizing support
+  - Dynamic layout updates
+  - Responsive panel sizing
+
+- **`test_ui_menu_changes.py`** - Tests main menu layout changes
+  - Button positioning
+  - Settings button integration
+  - Money display formatting
+
+- **`test_ui_settings_button.py`** - Tests settings button functionality
+  - Button click detection
+  - Settings menu integration
+  - State transitions
+
+- **`test_ui_settings.py`** - Tests comprehensive settings UI
+  - Settings interface rendering
+  - Tab navigation
+  - Settings persistence
+
+- **`test_ui_final_layout.py`** - Tests final UI layout verification
+  - Overall layout consistency
+  - Visual validation
+  - Screenshot testing
+
 ### **Visual Tests**
 - **`test_visual_genetics.py`** - Validates all 19 genetic traits render correctly
   - All genetic trait validation
