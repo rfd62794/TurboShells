@@ -192,13 +192,266 @@ class TurtlePerformance:
 class TurtleParents:
     """Parent information for breeding"""
 
-    mother_id: str
-    father_id: str
+    mother_id: Optional[str]
+    father_id: Optional[str]
 
 
 @dataclass
+class TurtleLineage:
+    """Extended lineage information"""
+
+    parent_ids: List[str]  # From entity
+    generation: int         # From entity
+    ancestors: List[str]     # Traced ancestry
+    offspring_count: int    # Number of children
+
+
+@dataclass
+class TurtleIdentity:
+    """Core turtle identity information"""
+
+    turtle_id: str          # Standardized from entity.id
+    name: str
+    age: int                # From entity.age
+    is_active: bool         # From entity.is_active
+    created_timestamp: str
+    last_modified: str
+
+
+@dataclass
+class TurtleDynamicState:
+    """Dynamic race state (for mid-race saves)"""
+
+    current_energy: float
+    race_distance: float
+    is_resting: bool
+    finished: bool
+    rank: Optional[int]
+    last_race_update: str
+
+
+@dataclass
+class TurtleRaceResult:
+    """Individual race result matching entity format"""
+
+    number: int
+    position: int
+    earnings: int
+    age_at_race: int
+    terrain_type: str
+    race_timestamp: str
+
+
+@dataclass
+class TurtleVisualGenetics:
+    """Visual genetics compatible with entity system"""
+
+    shell_pattern: str
+    shell_color: str
+    pattern_color: str
+    limb_shape: str
+    limb_length: float
+    head_size: float
+    eye_color: str
+    skin_texture: str
+    
+    # Additional visual traits for future expansion
+    shell_size: float = 1.0
+    pattern_density: float = 1.0
+    color_saturation: float = 1.0
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary format compatible with entity"""
+        return {
+            "shell_pattern": self.shell_pattern,
+            "shell_color": self.shell_color,
+            "pattern_color": self.pattern_color,
+            "limb_shape": self.limb_shape,
+            "limb_length": self.limb_length,
+            "head_size": self.head_size,
+            "eye_color": self.eye_color,
+            "skin_texture": self.skin_texture,
+            "shell_size": self.shell_size,
+            "pattern_density": self.pattern_density,
+            "color_saturation": self.color_saturation,
+        }
+    
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'TurtleVisualGenetics':
+        """Create from dictionary format"""
+        return cls(
+            shell_pattern=data.get("shell_pattern", "hex"),
+            shell_color=data.get("shell_color", "#4A90E2"),
+            pattern_color=data.get("pattern_color", "#E74C3C"),
+            limb_shape=data.get("limb_shape", "flippers"),
+            limb_length=float(data.get("limb_length", 1.0)),
+            head_size=float(data.get("head_size", 1.0)),
+            eye_color=data.get("eye_color", "#2ECC71"),
+            skin_texture=data.get("skin_texture", "smooth"),
+            shell_size=float(data.get("shell_size", 1.0)),
+            pattern_density=float(data.get("pattern_density", 1.0)),
+            color_saturation=float(data.get("color_saturation", 1.0)),
+        )
+
+
+@dataclass
+class TurtleEnhancedPerformance:
+    """Complete performance tracking"""
+
+    race_history: List[TurtleRaceResult]
+    total_races: int
+    total_earnings: int
+    wins: int
+    average_position: float
+    best_position: int
+    worst_position: int
+    favorite_terrain: str
+    terrain_performance: Dict[str, float]
+    
+    def add_race_result(self, result: TurtleRaceResult) -> None:
+        """Add a new race result and update statistics"""
+        self.race_history.append(result)
+        self.total_races += 1
+        self.total_earnings += result.earnings
+        
+        # Update wins
+        if result.position == 1:
+            self.wins += 1
+        
+        # Update position statistics
+        if self.total_races == 1:
+            self.best_position = result.position
+            self.worst_position = result.position
+            self.average_position = float(result.position)
+        else:
+            self.best_position = min(self.best_position, result.position)
+            self.worst_position = max(self.worst_position, result.position)
+            self.average_position = (
+                (self.average_position * (self.total_races - 1) + result.position) / 
+                self.total_races
+            )
+        
+        # Update terrain performance
+        if result.terrain_type not in self.terrain_performance:
+            self.terrain_performance[result.terrain_type] = 0.0
+        self.terrain_performance[result.terrain_type] += (1.0 / result.position)
+        
+        # Update favorite terrain
+        if self.terrain_performance:
+            self.favorite_terrain = max(self.terrain_performance, 
+                                     key=self.terrain_performance.get)
+
+
+@dataclass
+class TurtleStaticData:
+    """Static turtle data that doesn't change during gameplay"""
+
+    identity: TurtleIdentity
+    lineage: TurtleLineage
+    visual_genetics: TurtleVisualGenetics
+    base_stats: BaseStats
+    created_timestamp: str
+
+
+@dataclass
+class TurtleDynamicData:
+    """Dynamic turtle data that changes during gameplay"""
+
+    current_stats: TurtleStats
+    performance: TurtleEnhancedPerformance
+    race_state: Optional[TurtleDynamicState]
+    last_updated: str
+
+
+@dataclass
+class EnhancedTurtleData:
+    """Complete enhanced turtle data structure with 100% property coverage"""
+
+    # Core identity and static data
+    static_data: TurtleStaticData
+    
+    # Dynamic data that changes during gameplay
+    dynamic_data: TurtleDynamicData
+    
+    # Legacy compatibility fields
+    turtle_id: str  # For backward compatibility
+    name: str      # For backward compatibility
+    
+    def get_identity(self) -> TurtleIdentity:
+        """Get turtle identity information"""
+        return self.static_data.identity
+    
+    def get_current_age(self) -> int:
+        """Get current age from dynamic data"""
+        return self.dynamic_data.current_stats.age
+    
+    def set_age(self, age: int) -> None:
+        """Update turtle age"""
+        self.dynamic_data.current_stats.age = age
+        self.dynamic_data.last_updated = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    
+    def is_active(self) -> bool:
+        """Check if turtle is active (in roster)"""
+        return self.static_data.identity.is_active
+    
+    def set_active_status(self, is_active: bool) -> None:
+        """Update turtle active status"""
+        self.static_data.identity.is_active = is_active
+        self.dynamic_data.last_updated = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    
+    def get_visual_genetics(self) -> TurtleVisualGenetics:
+        """Get visual genetics"""
+        return self.static_data.visual_genetics
+    
+    def get_race_history(self) -> List[TurtleRaceResult]:
+        """Get complete race history"""
+        return self.dynamic_data.performance.race_history
+    
+    def get_total_earnings(self) -> int:
+        """Get total career earnings"""
+        return self.dynamic_data.performance.total_earnings
+    
+    def add_race_result(self, position: int, earnings: int, terrain_type: str, 
+                       race_number: Optional[int] = None) -> None:
+        """Add a new race result"""
+        if race_number is None:
+            race_number = self.dynamic_data.performance.total_races + 1
+        
+        result = TurtleRaceResult(
+            number=race_number,
+            position=position,
+            earnings=earnings,
+            age_at_race=self.get_current_age(),
+            terrain_type=terrain_type,
+            race_timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat()
+        )
+        
+        self.dynamic_data.performance.add_race_result(result)
+        self.dynamic_data.last_updated = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    
+    def update_race_state(self, current_energy: float, race_distance: float, 
+                         is_resting: bool, finished: bool, rank: Optional[int] = None) -> None:
+        """Update dynamic race state"""
+        self.dynamic_data.race_state = TurtleDynamicState(
+            current_energy=current_energy,
+            race_distance=race_distance,
+            is_resting=is_resting,
+            finished=finished,
+            rank=rank,
+            last_race_update=datetime.datetime.now(datetime.timezone.utc).isoformat()
+        )
+        self.dynamic_data.last_updated = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    
+    def clear_race_state(self) -> None:
+        """Clear race state (called when race ends)"""
+        self.dynamic_data.race_state = None
+        self.dynamic_data.last_updated = datetime.datetime.now(datetime.timezone.utc).isoformat()
+
+
+# Maintain backward compatibility
+@dataclass
 class TurtleData:
-    """Complete turtle data structure"""
+    """Legacy turtle data structure for backward compatibility"""
 
     turtle_id: str
     name: str
@@ -208,6 +461,91 @@ class TurtleData:
     genetics: Dict[str, GeneTrait]
     stats: TurtleStats
     performance: TurtlePerformance
+    
+    @classmethod
+    def from_enhanced(cls, enhanced: EnhancedTurtleData) -> 'TurtleData':
+        """Create legacy TurtleData from EnhancedTurtleData"""
+        # Convert visual genetics to gene traits
+        genetics_dict = {}
+        visual_genetics = enhanced.get_visual_genetics()
+        genetics_dict["shell_pattern"] = GeneTrait(
+            value=visual_genetics.shell_pattern, 
+            dominance=1.0, 
+            mutation_source="inheritance"
+        )
+        genetics_dict["shell_color"] = GeneTrait(
+            value=visual_genetics.shell_color, 
+            dominance=1.0, 
+            mutation_source="inheritance"
+        )
+        genetics_dict["pattern_color"] = GeneTrait(
+            value=visual_genetics.pattern_color, 
+            dominance=1.0, 
+            mutation_source="inheritance"
+        )
+        genetics_dict["limb_shape"] = GeneTrait(
+            value=visual_genetics.limb_shape, 
+            dominance=1.0, 
+            mutation_source="inheritance"
+        )
+        genetics_dict["limb_length"] = GeneTrait(
+            value=visual_genetics.limb_length, 
+            dominance=1.0, 
+            mutation_source="inheritance"
+        )
+        genetics_dict["head_size"] = GeneTrait(
+            value=visual_genetics.head_size, 
+            dominance=1.0, 
+            mutation_source="inheritance"
+        )
+        genetics_dict["eye_color"] = GeneTrait(
+            value=visual_genetics.eye_color, 
+            dominance=1.0, 
+            mutation_source="inheritance"
+        )
+        genetics_dict["skin_texture"] = GeneTrait(
+            value=visual_genetics.skin_texture, 
+            dominance=1.0, 
+            mutation_source="inheritance"
+        )
+        
+        # Convert performance data
+        enhanced_perf = enhanced.dynamic_data.performance
+        
+        # Convert race history to legacy format
+        legacy_race_history = []
+        for race_result in enhanced_perf.race_history:
+            legacy_race_history.append(RaceResult(
+                race_id=f"race_{race_result.number}",
+                timestamp=race_result.race_timestamp,
+                position=race_result.position,
+                earnings=race_result.earnings,
+                terrain_performance=TerrainPerformance(
+                    grass=1.0/race_result.position if race_result.terrain_type == "grass" else 0.5,
+                    water=1.0/race_result.position if race_result.terrain_type == "water" else 0.5,
+                    rock=1.0/race_result.position if race_result.terrain_type == "rock" else 0.5,
+                )
+            ))
+        
+        return cls(
+            turtle_id=enhanced.turtle_id,
+            name=enhanced.name,
+            generation=enhanced.static_data.lineage.generation,
+            created_timestamp=enhanced.static_data.created_timestamp,
+            parents=TurtleParents(
+                mother_id=enhanced.static_data.lineage.parent_ids[0] if len(enhanced.static_data.lineage.parent_ids) > 0 else None,
+                father_id=enhanced.static_data.lineage.parent_ids[1] if len(enhanced.static_data.lineage.parent_ids) > 1 else None,
+            ),
+            genetics=genetics_dict,
+            stats=enhanced.dynamic_data.current_stats,
+            performance=TurtlePerformance(
+                race_history=legacy_race_history,
+                total_races=enhanced_perf.total_races,
+                wins=enhanced_perf.wins,
+                average_position=enhanced_perf.average_position,
+                total_earnings=enhanced_perf.total_earnings,
+            ),
+        )
 
 
 # ============================================================================
