@@ -6,8 +6,20 @@ Test script to verify the main menu changes:
 3. "Money: " added to money display
 """
 
+# Add project root to path
+import sys
+from pathlib import Path
+
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(project_root / "src"))
+
+
 import pygame
 import sys
+import sys
+sys.path.insert(0, ".")
+sys.path.insert(0, "src")
 from settings import *
 import ui.layouts.positions as layout
 import ui.menu_view as menu_view

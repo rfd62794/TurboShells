@@ -4,6 +4,15 @@ Performance test for the genetics system integration.
 Tests performance of genetics operations in game context.
 """
 
+# Add project root to path
+import sys
+from pathlib import Path
+
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(project_root / "src"))
+
+
 import sys
 import os
 import time
@@ -27,7 +36,7 @@ def test_turtle_creation_performance():
     print("Testing Turtle Creation Performance...")
 
     try:
-        from core.game.entities import Turtle
+        from src.core.game.entities import Turtle
 
         # Test creating many turtles
         num_turtles = 100
@@ -87,7 +96,7 @@ def test_shop_generation_performance():
     print("\nTesting Shop Generation Performance...")
 
     try:
-        from core.game.game_state import generate_random_turtle
+        from src.core.game.game_state import generate_random_turtle
 
         # Test generating shop turtles at different levels
         levels = [1, 2, 3, 4, 5]
@@ -139,7 +148,7 @@ def test_breeding_performance():
     print("\nTesting Breeding Performance...")
 
     try:
-        from core.game.game_state import generate_random_turtle, breed_turtles
+        from src.core.game.game_state import generate_random_turtle, breed_turtles
 
         # Create parent pool
         num_parents = 20
@@ -189,7 +198,7 @@ def test_genetics_operations_performance():
 
     try:
         from genetics import VisualGenetics
-        from core.game.entities import Turtle
+        from src.core.game.entities import Turtle
 
         genetics_system = VisualGenetics()
 
@@ -277,8 +286,8 @@ def test_rendering_performance():
 
     try:
         from genetics import VisualGenetics
-        from core.game.entities import Turtle
-        from core.rendering.direct_turtle_renderer import render_turtle_directly
+        from src.core.game.entities import Turtle
+        from src.core.rendering.direct_turtle_renderer import render_turtle_directly
 
         genetics_system = VisualGenetics()
 
@@ -348,7 +357,7 @@ def test_memory_usage():
         import gc
 
         # Test memory usage with many turtles
-        from core.game.entities import Turtle
+        from src.core.game.entities import Turtle
 
         # Force garbage collection
         gc.collect()

@@ -4,6 +4,15 @@ Performance Test Suite for TurboShells
 Benchmark testing and regression detection for game performance.
 """
 
+# Add project root to path
+import sys
+from pathlib import Path
+
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(project_root / "src"))
+
+
 import unittest
 import sys
 import os
@@ -20,13 +29,13 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Import game modules
 try:
-    from core.entities import Turtle
-    from core.game_state import generate_random_turtle, breed_turtles, compute_turtle_cost
-    from core.race_track import generate_track, get_terrain_modifier
-    from managers.roster_manager import RosterManager
-    from managers.race_manager import RaceManager
-    from managers.shop_manager import ShopManager
-    from managers.breeding_manager import BreedingManager
+    from src.core.entities import Turtle
+    from src.core.game_state import generate_random_turtle, breed_turtles, compute_turtle_cost
+    from src.core.race_track import generate_track, get_terrain_modifier
+    from src.managers.roster_manager import RosterManager
+    from src.managers.race_manager import RaceManager
+    from src.managers.shop_manager import ShopManager
+    from src.managers.breeding_manager import BreedingManager
     from tests.mock_data_generator import MockDataGenerator, MockTurtleData
 except ImportError as e:
     print(f"Import error: {e}")

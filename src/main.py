@@ -209,4 +209,4 @@ if __name__ == "__main__":
         print(f"An error occurred: {e}")
         game.save_on_exit()
         pygame.quit()
-        sys.exit(1)
+        sys.exit(1)# Quality check test

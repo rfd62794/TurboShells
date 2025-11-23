@@ -4,6 +4,15 @@ Visual validation test for the 19 genetic traits.
 Tests that all genetic traits are properly rendered and visualized.
 """
 
+# Add project root to path
+import sys
+from pathlib import Path
+
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(project_root / "src"))
+
+
 import sys
 import os
 
@@ -57,7 +66,7 @@ def test_trait_variations():
 
     try:
         from genetics import VisualGenetics
-        from core.game.entities import Turtle
+        from src.core.game.entities import Turtle
 
         genetics_system = VisualGenetics()
 
@@ -113,7 +122,7 @@ def test_inheritance_patterns():
 
     try:
         from genetics import VisualGenetics
-        from core.game.entities import Turtle
+        from src.core.game.entities import Turtle
 
         # Create parents with distinct traits
         parent1_genetics = {
@@ -164,7 +173,7 @@ def test_mutation_system():
 
     try:
         from genetics import VisualGenetics
-        from core.game.entities import Turtle
+        from src.core.game.entities import Turtle
 
         genetics_system = VisualGenetics()
 
@@ -208,8 +217,8 @@ def test_rendering_integration():
 
     try:
         from genetics import VisualGenetics
-        from core.game.entities import Turtle
-        from core.rendering.direct_turtle_renderer import render_turtle_directly
+        from src.core.game.entities import Turtle
+        from src.core.rendering.direct_turtle_renderer import render_turtle_directly
 
         genetics_system = VisualGenetics()
 

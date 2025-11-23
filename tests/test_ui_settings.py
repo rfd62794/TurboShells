@@ -4,6 +4,15 @@ Test script for the settings UI system.
 Tests all major components of the Phase 3 implementation.
 """
 
+# Add project root to path
+import sys
+from pathlib import Path
+
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(project_root / "src"))
+
+
 import sys
 import os
 import pygame
@@ -117,7 +126,7 @@ def test_settings_manager():
     print("[TEST] Testing Settings Manager...")
 
     try:
-        from managers.settings_manager import SettingsManager, SettingsTab
+        from src.managers.settings_manager import SettingsManager, SettingsTab
 
         # Initialize pygame for testing
         pygame.init()
@@ -168,8 +177,8 @@ def test_settings_integration():
     print("[TEST] Testing Settings Integration...")
 
     try:
-        from managers.settings_manager import SettingsManager
-        from core.config import config_manager
+        from src.managers.settings_manager import SettingsManager
+        from src.core.config import config_manager
 
         # Initialize pygame for testing
         pygame.init()
@@ -210,7 +219,7 @@ def test_interactive_demo():
     print("[TEST] Testing Interactive Demo (press ESC to exit)...")
 
     try:
-        from managers.settings_manager import SettingsManager
+        from src.managers.settings_manager import SettingsManager
 
         # Initialize pygame
         pygame.init()

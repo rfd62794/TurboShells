@@ -4,6 +4,15 @@ Test script for the configuration system.
 Tests all major components of the Phase 2 implementation.
 """
 
+# Add project root to path
+import sys
+from pathlib import Path
+
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(project_root / "src"))
+
+
 import sys
 import os
 import json
@@ -18,7 +27,7 @@ def test_config_manager():
     print("[TEST] Testing Configuration Manager...")
 
     try:
-        from core.config import config_manager, GameConfig
+        from src.core.config import config_manager, GameConfig
 
         # Test loading configuration
         config = config_manager.get_config()
@@ -49,7 +58,7 @@ def test_graphics_manager():
     print("[TEST] Testing Graphics Manager...")
 
     try:
-        from core.graphics_manager import graphics_manager
+        from src.core.graphics_manager import graphics_manager
 
         # Test loading settings
         assert graphics_manager.current_settings is not None, "Failed to load graphics settings"
@@ -85,7 +94,7 @@ def test_audio_manager():
     print("[TEST] Testing Audio Manager...")
 
     try:
-        from core.audio_manager import audio_manager
+        from src.core.audio_manager import audio_manager
 
         # Test loading settings
         assert audio_manager.current_settings is not None, "Failed to load audio settings"
@@ -123,7 +132,7 @@ def test_save_protection():
     print("[TEST] Testing Save Protection System...")
 
     try:
-        from core.save_protection import SaveProtectionManager
+        from src.core.save_protection import SaveProtectionManager
         save_protection_manager = SaveProtectionManager()
 
         # Test directory structure
@@ -189,7 +198,7 @@ def test_configuration_persistence():
     print("[TEST] Testing Configuration Persistence...")
 
     try:
-        from core.config import config_manager
+        from src.core.config import config_manager
 
         # Get original settings
         original_config = config_manager.get_config()
@@ -204,7 +213,7 @@ def test_configuration_persistence():
         assert success, "Failed to save configuration"
 
         # Create new config manager instance (simulates restart)
-        from core.config import ConfigManager
+        from src.core.config import ConfigManager
         new_manager = ConfigManager()
         new_config = new_manager.get_config()
 

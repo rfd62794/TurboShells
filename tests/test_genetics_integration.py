@@ -4,6 +4,15 @@ Test script to verify genetics system integration with core game mechanics.
 Tests API compatibility between new genetics system and existing game functionality.
 """
 
+# Add project root to path
+import sys
+from pathlib import Path
+
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(project_root / "src"))
+
+
 import sys
 import os
 
@@ -17,7 +26,7 @@ def test_turtle_creation():
     print("Testing Turtle Creation...")
 
     try:
-        from core.game.entities import Turtle
+        from src.core.game.entities import Turtle
 
         # Test turtle creation without genetics (should auto-generate)
         turtle1 = Turtle("TestTurtle1", 5, 50, 3, 4, 2)
@@ -45,7 +54,7 @@ def test_shop_generation():
     print("\nTesting Shop Generation...")
 
     try:
-        from core.game.game_state import generate_random_turtle
+        from src.core.game.game_state import generate_random_turtle
 
         # Test shop turtle generation at different levels
         for level in [1, 2, 3]:
@@ -65,7 +74,7 @@ def test_breeding_system():
     print("\nTesting Breeding System...")
 
     try:
-        from core.game.game_state import generate_random_turtle, breed_turtles
+        from src.core.game.game_state import generate_random_turtle, breed_turtles
 
         # Create parent turtles
         parent1 = generate_random_turtle(2)
@@ -100,7 +109,7 @@ def test_genetics_methods():
     print("\nTesting Genetics Methods...")
 
     try:
-        from core.game.entities import Turtle
+        from src.core.game.entities import Turtle
 
         turtle = Turtle("MethodTest", 5, 50, 3, 4, 2)
 
@@ -138,8 +147,8 @@ def test_rendering_compatibility():
     print("\nTesting Rendering Compatibility...")
 
     try:
-        from core.game.entities import Turtle
-        from core.rendering.direct_turtle_renderer import render_turtle_directly
+        from src.core.game.entities import Turtle
+        from src.core.rendering.direct_turtle_renderer import render_turtle_directly
 
         turtle = Turtle("RenderTest", 5, 50, 3, 4, 2)
         genetics = turtle.get_all_genetics()
@@ -169,7 +178,7 @@ def test_voting_system_compatibility():
 
     try:
         from genetics import VisualGenetics
-        from core.voting.voting_system import VotingSystem
+        from src.core.voting.voting_system import VotingSystem
 
         genetics_system = VisualGenetics()
         voting_system = VotingSystem()

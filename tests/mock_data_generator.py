@@ -4,6 +4,15 @@ Mock Data Generators for TurboShells Testing
 Provides realistic test data for all game entities and scenarios.
 """
 
+# Add project root to path
+import sys
+from pathlib import Path
+
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(project_root / "src"))
+
+
 import random
 from typing import List, Dict, Any, Tuple
 from dataclasses import dataclass

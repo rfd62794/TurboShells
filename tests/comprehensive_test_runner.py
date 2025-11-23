@@ -4,6 +4,15 @@ Comprehensive Test Runner for TurboShells
 Integrates all test frameworks and provides unified reporting.
 """
 
+# Add project root to path
+import sys
+from pathlib import Path
+
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(project_root / "src"))
+
+
 import unittest
 import sys
 import os

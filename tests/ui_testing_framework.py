@@ -4,6 +4,15 @@ UI Testing Framework for TurboShells
 Automated testing for user interfaces, rendering, and interactions.
 """
 
+# Add project root to path
+import sys
+from pathlib import Path
+
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(project_root / "src"))
+
+
 import unittest
 import sys
 import os
@@ -24,7 +33,7 @@ try:
     from ui.layouts.positions import *
     from ui.menu_view import draw_menu
     from ui.settings_view import SettingsView
-    from managers.settings_manager import SettingsManager
+    from src.managers.settings_manager import SettingsManager
     from tests.mock_data_generator import MockDataGenerator, MockTurtleData
 except ImportError as e:
     print(f"Import error: {e}")
