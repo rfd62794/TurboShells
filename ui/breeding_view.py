@@ -94,10 +94,31 @@ def draw_breeding_turtle_card(screen, font, turtle, rect, is_retired):
     if not turtle:
         return
     
-    # Small turtle picture area (placeholder - could be sprite)
-    pic_rect = pygame.Rect(rect.x + 10, rect.y + 25, 60, 60)
-    pygame.draw.rect(screen, BLUE, pic_rect)
-    pygame.draw.rect(screen, WHITE, pic_rect, 1)
+    # Draw turtle image using universal renderer
+    try:
+        from core.rendering.pygame_turtle_renderer import render_turtle_pygame
+        # Generate small turtle image (60x60) using existing renderer
+        turtle_img = render_turtle_pygame(turtle, size=60)
+        img_x = rect.x + 10
+        img_y = rect.y + 25
+        screen.blit(turtle_img, (img_x, img_y))
+    except Exception as e:
+        # Fallback: draw placeholder turtle
+        pic_rect = pygame.Rect(rect.x + 10, rect.y + 25, 60, 60)
+        pygame.draw.rect(screen, BLUE, pic_rect)
+        pygame.draw.rect(screen, WHITE, pic_rect, 1)
+        
+        # Simple turtle shape fallback
+        center_x = pic_rect.centerx
+        center_y = pic_rect.centery
+        # Shell
+        pygame.draw.ellipse(screen, (34, 139, 34), 
+                           (center_x - 25, center_y - 20, 50, 40))
+        pygame.draw.ellipse(screen, (0, 100, 0), 
+                           (center_x - 25, center_y - 20, 50, 40), 2)
+        # Head
+        pygame.draw.circle(screen, (139, 90, 43), (center_x, center_y - 35), 10)
+        pygame.draw.circle(screen, (100, 60, 20), (center_x, center_y - 35), 10, 2)
     
     # Turtle name
     name_color = GRAY if is_retired else WHITE
@@ -108,7 +129,7 @@ def draw_breeding_turtle_card(screen, font, turtle, rect, is_retired):
         retired_txt = font.render("(RETIRED)", True, GRAY)
         screen.blit(retired_txt, (rect.x + 80, rect.y + 30))
     
-    # Vertical stats list
+    # Vertical stats list with more spacing
     stats = [
         f"Speed: {turtle.speed}",
         f"Energy: {turtle.max_energy}",
@@ -117,8 +138,11 @@ def draw_breeding_turtle_card(screen, font, turtle, rect, is_retired):
         f"Climb: {turtle.climb}"
     ]
     
-    y_offset = rect.y + 30 if not is_retired else rect.y + 50
+    # Start position with more space for retired indicator
+    y_offset = rect.y + 35 if not is_retired else rect.y + 55
+    line_spacing = 22  # Increased from 18 for more spacing
+    
     for stat in stats:
         stat_txt = font.render(stat, True, WHITE)
         screen.blit(stat_txt, (rect.x + 80, y_offset))
-        y_offset += 18
+        y_offset += line_spacing
