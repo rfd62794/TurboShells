@@ -955,8 +955,8 @@ class VotingView:
                         star_spacing = 35  # Match drawing spacing
                         star_x = i * star_spacing  # Stars start at x=0 with 35px spacing
                         
-                        # Increase click area for better mouse detection (add 5px padding)
-                        click_padding = 5
+                        # Click area exactly matches star size (20px) with small padding
+                        click_padding = 2  # Reduced from 5 to avoid extending beyond 5th star
                         if (star_x - click_padding <= relative_x <= star_x + 20 + click_padding and 
                             star_y - click_padding <= relative_y <= star_y + 20 + click_padding):
                             # Set rating for this category
