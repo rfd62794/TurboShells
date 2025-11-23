@@ -13,6 +13,7 @@
   - Phase 8: Advanced Training System → [phases/Phase_08_Advanced_Training_System.md](phases/Phase_08_Advanced_Training_System.md)
   - Phase 9: Turtle Personalities → [phases/Phase_09_Turtle_Personalities.md](phases/Phase_09_Turtle_Personalities.md)
   - Phase 3: Basic Monitoring & Debugging → [phases/Phase_03_Monitoring_Debugging.md](phases/Phase_03_Monitoring_Debugging.md)
+  - Phase 20: UI Flexibility & Responsive Design → [phases/Phase_20_UI_Flexibility_Responsive_Design.md](phases/Phase_20_UI_Flexibility_Responsive_Design.md)
 
 ---
 
