@@ -6,6 +6,9 @@ Final verification of the updated main menu layout with buttons moved up further
 # Add project root to path
 import ui.menu_view as menu_view
 import ui.layouts.positions as layout
+import sys
+sys.path.insert(0, ".")
+sys.path.insert(0, "src")
 from settings import *
 import pygame
 import sys

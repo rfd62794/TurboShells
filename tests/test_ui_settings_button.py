@@ -6,6 +6,9 @@ Test script to verify the Settings button functionality in the main menu.
 # Add project root to path
 from src.core.systems.state_handler import StateHandler
 import ui.layouts.positions as layout
+import sys
+sys.path.insert(0, ".")
+sys.path.insert(0, "src")
 from settings import *
 import pygame
 import sys
