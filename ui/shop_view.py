@@ -82,7 +82,7 @@ def draw_shop(screen, font, game_state):
         energy_bg = pygame.Rect(card_rect.x + 20, card_rect.y + 280, 180, 15)
         pygame.draw.rect(screen, (50, 50, 50), energy_bg)
         
-        energy_fill_width = int((turtle.energy / turtle.max_energy) * 176)
+        energy_fill_width = int((turtle.current_energy / turtle.stats['max_energy']) * 176)
         if energy_fill_width > 0:
             energy_fill = pygame.Rect(card_rect.x + 22, card_rect.y + 282, energy_fill_width, 11)
             pygame.draw.rect(screen, GREEN, energy_fill)
