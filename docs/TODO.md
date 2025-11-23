@@ -21,6 +21,7 @@
   - Phase 12: Tournament & League System → [phases/Phase_12_Tournament_League_System.md](phases/Phase_12_Tournament_League_System.md)
   - Phase 13: Economic Expansion → [phases/Phase_13_Economic_Expansion.md](phases/Phase_13_Economic_Expansion.md)
   - Phase 14: Graphics & Rendering → [phases/Phase_14_Graphics_Rendering.md](phases/Phase_14_Graphics_Rendering.md)
+  - Phase 15: Audio & Effects → [phases/Phase_15_Audio_Effects.md](phases/Phase_15_Audio_Effects.md)
 
 ---
 
@@ -172,6 +173,7 @@
 
 ### **Phase 13: Economic Expansion** - **0% COMPLETE**
 > 📋 **Detailed Plan**: See [phases/Phase_13_Economic_Expansion.md](phases/Phase_13_Economic_Expansion.md)
+
 ## ⚡ **PERFORMANCE & POLISH**
 
 ### **Phase 14: Graphics & Rendering** - **0% COMPLETE**
@@ -179,11 +181,8 @@
 > Advanced graphics engine with physics simulation, particle systems, dynamic lighting, and performance optimization
 
 ### **Phase 15: Audio & Effects** - **0% COMPLETE**
-- Sound Effects: Audio for clicks, races, and actions
-- Background Music: Ambient turtle pond music
-- Audio Settings: Volume controls and sound toggles
-- Environmental Audio: Water sounds, nature effects
-- Victory/Failure Sounds: Race result audio feedback
+> 📋 **Detailed Plan**: See [phases/Phase_15_Audio_Effects.md](phases/Phase_15_Audio_Effects.md)
+> Comprehensive audio system with sound effects, ambient music, environmental audio, and accessibility features
 
 ### **Phase 20: UI Flexibility & Responsive Design** - **50% COMPLETE**
 > 📋 **Detailed Plan**: See [phases/Phase_20_UI_Flexibility_Responsive_Design.md](phases/Phase_20_UI_Flexibility_Responsive_Design.md)
