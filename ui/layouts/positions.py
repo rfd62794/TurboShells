@@ -81,15 +81,21 @@ MENU_BREEDING_RECT = pygame.Rect(200, 300, 400, 70)
 MENU_RACE_RECT = pygame.Rect(200, 390, 400, 70)
 MENU_VOTING_RECT = pygame.Rect(200, 480, 400, 70)
 
-# 4. Shop Layout
-SHOP_SLOT_1_RECT = pygame.Rect(50, 100, 200, 300)
-SHOP_SLOT_2_RECT = pygame.Rect(300, 100, 200, 300)
-SHOP_SLOT_3_RECT = pygame.Rect(550, 100, 200, 300)
+# 4. Shop Layout - Redesigned for larger images and better layout
+SHOP_SLOT_1_RECT = pygame.Rect(50, 80, 220, 380)  # Larger and extended down
+SHOP_SLOT_2_RECT = pygame.Rect(290, 80, 220, 380)  # Larger and extended down  
+SHOP_SLOT_3_RECT = pygame.Rect(530, 80, 220, 380)  # Larger and extended down
 SHOP_SLOT_RECTS = [SHOP_SLOT_1_RECT, SHOP_SLOT_2_RECT, SHOP_SLOT_3_RECT]
 
-SHOP_BTN_BUY_RECT = pygame.Rect(20, 240, 160, 40)
-SHOP_BTN_REFRESH_RECT = pygame.Rect(300, 450, 200, 50)
-SHOP_BTN_BACK_RECT = pygame.Rect(300, 520, 200, 50)
+# Inside Shop Slot (Relative to Slot Rect) - Adjusted for larger boxes
+SHOP_SLOT_NAME_POS = (20, 15)
+SHOP_SLOT_STATS_POS = (20, 45)  # Moved down
+SHOP_SLOT_ENERGY_BG_RECT = pygame.Rect(20, 280, 180, 15)  # Moved down
+SHOP_SLOT_ENERGY_FILL_POS = (22, 282)  # Moved down
+SHOP_SLOT_BTN_BUY_RECT = pygame.Rect(20, 320, 180, 40)  # Moved down
+
+# Bottom buttons - Refresh moved to bottom, back button in header
+SHOP_BTN_REFRESH_RECT = pygame.Rect(300, 480, 200, 50)  # Moved to bottom
 
 # 5. Breeding Layout
 BREED_BACK_BTN_RECT = pygame.Rect(300, 520, 200, 50)

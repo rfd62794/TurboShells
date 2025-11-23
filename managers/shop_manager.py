@@ -11,10 +11,11 @@ class ShopManager:
         self.message_timer = 0
 
     def handle_click(self, pos):
-        # Check Navigation
-        if layout.SHOP_BTN_BACK_RECT.collidepoint(pos):
+        # Check Navigation - Header Back Button (like voting view)
+        if hasattr(self.game_state, 'shop_back_rect') and self.game_state.shop_back_rect.collidepoint(pos):
             return "GOTO_MENU"
         
+        # Check Refresh Button (now at bottom)
         if layout.SHOP_BTN_REFRESH_RECT.collidepoint(pos):
             self.refresh_stock()
             return None
