@@ -40,6 +40,7 @@ class StateHandler:
             (layout.MENU_BREEDING_RECT, STATE_BREEDING),  # BREEDING
             (layout.MENU_RACE_RECT, STATE_RACE),  # RACE
             (layout.MENU_VOTING_RECT, STATE_VOTING),  # VOTING
+            (layout.MENU_SETTINGS_RECT, "SETTINGS"),  # SETTINGS - Special handling
         ]
         
         for rect, new_state in menu_rects:

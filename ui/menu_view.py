@@ -10,7 +10,7 @@ def draw_menu(screen, font, game_state):
     title = font.render("TURBO SHELLS", True, WHITE)
     screen.blit(title, layout.HEADER_TITLE_POS)
 
-    money_txt = font.render(f"$ {game_state.money}", True, WHITE)
+    money_txt = font.render(f"Money: ${game_state.money}", True, WHITE)
     screen.blit(money_txt, layout.HEADER_MONEY_POS)
 
     mouse_pos = getattr(game_state, "mouse_pos", None)
@@ -22,6 +22,7 @@ def draw_menu(screen, font, game_state):
         ("BREEDING", "Breed turtles", layout.MENU_BREEDING_RECT),
         ("RACE", "Start a race", layout.MENU_RACE_RECT),
         ("VOTING", "Design voting & rewards", layout.MENU_VOTING_RECT),
+        ("SETTINGS", "Configure game settings", layout.MENU_SETTINGS_RECT),
     ]
 
     for i, (title, desc, rect) in enumerate(menu_options):

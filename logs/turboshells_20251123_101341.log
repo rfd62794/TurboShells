@@ -18,3 +18,5 @@
 2025-11-23 10:13:50,643 - managers.settings_manager - INFO - Settings shown, tab: graphics
 2025-11-23 10:13:51,011 - ui.settings_view - INFO - Settings view hidden
 2025-11-23 10:13:51,011 - managers.settings_manager - INFO - Settings hidden
+2025-11-23 10:15:11,448 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 10:15:11,450 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json

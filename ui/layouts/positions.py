@@ -8,7 +8,7 @@ PADDING = 20
 # 1. Global Header
 HEADER_RECT = pygame.Rect(0, 0, 800, 40)
 HEADER_TITLE_POS = (20, 10)
-HEADER_MONEY_POS = (650, 10)
+HEADER_MONEY_POS = (580, 10)  # Moved left to accommodate "Money: " text
 
 # 2. Roster Layout
 SLOT_1_RECT = pygame.Rect(50, 60, 700, 120)
@@ -74,12 +74,13 @@ PROFILE_NEXT_BTN_RECT = pygame.Rect(470, 575, 80, 25)
 PROFILE_DOTS_START_X = 340
 PROFILE_DOTS_Y = 590
 
-# 6. Main Menu Layout
-MENU_ROSTER_RECT = pygame.Rect(200, 120, 400, 70)
-MENU_SHOP_RECT = pygame.Rect(200, 210, 400, 70)
-MENU_BREEDING_RECT = pygame.Rect(200, 300, 400, 70)
-MENU_RACE_RECT = pygame.Rect(200, 390, 400, 70)
-MENU_VOTING_RECT = pygame.Rect(200, 480, 400, 70)
+# 6. Main Menu Layout - Moved buttons up
+MENU_ROSTER_RECT = pygame.Rect(200, 100, 400, 70)
+MENU_SHOP_RECT = pygame.Rect(200, 190, 400, 70)
+MENU_BREEDING_RECT = pygame.Rect(200, 280, 400, 70)
+MENU_RACE_RECT = pygame.Rect(200, 370, 400, 70)
+MENU_VOTING_RECT = pygame.Rect(200, 460, 400, 70)
+MENU_SETTINGS_RECT = pygame.Rect(200, 550, 400, 70)  # Added Settings at bottom
 
 # 4. Shop Layout - Redesigned for larger images and better layout
 SHOP_SLOT_1_RECT = pygame.Rect(50, 80, 220, 380)  # Larger and extended down
