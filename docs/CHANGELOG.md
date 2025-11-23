@@ -8,6 +8,10 @@
   - **Click Detection**: Precise coordinate mapping with 45px star spacing
   - **Coordinate System**: Fixed surface-to-screen conversion for scrolling interface
   - **No Overlap**: Clean separation between adjacent star detection zones
+- **Reward System Enhancement**: $1 reward per category voted on (not just completed votes)
+  - **Per-Category Rewards**: Immediate $1 reward for each category rating
+  - **Incremental Earnings**: Players earn money as they vote, not just on completion
+  - **Visual Feedback**: Reward confirmation for each category submission
 - **Scroll Integration**: Perfect hover and click detection with scroll offset handling
 - **User Experience**: Natural hover preview and accurate selection across all 5 stars
 - **Technical Excellence**: Synchronized hover and click detection with identical coordinate math

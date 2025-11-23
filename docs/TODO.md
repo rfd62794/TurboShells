@@ -43,9 +43,9 @@
 - [ ] **UI Consistency** - Ensure voting view matches game UI style
 
 #### **💰 Reward System Integration**
-- [ ] **$1 Per Vote** - Implement monetary reward for completed votes
+- [x] **$1 Per Category** - Implement monetary reward for each voted category (not just completed votes)
 - [ ] **Money Tracking** - Update game state money balance after voting
-- [ ] **Visual Feedback** - Show reward confirmation on vote completion
+- [ ] **Visual Feedback** - Show reward confirmation on category vote completion
 - [ ] **Balance Display** - Update money display in voting interface
 - [ ] **Transaction Logging** - Track voting rewards for statistics
 
