@@ -284,13 +284,14 @@ class GameStateManager:
                 "skin_texture": GeneTrait(value="smooth", dominance=1.0, mutation_source="random")
             },
             stats=TurtleStats(
-                speed=BaseStats(value=turtle.speed, base_value=turtle.speed),
-                max_energy=BaseStats(value=turtle.max_energy, base_value=turtle.max_energy),
-                recovery=BaseStats(value=turtle.recovery, base_value=turtle.recovery),
-                swim=BaseStats(value=turtle.swim, base_value=turtle.swim),
-                climb=BaseStats(value=turtle.climb, base_value=turtle.climb),
+                speed=turtle.speed,
+                energy=turtle.max_energy,
+                recovery=turtle.recovery,
+                swim=turtle.swim,
+                climb=turtle.climb,
+                base_stats=BaseStats(speed=turtle.speed, energy=turtle.max_energy, recovery=turtle.recovery, swim=turtle.swim, climb=turtle.climb),
                 genetic_modifiers=GeneticModifiers(
-                    speed=0, max_energy=0, recovery=0, swim=0, climb=0
+                    speed=0, energy=0, recovery=0, swim=0, climb=0
                 )
             ),
             performance=TurtlePerformance(
