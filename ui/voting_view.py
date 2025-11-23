@@ -356,12 +356,14 @@ class VotingView:
         star_size = 20
         star_spacing = 25
         
+        print(f"Drawing stars for '{category_name}' at surface coords ({x}, {y}) with rating {rating}")
+        
         # Check hover position for preview (adjust for surface position)
         hover_star = -1
         if interactive:
             # Convert surface coordinates to screen coordinates
-            screen_x = self.left_panel_width + 200 + x
-            screen_y = 200 + y
+            screen_x = self.left_panel_width + 30 + x
+            screen_y = 200 + y - self.scroll_offset
             
             for i in range(5):
                 star_screen_x = screen_x + i * star_spacing
@@ -374,6 +376,8 @@ class VotingView:
         for i in range(5):
             star_x = x + i * star_spacing
             star_y = y
+            
+            print(f"  Drawing star {i+1} at surface ({star_x}, {star_y}) screen ({star_x + self.left_panel_width + 30}, {star_y + 200 - self.scroll_offset})")
             
             # Determine star color with proper hover preview
             if i < rating:
@@ -841,26 +845,33 @@ class VotingView:
     
     def _scroll_up(self):
         """Scroll up the right panel content"""
+        print(f"Scroll up called - current offset: {self.scroll_offset}, max_scroll: {self.max_scroll}")
         if self.scroll_offset > 0:
             self.scroll_offset -= 30
             self.scroll_offset = max(0, self.scroll_offset)
+            print(f"New scroll offset: {self.scroll_offset}")
     
     def _scroll_down(self):
         """Scroll down the right panel content"""
+        print(f"Scroll down called - current offset: {self.scroll_offset}, max_scroll: {self.max_scroll}")
         if self.scroll_offset < self.max_scroll:
             self.scroll_offset += 30
             self.scroll_offset = min(self.max_scroll, self.scroll_offset)
+            print(f"New scroll offset: {self.scroll_offset}")
     
     def _update_scroll_limits(self, content_height: int):
         """Update scroll limits based on content height"""
         available_height = self.height - 200  # Leave space for title and navigation
+        print(f"Content height: {content_height}, Available height: {available_height}")
         if content_height > available_height:
             self.max_scroll = content_height - available_height
             self.scrollbar_visible = True
+            print(f"Scrolling enabled - max_scroll: {self.max_scroll}")
         else:
             self.max_scroll = 0
             self.scrollbar_visible = False
             self.scroll_offset = 0
+            print("Scrolling disabled")
     
     def _draw_scrollbar(self):
         """Draw scrollbar if needed"""
@@ -897,12 +908,15 @@ class VotingView:
             self.mouse_pos = event.pos
             
         elif event.type == pygame.MOUSEBUTTONDOWN:
+            print(f"Mouse button down: {event.button}")
             if event.button == 1:  # Left click
                 self.mouse_clicked = True
                 self._handle_click(event.pos)
             elif event.button == 4:  # Scroll up
+                print("Scroll up event detected")
                 self._scroll_up()
             elif event.button == 5:  # Scroll down
+                print("Scroll down event detected")
                 self._scroll_down()
                 
         elif event.type == pygame.MOUSEBUTTONUP:
@@ -922,6 +936,7 @@ class VotingView:
     def _handle_click(self, pos: Tuple[int, int]):
         """Handle mouse click"""
         x, y = pos
+        print(f"Click detected at: ({x}, {y})")
         
         # Check feedback popup
         if self.show_feedback:
@@ -936,47 +951,78 @@ class VotingView:
             return
         
         current_design = designs[self.current_design_index]
+        print(f"Current design voting status: {current_design.voting_status}")
         
-        # Check star ratings
+        # Check star ratings (matching new scrolled layout)
         if current_design.voting_status == 'pending':
             categories = current_design.rating_categories
-            controls_x = 50
-            controls_y = 420
+            print(f"Categories: {list(categories.keys())}")
             
-            y_offset = 0
-            for category_name in categories:
-                star_y = controls_y + y_offset
+            # Check if click is in right panel scrollable area
+            if x >= self.left_panel_width + 30 and y >= 200:
+                print("Click is in right panel area")
+                # Calculate relative position within scrollable content
+                relative_x = x - self.left_panel_width - 30
+                relative_y = y - 200 + self.scroll_offset
+                print(f"Relative position: ({relative_x}, {relative_y})")
                 
-                for i in range(5):
-                    star_x = controls_x + 200 + i * 25
+                y_offset = 0
+                for category_name in categories:
+                    star_y = y_offset + 55  # Stars are at y_offset + 55
+                    print(f"Category '{category_name}' star_y: {star_y}")
                     
-                    if (star_x <= x <= star_x + 20 and star_y <= y <= star_y + 20):
-                        # Set rating for this category
-                        self.selected_ratings[category_name] = i + 1
-                        return
-                
-                y_offset += 55
+                    for i in range(5):
+                        star_x = i * 25  # Stars start at x=0 with 25px spacing
+                        print(f"  Star {i+1} at ({star_x}, {star_y}) to ({star_x+20}, {star_y+20})")
+                        
+                        # Check if click is on this star (use actual star size 20px)
+                        if (star_x <= relative_x <= star_x + 20 and 
+                            star_y <= relative_y <= star_y + 20):
+                            # Set rating for this category
+                            print(f"Clicked star {i+1} for category {category_name}")
+                            self.selected_ratings[category_name] = i + 1
+                            return
+                    
+                    y_offset += 120  # 120px per category
+            else:
+                print("Click is NOT in right panel area")
         
-        # Check submit button
+        # Check submit button (matching new scrolled layout)
         if self._can_submit_ratings():
-            button_x = (self.width - 180) // 2
-            button_y = 580
-            button_width = 180
-            button_height = 40
+            # Calculate submit button position in scrolled layout
+            categories = current_design.rating_categories
+            button_y_offset = len(categories) * 120  # After all categories
+            button_screen_y = 200 + button_y_offset - self.scroll_offset
             
-            if (button_x <= x <= button_x + button_width and
-                button_y <= y <= button_y + button_height):
-                self._submit_ratings()
-                return
+            # Check if button is visible and clicked
+            if button_screen_y >= 200 and button_screen_y + 50 <= self.height:
+                button_x = self.left_panel_width + (self.right_panel_width - 200) // 2
+                button_width = 200
+                button_height = 50
+                
+                if (button_x <= x <= button_x + button_width and
+                    button_screen_y <= y <= button_screen_y + button_height):
+                    result = self._submit_ratings()
+                    if result:
+                        return "vote_completed"
         
-        # Check navigation
-        if x >= 50 and x <= 90 and y >= 350 and y <= 380:
-            # Previous button
-            self._navigate_previous()
+        # Check navigation buttons (matching new right panel positions)
+        if self.current_design_index > 0:
+            nav_center_x = self.left_panel_width + self.right_panel_width // 2
+            nav_y = 90
+            prev_rect = pygame.Rect(nav_center_x - 60, nav_y, 50, 40)
+            if prev_rect.collidepoint(pos):
+                self.current_design_index -= 1
+                return None
         
-        if x >= self.width - 90 and x <= self.width - 50 and y >= 350 and y <= 380:
-            # Next button
-            self._navigate_next()
+        designs = self.voting_system.daily_designs
+        if self.current_design_index < len(designs) - 1:
+            nav_center_x = self.left_panel_width + self.right_panel_width // 2
+            nav_y = 90
+            next_rect = pygame.Rect(nav_center_x + 20, nav_y, 50, 40)
+            if next_rect.collidepoint(pos):
+                self.current_design_index += 1
+                return None
     
     def _navigate_previous(self):
         """Navigate to previous design"""
