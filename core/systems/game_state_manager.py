@@ -19,13 +19,16 @@ class GameStateManager:
     
     def initialize_game_state(self) -> Tuple[bool, List[Turtle], List[Turtle], int, str, Dict[str, Any]]:
         """
-        Initialize game state using auto-load system
+        Initialize game state using auto-load system with separate roster loading
         
         Returns:
             Tuple of (success, roster, retired_roster, money, state, load_notification)
         """
         try:
-            # Perform auto-load
+            # Load roster separately first (this always works)
+            roster, retired_roster = self.load_roster_separately()
+            
+            # Perform auto-load for game state (money, etc.)
             success, error, loaded_data, notification = auto_load_system.auto_load()
             
             # Store notification for display
@@ -48,11 +51,8 @@ class GameStateManager:
                 money = game_state.get("money", 100)
                 state = game_state.get("current_phase", "MENU")
                 
-                # Convert turtle data to game entities
-                roster, retired_roster = self._load_turtles_from_data(game_data_dict, turtles_dict)
-                
-                print(f"Game loaded successfully for player {self.player_id}")
-                print(f"Money: ${money}, Active turtles: {len([t for t in roster if t])}")
+                print(f"Game state loaded: Money=${money}, Phase={state}")
+                print(f"Roster loaded separately: {len([t for t in roster if t])} turtles")
                 
                 return True, roster, retired_roster, money, state, notification
                 
@@ -60,9 +60,10 @@ class GameStateManager:
                 # Keep default state for new game
                 print(f"Starting new game: {error or 'No save file found'}")
                 
-                # Create default roster with starter turtle
-                roster = [Turtle("Starter", speed=5, energy=100, recovery=5, swim=5, climb=5), None, None]
-                retired_roster = []
+                # If no roster loaded, create default
+                if not any(roster):
+                    roster = [Turtle("Starter", speed=5, energy=100, recovery=5, swim=5, climb=5), None, None]
+                
                 money = 100
                 state = "MENU"
                 
@@ -81,8 +82,15 @@ class GameStateManager:
                 "timestamp": "2025-11-22T00:00:00Z"
             }
             
-            roster = [Turtle("Starter", speed=5, energy=100, recovery=5, swim=5, climb=5), None, None]
-            retired_roster = []
+            # Try to load roster separately at minimum
+            try:
+                roster, retired_roster = self.load_roster_separately()
+                if not any(roster):
+                    roster = [Turtle("Starter", speed=5, energy=100, recovery=5, swim=5, climb=5), None, None]
+            except:
+                roster = [Turtle("Starter", speed=5, energy=100, recovery=5, swim=5, climb=5), None, None]
+                retired_roster = []
+            
             money = 100
             state = "MENU"
             
@@ -323,10 +331,112 @@ class GameStateManager:
             )
         )
     
+    def save_roster_separately(self, roster: List[Optional[Turtle]], retired_roster: List[Turtle]) -> bool:
+        """Save roster data separately to ensure persistence"""
+        try:
+            import json
+            from pathlib import Path
+            
+            # Create simple roster data structure
+            roster_data = {
+                "active_roster": [
+                    {
+                        "name": turtle.name,
+                        "speed": turtle.speed,
+                        "max_energy": turtle.max_energy,
+                        "recovery": turtle.recovery,
+                        "swim": turtle.swim,
+                        "climb": turtle.climb
+                    } if turtle else None
+                    for turtle in roster
+                ],
+                "retired_roster": [
+                    {
+                        "name": turtle.name,
+                        "speed": turtle.speed,
+                        "max_energy": turtle.max_energy,
+                        "recovery": turtle.recovery,
+                        "swim": turtle.swim,
+                        "climb": turtle.climb
+                    }
+                    for turtle in retired_roster
+                ],
+                "timestamp": datetime.now(timezone.utc).isoformat()
+            }
+            
+            # Save to separate file
+            save_dir = Path(self.save_manager._get_default_save_directory())
+            save_dir.mkdir(parents=True, exist_ok=True)
+            roster_file = save_dir / "roster_data.json"
+            
+            with open(roster_file, 'w') as f:
+                json.dump(roster_data, f, indent=2)
+            
+            print(f"Roster saved separately to {roster_file}")
+            return True
+            
+        except Exception as e:
+            print(f"Failed to save roster separately: {e}")
+            return False
+    
+    def load_roster_separately(self) -> Tuple[List[Optional[Turtle]], List[Turtle]]:
+        """Load roster data from separate file"""
+        try:
+            import json
+            from pathlib import Path
+            
+            save_dir = Path(self.save_manager._get_default_save_directory())
+            roster_file = save_dir / "roster_data.json"
+            
+            if not roster_file.exists():
+                print("No separate roster file found")
+                return [None, None, None], []
+            
+            with open(roster_file, 'r') as f:
+                roster_data = json.load(f)
+            
+            # Reconstruct turtles
+            active_roster = []
+            for turtle_data in roster_data.get("active_roster", []):
+                if turtle_data:
+                    turtle = Turtle(
+                        name=turtle_data["name"],
+                        speed=turtle_data["speed"],
+                        energy=turtle_data["max_energy"],
+                        recovery=turtle_data["recovery"],
+                        swim=turtle_data["swim"],
+                        climb=turtle_data["climb"]
+                    )
+                    active_roster.append(turtle)
+                else:
+                    active_roster.append(None)
+            
+            retired_roster = []
+            for turtle_data in roster_data.get("retired_roster", []):
+                turtle = Turtle(
+                    name=turtle_data["name"],
+                    speed=turtle_data["speed"],
+                    energy=turtle_data["max_energy"],
+                    recovery=turtle_data["recovery"],
+                    swim=turtle_data["swim"],
+                    climb=turtle_data["climb"]
+                )
+                retired_roster.append(turtle)
+            
+            print(f"Loaded {len([t for t in active_roster if t])} active turtles and {len(retired_roster)} retired turtles")
+            return active_roster, retired_roster
+            
+        except Exception as e:
+            print(f"Failed to load roster separately: {e}")
+            return [None, None, None], []
+    
     def auto_save(self, roster: List[Optional[Turtle]], retired_roster: List[Turtle],
                   money: int, state: str, race_results: List, trigger: str = "manual") -> bool:
         """Auto-save game state"""
         try:
+            # Save roster separately first
+            self.save_roster_separately(roster, retired_roster)
+            
             game_data, turtles, preferences = self.create_save_data(
                 roster, retired_roster, money, state, race_results
             )
