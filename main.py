@@ -139,6 +139,21 @@ class TurboShellsGame:
             if success and loaded_data:
                 game_data, turtles, preferences = loaded_data
                 
+                # Convert dataclass to dict if needed
+                if hasattr(game_data, '__dict__'):
+                    game_data = game_data.__dict__
+                if hasattr(preferences, '__dict__'):
+                    preferences = preferences.__dict__
+                
+                # Convert turtle dataclasses to dicts if needed
+                turtles_dict = []
+                for turtle in turtles:
+                    if hasattr(turtle, '__dict__'):
+                        turtles_dict.append(turtle.__dict__)
+                    else:
+                        turtles_dict.append(turtle)
+                turtles = turtles_dict
+                
                 # Store player_id for save operations
                 self.player_id = game_data.get("player_id", "unknown")
                 
@@ -161,7 +176,7 @@ class TurboShellsGame:
                             self.roster[i] = Turtle(
                                 turtle_data.get("name", "Unknown"),
                                 speed=turtle_stats.get("speed", 5),
-                                energy=turtle_stats.get("energy", 100),
+                                energy=turtle_stats.get("max_energy", 100),
                                 recovery=turtle_stats.get("recovery", 5),
                                 swim=turtle_stats.get("swim", 5),
                                 climb=turtle_stats.get("climb", 5)
@@ -176,7 +191,7 @@ class TurboShellsGame:
                         self.retired_roster.append(Turtle(
                             turtle_data.get("name", "Unknown"),
                             speed=turtle_stats.get("speed", 5),
-                            energy=turtle_stats.get("energy", 100),
+                            energy=turtle_stats.get("max_energy", 100),
                             recovery=turtle_stats.get("recovery", 5),
                             swim=turtle_stats.get("swim", 5),
                             climb=turtle_stats.get("climb", 5)
@@ -267,18 +282,18 @@ class TurboShellsGame:
                     },
                     "stats": {
                         "speed": turtle.speed,
-                        "energy": turtle.energy,
+                        "max_energy": turtle.max_energy,
                         "recovery": turtle.recovery,
                         "swim": turtle.swim,
                         "climb": turtle.climb,
                         "base_stats": {
                             "speed": turtle.speed,
-                            "energy": turtle.energy,
+                            "max_energy": turtle.max_energy,
                             "recovery": turtle.recovery,
                             "swim": turtle.swim,
                             "climb": turtle.climb
                         },
-                        "genetic_modifiers": {"speed": 0, "energy": 0, "recovery": 0, "swim": 0, "climb": 0}
+                        "genetic_modifiers": {"speed": 0, "max_energy": 0, "recovery": 0, "swim": 0, "climb": 0}
                     },
                     "performance": {
                         "race_history": [],
@@ -313,18 +328,18 @@ class TurboShellsGame:
                 },
                 "stats": {
                     "speed": turtle.speed,
-                    "energy": turtle.energy,
+                    "max_energy": turtle.max_energy,
                     "recovery": turtle.recovery,
                     "swim": turtle.swim,
                     "climb": turtle.climb,
                     "base_stats": {
                         "speed": turtle.speed,
-                        "energy": turtle.energy,
+                        "max_energy": turtle.max_energy,
                         "recovery": turtle.recovery,
                         "swim": turtle.swim,
                         "climb": turtle.climb
                     },
-                    "genetic_modifiers": {"speed": 0, "energy": 0, "recovery": 0, "swim": 0, "climb": 0}
+                    "genetic_modifiers": {"speed": 0, "max_energy": 0, "recovery": 0, "swim": 0, "climb": 0}
                 },
                 "performance": {
                     "race_history": [],
