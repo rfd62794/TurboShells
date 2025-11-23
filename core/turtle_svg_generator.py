@@ -76,6 +76,10 @@ class TurtleSVGGenerator:
         """
         if draw is None:
             return None
+        
+        # Ensure shell_params is a dict
+        if not isinstance(shell_params, dict):
+            shell_params = {}
             
         # Get shell parameters with defaults
         shell_color = shell_params.get('fill', '#228B22')  # Forest green default
@@ -131,6 +135,10 @@ class TurtleSVGGenerator:
         """
         if draw is None:
             return None
+        
+        # Ensure body_params is a dict
+        if not isinstance(body_params, dict):
+            body_params = {}
             
         # Get body parameters with defaults
         body_color = body_params.get('fill', '#6B8E23')  # Olive green default
@@ -176,6 +184,10 @@ class TurtleSVGGenerator:
         """
         if draw is None:
             return None
+        
+        # Ensure head_params is a dict
+        if not isinstance(head_params, dict):
+            head_params = {}
             
         # Get head parameters with defaults
         head_color = head_params.get('fill', '#8B5A2B')  # Brown default
@@ -206,6 +218,10 @@ class TurtleSVGGenerator:
         """
         if draw is None:
             return None
+        
+        # Ensure leg_params is a dict
+        if not isinstance(leg_params, dict):
+            leg_params = {}
             
         # Get leg parameters with defaults
         leg_color = leg_params.get('stroke', '#654321')  # Dark brown default
@@ -249,6 +265,10 @@ class TurtleSVGGenerator:
         """
         if draw is None:
             return None
+        
+        # Ensure eye_params is a dict
+        if not isinstance(eye_params, dict):
+            eye_params = {}
             
         # Get eye parameters with defaults
         eye_color = eye_params.get('fill', '#000000')  # Black default

@@ -343,9 +343,9 @@ def run_all_tests():
     print(f"\nOverall: {passed}/{total} tests passed")
     
     if passed == total:
-        print("🎉 All tests passed! The visual genetics system is ready for integration.")
+        print("All tests passed! The visual genetics system is ready for integration.")
     else:
-        print("⚠️  Some tests failed. Please review the errors above.")
+        print("Some tests failed. Please review the errors above.")
     
     return results
 
