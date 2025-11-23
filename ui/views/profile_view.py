@@ -12,7 +12,7 @@ def draw_profile(screen, font, game_state):
     screen.blit(title, layout.PROFILE_TITLE_POS)
     
     # Back button
-    back_btn = Button(layout.PROFILE_BACK_BTN_RECT, "MENU", font, WHITE, GRAY)
+    back_btn = Button(layout.PROFILE_BACK_BTN_RECT, "MENU", GRAY, WHITE)
     back_btn.draw(screen, game_state.mouse_pos)
     
     # Get current turtle and all turtles list
@@ -102,8 +102,8 @@ def draw_profile(screen, font, game_state):
         screen.blit(no_history_txt, (70, layout.PROFILE_HISTORY_START_Y))
     
     # Navigation controls
-    prev_btn = Button(layout.PROFILE_PREV_BTN_RECT, "← PREV", font, WHITE, GRAY)
-    next_btn = Button(layout.PROFILE_NEXT_BTN_RECT, "NEXT →", font, WHITE, GRAY)
+    prev_btn = Button(layout.PROFILE_PREV_BTN_RECT, "← PREV", GRAY, WHITE)
+    next_btn = Button(layout.PROFILE_NEXT_BTN_RECT, "NEXT →", GRAY, WHITE)
     
     prev_btn.draw(screen, game_state.mouse_pos)
     next_btn.draw(screen, game_state.mouse_pos)
