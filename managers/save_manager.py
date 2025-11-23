@@ -122,14 +122,38 @@ class SaveManager:
         
         return True
     
+    def _convert_to_dict(self, obj) -> Dict[str, Any]:
+        """Recursively convert dataclass objects to dictionaries"""
+        if hasattr(obj, '__dict__'):
+            # It's a dataclass or object with __dict__
+            result = {}
+            for key, value in obj.__dict__.items():
+                if hasattr(value, '__dict__'):
+                    # Recursively convert nested dataclass
+                    result[key] = self._convert_to_dict(value)
+                elif isinstance(value, dict):
+                    # Handle nested dictionaries
+                    result[key] = {k: self._convert_to_dict(v) if hasattr(v, '__dict__') else v 
+                                 for k, v in value.items()}
+                elif isinstance(value, list):
+                    # Handle lists of objects
+                    result[key] = [self._convert_to_dict(item) if hasattr(item, '__dict__') else item 
+                                  for item in value]
+                else:
+                    result[key] = value
+            return result
+        else:
+            # It's already a primitive value
+            return obj
+    
     def save_game(self, game_data: GameData, turtles: List[TurtleData], 
                   preferences: PlayerPreferences) -> bool:
         """Save complete game state"""
         try:
-            # Convert to dictionaries
-            game_dict = game_data.__dict__
-            turtles_dict = [turtle.__dict__ for turtle in turtles]
-            preferences_dict = preferences.__dict__
+            # Convert to dictionaries recursively
+            game_dict = self._convert_to_dict(game_data)
+            turtles_dict = [self._convert_to_dict(turtle) for turtle in turtles]
+            preferences_dict = self._convert_to_dict(preferences)
             
             # Validate data
             if not self._validate_save_data(game_dict, turtles_dict, preferences_dict):

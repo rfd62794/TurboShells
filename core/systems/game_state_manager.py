@@ -299,12 +299,7 @@ class GameStateManager:
                 total_races=0,
                 wins=0,
                 average_position=0.0,
-                total_earnings=0,
-                terrain_performance={
-                    "grass": TerrainPerformance(bonus=0.0, races=0, wins=0),
-                    "water": TerrainPerformance(bonus=0.0, races=0, wins=0),
-                    "rock": TerrainPerformance(bonus=0.0, races=0, wins=0)
-                }
+                total_earnings=0
             )
         )
     
