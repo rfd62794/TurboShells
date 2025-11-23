@@ -1,8 +1,9 @@
 # Game Design Document: Turbo Shells - Technical Implementation
 
-**Version:** 1.1 (Enhanced MVP)  
+**Version:** 2.0 (SRP Architecture & Advanced Systems)  
 **Date:** November 22, 2025  
 **Focus:** Technical architecture and implementation details
+**Current Status**: Production-Ready with Advanced Modular Architecture
 
 ---
 
@@ -10,10 +11,11 @@
 
 ### 1.1 Core Technologies
 
-- **Language**: Python 3.10+
+- **Language**: Python 3.14+
 - **Graphics Library**: pygame-ce 2.5.6
-- **Architecture**: Component-based design pattern
-- **State Management**: Centralized game state system
+- **Rendering**: PIL (Pillow) for procedural turtle generation
+- **Architecture**: SRP-based modular design pattern
+- **State Management**: Centralized game state system with mode-aware interfaces
 - **Event Handling**: PyGame event loop with custom state handlers
 
 ### 1.2 Development Environment
@@ -21,23 +23,85 @@
 - **IDE**: Any Python IDE (VS Code, PyCharm, etc.)
 - **Version Control**: Git
 - **Package Management**: pip
-- **Testing**: Manual testing (unit tests planned)
-- **Documentation**: Markdown-based documentation system
+- **Testing**: Manual testing (unit tests planned for v2.1)
+- **Documentation**: Comprehensive Markdown-based documentation system
 
 ---
 
-## 2. Architecture Overview
+## 2. **VERSION 2.0 ARCHITECTURE OVERVIEW**
 
-### 2.1 High-Level Architecture
+### 2.1 High-Level Modular Architecture
 
 ```
 TurboShells/
-├── main.py                 # Game entry point and main loop
-├── settings.py             # Global constants and configuration
-├── core/                   # Domain layer (entities, logic)
-│   ├── entities.py         # Turtle class and physics
-│   ├── game_state.py       # Generation and breeding helpers
-│   ├── race_track.py       # Terrain generation
+├── main.py                    # Game entry point and main loop
+├── settings.py                # Global constants and configuration
+├── genetics/                  # 🧬 Genetics System (SRP Module)
+│   ├── __init__.py           # Module exports and API
+│   ├── gene_definitions.py   # Gene schemas and validation
+│   ├── gene_generator.py    # Random generation with variation
+│   ├── inheritance.py        # Multiple inheritance patterns
+│   ├── mutation.py           # Standard, adaptive, pattern mutations
+│   └── visual_genetics.py    # Unified genetics interface
+├── core/                      # ⚙️ Core Systems (SRP Modules)
+│   ├── game/                 # Game logic and entities
+│   │   ├── entities.py       # Turtle class and physics
+│   │   ├── game_state.py     # Generation and breeding helpers
+│   │   ├── race_track.py     # Terrain generation
+│   │   ├── keyboard_handler.py # Input handling
+│   │   └── simulation.py     # Race simulation
+│   ├── rendering/            # Rendering pipeline
+│   │   └── direct_turtle_renderer.py # Procedural PIL rendering
+│   ├── voting/               # Voting system
+│   │   └── voting_system.py  # Design voting and genetic democracy
+│   └── systems/              # Core system services
+│       ├── genetic_pool_manager.py # Genetic influence tracking
+│       ├── pattern_generators.py   # Pattern generation utilities
+│       └── state_handler.py        # State transitions
+├── managers/                  # 📋 Game Managers
+│   ├── roster_manager.py     # Roster and turtle management
+│   ├── race_manager.py       # Race simulation and execution
+│   ├── shop_manager.py       # Shop and economy
+│   └── breeding_manager.py   # Breeding system
+├── ui/                        # 🖥️ User Interface
+│   ├── layout.py             # UI positioning system
+│   ├── menu_view.py          # Main menu interface
+│   ├── roster_view.py        # Roster management
+│   ├── race_view.py          # Race visualization
+│   ├── shop_view.py          # Shop interface
+│   └── breeding_view.py      # Breeding center
+└── docs/                      # 📚 Documentation
+    ├── gdd/                   # Game Design Documents
+    ├── technical/             # Technical Documentation
+    └── [project docs...]     # CHANGELOG, TODO, etc.
+```
+
+### 2.2 **SRP Module Breakdown**
+
+#### **🧬 Genetics Module (5 Components)**
+- **GeneDefinitions**: Centralized gene schemas and validation for 19 traits
+- **GeneGenerator**: Random generation with weighted and variation methods
+- **Inheritance**: Multiple patterns (standard, blended, color pattern inheritance)
+- **Mutation**: Standard, adaptive, and pattern-based coordinated mutations
+- **VisualGenetics**: Unified interface with enhanced genetic operations
+
+#### **🎮 Core/Game Module (5 Components)**
+- **Entities**: Turtle class with physics and race mechanics
+- **GameState**: Generation, breeding, and cost computation functions
+- **RaceTrack**: Track generation and terrain handling
+- **KeyboardHandler**: Input processing and event handling
+- **Simulation**: Headless race simulation for balancing
+
+#### **🎨 Core/Rendering Module (1 Component)**
+- **DirectTurtleRenderer**: Procedural PIL-based rendering with genetic integration
+
+#### **🗳️ Core/Voting Module (1 Component)**
+- **VotingSystem**: Design voting with genetic democracy and rewards
+
+#### **⚙️ Core/Systems Module (3 Components)**
+- **GeneticPoolManager**: Genetic influence tracking and pool management
+- **PatternGenerators**: Pattern generation utilities and algorithms
+- **StateHandler**: Centralized state transition management
 │   └── state_handler.py    # Input handling and state transitions
 ├── managers/               # Business logic layer
 │   ├── roster_manager.py   # Roster management
