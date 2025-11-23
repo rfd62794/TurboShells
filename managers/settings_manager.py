@@ -86,7 +86,8 @@ class SettingsManager:
             border_color=(100, 100, 100),
             text_color=(255, 255, 255),
             hover_color=(70, 70, 70),
-            pressed_color=(90, 90, 90)
+            pressed_color=(90, 90, 90),
+            disabled_color=(30, 30, 30)
         )
         
         # Store styles for later use

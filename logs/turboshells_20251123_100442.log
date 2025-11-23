@@ -1,0 +1,12 @@
+2025-11-23 10:04:42,118 - core.config - INFO - Configuration loaded successfully
+2025-11-23 10:04:42,122 - core.graphics_manager - INFO - Loaded graphics settings: 1024x768
+2025-11-23 10:04:42,212 - core.graphics_manager - INFO - Display initialized: (1024, 768), Fullscreen: False
+2025-11-23 10:04:42,214 - core.audio_manager - INFO - Loaded audio settings: Master Volume 0.5, Enabled True
+2025-11-23 10:04:42,891 - core.audio_manager - INFO - Audio system initialized successfully
+2025-11-23 10:04:43,006 - ui.settings_view - INFO - Settings view initialized
+2025-11-23 10:04:43,007 - ui.settings_view - INFO - Settings view shown
+2025-11-23 10:04:43,007 - ui.settings_view - INFO - Settings view hidden
+2025-11-23 10:04:43,008 - ui.settings_view - INFO - Settings view shown
+2025-11-23 10:04:43,054 - ui.settings_view - INFO - Settings view initialized
+2025-11-23 10:04:43,063 - ui.settings_view - INFO - Settings view initialized
+2025-11-23 10:04:43,074 - ui.settings_view - INFO - Settings view initialized
