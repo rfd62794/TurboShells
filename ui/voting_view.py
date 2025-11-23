@@ -613,58 +613,6 @@ class VotingView:
                                          centery=button_y + button_height // 2)
         self.screen.blit(text_surface, text_rect)
     
-    def _draw_navigation(self):
-        """Draw navigation controls"""
-        designs = self.voting_system.daily_designs
-        
-        # Previous button
-        if self.current_design_index > 0:
-            self._draw_nav_button("<", 50, 350, "previous")
-        
-        # Next button
-        if self.current_design_index < len(designs) - 1:
-            self._draw_nav_button(">", self.width - 90, 350, "next")
-        
-        # Design counter
-        counter_text = f"Design {self.current_design_index + 1} of {len(designs)}"
-        text_surface = self.normal_font.render(counter_text, True, self.text_color)
-        text_rect = text_surface.get_rect(centerx=self.width // 2, y=350)
-        self.screen.blit(text_surface, text_rect)
-        
-        # Progress bar
-        progress = (self.current_design_index + 1) / len(designs)
-        bar_width = 200
-        bar_height = 8
-        bar_x = (self.width - bar_width) // 2
-        bar_y = 375
-        
-        # Background
-        pygame.draw.rect(self.screen, (200, 200, 200), (bar_x, bar_y, bar_width, bar_height), border_radius=4)
-        # Progress
-        pygame.draw.rect(self.screen, self.accent_color, (bar_x, bar_y, int(bar_width * progress), bar_height), border_radius=4)
-    
-    def _draw_nav_button(self, text: str, x: int, y: int, action: str):
-        """Draw navigation button"""
-        button_width = 50
-        button_height = 40
-        
-        # Check if mouse is over button
-        is_hovered = (x <= self.mouse_pos[0] <= x + button_width and
-                     y <= self.mouse_pos[1] <= y + button_height)
-        
-        # Button color
-        button_color = (150, 150, 150) if is_hovered else (100, 100, 100)
-        
-        # Draw button
-        pygame.draw.rect(self.screen, button_color, (x, y, button_width, button_height), border_radius=8)
-        pygame.draw.rect(self.screen, self.text_color, (x, y, button_width, button_height), 2, border_radius=8)
-        
-        # Button text
-        text_surface = self.normal_font.render(text, True, (255, 255, 255))
-        text_rect = text_surface.get_rect(centerx=x + button_width // 2,
-                                         centery=y + button_height // 2)
-        self.screen.blit(text_surface, text_rect)
-    
     def _draw_status(self):
         """Draw voting status information"""
         status = self.voting_system.get_daily_status()
