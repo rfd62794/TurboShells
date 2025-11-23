@@ -109,6 +109,8 @@ class TurboShellsGame:
             self.renderer.draw_shop(self)
         elif self.state == STATE_BREEDING:
             self.renderer.draw_breeding(self)
+        elif self.state == STATE_PROFILE:
+            self.renderer.draw_profile(self)
         
         pygame.display.flip()  # Make sure we update the display
 
