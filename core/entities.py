@@ -41,6 +41,33 @@ class Turtle:
         self.race_history = []
         self.total_races = 0
         self.total_earnings = 0
+        
+        # Visual Genetics (Foundation for future shell styles/colors)
+        self.visual_genetics = {
+            # Shell color genes (RGB values 0-255)
+            "shell_base_color": [random.randint(50, 200), random.randint(50, 150), random.randint(50, 100)],
+            "shell_pattern_color": [random.randint(100, 255), random.randint(100, 255), random.randint(100, 255)],
+            "shell_accent_color": [random.randint(150, 255), random.randint(150, 255), random.randint(150, 255)],
+            
+            # Pattern genes (0-10 scale)
+            "shell_pattern_type": random.randint(0, 5),  # 0=plain, 1=stripes, 2=spots, 3=spiral, 4=geometric, 5=complex
+            "shell_pattern_density": random.randint(1, 10),
+            "shell_pattern_size": random.randint(1, 10),
+            
+            # Body genes
+            "body_base_color": [random.randint(100, 200), random.randint(150, 200), random.randint(50, 150)],
+            "body_pattern_type": random.randint(0, 3),  # 0=plain, 1=mottled, 2=gradient, 3=two-tone
+            
+            # Physical traits (affect future SVG generation)
+            "shell_size_factor": random.uniform(0.8, 1.2),  # Size variation
+            "shell_curvature": random.uniform(0.8, 1.2),  # Shell shape
+            "head_size_factor": random.uniform(0.9, 1.1),
+            "limb_length_factor": random.uniform(0.9, 1.1),
+        }
+        
+        # Lineage tracking (for inheritance system)
+        self.parent_ids = []  # Will store parent IDs when breeding is implemented
+        self.generation = 0  # 0 = wild turtle, 1+ = bred turtles
 
     def reset_for_race(self):
         """Call this before a race starts."""
