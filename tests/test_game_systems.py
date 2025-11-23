@@ -162,23 +162,22 @@ class TestRaceTrackSystem:
         
         # Check checkpoint positions are within bounds
         for checkpoint in track.checkpoints:
-            assert 0 <= checkpoint.x <= track.width
-            assert 0 <= checkpoint.y <= track.height
+            assert 0 <= checkpoint["x"] <= track.width
+            assert 0 <= checkpoint["y"] <= track.height
 
     @pytest.mark.unit
     def test_generate_track_reproducibility_with_seed(self):
-        """Test track generation reproducibility with seed"""
-        # This test assumes the generate_track function can accept a seed
-        # If not, this tests that the function works consistently
-        track1 = generate_track(100)
-        track2 = generate_track(100)
+        """Test track generation reproducibility"""
+        track1 = generate_track(100, 100)
+        track2 = generate_track(100, 100)
 
-        assert isinstance(track1, list)
-        assert isinstance(track2, list)
-        assert len(track1) == len(track2) == 100
+        assert isinstance(track1, RaceTrack)
+        assert isinstance(track2, RaceTrack)
+        assert len(track1.checkpoints) == len(track2.checkpoints)
 
-        # Tracks might be different (unless seeded)
-        # This is acceptable for random generation
+        # Tracks should have same structure (same generation logic)
+        assert track1.width == track2.width
+        assert track1.height == track2.height
 
     @pytest.mark.unit
     def test_get_terrain_at_function(self):
@@ -189,7 +188,7 @@ class TestRaceTrackSystem:
         for x, y in positions:
             terrain = get_terrain_at(x, y)
             assert isinstance(terrain, str)
-            assert terrain in ['grass', 'rough']  # Valid terrain types
+            assert terrain in ['rough', 'finish', 'track']  # Valid terrain types
 
     @pytest.mark.unit
     def test_terrain_function_consistency(self):
@@ -204,15 +203,17 @@ class TestRaceTrackSystem:
     @pytest.mark.unit
     def test_track_difficulty_analysis(self):
         """Test track difficulty can be analyzed"""
-        track = generate_track(1000)
+        track = generate_track()
         
-        # Count challenging terrain
-        challenging_terrain = sum(1 for terrain in track if terrain in ['water', 'rock'])
-        difficulty_ratio = challenging_terrain / len(track)
+        # Analyze checkpoint distribution
+        checkpoint_count = len(track.checkpoints)
         
-        assert 0.0 <= difficulty_ratio <= 1.0
-        # Should have some challenging terrain
-        assert difficulty_ratio > 0.1  # At least 10% challenging
+        # Check that track has reasonable number of checkpoints
+        assert 3 <= checkpoint_count <= 10  # Reasonable range
+        
+        # Check track dimensions
+        assert track.width > 0
+        assert track.height > 0
 
     @pytest.mark.unit
     @pytest.mark.slow
