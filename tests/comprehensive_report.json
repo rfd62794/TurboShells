@@ -10,7 +10,7 @@
       "failures": 0,
       "errors": 1,
       "success_rate": 0.0,
-      "execution_time": 0.0009860992431640625,
+      "execution_time": 0.0009734630584716797,
       "passed": false
     },
     {
@@ -19,7 +19,7 @@
       "failures": 0,
       "errors": 1,
       "success_rate": 0.0,
-      "execution_time": 0.001116037368774414,
+      "execution_time": 0.0005447864532470703,
       "passed": false
     },
     {
@@ -28,7 +28,7 @@
       "failures": 0,
       "errors": 1,
       "success_rate": 0.0,
-      "execution_time": 0.0007674694061279297,
+      "execution_time": 0.0006427764892578125,
       "passed": false
     },
     {
@@ -37,7 +37,7 @@
       "failures": 0,
       "errors": 1,
       "success_rate": 0.0,
-      "execution_time": 0.0009438991546630859,
+      "execution_time": 0.0004820823669433594,
       "passed": false
     }
   ],
@@ -52,5 +52,5 @@
     "overall_coverage": 77.0
   },
   "performance_metrics": {},
-  "timestamp": 1763913639.5670357
+  "timestamp": 1763913654.7515583
 }
