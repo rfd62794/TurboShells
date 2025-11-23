@@ -219,20 +219,16 @@ class StateHandler:
     
     def _handle_voting_clicks(self, pos):
         """Handle clicks in voting state."""
-        # Check for back button
-        back_rect = pygame.Rect(700, 5, 80, 30)
-        if back_rect.collidepoint(pos):
-            self.game.state = STATE_MENU
-            return
+        from ui.voting_interface import handle_voting_click
+        result = handle_voting_click(self.game, pos)
         
-        # Handle voting view clicks
-        if hasattr(self.game, 'voting_view'):
-            result = self.game.voting_view.handle_click(pos)
-            if result == "vote_completed":
-                # Award $1 for completed vote
-                self.game.money += 1
-                # Auto-save after vote
-                if hasattr(self.game, 'save_manager'):
-                    self.game.save_manager.auto_save()
-            elif result == "back_to_menu":
-                self.game.state = STATE_MENU
+        if result == "back_to_menu":
+            self.game.state = STATE_MENU
+        elif result == "vote_completed":
+            # Award $1 for completed vote
+            self.game.money += 1
+            # Auto-save after vote
+            if hasattr(self.game, 'save_manager'):
+                self.game.save_manager.auto_save()
+        elif result == "back":
+            self.game.state = STATE_MENU
