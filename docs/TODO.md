@@ -18,6 +18,7 @@
   - Phase 10: Enhanced AI Community → [phases/Phase_10_Enhanced_AI_Community.md](phases/Phase_10_Enhanced_AI_Community.md)
   - Phase 21: Test Suite Extension → [phases/Phase_21_Test_Suite_Extension.md](phases/Phase_21_Test_Suite_Extension.md)
   - Phase 11: Advanced Genetics → [phases/Phase_11_Advanced_Genetics.md](phases/Phase_11_Advanced_Genetics.md)
+  - Phase 12: Tournament & League System → [phases/Phase_12_Tournament_League_System.md](phases/Phase_12_Tournament_League_System.md)
 
 ---
 
@@ -187,27 +188,8 @@
 > Sophisticated genetics system with hybrid breeding, genetic engineering, and DNA sequencing
 
 ### **Phase 12: Tournament & League System** - **0% COMPLETE**
-
-#### **🏆 Tournament Structure**
-- [ ] **Season Structure**: Multi-race tournaments with standings
-- [ ] **League Divisions**: Promotion/relegation system
-- [ ] **Championship Events**: Special high-stakes competitions
-- [ ] **Sponsorship System**: Corporate backing and equipment
-- [ ] **Hall of Fame**: Legendary turtle recognition
-
-#### **📊 League Management**
-- [ ] **Season Calendar**: Scheduled race events and tournaments
-- [ ] **Division Rankings**: Performance-based tier system
-- [ ] **Championship Qualification**: Tournament entry requirements
-- [ ] **Sponsor Contract System**: Equipment and bonus rewards
-- [ ] **Hall of Fame Records**: Historical achievement tracking
-
-#### **🔧 Technical Components**
-- [ ] **Tournament Manager**: Season and event scheduling
-- [ ] **League Ranking System**: Performance tracking and division management
-- [ ] **Championship Engine**: Special tournament rules and rewards
-- [ ] **Sponsorship AI**: Corporate offer generation and management
-- [ ] **Hall of Fame Database**: Legendary turtle achievements
+> 📋 **Detailed Plan**: See [phases/Phase_12_Tournament_League_System.md](phases/Phase_12_Tournament_League_System.md)
+> Comprehensive tournament system with season structure, championship events, sponsorship mechanics, and Hall of Fame recognition
 
 ### **Phase 13: Economic Expansion** - **0% COMPLETE**
 - AI community simulation with 50+ traders
