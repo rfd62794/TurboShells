@@ -6,12 +6,13 @@
 
 ### **📋 Documentation Organization**
 - **Main TODO.md**: Phase overview and priority summary
-- **Phase_##.md**: Detailed implementation plans for each phase
+- **phases/Phase_##.md**: Detailed implementation plans for each phase
 - **CHANGELOG.md**: Completed phases and version history
 - **Completed Splits**: 
-  - Phase 7: Pond/Glade Environment → [Phase_07_Pond_Glade_Environment.md](Phase_07_Pond_Glade_Environment.md)
-  - Phase 8: Advanced Training System → [Phase_08_Advanced_Training_System.md](Phase_08_Advanced_Training_System.md)
-  - Phase 9: Turtle Personalities → [Phase_09_Turtle_Personalities.md](Phase_09_Turtle_Personalities.md)
+  - Phase 7: Pond/Glade Environment → [phases/Phase_07_Pond_Glade_Environment.md](phases/Phase_07_Pond_Glade_Environment.md)
+  - Phase 8: Advanced Training System → [phases/Phase_08_Advanced_Training_System.md](phases/Phase_08_Advanced_Training_System.md)
+  - Phase 9: Turtle Personalities → [phases/Phase_09_Turtle_Personalities.md](phases/Phase_09_Turtle_Personalities.md)
+  - Phase 3: Basic Monitoring & Debugging → [phases/Phase_03_Monitoring_Debugging.md](phases/Phase_03_Monitoring_Debugging.md)
 
 ---
 
@@ -103,27 +104,8 @@
 
 #### **📝 Personal Logging**
 ### **Phase 3: Basic Monitoring & Debugging** - **0% COMPLETE**
-
-#### **📊 Basic Performance Tracking**
-- [ ] **FPS Counter**: Simple frame rate display during gameplay
-- [ ] **Memory Usage**: Basic memory monitoring for game sessions
-- [ ] **Error Logging**: Simple exception logging to file
-- [ ] **Game Statistics**: Basic race results and player progress
-- [ ] **Performance Warnings**: Simple alerts for performance issues
-
-#### **📝 Personal Logging**
-- [ ] **Game Event Log**: Simple logging of major game events
-- [ ] **Debug Console**: In-game debug information display
-- [ ] **Save File Validation**: Basic save file integrity checking
-- [ ] **Error Reports**: Simple error reporting for crashes
-- [ ] **Performance Metrics**: Basic timing for game operations
-
-#### **🔧 Development Debugging**
-- [ ] **Debug Mode**: Toggle debug information display
-- [ ] **Performance Profiler**: Simple profiling for optimization
-- [ ] **State Inspector**: View current game state for debugging
-- [ ] **Log Viewer**: Simple log file viewer
-- [ ] **Cheat Commands**: Developer commands for testing
+> 📋 **Detailed Plan**: See [phases/Phase_03_Monitoring_Debugging.md](phases/Phase_03_Monitoring_Debugging.md)
+> Real-time performance tracking, error logging, and development debugging tools
 
 ### **Phase 4: Performance Optimization** - **0% COMPLETE**
 
@@ -199,15 +181,15 @@
 ## 🎮 **CORE GAMEPLAY EXPANSION**
 
 ### **Phase 7: Pond/Glade Environment** - **0% COMPLETE**
-> 📋 **Detailed Plan**: See [Phase_07_Pond_Glade_Environment.md](Phase_07_Pond_Glade_Environment.md)
+> 📋 **Detailed Plan**: See [phases/Phase_07_Pond_Glade_Environment.md](phases/Phase_07_Pond_Glade_Environment.md)
 > Immersive pond environment with ambient turtle behavior and interactive features
 
 ### **Phase 8: Advanced Training System** - **0% COMPLETE**
-> 📋 **Detailed Plan**: See [Phase_08_Advanced_Training_System.md](Phase_08_Advanced_Training_System.md)
+> 📋 **Detailed Plan**: See [phases/Phase_08_Advanced_Training_System.md](phases/Phase_08_Advanced_Training_System.md)
 > Procedural terrain courses with AI turtle navigation and experience progression
 
 ### **Phase 9: Turtle Personalities** - **0% COMPLETE**
-> 📋 **Detailed Plan**: See [Phase_09_Turtle_Personalities.md](Phase_09_Turtle_Personalities.md)
+> 📋 **Detailed Plan**: See [phases/Phase_09_Turtle_Personalities.md](phases/Phase_09_Turtle_Personalities.md)
 > Personality-driven behavior system affecting training, racing, and turtle interactions
 
 ### **Phase 10: Enhanced AI Community** - **0% COMPLETE**
