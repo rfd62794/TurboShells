@@ -121,7 +121,9 @@ class GeneticPool:
                 return self._generate_continuous_value(visual_genetics)
         
         # Use random value
-        gene_def = visual_genetics.gene_definitions.get(self.gene_name, {})
+        gene_def = visual_genetics.gene_definitions.get_gene_definition(self.gene_name)
+        if gene_def is None:
+            gene_def = {}
         return visual_genetics.generate_random_gene_value(gene_def)
     
     def _generate_rgb_value(self) -> Tuple[int, int, int]:
