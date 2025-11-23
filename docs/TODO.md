@@ -1,106 +1,90 @@
-# Project Roadmap
+# TurboShells - Remaining Tasks
 
-## Phase 1: The Skeleton 🦴
-- [x] **Setup:** Create `main.py`, `settings.py`, and `sprites.py`.
-- [x] **Window:** Initialize PyGame window (800x600) and Main Loop.
-- [x] **State Machine:** Create complete `STATE` variables (MENU, ROSTER, RACE, SHOP, BREEDING) with proper transitions.
+## 📊 **CURRENT STATUS: 70% COMPLETE - MVP FULLY FUNCTIONAL**
 
-## Phase 2: The Turtle & Physics 🐢
-- [x] **Class:** Define `Turtle` class with `speed`, `energy`, `recovery`, `swim`, `climb`.
-- [x] **Logic:** Implement complete `update_race()` method:
-  - [x] Forward movement.
-  - [x] Energy drain logic.
-  - [x] Resting/Recovery logic.
-- [x] **Test:** Full race simulation with visual feedback and terrain interaction.
+*Core features are complete and working. See [CHANGELOG.md](CHANGELOG.md) for all implemented features.*
 
-## Phase 3: The Race Track 🏁
-- [x] **Terrain:** Implement shared `race_track` helper that generates segments (Grass, Water, Rock).
-- [x] **Visuals:** Draw different colors for terrain segments on the Race Screen.
-- [x] **Interaction:** Connect Turtle physics to track terrain (Swim/Climb stats affect Water/Rock).
-- [x] **Controls:** Add keyboard inputs (1, 2, 3) to change game speed multiplier.
+---
 
-## Phase 4: The Manager (UI) 📋
-- [x] **Roster Data:** Create global roster system with 3 active slots + retired list.
-- [x] **Menu Display:** Draw the 3 slots using coordinates from `ui/layouts/positions.py`.
-- [x] **Buttons:** Create clickable `Button` class with hover effects and proper collision detection.
-- [x] **Training:** Clicking [TRAIN] decreases Energy and increases Stats.
-- [x] **Resting:** Automatic energy recovery system.
+## 🔄 **PHASE 9: Roster Tabs & Profile View 📇** - 50% COMPLETE
 
-## Phase 5: The Economy 💰
-- [x] **Shop:** Generate 3 random turtles with proper cost calculation. Clicking [BUY] adds them to Roster.
-- [x] **Money:** Track player cash with proper transaction handling.
-- [x] **Betting:** Complete betting system with $0/$5/$10 options.
-- [x] **Payouts:** Calculate wins/losses after race finishes with proper bet multipliers.
-
-## Phase 6: Breeding (The MVP Goal) 🧬
-- [x] **Retirement:** Complete system to move Active Turtle to `retired_list`.
-- [x] **Breeding Logic:** Function that takes 2 Retired parents, deletes them, and returns 1 Baby.
-- [x] **Integration:** Complete "Breeding Center" screen with parent selection.
-
-## Phase 7: Module Organization & SRP 🧱
-- [x] **Per-screen UI Views:** Complete separation into `ui/views/` (menu_view.py, roster_view.py, race_view.py, shop_view.py, breeding_view.py).
-- [x] **Shared Components:** Complete `ui/components/` with reusable Button and TurtleCard classes.
-- [x] **Advanced Decomposition:** Created `ui/layouts/positions.py` for pure positioning data.
-- [x] **Filesystem Cleanup:** Complete architectural cleanup with proper separation of concerns.
-
-## Phase 8: Main Menu & Navigation UX 🧭
-- [x] **Main Menu Screen:** Complete dedicated "Main Menu" with clear buttons to:
-  - [x] Go to Stable (Roster)
-  - [x] Go to Races (via Select Racer)
-  - [x] Open Shop
-  - [x] Open Breeding Center
-- [x] **In-Game Navigation:** Simplified keyboard shortcuts with visible buttons for all major state transitions.
-- [x] **Mode-Aware Interfaces:** Select Racer mode with contextual UI elements.
-
-## Phase 9: Roster Tabs & Profile View 📇
-- [x] **View Toggle:** Complete Active/Retired toggle in Stable to switch which turtles are shown.
-- [x] **Tabbed Roster UI:** Working toggle interface (could be enhanced to proper tabs).
+### **Remaining Tasks:**
 - [ ] **Profile View:** Add a dedicated Profile panel for a selected turtle:
-  - [ ] Full stat breakdown.
-  - [ ] Age, status, race history summary.
-  - [ ] Lineage view (parents / children) once ancestry data is tracked.
-- [ ] **Lineage Data Model:** Extend `Turtle` or `game_state` to optionally track parent IDs and children for lineage visualization.
+  - [ ] Full stat breakdown with detailed numbers
+  - [ ] Age, status, race history summary
+  - [ ] Lineage view (parents / children) once ancestry data is tracked
+- [ ] **Lineage Data Model:** Extend `Turtle` or `game_state` to optionally track parent IDs and children for lineage visualization
+- [ ] **Enhanced Tabbed UI:** Upgrade current toggle to proper tabbed interface
 
-## Phase 10: Pond / Glade Screen 🌿
-- [ ] **Pond Overview:** Add a "Glade" or "Pond" screen where all current (active + retired) turtles wander passively.
-- [ ] **Ambient Behavior:** Simple idle movement/animation for turtles in the pond.
-- [ ] **Clickable Turtles:** Allow clicking a turtle in the pond to bring up a tooltip-style overlay with key stats (name, age, status, core stats).
-- [ ] **Profile Shortcut:** From the pond tooltip, provide a way to open the full Profile view for that turtle.
-
----
-
-## 🎉 **BEYOND ORIGINAL SCOPE - BONUS ACHIEVEMENTS**
-
-### **Advanced Architecture Features:**
-- [x] **Component-Based Design:** Reusable Button and TurtleCard classes
-- [x] **Clean State Management:** Centralized StateHandler and KeyboardHandler
-- [x] **Mode-Aware UI:** Select Racer mode with contextual interfaces
-- [x] **Comprehensive Error Handling:** Proper state transitions and edge cases
-- [x] **Polished UX:** Hover effects, visual feedback, intuitive navigation
-
-### **Enhanced Features:**
-- [x] **Smart Betting System:** Mode-aware betting (only in select racer mode)
-- [x] **Intelligent Shop Management:** Free initial stock, paid refresh
-- [x] **Advanced Turtle Management:** Training with auto-retirement at age 100
-- [x] **Clean Navigation:** Menu buttons in headers, removed bottom navigation clutter
+### **Completed Features:**
+- [x] **View Toggle:** Complete Active/Retired toggle in Stable
+- [x] **Basic Tabbed Interface:** Working toggle system
 
 ---
 
-## 📊 **CURRENT STATUS: 70% COMPLETE**
+## 🌿 **PHASE 10: Pond / Glade Screen** - 0% COMPLETE
 
-### **✅ CORE MVP FULLY FUNCTIONAL**
-- Complete turtle lifecycle management
-- Working racing system with betting
-- Full economy with shop and breeding
-- Clean, maintainable architecture
+### **All Tasks Remaining:**
+- [ ] **Pond Overview:** Add a "Glade" or "Pond" screen where all current (active + retired) turtles wander passively
+- [ ] **Ambient Behavior:** Simple idle movement/animation for turtles in the pond
+- [ ] **Clickable Turtles:** Allow clicking a turtle in the pond to bring up a tooltip-style overlay with key stats (name, age, status, core stats)
+- [ ] **Profile Shortcut:** From the pond tooltip, provide a way to open the full Profile view for that turtle
 
-### **🔄 REMAINING WORK**
-- Profile View system (Phase 9)
-- Pond/Glade ambient screen (Phase 10)
+---
 
-### **🚀 READY FOR**
-- Production deployment
-- Additional feature development
-- Content expansion
+## 🎯 **ENHANCEMENT OPPORTUNITIES**
 
-**The project exceeds original MVP goals with excellent architecture and user experience!**
+### **Quality of Life Improvements**
+- [ ] **Sound Effects:** Add audio for clicks, races, and actions
+- [ ] **Visual Polish:** Enhanced animations and transitions
+- [ ] **Save System:** Persist game state between sessions
+- [ ] **Settings Menu:** Allow users to customize preferences
+
+### **Content Expansion**
+- [ ] **More Turtle Varieties:** Additional visual styles and stat combinations
+- [ ] **Race Themes:** Different track environments and challenges
+- [ ] **Achievements System:** Track accomplishments and milestones
+- [ ] **Statistics Tracking:** Detailed race history and performance metrics
+
+---
+
+## 🚀 **DEVELOPMENT NOTES**
+
+### **Architecture Strengths**
+- ✅ Clean component-based design
+- ✅ Proper separation of concerns
+- ✅ Reusable UI components
+- ✅ Maintainable codebase structure
+- ✅ Comprehensive state management
+
+### **Technical Debt**
+- [ ] **Documentation:** Add inline code documentation
+- [ ] **Testing:** Implement unit tests for core mechanics
+- [ ] **Error Handling:** Add more robust error catching
+- [ ] **Performance:** Optimize rendering and state updates
+
+### **Future Considerations**
+- [ ] **Multiplayer:** Consider local multiplayer racing
+- [ ] **Tournament Mode:** Championship-style competitions
+- [ ] **Turtle Customization:** Visual customization options
+- [ ] **Advanced Breeding:** Complex genetics and trait inheritance
+
+---
+
+## 📋 **DEVELOPMENT PRIORITIES**
+
+### **High Priority (Next Sprint)**
+1. **Profile View System** - Detailed turtle information panels
+2. **Lineage Tracking** - Parent/child relationship system
+
+### **Medium Priority (Future Sprint)**
+3. **Pond/Glade Screen** - Ambient turtle viewing environment
+4. **Enhanced UI** - Improved tabbed interfaces and animations
+
+### **Low Priority (Backlog)**
+5. **Sound and Polish** - Audio and visual enhancements
+6. **Advanced Features** - Save system, achievements, statistics
+
+---
+
+*The TurboShells MVP is complete and production-ready. These remaining tasks represent enhancement features that will build upon the solid foundation already established.*
