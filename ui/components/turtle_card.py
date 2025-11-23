@@ -78,3 +78,9 @@ class TurtleCard:
             28
         )
         return train_rect.collidepoint(pos)
+    
+    def is_card_clicked(self, pos):
+        """Check if the turtle card itself was clicked (for profile view)."""
+        if not self.turtle:
+            return False
+        return self.rect.collidepoint(pos)
