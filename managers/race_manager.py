@@ -58,17 +58,6 @@ class RaceManager:
     def update(self):
         active_turtles = self.race_roster if hasattr(self, 'race_roster') else []
         
-        # Debug race positions every 100 ticks
-        if not hasattr(self, 'debug_counter'):
-            self.debug_counter = 0
-        self.debug_counter += 1
-        
-        if self.debug_counter % 100 == 0:
-            print(f"=== RACE POSITIONS (Tick {self.debug_counter}) ===")
-            for i, t in enumerate(active_turtles):
-                print(f"  {i}: {t.name} - Distance: {t.race_distance:.1f}, Energy: {t.current_energy:.1f}, Resting: {t.is_resting}")
-            print("=" * 50)
-        
         for _ in range(self.game_state.race_speed_multiplier):
             for t in active_turtles:
                 # 1. Determine Terrain using shared RaceTrack helper
@@ -89,10 +78,6 @@ class RaceManager:
 
         # Check if Race Over (All finished)
         if len(self.results) == len(active_turtles):
-            print("=== FINAL RACE RESULTS ===")
-            for t in self.results:
-                print(f"  Rank {t.rank}: {t.name}")
-            print("=" * 50)
             self.process_rewards()
             return True # Race Finished
         return False

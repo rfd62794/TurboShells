@@ -83,18 +83,8 @@ def generate_balanced_opponent(player_turtle):
                 climb += 1
                 budget -= 1
     
-    # Calculate opponent's total points for debugging
+    # Calculate opponent's total points for verification
     opponent_points = speed + recovery + swim + climb + (energy // 10)
-    
-    # Debug output
-    print(f"=== OPPONENT GENERATION DEBUG ===")
-    print(f"Player: {player_turtle.name}")
-    print(f"  Player stats: S{player_turtle.stats['speed']} E{player_turtle.stats['max_energy']} R{player_turtle.stats['recovery']} Sw{player_turtle.stats['swim']} C{player_turtle.stats['climb']}")
-    print(f"  Player points: {player_points}")
-    print(f"Opponent: {name}")
-    print(f"  Opponent stats: S{speed} E{energy} R{recovery} Sw{swim} C{climb}")
-    print(f"  Opponent points: {opponent_points}")
-    print(f"================================")
     
     return Turtle(name, speed, energy, recovery, swim, climb)
 
