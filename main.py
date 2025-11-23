@@ -7,7 +7,7 @@ routes input to managers, and delegates drawing to the UI layer.
 import pygame
 import sys
 from settings import *
-from core.entities import Turtle
+from core.game.entities import Turtle
 from ui.renderer import Renderer
 from managers.shop_manager import ShopManager
 from managers.race_manager import RaceManager
