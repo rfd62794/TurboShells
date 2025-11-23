@@ -33,7 +33,7 @@ class VisualGeneticsDemo:
         self.vg = VisualGenetics()
         self.mapper = GeneticToSVGMapper()
         self.generator = TurtleSVGGenerator()
-        self.renderer = get_svg_renderer()
+        self.renderer = get_direct_renderer()  # Use direct renderer
         self.voting_system = VotingSystem()
         self.pool_manager = GeneticPoolManager()
         
@@ -149,9 +149,8 @@ class VisualGeneticsDemo:
         # Clear canvas
         self.canvas.delete("all")
         
-        # Render turtle using generic template
-        svg_content = create_generic_turtle_svg(design.genetics)
-        result = self.renderer.svg_to_photoimage(svg_content, 300)
+        # Render turtle directly using PIL drawing
+        result = self.renderer.render_turtle_to_photoimage(design.genetics, 300)
         
         if result:
             if isinstance(result, str):
@@ -312,9 +311,10 @@ class VisualGeneticsDemo:
         # Show renderer capabilities
         capabilities = self.renderer.get_rendering_capabilities()
         print(f"Renderer: {capabilities['renderer_type']}")
-        print(f"SVG Parsing: {capabilities['svg_parsing']}")
         print(f"PIL Drawing: {capabilities['pil_drawing']}")
-        print(f"Can render SVG: {capabilities['can_render_svg']}")
+        print(f"Realistic Anatomy: {capabilities['realistic_anatomy']}")
+        print(f"Shell Patterns: {capabilities['shell_patterns']}")
+        print(f"Can Render Turtle: {capabilities['can_render_turtle']}")
         print()
         
         # Start the GUI
