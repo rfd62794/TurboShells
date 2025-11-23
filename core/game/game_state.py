@@ -40,6 +40,7 @@ def generate_random_turtle(level=1):
     """
     Generates a random turtle based on a level budget.
     Level 1 Budget ~ 20-30 points distributed.
+    Now uses the new modular genetics system.
     """
     name = random.choice(TURTLE_NAMES)
     
@@ -73,12 +74,13 @@ def generate_random_turtle(level=1):
             climb += 1
             budget -= 1
             
+    # Create turtle with new genetics system (will auto-generate random genetics)
     return Turtle(name, speed, energy, recovery, swim, climb)
 
 def breed_turtles(parent_a, parent_b):
     """
     Breeds two turtles to create a child.
-    Stats are averaged + mutation.
+    Uses the new modular genetics system for inheritance.
     """
     # Name combination (First half of A + Last half of B)
     name_a_part = parent_a.name[:len(parent_a.name)//2]
@@ -111,4 +113,20 @@ def breed_turtles(parent_a, parent_b):
     child_swim = mutate(base_swim)
     child_climb = mutate(base_climb)
     
-    return Turtle(child_name, child_speed, child_energy, child_recovery, child_swim, child_climb)
+    # Create child with inherited genetics
+    child = Turtle(child_name, child_speed, child_energy, child_recovery, child_swim, child_climb)
+    
+    # Use the new genetics inheritance system
+    parent1_genetics = parent_a.get_all_genetics()
+    parent2_genetics = parent_b.get_all_genetics()
+    
+    # Add parent IDs to genetics for lineage tracking
+    parent1_genetics['turtle_id'] = parent_a.id
+    parent2_genetics['turtle_id'] = parent_b.id
+    parent1_genetics['generation'] = parent_a.generation
+    parent2_genetics['generation'] = parent_b.generation
+    
+    # Inherit visual genetics using the new system
+    child.inherit_from_parents(parent1_genetics, parent2_genetics)
+    
+    return child
