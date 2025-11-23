@@ -24,7 +24,7 @@ from managers.settings_manager import SettingsManager
 class TurboShellsGame:
     def __init__(self):
         pygame.init()
-        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
         pygame.display.set_caption("Turbo Shells MVP")
         self.clock = pygame.time.Clock()
         self.font = pygame.font.SysFont("Arial", 24)
@@ -89,6 +89,13 @@ class TurboShellsGame:
                 self.save_on_exit()
                 pygame.quit()
                 sys.exit()
+            
+            # Handle window resize
+            if event.type == pygame.VIDEORESIZE:
+                self.screen = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
+                new_screen_rect = pygame.Rect(0, 0, event.w, event.h)
+                self.settings_manager.update_screen_rect(new_screen_rect)
+                continue
             
             # Mouse Handling
             if event.type == pygame.MOUSEMOTION:
