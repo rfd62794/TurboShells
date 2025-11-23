@@ -28,6 +28,10 @@ def draw_breeding(screen, font, game_state):
     # Instructions
     msg = font.render("Select 2 Parents", True, GREEN)
     screen.blit(msg, (50, 60))
+    
+    # Warning about parent loss
+    warning = font.render("Parent 2 will be lost.", True, (255, 200, 100))  # Orange warning color
+    screen.blit(warning, (50, 80))
 
     # Breed button (only if 2 parents selected) - positioned next to instructions
     if len(game_state.breeding_parents) == 2:
@@ -72,11 +76,21 @@ def draw_breeding(screen, font, game_state):
                 slot_color = WHITE
             pygame.draw.rect(screen, slot_color, slot_rect, 2)
             
-            # Draw selection indicator
+            # Draw selection indicator with parent number
             if is_selected:
                 pygame.draw.rect(screen, GREEN, slot_rect, 4)
-                select_txt = font.render("SELECTED", True, GREEN)
+                
+                # Determine parent number (1 or 2)
+                parent_num = "1" if game_state.breeding_parents[0] == turtle else "2"
+                parent_color = (100, 255, 100) if parent_num == "1" else (255, 100, 100)  # Green for P1, Red for P2
+                
+                select_txt = font.render(f"PARENT {parent_num}", True, parent_color)
                 screen.blit(select_txt, (slot_rect.x + 5, slot_rect.y + 5))
+                
+                # Add warning for parent 2 (will be lost)
+                if parent_num == "2":
+                    warning_txt = font.render("(WILL BE LOST)", True, (255, 150, 150))
+                    screen.blit(warning_txt, (slot_rect.x + 5, slot_rect.y + 25))
             
             # Draw turtle info
             draw_breeding_turtle_card(screen, font, turtle, slot_rect, is_retired)
