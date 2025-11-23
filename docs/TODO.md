@@ -24,6 +24,7 @@
   - Phase 15: Audio & Effects → [phases/Phase_15_Audio_Effects.md](phases/Phase_15_Audio_Effects.md)
   - Phase 16: UI/UX Enhancements → [phases/Phase_16_UI_UX_Enhancements.md](phases/Phase_16_UI_UX_Enhancements.md)
   - Phase 17: Achievement System → [phases/Phase_17_Achievement_System.md](phases/Phase_17_Achievement_System.md)
+  - Phase 18: Statistics & Analytics → [phases/Phase_18_Statistics_Analytics.md](phases/Phase_18_Statistics_Analytics.md)
 
 ---
 
@@ -271,15 +272,12 @@
 > Final polish with enhanced animations, comprehensive settings menu, intelligent help system, and improved user experience
 
 ### **Phase 17: Achievement System** - **0% COMPLETE**
-> 📋 **Detailed Plan**: See [phases/Phase_17_Achievement_System.md](phases/Phase_17_Achievement_System.md)
+> **Detailed Plan**: See [phases/Phase_17_Achievement_System.md](phases/Phase_17_Achievement_System.md)
 > Long-term engagement with accomplishment tracking, milestone rewards, progress indicators, and social bragging rights
 
 ### **Phase 18: Statistics & Analytics** - **0% COMPLETE**
-- Detailed race history and performance metrics
-- Personal statistics dashboard
-- Turtle performance analytics
-- Economic tracking and insights
-- Export functionality for personal data
+> **Detailed Plan**: See [phases/Phase_18_Statistics_Analytics.md](phases/Phase_18_Statistics_Analytics.md)
+> Data insights with detailed race history, performance metrics, turtle analytics, economic tracking, and export functionality
 
 ### **Phase 19: Multiplayer Features** - **0% COMPLETE**
 - Local multiplayer racing support
