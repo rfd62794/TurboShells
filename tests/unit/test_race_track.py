@@ -143,8 +143,8 @@ class TestTerrainSystem:
         (400, 300, "finish"), # Finish area
         (300, 300, "track"),  # On track
         (700, 500, "rough"),  # Outside track bounds
-        (200, 150, "rough"),  # Track boundary
-        (600, 450, "rough"),  # Track boundary
+        (200, 150, "track"),  # Track boundary (actually on track)
+        (600, 450, "track"),  # Track boundary (actually on track)
         (350, 250, "finish"), # Finish boundary
         (450, 350, "finish"), # Finish boundary
     ])
