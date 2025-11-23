@@ -1,0 +1,58 @@
+2025-11-23 10:08:48,891 - core.config - INFO - Configuration loaded successfully
+2025-11-23 10:08:48,893 - core.graphics_manager - INFO - Loaded graphics settings: 1024x768
+2025-11-23 10:08:49,012 - core.graphics_manager - INFO - Display initialized: (1024, 768), Fullscreen: False
+2025-11-23 10:08:49,015 - core.audio_manager - INFO - Loaded audio settings: Master Volume 1.0, Enabled True
+2025-11-23 10:08:49,570 - core.audio_manager - INFO - Audio system initialized successfully
+2025-11-23 10:08:49,638 - ui.settings_view - INFO - Settings view initialized
+2025-11-23 10:08:49,639 - ui.settings_view - INFO - Settings view shown
+2025-11-23 10:08:49,639 - ui.settings_view - INFO - Settings view hidden
+2025-11-23 10:08:49,639 - ui.settings_view - INFO - Settings view shown
+2025-11-23 10:08:49,663 - ui.settings_view - INFO - Settings view initialized
+2025-11-23 10:08:49,663 - managers.settings_manager - INFO - Settings manager initialized
+2025-11-23 10:08:49,664 - ui.settings_view - INFO - Settings view shown
+2025-11-23 10:08:49,664 - managers.settings_manager - INFO - Settings shown, tab: graphics
+2025-11-23 10:08:49,665 - ui.settings_view - INFO - Settings view hidden
+2025-11-23 10:08:49,665 - managers.settings_manager - INFO - Settings hidden
+2025-11-23 10:08:49,666 - ui.settings_view - INFO - Settings view shown
+2025-11-23 10:08:49,666 - managers.settings_manager - INFO - Settings shown, tab: graphics
+2025-11-23 10:08:49,666 - ui.settings_view - INFO - Settings view hidden
+2025-11-23 10:08:49,667 - managers.settings_manager - INFO - Settings hidden
+2025-11-23 10:08:49,667 - ui.settings_view - INFO - Settings view shown
+2025-11-23 10:08:49,667 - managers.settings_manager - INFO - Settings shown, tab: graphics
+2025-11-23 10:08:49,677 - ui.settings_view - INFO - Settings view initialized
+2025-11-23 10:08:49,678 - managers.settings_manager - INFO - Settings manager initialized
+2025-11-23 10:08:49,678 - ui.settings_view - INFO - Settings view shown
+2025-11-23 10:08:49,678 - managers.settings_manager - INFO - Settings shown, tab: graphics
+2025-11-23 10:08:49,686 - core.config - INFO - Configuration saved successfully
+2025-11-23 10:08:49,687 - core.graphics_manager - INFO - Graphics quality set to high
+2025-11-23 10:08:51,287 - core.graphics_manager - INFO - Display initialized: (1024, 768), Fullscreen: True
+2025-11-23 10:08:51,293 - core.config - INFO - Configuration saved successfully
+2025-11-23 10:08:51,293 - core.graphics_manager - INFO - VSync enabled
+2025-11-23 10:08:51,296 - core.config - INFO - Configuration saved successfully
+2025-11-23 10:08:51,297 - core.graphics_manager - INFO - Frame rate limit set to 60
+2025-11-23 10:08:51,300 - core.config - INFO - Configuration saved successfully
+2025-11-23 10:08:51,301 - core.audio_manager - INFO - Master volume set to 1.00
+2025-11-23 10:08:51,305 - core.config - INFO - Configuration saved successfully
+2025-11-23 10:08:51,305 - core.audio_manager - INFO - Music volume set to 0.80
+2025-11-23 10:08:51,309 - core.config - INFO - Configuration saved successfully
+2025-11-23 10:08:51,309 - core.audio_manager - INFO - SFX volume set to 0.90
+2025-11-23 10:08:51,314 - core.config - INFO - Configuration saved successfully
+2025-11-23 10:08:51,314 - core.audio_manager - INFO - Voice volume set to 1.00
+2025-11-23 10:08:51,318 - core.config - INFO - Configuration saved successfully
+2025-11-23 10:08:51,318 - core.audio_manager - INFO - Audio enabled
+2025-11-23 10:08:51,321 - core.config - INFO - Configuration saved successfully
+2025-11-23 10:08:51,321 - core.audio_manager - INFO - Mute when inactive disabled
+2025-11-23 10:08:51,325 - core.config - INFO - Configuration saved successfully
+2025-11-23 10:08:51,325 - managers.settings_manager - INFO - Settings applied successfully
+2025-11-23 10:08:51,328 - core.config - INFO - Configuration saved successfully
+2025-11-23 10:08:51,328 - core.config - INFO - Configuration reset to defaults
+2025-11-23 10:08:51,811 - core.graphics_manager - INFO - Display initialized: (1024, 768), Fullscreen: False
+2025-11-23 10:08:51,815 - core.config - INFO - Configuration saved successfully
+2025-11-23 10:08:51,815 - core.graphics_manager - INFO - Graphics settings reset to defaults
+2025-11-23 10:08:51,819 - core.config - INFO - Configuration saved successfully
+2025-11-23 10:08:51,820 - core.audio_manager - INFO - Audio settings reset to defaults
+2025-11-23 10:08:51,821 - managers.settings_manager - INFO - Settings reset to defaults
+2025-11-23 10:08:51,841 - ui.settings_view - INFO - Settings view initialized
+2025-11-23 10:08:51,842 - managers.settings_manager - INFO - Settings manager initialized
+2025-11-23 10:08:51,842 - ui.settings_view - INFO - Settings view shown
+2025-11-23 10:08:51,842 - managers.settings_manager - INFO - Settings shown, tab: graphics

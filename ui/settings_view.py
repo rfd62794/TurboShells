@@ -236,14 +236,133 @@ class SettingsView:
         # Audio tab content
         self._initialize_audio_tab()
         
+        # Saves tab content
+        self._initialize_saves_tab()
+        
         # Other tabs will be initialized as needed
         self.tab_content[SettingsTab.CONTROLS] = []
         self.tab_content[SettingsTab.DIFFICULTY] = []
         self.tab_content[SettingsTab.PROFILE] = []
         self.tab_content[SettingsTab.APPEARANCE] = []
         self.tab_content[SettingsTab.ACCESSIBILITY] = []
-        self.tab_content[SettingsTab.SAVES] = []
         self.tab_content[SettingsTab.PRIVACY] = []
+    
+    def _initialize_saves_tab(self) -> None:
+        """Initialize save management tab content."""
+        content = []
+        y_offset = self.content_rect.y + 20
+        line_height = 40
+        
+        # Save file list
+        save_list_rect = pygame.Rect(
+            self.content_rect.x + 20,
+            y_offset,
+            300,
+            200
+        )
+        
+        content.append(UIElement(
+            rect=save_list_rect,
+            element_type="list",
+            label="Save Files:",
+            value="save_list",
+            callback=self._on_save_file_select,
+            tooltip="Select a save file to manage"
+        ))
+        
+        y_offset += 220
+        
+        # Backup button
+        backup_rect = pygame.Rect(
+            self.content_rect.x + 20,
+            y_offset,
+            100,
+            30
+        )
+        
+        content.append(UIElement(
+            rect=backup_rect,
+            element_type="button",
+            label="Create Backup",
+            value="backup",
+            callback=self._on_create_backup,
+            tooltip="Create a backup of the selected save file"
+        ))
+        
+        # Export button
+        export_rect = pygame.Rect(
+            self.content_rect.x + 130,
+            y_offset,
+            100,
+            30
+        )
+        
+        content.append(UIElement(
+            rect=export_rect,
+            element_type="button",
+            label="Export",
+            value="export",
+            callback=self._on_export_save,
+            tooltip="Export save file to external location"
+        ))
+        
+        y_offset += 40
+        
+        # Import button
+        import_rect = pygame.Rect(
+            self.content_rect.x + 20,
+            y_offset,
+            100,
+            30
+        )
+        
+        content.append(UIElement(
+            rect=import_rect,
+            element_type="button",
+            label="Import",
+            value="import",
+            callback=self._on_import_save,
+            tooltip="Import save file from external location"
+        ))
+        
+        # Delete button
+        delete_rect = pygame.Rect(
+            self.content_rect.x + 130,
+            y_offset,
+            100,
+            30
+        )
+        
+        content.append(UIElement(
+            rect=delete_rect,
+            element_type="button",
+            label="Delete",
+            value="delete",
+            callback=self._on_delete_save,
+            tooltip="Delete selected save file"
+        ))
+        
+        y_offset += 40
+        
+        # Auto-save interval slider
+        autosave_rect = pygame.Rect(
+            self.content_rect.x + 20,
+            y_offset,
+            200,
+            20
+        )
+        
+        config = config_manager.get_config()
+        content.append(UIElement(
+            rect=autosave_rect,
+            element_type="slider",
+            label="Auto-save Interval (minutes):",
+            value=config.controls.auto_save_interval / 60,  # Convert to minutes
+            callback=self._on_autosave_change,
+            tooltip="Set automatic save interval"
+        ))
+        
+        self.tab_content[SettingsTab.SAVES] = content
     
     def _initialize_graphics_tab(self) -> None:
         """Initialize graphics settings tab content."""
@@ -557,6 +676,8 @@ class SettingsView:
             self._draw_slider(screen, element)
         elif element.element_type == "button":
             self._draw_button(screen, element)
+        elif element.element_type == "list":
+            self._draw_list(screen, element)
     
     def _draw_dropdown(self, screen: pygame.Surface, element: UIElement) -> None:
         """Draw a dropdown element."""
@@ -658,6 +779,28 @@ class SettingsView:
         label_rect = label_text.get_rect(center=element.rect.center)
         screen.blit(label_text, label_rect)
     
+    def _draw_list(self, screen: pygame.Surface, element: UIElement) -> None:
+        """Draw a list element."""
+        # Draw list background
+        pygame.draw.rect(screen, self.COLORS['button'], element.rect)
+        pygame.draw.rect(screen, self.COLORS['border'], element.rect, 1)
+        
+        # Draw label
+        label_text = self.fonts['label'].render(element.label, True, self.COLORS['text'])
+        label_rect = label_text.get_rect(
+            left=element.rect.left,
+            top=element.rect.top - 20
+        )
+        screen.blit(label_text, label_rect)
+        
+        # Draw sample save files (placeholder)
+        sample_saves = ["Save 1 - 2025-11-23", "Save 2 - 2025-11-22", "Save 3 - 2025-11-21"]
+        for i, save_name in enumerate(sample_saves[:5]):  # Show max 5 saves
+            item_y = element.rect.y + 5 + i * 25
+            if item_y + 20 < element.rect.bottom:
+                save_text = self.fonts['value'].render(save_name, True, self.COLORS['text'])
+                screen.blit(save_text, (element.rect.x + 5, item_y))
+    
     def _draw_buttons(self, screen: pygame.Surface) -> None:
         """Draw all action buttons."""
         for button in self.buttons:
@@ -736,3 +879,41 @@ class SettingsView:
     def _close_settings(self) -> None:
         """Close settings without applying changes."""
         self.hide()
+    
+    # Save management callbacks
+    def _on_save_file_select(self) -> None:
+        """Handle save file selection."""
+        self.logger.debug("Save file selection requested")
+        # Implementation would show file selection dialog
+    
+    def _on_create_backup(self) -> None:
+        """Handle backup creation."""
+        from core.save_protection import SaveProtectionManager
+        save_manager = SaveProtectionManager()
+        
+        # Create backup of current save
+        success = save_manager.create_backup("current_save.json", "manual")
+        if success:
+            self.logger.info("Backup created successfully")
+        else:
+            self.logger.error("Failed to create backup")
+    
+    def _on_export_save(self) -> None:
+        """Handle save export."""
+        self.logger.debug("Save export requested")
+        # Implementation would show file dialog for export location
+    
+    def _on_import_save(self) -> None:
+        """Handle save import."""
+        self.logger.debug("Save import requested")
+        # Implementation would show file dialog for import selection
+    
+    def _on_delete_save(self) -> None:
+        """Handle save deletion."""
+        self.logger.debug("Save deletion requested")
+        # Implementation would show confirmation dialog
+    
+    def _on_autosave_change(self) -> None:
+        """Handle auto-save interval change."""
+        self.logger.debug("Auto-save interval change requested")
+        # Implementation would handle slider interaction

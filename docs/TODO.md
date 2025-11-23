@@ -13,6 +13,7 @@
 2. SRP Seperation
 3. PyGame Separation
 4. Proper Organization Plan
+5. UI Component SRP
 
 ### **IMMEDIATE PRIORITY (Next 1-2 months)**
 1. **Phase 1: Personal Development Setup** - Foundation for all future work
