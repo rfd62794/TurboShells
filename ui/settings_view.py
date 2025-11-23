@@ -239,9 +239,13 @@ class SettingsView:
         # Saves tab content
         self._initialize_saves_tab()
         
+        # Controls tab content
+        self._initialize_controls_tab()
+        
+        # Difficulty tab content
+        self._initialize_difficulty_tab()
+        
         # Other tabs will be initialized as needed
-        self.tab_content[SettingsTab.CONTROLS] = []
-        self.tab_content[SettingsTab.DIFFICULTY] = []
         self.tab_content[SettingsTab.PROFILE] = []
         self.tab_content[SettingsTab.APPEARANCE] = []
         self.tab_content[SettingsTab.ACCESSIBILITY] = []
@@ -363,6 +367,302 @@ class SettingsView:
         ))
         
         self.tab_content[SettingsTab.SAVES] = content
+    
+    def _initialize_controls_tab(self) -> None:
+        """Initialize controls settings tab content."""
+        content = []
+        y_offset = self.content_rect.y + 20
+        line_height = 40
+        
+        config = config_manager.get_config()
+        
+        # Mouse sensitivity slider
+        mouse_sensitivity_rect = pygame.Rect(
+            self.content_rect.x + 20,
+            y_offset,
+            200,
+            20
+        )
+        
+        content.append(UIElement(
+            rect=mouse_sensitivity_rect,
+            element_type="slider",
+            label="Mouse Sensitivity:",
+            value=config.controls.mouse_sensitivity,
+            callback=self._on_mouse_sensitivity_change,
+            tooltip="Adjust mouse sensitivity for camera control"
+        ))
+        
+        y_offset += line_height
+        
+        # Invert mouse Y checkbox
+        invert_mouse_rect = pygame.Rect(
+            self.content_rect.x + 20,
+            y_offset,
+            20,
+            20
+        )
+        
+        content.append(UIElement(
+            rect=invert_mouse_rect,
+            element_type="checkbox",
+            label="Invert Mouse Y",
+            value=config.controls.invert_mouse_y,
+            callback=self._on_invert_mouse_y_change,
+            tooltip="Invert vertical mouse movement"
+        ))
+        
+        y_offset += line_height
+        
+        # Key bindings section
+        key_bindings_label_rect = pygame.Rect(
+            self.content_rect.x + 20,
+            y_offset,
+            self.content_rect.width - 40,
+            30
+        )
+        
+        content.append(UIElement(
+            rect=key_bindings_label_rect,
+            element_type="label",
+            label="Key Bindings:",
+            value="",
+            callback=None,
+            tooltip="Configure keyboard controls"
+        ))
+        
+        y_offset += 40
+        
+        # Sample key bindings (placeholder)
+        key_bindings = [
+            ("Move Forward", "W"),
+            ("Move Backward", "S"),
+            ("Move Left", "A"),
+            ("Move Right", "D"),
+            ("Jump", "Space"),
+            ("Sprint", "Shift"),
+            ("Interact", "E"),
+            ("Menu", "ESC")
+        ]
+        
+        for i, (action, key) in enumerate(key_bindings):
+            if i >= 8:  # Limit to 8 bindings
+                break
+                
+            # Action label
+            action_rect = pygame.Rect(
+                self.content_rect.x + 20,
+                y_offset + i * 30,
+                150,
+                25
+            )
+            
+            content.append(UIElement(
+                rect=action_rect,
+                element_type="label",
+                label=action,
+                value=key,
+                callback=None,
+                tooltip=f"Current key: {key}"
+            ))
+            
+            # Key binding button
+            key_rect = pygame.Rect(
+                self.content_rect.x + 180,
+                y_offset + i * 30,
+                80,
+                25
+            )
+            
+            content.append(UIElement(
+                rect=key_rect,
+                element_type="button",
+                label=key,
+                value=f"key_{action.lower().replace(' ', '_')}",
+                callback=self._on_key_binding_change,
+                tooltip=f"Click to change {action} key"
+            ))
+        
+        self.tab_content[SettingsTab.CONTROLS] = content
+    
+    def _initialize_difficulty_tab(self) -> None:
+        """Initialize difficulty settings tab content."""
+        content = []
+        y_offset = self.content_rect.y + 20
+        line_height = 40
+        
+        config = config_manager.get_config()
+        
+        # Difficulty level dropdown
+        difficulty_rect = pygame.Rect(
+            self.content_rect.x + 20,
+            y_offset,
+            200,
+            25
+        )
+        
+        content.append(UIElement(
+            rect=difficulty_rect,
+            element_type="dropdown",
+            label="Difficulty Level:",
+            value=config.difficulty.difficulty_level,
+            callback=self._on_difficulty_change,
+            tooltip="Select game difficulty level"
+        ))
+        
+        y_offset += line_height
+        
+        # Auto-save checkbox
+        autosave_rect = pygame.Rect(
+            self.content_rect.x + 20,
+            y_offset,
+            20,
+            20
+        )
+        
+        content.append(UIElement(
+            rect=autosave_rect,
+            element_type="checkbox",
+            label="Auto-save",
+            value=config.difficulty.auto_save,
+            callback=self._on_autosave_toggle,
+            tooltip="Automatically save game progress"
+        ))
+        
+        y_offset += line_height
+        
+        # Show tutorials checkbox
+        tutorials_rect = pygame.Rect(
+            self.content_rect.x + 20,
+            y_offset,
+            20,
+            20
+        )
+        
+        content.append(UIElement(
+            rect=tutorials_rect,
+            element_type="checkbox",
+            label="Show Tutorials",
+            value=config.difficulty.show_tutorials,
+            callback=self._on_tutorials_toggle,
+            tooltip="Display tutorial hints and tips"
+        ))
+        
+        y_offset += line_height
+        
+        # Confirm actions checkbox
+        confirm_rect = pygame.Rect(
+            self.content_rect.x + 20,
+            y_offset,
+            20,
+            20
+        )
+        
+        content.append(UIElement(
+            rect=confirm_rect,
+            element_type="checkbox",
+            label="Confirm Actions",
+            value=config.difficulty.confirm_actions,
+            callback=self._on_confirm_actions_toggle,
+            tooltip="Require confirmation for important actions"
+        ))
+        
+        y_offset += line_height
+        
+        # Accessibility options section
+        accessibility_label_rect = pygame.Rect(
+            self.content_rect.x + 20,
+            y_offset,
+            self.content_rect.width - 40,
+            30
+        )
+        
+        content.append(UIElement(
+            rect=accessibility_label_rect,
+            element_type="label",
+            label="Accessibility Options:",
+            value="",
+            callback=None,
+            tooltip="Configure accessibility features"
+        ))
+        
+        y_offset += 40
+        
+        # Colorblind mode dropdown
+        colorblind_rect = pygame.Rect(
+            self.content_rect.x + 20,
+            y_offset,
+            200,
+            25
+        )
+        
+        content.append(UIElement(
+            rect=colorblind_rect,
+            element_type="dropdown",
+            label="Colorblind Mode:",
+            value=config.accessibility.colorblind_mode,
+            callback=self._on_colorblind_mode_change,
+            tooltip="Select colorblind assistance mode"
+        ))
+        
+        y_offset += line_height
+        
+        # High contrast checkbox
+        high_contrast_rect = pygame.Rect(
+            self.content_rect.x + 20,
+            y_offset,
+            20,
+            20
+        )
+        
+        content.append(UIElement(
+            rect=high_contrast_rect,
+            element_type="checkbox",
+            label="High Contrast",
+            value=config.accessibility.high_contrast,
+            callback=self._on_high_contrast_toggle,
+            tooltip="Increase visual contrast for better visibility"
+        ))
+        
+        y_offset += line_height
+        
+        # Large text checkbox
+        large_text_rect = pygame.Rect(
+            self.content_rect.x + 20,
+            y_offset,
+            20,
+            20
+        )
+        
+        content.append(UIElement(
+            rect=large_text_rect,
+            element_type="checkbox",
+            label="Large Text",
+            value=config.accessibility.large_text,
+            callback=self._on_large_text_toggle,
+            tooltip="Use larger text for better readability"
+        ))
+        
+        y_offset += line_height
+        
+        # Reduced motion checkbox
+        reduced_motion_rect = pygame.Rect(
+            self.content_rect.x + 20,
+            y_offset,
+            20,
+            20
+        )
+        
+        content.append(UIElement(
+            rect=reduced_motion_rect,
+            element_type="checkbox",
+            label="Reduced Motion",
+            value=config.accessibility.reduced_motion,
+            callback=self._on_reduced_motion_toggle,
+            tooltip="Reduce animations and motion effects"
+        ))
+        
+        self.tab_content[SettingsTab.DIFFICULTY] = content
     
     def _initialize_graphics_tab(self) -> None:
         """Initialize graphics settings tab content."""
@@ -678,6 +978,8 @@ class SettingsView:
             self._draw_button(screen, element)
         elif element.element_type == "list":
             self._draw_list(screen, element)
+        elif element.element_type == "label":
+            self._draw_label(screen, element)
     
     def _draw_dropdown(self, screen: pygame.Surface, element: UIElement) -> None:
         """Draw a dropdown element."""
@@ -801,6 +1103,29 @@ class SettingsView:
                 save_text = self.fonts['value'].render(save_name, True, self.COLORS['text'])
                 screen.blit(save_text, (element.rect.x + 5, item_y))
     
+    def _draw_label(self, screen: pygame.Surface, element: UIElement) -> None:
+        """Draw a label element."""
+        # Draw label text
+        label_text = self.fonts['label'].render(element.label, True, self.COLORS['text'])
+        
+        if element.value:  # If there's a value, draw it next to the label
+            value_text = self.fonts['value'].render(str(element.value), True, self.COLORS['text'])
+            
+            # Draw label
+            label_rect = label_text.get_rect(left=element.rect.left, centery=element.rect.centery)
+            screen.blit(label_text, label_rect)
+            
+            # Draw value
+            value_rect = value_text.get_rect(
+                left=label_rect.right + 10,
+                centery=element.rect.centery
+            )
+            screen.blit(value_text, value_rect)
+        else:
+            # Draw centered label
+            label_rect = label_text.get_rect(center=element.rect.center)
+            screen.blit(label_text, label_rect)
+    
     def _draw_buttons(self, screen: pygame.Surface) -> None:
         """Draw all action buttons."""
         for button in self.buttons:
@@ -917,3 +1242,68 @@ class SettingsView:
         """Handle auto-save interval change."""
         self.logger.debug("Auto-save interval change requested")
         # Implementation would handle slider interaction
+    
+    # Controls callbacks
+    def _on_mouse_sensitivity_change(self) -> None:
+        """Handle mouse sensitivity change."""
+        self.logger.debug("Mouse sensitivity change requested")
+        # Implementation would handle slider interaction
+    
+    def _on_invert_mouse_y_change(self) -> None:
+        """Handle invert mouse Y toggle."""
+        config = config_manager.get_config()
+        config.controls.invert_mouse_y = not config.controls.invert_mouse_y
+        self.logger.info(f"Invert mouse Y toggled to {config.controls.invert_mouse_y}")
+    
+    def _on_key_binding_change(self) -> None:
+        """Handle key binding change."""
+        self.logger.debug("Key binding change requested")
+        # Implementation would show key capture dialog
+    
+    # Difficulty callbacks
+    def _on_difficulty_change(self) -> None:
+        """Handle difficulty level change."""
+        self.logger.debug("Difficulty level change requested")
+        # Implementation would show difficulty selection dialog
+    
+    def _on_autosave_toggle(self) -> None:
+        """Handle auto-save toggle."""
+        config = config_manager.get_config()
+        config.difficulty.auto_save = not config.difficulty.auto_save
+        self.logger.info(f"Auto-save toggled to {config.difficulty.auto_save}")
+    
+    def _on_tutorials_toggle(self) -> None:
+        """Handle tutorials toggle."""
+        config = config_manager.get_config()
+        config.difficulty.show_tutorials = not config.difficulty.show_tutorials
+        self.logger.info(f"Show tutorials toggled to {config.difficulty.show_tutorials}")
+    
+    def _on_confirm_actions_toggle(self) -> None:
+        """Handle confirm actions toggle."""
+        config = config_manager.get_config()
+        config.difficulty.confirm_actions = not config.difficulty.confirm_actions
+        self.logger.info(f"Confirm actions toggled to {config.difficulty.confirm_actions}")
+    
+    # Accessibility callbacks
+    def _on_colorblind_mode_change(self) -> None:
+        """Handle colorblind mode change."""
+        self.logger.debug("Colorblind mode change requested")
+        # Implementation would show colorblind mode selection dialog
+    
+    def _on_high_contrast_toggle(self) -> None:
+        """Handle high contrast toggle."""
+        config = config_manager.get_config()
+        config.accessibility.high_contrast = not config.accessibility.high_contrast
+        self.logger.info(f"High contrast toggled to {config.accessibility.high_contrast}")
+    
+    def _on_large_text_toggle(self) -> None:
+        """Handle large text toggle."""
+        config = config_manager.get_config()
+        config.accessibility.large_text = not config.accessibility.large_text
+        self.logger.info(f"Large text toggled to {config.accessibility.large_text}")
+    
+    def _on_reduced_motion_toggle(self) -> None:
+        """Handle reduced motion toggle."""
+        config = config_manager.get_config()
+        config.accessibility.reduced_motion = not config.accessibility.reduced_motion
+        self.logger.info(f"Reduced motion toggled to {config.accessibility.reduced_motion}")
