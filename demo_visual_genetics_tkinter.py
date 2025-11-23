@@ -150,16 +150,23 @@ class VisualGeneticsDemo:
         self.canvas.delete("all")
         
         # Render turtle
-        photo_image = self.renderer.render_turtle_to_photoimage(design.genetics, 300)
+        result = self.renderer.render_turtle_to_photoimage(design.genetics, 300)
         
-        if photo_image:
-            # Center image on canvas
-            x = (400 - photo_image.width()) // 2
-            y = (400 - photo_image.height()) // 2
-            self.canvas.create_image(x, y, anchor=tk.NW, image=photo_image)
+        if result:
+            if isinstance(result, str):
+                # It's a file path, load it
+                from PIL import Image, ImageTk
+                pil_image = Image.open(result)
+                photo_image = ImageTk.PhotoImage(pil_image)
+                self.current_photo = photo_image
+            else:
+                # It's already a PhotoImage
+                self.current_photo = result
             
-            # Keep reference to prevent garbage collection
-            self.current_photo = photo_image
+            # Center image on canvas
+            x = (400 - self.current_photo.width()) // 2
+            y = (400 - self.current_photo.height()) // 2
+            self.canvas.create_image(x, y, anchor=tk.NW, image=self.current_photo)
         else:
             # Show error
             self.canvas.create_text(200, 200, text="Failed to render turtle", 

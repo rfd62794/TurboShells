@@ -41,37 +41,63 @@ def main():
     photo_image = renderer.svg_to_photoimage(svg_string, 200)
     
     if photo_image:
-        print(f"✅ PhotoImage created: {photo_image.width()}x{photo_image.height()}")
-        
-        # Create simple window to display
-        root = tk.Tk()
-        root.title("SVG Debug Test")
-        
-        canvas = Canvas(root, width=400, height=400, bg='white')
-        canvas.pack()
-        
-        # Center the image
-        x = (400 - photo_image.width()) // 2
-        y = (400 - photo_image.height()) // 2
-        canvas.create_image(x, y, anchor=tk.NW, image=photo_image)
-        
-        # Keep reference
-        root.current_photo = photo_image
-        
-        print("Displaying image in window...")
-        print("If you see a blank canvas, the SVG conversion failed")
-        print("If you see a turtle, the conversion worked!")
-        
-        root.mainloop()
+        if isinstance(photo_image, str):
+            print(f"Fallback image file created: {photo_image}")
+            
+            # Create simple window to display
+            root = tk.Tk()
+            root.title("SVG Debug Test - Fallback")
+            
+            canvas = Canvas(root, width=400, height=400, bg='white')
+            canvas.pack()
+            
+            # Load the file
+            from PIL import Image, ImageTk
+            pil_image = Image.open(photo_image)
+            display_photo = ImageTk.PhotoImage(pil_image)
+            
+            # Center the image
+            x = (400 - display_photo.width()) // 2
+            y = (400 - display_photo.height()) // 2
+            canvas.create_image(x, y, anchor=tk.NW, image=display_photo)
+            
+            # Keep reference
+            root.display_photo = display_photo
+            
+            print("Displaying fallback image...")
+            root.mainloop()
+        else:
+            print(f"PhotoImage created: {photo_image.width()}x{photo_image.height()}")
+            
+            # Create simple window to display
+            root = tk.Tk()
+            root.title("SVG Debug Test")
+            
+            canvas = Canvas(root, width=400, height=400, bg='white')
+            canvas.pack()
+            
+            # Center the image
+            x = (400 - photo_image.width()) // 2
+            y = (400 - photo_image.height()) // 2
+            canvas.create_image(x, y, anchor=tk.NW, image=photo_image)
+            
+            # Keep reference
+            root.current_photo = photo_image
+            
+            print("Displaying image in window...")
+            print("If you see a blank canvas, the SVG conversion failed")
+            print("If you see a turtle, the conversion worked!")
+            
+            root.mainloop()
         
     else:
-        print("❌ Failed to create PhotoImage")
+        print("Failed to create PhotoImage")
         
         # Try fallback
         print("Trying fallback image...")
         fallback = renderer.create_fallback_photoimage(200)
         if fallback:
-            print(f"✅ Fallback created: {fallback.width()}x{fallback.height()}")
+            print(f"Fallback created: {fallback.width()}x{fallback.height()}")
             
             root = tk.Tk()
             root.title("Fallback Test")
@@ -86,7 +112,7 @@ def main():
             root.current_fallback = fallback
             root.mainloop()
         else:
-            print("❌ Even fallback failed")
+            print("Even fallback failed")
 
 if __name__ == '__main__':
     main()

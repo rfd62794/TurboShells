@@ -149,24 +149,18 @@ class TkinterSVGRenderer:
             return None
     
     def convert_with_svg2png(self, svg_string: str, size: Optional[int] = None) -> Optional[ImageTk.PhotoImage]:
-        """Convert using svg2png"""
+        """Convert using svg2png (requires Inkscape)"""
         try:
             # Save SVG to temp file
             temp_svg = os.path.join(self.temp_dir, f"temp_{id(svg_string)}.svg")
             with open(temp_svg, 'w', encoding='utf-8') as f:
                 f.write(svg_string)
             
-            # Convert to PNG using subprocess
-            import subprocess
-            temp_png = os.path.join(self.temp_dir, f"temp_{id(svg_string)}.png")
+            # Convert using svg2png (creates PNG with same name)
+            svg2png.svg2png(temp_svg)
             
-            # Use svg2png directly with file paths
-            try:
-                svg2png.svg2png(temp_svg, temp_png)
-            except TypeError:
-                # Try alternative API
-                cmd = ['python', '-c', f'import svg2png; svg2png.svg2png("{temp_svg}", "{temp_png}")']
-                subprocess.run(cmd, capture_output=True)
+            # The PNG file will have the same name but .png extension
+            temp_png = temp_svg.replace('.svg', '.png')
             
             # Load with PIL
             if os.path.exists(temp_png):
@@ -178,17 +172,13 @@ class TkinterSVGRenderer:
                 os.unlink(temp_svg)
                 
                 return photo_image
-            
-            # Cleanup
-            if os.path.exists(temp_svg):
-                os.unlink(temp_svg)
-            if os.path.exists(temp_png):
-                os.unlink(temp_png)
+            else:
+                print(f"PNG file not created: {temp_png}")
+                return None
                 
-            return None
-            
         except Exception as e:
             print(f"svg2png conversion failed: {e}")
+            print("Note: svg2png requires Inkscape to be installed and in PATH")
             return None
     
     def svg_drawing_to_photoimage(self, svg_drawing: object, size: Optional[int] = None) -> Optional[ImageTk.PhotoImage]:
