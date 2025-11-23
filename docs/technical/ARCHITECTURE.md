@@ -103,6 +103,11 @@ The project follows a clean, component-based architecture with proper separation
 **Responsibility**: Breeding logic and parent selection
 - **Methods**: handle_click(), breed_turtles(), select_parent()
 
+#### `SettingsManager` (managers/settings_manager.py)
+**Responsibility**: Settings system with responsive UI
+- **Methods**: show_settings(), hide_settings(), update_screen_rect()
+- **Features**: Centered layout, window resizing support, dynamic updates
+
 ### **3.3 UI Components**
 
 #### `Button` (ui/components/button.py)
