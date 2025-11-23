@@ -6,8 +6,8 @@ Complete voting interface for design evaluation with PyGame integration
 import pygame
 import math
 from typing import Dict, Any, Optional, List, Tuple
-from ..core.voting_system import VotingSystem, DesignPackage
-from ..core.svg_pygame_renderer import get_svg_renderer
+from core.voting.voting_system import VotingSystem, DesignPackage
+from core.rendering.direct_turtle_renderer import get_direct_renderer
 
 
 class VotingView:
@@ -20,7 +20,7 @@ class VotingView:
         self.screen = screen
         self.game_state = game_state
         self.voting_system = VotingSystem()
-        self.svg_renderer = get_svg_renderer()
+        self.turtle_renderer = get_direct_renderer()
         
         # UI state
         self.current_design_index = 0
@@ -143,12 +143,12 @@ class VotingView:
         pygame.draw.rect(self.screen, self.card_color, card_rect, border_radius=10)
         pygame.draw.rect(self.screen, self.accent_color, card_rect, 3, border_radius=10)
         
-        # Draw turtle SVG
+        # Draw turtle using direct renderer
         try:
-            svg_content = current_design.svg_content
-            if svg_content:
-                turtle_surface = self.svg_renderer.render_svg_string_to_surface(
-                    svg_content, self.design_size
+            genetics = current_design.genetics
+            if genetics:
+                turtle_surface = self.turtle_renderer.render_turtle_to_photoimage(
+                    genetics, self.design_size
                 )
                 
                 if turtle_surface:
