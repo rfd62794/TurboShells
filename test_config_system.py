@@ -119,7 +119,8 @@ def test_save_protection():
     print("🧪 Testing Save Protection System...")
     
     try:
-        from core.save_protection import save_protection_manager
+        from core.save_protection import SaveProtectionManager
+        save_protection_manager = SaveProtectionManager()
         
         # Test directory structure
         assert save_protection.save_dir.exists(), "Save directory not created"

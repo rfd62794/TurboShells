@@ -402,12 +402,14 @@ class AudioManager:
         }
         
         if self.initialized:
-            info.update({
-                "frequency": pygame.mixer.get_init()[0] if pygame.mixer.get_init() else 0,
-                "size": pygame.mixer.get_init()[1] if pygame.mixer.get_init() else 0,
-                "channels": pygame.mixer.get_init()[2] if pygame.mixer.get_init() else 0,
-                "buffer": pygame.mixer.get_init()[3] if pygame.mixer.get_init() else 0
-            })
+            mixer_info = pygame.mixer.get_init()
+            if mixer_info:
+                info.update({
+                    "frequency": mixer_info[0],
+                    "size": mixer_info[1],
+                    "channels": mixer_info[2],
+                    "buffer": mixer_info[3]
+                })
         
         return info
     
