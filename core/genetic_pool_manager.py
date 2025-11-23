@@ -361,7 +361,7 @@ class GeneticPoolManager:
         
         # Calculate color distance from target
         target_rgb = pool.target_rgb
-        color_distance = sum(abs(rgb_color[i] - target_rgb[i]) for i in range(3))
+        color_distance = sum(abs(rgb_color[i] - target_rgb[component]) for i, component in enumerate(['r', 'g', 'b']))
         max_distance = 255 * 3  # Maximum possible distance
         
         # Higher influence for colors far from current target
