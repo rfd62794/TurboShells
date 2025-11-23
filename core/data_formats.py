@@ -944,7 +944,667 @@ def create_default_preference_data(player_id: str) -> PlayerPreferences:
 
 
 # ============================================================================
-# MAIN VALIDATOR INSTANCE
+# PERFORMANCE OPTIMIZATION
 # ============================================================================
 
-validator = DataValidator()
+import gzip
+import hashlib
+from functools import lru_cache
+from typing import Dict, Any, Optional
+import time
+
+
+class DataCache:
+    """LRU cache for frequently accessed data"""
+    
+    def __init__(self, max_size: int = 100):
+        self.max_size = max_size
+        self._cache = {}
+        self._access_times = {}
+    
+    def get(self, key: str) -> Optional[Any]:
+        """Get item from cache"""
+        if key in self._cache:
+            self._access_times[key] = time.time()
+            return self._cache[key]
+        return None
+    
+    def set(self, key: str, value: Any) -> None:
+        """Set item in cache"""
+        if len(self._cache) >= self.max_size:
+            self._evict_oldest()
+        
+        self._cache[key] = value
+        self._access_times[key] = time.time()
+    
+    def _evict_oldest(self) -> None:
+        """Remove oldest item from cache"""
+        if not self._access_times:
+            return
+        
+        oldest_key = min(self._access_times.keys(), key=lambda k: self._access_times[k])
+        del self._cache[oldest_key]
+        del self._access_times[oldest_key]
+    
+    def clear(self) -> None:
+        """Clear cache"""
+        self._cache.clear()
+        self._access_times.clear()
+
+
+class PerformanceOptimizer:
+    """Performance optimization utilities for data operations"""
+    
+    def __init__(self):
+        self.turtle_cache = DataCache(max_size=100)
+        self.game_cache = DataCache(max_size=10)
+        self.preference_cache = DataCache(max_size=50)
+        
+        # Compression settings
+        self.compression_enabled = True
+        self.compression_level = 6
+        self.compression_threshold = 1024  # Only compress data larger than 1KB
+    
+    @lru_cache(maxsize=1000)
+    def cached_validate_game_data(self, data_hash: str, data: Dict[str, Any]) -> tuple[bool, Optional[str]]:
+        """Cached game data validation"""
+        validator = DataValidator()
+        return validator.validate_game_data(data)
+    
+    @lru_cache(maxsize=1000)
+    def cached_validate_turtle_data(self, data_hash: str, data: Dict[str, Any]) -> tuple[bool, Optional[str]]:
+        """Cached turtle data validation"""
+        validator = DataValidator()
+        return validator.validate_turtle_data(data)
+    
+    @lru_cache(maxsize=1000)
+    def cached_validate_preference_data(self, data_hash: str, data: Dict[str, Any]) -> tuple[bool, Optional[str]]:
+        """Cached preference data validation"""
+        validator = DataValidator()
+        return validator.validate_preference_data(data)
+    
+    def calculate_data_hash(self, data: Dict[str, Any]) -> str:
+        """Calculate hash for data caching"""
+        data_string = json.dumps(data, sort_keys=True, default=str)
+        return hashlib.md5(data_string.encode('utf-8')).hexdigest()
+    
+    def compress_data_optimized(self, data: str) -> bytes:
+        """Optimized compression with threshold"""
+        if not self.compression_enabled:
+            return data.encode('utf-8')
+        
+        data_bytes = data.encode('utf-8')
+        
+        # Only compress if data is larger than threshold
+        if len(data_bytes) < self.compression_threshold:
+            return data_bytes
+        
+        return gzip.compress(data_bytes, compresslevel=self.compression_level)
+    
+    def decompress_data_optimized(self, compressed_data: bytes) -> str:
+        """Optimized decompression with fallback"""
+        try:
+            # Try to decompress
+            return gzip.decompress(compressed_data).decode('utf-8')
+        except (gzip.BadGzipFile, OSError):
+            # Fallback to uncompressed data
+            return compressed_data.decode('utf-8')
+    
+    def get_cached_turtle(self, turtle_id: str, turtle_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Get turtle data from cache or cache it"""
+        cached = self.turtle_cache.get(turtle_id)
+        if cached:
+            return cached
+        
+        # Cache the data
+        self.turtle_cache.set(turtle_id, turtle_data)
+        return turtle_data
+    
+    def get_cached_game_data(self, player_id: str, game_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Get game data from cache or cache it"""
+        cached = self.game_cache.get(player_id)
+        if cached:
+            return cached
+        
+        # Cache the data
+        self.game_cache.set(player_id, game_data)
+        return game_data
+    
+    def get_cached_preferences(self, player_id: str, preferences: Dict[str, Any]) -> Dict[str, Any]:
+        """Get preference data from cache or cache it"""
+        cached = self.preference_cache.get(player_id)
+        if cached:
+            return cached
+        
+        # Cache the data
+        self.preference_cache.set(player_id, preferences)
+        return preferences
+    
+    def invalidate_cache(self, cache_type: str = "all") -> None:
+        """Invalidate specified cache"""
+        if cache_type == "all" or cache_type == "turtle":
+            self.turtle_cache.clear()
+        if cache_type == "all" or cache_type == "game":
+            self.game_cache.clear()
+        if cache_type == "all" or cache_type == "preference":
+            self.preference_cache.clear()
+    
+    def get_cache_stats(self) -> Dict[str, Any]:
+        """Get cache statistics"""
+        return {
+            "turtle_cache_size": len(self.turtle_cache._cache),
+            "game_cache_size": len(self.game_cache._cache),
+            "preference_cache_size": len(self.preference_cache._cache),
+            "compression_enabled": self.compression_enabled,
+            "compression_level": self.compression_level,
+            "compression_threshold": self.compression_threshold
+        }
+
+
+# ============================================================================
+# SECURITY FEATURES
+# ============================================================================
+
+import hmac
+import os
+from cryptography.fernet import Fernet
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+import base64
+
+
+class SecurityManager:
+    """Security features for data protection"""
+    
+    def __init__(self, encryption_key: Optional[bytes] = None):
+        self.encryption_enabled = True
+        self.checksum_enabled = True
+        
+        # Generate or use provided encryption key
+        if encryption_key:
+            self.encryption_key = encryption_key
+        else:
+            self.encryption_key = self._generate_encryption_key()
+        
+        self.fernet = Fernet(self.encryption_key)
+    
+    def _generate_encryption_key(self) -> bytes:
+        """Generate encryption key from password"""
+        password = b"turbo_shells_save_key_2025"  # In production, use user-specific key
+        salt = b"turbo_shells_salt_2025"  # In production, use random salt
+        
+        kdf = PBKDF2HMAC(
+            algorithm=hashes.SHA256(),
+            length=32,
+            salt=salt,
+            iterations=100000,
+        )
+        key = base64.urlsafe_b64encode(kdf.derive(password))
+        return key
+    
+    def calculate_checksum(self, data: Dict[str, Any]) -> str:
+        """Calculate SHA-256 checksum for data"""
+        if not self.checksum_enabled:
+            return ""
+        
+        data_string = json.dumps(data, sort_keys=True, default=str)
+        return hashlib.sha256(data_string.encode('utf-8')).hexdigest()
+    
+    def verify_checksum(self, data: Dict[str, Any], expected_checksum: str) -> bool:
+        """Verify data integrity with checksum"""
+        if not self.checksum_enabled or not expected_checksum:
+            return True
+        
+        actual_checksum = self.calculate_checksum(data)
+        return hmac.compare_digest(actual_checksum, expected_checksum)
+    
+    def encrypt_data(self, data: str) -> bytes:
+        """Encrypt data with Fernet symmetric encryption"""
+        if not self.encryption_enabled:
+            return data.encode('utf-8')
+        
+        return self.fernet.encrypt(data.encode('utf-8'))
+    
+    def decrypt_data(self, encrypted_data: bytes) -> str:
+        """Decrypt data with Fernet symmetric encryption"""
+        if not self.encryption_enabled:
+            return encrypted_data.decode('utf-8')
+        
+        try:
+            return self.fernet.decrypt(encrypted_data).decode('utf-8')
+        except Exception as e:
+            raise ValueError(f"Decryption failed: {e}")
+    
+    def sign_data(self, data: Dict[str, Any]) -> str:
+        """Create HMAC signature for data"""
+        data_string = json.dumps(data, sort_keys=True, default=str)
+        signature = hmac.new(
+            self.encryption_key,
+            data_string.encode('utf-8'),
+            hashlib.sha256
+        ).hexdigest()
+        return signature
+    
+    def verify_signature(self, data: Dict[str, Any], signature: str) -> bool:
+        """Verify HMAC signature for data"""
+        data_string = json.dumps(data, sort_keys=True, default=str)
+        expected_signature = hmac.new(
+            self.encryption_key,
+            data_string.encode('utf-8'),
+            hashlib.sha256
+        ).hexdigest()
+        
+        return hmac.compare_digest(signature, expected_signature)
+    
+    def sanitize_data(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Sanitize data for privacy protection"""
+        # Remove or mask sensitive fields
+        sensitive_fields = ["player_id", "session_stats", "transaction_history"]
+        
+        sanitized = data.copy()
+        for field in sensitive_fields:
+            if field in sanitized:
+                if isinstance(sanitized[field], str):
+                    # Mask string fields
+                    sanitized[field] = "*" * len(sanitized[field])
+                elif isinstance(sanitized[field], dict):
+                    # Remove dict fields
+                    sanitized[field] = {}
+                elif isinstance(sanitized[field], list):
+                    # Clear list fields
+                    sanitized[field] = []
+        
+        return sanitized
+
+
+# ============================================================================
+# ENHANCED SERIALIZATION WITH OPTIMIZATION
+# ============================================================================
+
+class EnhancedDataSerializer(DataSerializer):
+    """Enhanced serializer with performance and security features"""
+    
+    def __init__(self):
+        super().__init__()
+        self.optimizer = PerformanceOptimizer()
+        self.security = SecurityManager()
+    
+    def serialize_optimized(self, data: Any, compress: bool = True, encrypt: bool = False) -> bytes:
+        """Serialize data with optimization and security options"""
+        # Convert to JSON
+        json_data = json.dumps(data, indent=2, default=str)
+        
+        # Apply compression
+        if compress:
+            json_data = self.optimizer.compress_data_optimized(json_data).decode('utf-8')
+        
+        # Apply encryption
+        if encrypt:
+            return self.security.encrypt_data(json_data)
+        
+        return json_data.encode('utf-8')
+    
+    def deserialize_optimized(self, data: bytes, compressed: bool = True, encrypted: bool = False) -> Any:
+        """Deserialize data with optimization and security options"""
+        # Apply decryption
+        if encrypted:
+            data = self.security.decrypt_data(data).encode('utf-8')
+        
+        # Apply decompression
+        if compressed:
+            json_data = self.optimizer.decompress_data_optimized(data)
+        else:
+            json_data = data.decode('utf-8')
+        
+        # Parse JSON
+        return json.loads(json_data)
+    
+    def serialize_with_metadata(self, data: Any, metadata: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        """Serialize data with metadata"""
+        serialized_data = {
+            "version": "2.2.0",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "data": data,
+            "checksum": self.security.calculate_checksum(data),
+            "compression": self.optimizer.compression_enabled,
+            "encryption": self.security.encryption_enabled
+        }
+        
+        if metadata:
+            serialized_data["metadata"] = metadata
+        
+        return serialized_data
+    
+    def deserialize_with_metadata(self, serialized_data: Dict[str, Any]) -> tuple[Any, Dict[str, Any]]:
+        """Deserialize data with metadata validation"""
+        # Verify checksum
+        if "checksum" in serialized_data:
+            if not self.security.verify_checksum(serialized_data["data"], serialized_data["checksum"]):
+                raise ValueError("Data integrity check failed")
+        
+        # Extract metadata
+        metadata = {
+            "version": serialized_data.get("version", "2.2.0"),
+            "timestamp": serialized_data.get("timestamp"),
+            "compression": serialized_data.get("compression", False),
+            "encryption": serialized_data.get("encryption", False)
+        }
+        
+        if "metadata" in serialized_data:
+            metadata.update(serialized_data["metadata"])
+        
+        return serialized_data["data"], metadata
+
+
+# ============================================================================
+# TESTING FRAMEWORK
+# ============================================================================
+
+class TestDataGenerator:
+    """Generate test data for validation and testing"""
+    
+    @staticmethod
+    def create_test_game_data(player_id: str = "test_player") -> GameData:
+        """Create test game data"""
+        return GameData(
+            version="2.2.0",
+            timestamp=datetime.now(timezone.utc).isoformat(),
+            player_id=player_id,
+            game_state=GameStateData(
+                money=1500,
+                current_phase="ROSTER",
+                unlocked_features=["roster", "racing", "voting"],
+                tutorial_progress={
+                    "roster_intro": True,
+                    "racing_basics": True,
+                    "breeding_intro": False,
+                    "voting_system": True
+                },
+                session_stats=SessionStats(
+                    total_playtime_minutes=120,
+                    races_completed=5,
+                    turtles_bred=2,
+                    votes_cast=8
+                )
+            ),
+            economy=EconomicData(
+                total_earned=500,
+                total_spent=200,
+                transaction_history=[
+                    TransactionData(
+                        id="txn_test_001",
+                        timestamp=datetime.now(timezone.utc).isoformat(),
+                        type="earnings",
+                        amount=10,
+                        source="race",
+                        details={"position": 1, "race_id": "race_test_001"}
+                    )
+                ]
+            ),
+            roster=RosterData(
+                active_slots=3,
+                active_turtles=["turtle_001", "turtle_002"],
+                retired_turtles=["turtle_003"],
+                max_retired=20
+            ),
+            last_sessions=[
+                LastSession(
+                    timestamp=datetime.now(timezone.utc).isoformat(),
+                    duration_minutes=45,
+                    activities=["racing", "voting"]
+                )
+            ]
+        )
+    
+    @staticmethod
+    def create_test_turtle_data(turtle_id: str = "turtle_test", name: str = "Test Turtle") -> TurtleData:
+        """Create test turtle data"""
+        return TurtleData(
+            turtle_id=turtle_id,
+            name=name,
+            generation=2,
+            created_timestamp=datetime.now(timezone.utc).isoformat(),
+            parents=TurtleParents(mother_id="turtle_mother", father_id="turtle_father"),
+            genetics={
+                "shell_pattern": GeneTrait(
+                    value="hex",
+                    dominance=0.85,
+                    mutation_source="inherited",
+                    parent_contribution=ParentContribution(mother=0.6, father=0.4)
+                ),
+                "shell_color": GeneTrait(
+                    value="#4A90E2",
+                    dominance=0.92,
+                    mutation_source="inherited",
+                    parent_contribution=ParentContribution(mother=0.7, father=0.3)
+                ),
+                "pattern_color": GeneTrait(
+                    value="#E74C3C",
+                    dominance=0.78,
+                    mutation_source="mutation",
+                    mutation_details=MutationDetails(type="adaptive", similarity_to_parents=0.3)
+                ),
+                "limb_shape": GeneTrait(
+                    value="flippers",
+                    dominance=0.88,
+                    mutation_source="inherited",
+                    parent_contribution=ParentContribution(mother=0.5, father=0.5)
+                ),
+                "limb_length": GeneTrait(
+                    value=1.2,
+                    dominance=0.75,
+                    mutation_source="inherited",
+                    parent_contribution=ParentContribution(mother=0.4, father=0.6)
+                ),
+                "head_size": GeneTrait(
+                    value=0.9,
+                    dominance=0.82,
+                    mutation_source="inherited",
+                    parent_contribution=ParentContribution(mother=0.55, father=0.45)
+                ),
+                "eye_color": GeneTrait(
+                    value="#2ECC71",
+                    dominance=0.90,
+                    mutation_source="inherited",
+                    parent_contribution=ParentContribution(mother=0.65, father=0.35)
+                ),
+                "skin_texture": GeneTrait(
+                    value="smooth",
+                    dominance=0.79,
+                    mutation_source="inherited",
+                    parent_contribution=ParentContribution(mother=0.5, father=0.5)
+                )
+            },
+            stats=TurtleStats(
+                speed=8.5,
+                energy=7.2,
+                recovery=6.8,
+                swim=9.1,
+                climb=5.4,
+                base_stats=BaseStats(7.0, 7.0, 7.0, 7.0, 7.0),
+                genetic_modifiers=GeneticModifiers(1.5, 0.2, -0.2, 2.1, -1.6)
+            ),
+            performance=TurtlePerformance(
+                race_history=[
+                    RaceResult(
+                        race_id="race_test_001",
+                        timestamp=datetime.now(timezone.utc).isoformat(),
+                        position=1,
+                        earnings=10,
+                        terrain_performance=TerrainPerformance(grass=9.2, water=8.8, rock=6.1)
+                    )
+                ],
+                total_races=5,
+                wins=3,
+                average_position=2.1,
+                total_earnings=125
+            )
+        )
+    
+    @staticmethod
+    def create_test_preference_data(player_id: str = "test_player") -> PlayerPreferences:
+        """Create test preference data"""
+        return PlayerPreferences(
+            version="2.2.0",
+            player_id=player_id,
+            last_updated=datetime.now(timezone.utc).isoformat(),
+            voting_history=[
+                VotingRecord(
+                    date="2025-11-22",
+                    design_id="design_test_001",
+                    ratings={
+                        "shell_pattern": 5,
+                        "shell_color": 4,
+                        "pattern_color": 5,
+                        "limb_shape": 3,
+                        "limb_length": 4,
+                        "head_size": 3,
+                        "eye_color": 4,
+                        "skin_texture": 3
+                    },
+                    rewards_earned=8,
+                    time_spent_minutes=5
+                )
+            ],
+            preference_profile=PreferenceProfile(
+                trait_weights=TraitWeights(
+                    shell_pattern=0.25,
+                    shell_color=0.20,
+                    pattern_color=0.25,
+                    limb_shape=0.10,
+                    limb_length=0.10,
+                    head_size=0.05,
+                    eye_color=0.03,
+                    skin_texture=0.02
+                ),
+                color_preferences=ColorPreferences(
+                    favorite_colors=["#4A90E2", "#E74C3C", "#2ECC71"],
+                    avoided_colors=["#95A5A6", "#34495E"],
+                    color_harmony_score=0.78
+                ),
+                pattern_preferences=PatternPreferences(
+                    favorite_patterns=["hex", "spots"],
+                    avoided_patterns=["rings"],
+                    complexity_preference=0.6
+                ),
+                rating_behavior=RatingBehavior(
+                    average_rating=4.2,
+                    rating_variance=0.8,
+                    tendency_to_extreme=0.15,
+                    consistent_rater=True
+                )
+            ),
+            genetic_influence=GeneticInfluence(
+                total_influence_points=45,
+                trait_influence=TraitInfluence(
+                    shell_pattern=12.5,
+                    shell_color=8.3,
+                    pattern_color=11.2,
+                    limb_shape=4.1,
+                    limb_length=4.8,
+                    head_size=2.0,
+                    eye_color=1.6,
+                    skin_texture=0.5
+                ),
+                influence_decay=InfluenceDecay(
+                    daily_decay_rate=0.05,
+                    last_decay_date="2025-11-22",
+                    total_decayed=2.3
+                )
+            )
+        )
+
+
+class DataValidatorTester:
+    """Testing utilities for data validation"""
+    
+    def __init__(self):
+        self.validator = DataValidator()
+        self.test_generator = TestDataGenerator()
+    
+    def test_all_valid_data(self) -> Dict[str, bool]:
+        """Test validation of all valid data types"""
+        results = {}
+        
+        # Test game data
+        game_data = self.test_generator.create_test_game_data()
+        game_dict = game_data.__dict__
+        results["game_data"] = self.validator.validate_game_data(game_dict)[0]
+        
+        # Test turtle data
+        turtle_data = self.test_generator.create_test_turtle_data()
+        turtle_dict = turtle_data.__dict__
+        results["turtle_data"] = self.validator.validate_turtle_data(turtle_dict)[0]
+        
+        # Test preference data
+        pref_data = self.test_generator.create_test_preference_data()
+        pref_dict = pref_data.__dict__
+        results["preference_data"] = self.validator.validate_preference_data(pref_dict)[0]
+        
+        return results
+    
+    def test_invalid_data(self) -> Dict[str, List[str]]:
+        """Test validation of invalid data"""
+        errors = {}
+        
+        # Test invalid game data
+        invalid_game = {"invalid": "data"}
+        valid, error = self.validator.validate_game_data(invalid_game)
+        if not valid:
+            errors["game_data"] = [error]
+        
+        # Test invalid turtle data
+        invalid_turtle = {"turtle_id": "invalid_id", "genetics": "invalid"}
+        valid, error = self.validator.validate_turtle_data(invalid_turtle)
+        if not valid:
+            errors["turtle_data"] = [error]
+        
+        # Test invalid preference data
+        invalid_pref = {"player_id": "invalid", "voting_history": "invalid"}
+        valid, error = self.validator.validate_preference_data(invalid_pref)
+        if not valid:
+            errors["preference_data"] = [error]
+        
+        return errors
+    
+    def run_performance_test(self, iterations: int = 1000) -> Dict[str, float]:
+        """Run performance tests"""
+        import time
+        
+        # Generate test data
+        game_data = self.test_generator.create_test_game_data()
+        turtle_data = self.test_generator.create_test_turtle_data()
+        pref_data = self.test_generator.create_test_preference_data()
+        
+        results = {}
+        
+        # Test game data validation performance
+        start_time = time.time()
+        for _ in range(iterations):
+            self.validator.validate_game_data(game_data.__dict__)
+        results["game_validation_time"] = time.time() - start_time
+        
+        # Test turtle data validation performance
+        start_time = time.time()
+        for _ in range(iterations):
+            self.validator.validate_turtle_data(turtle_data.__dict__)
+        results["turtle_validation_time"] = time.time() - start_time
+        
+        # Test preference data validation performance
+        start_time = time.time()
+        for _ in range(iterations):
+            self.validator.validate_preference_data(pref_data.__dict__)
+        results["preference_validation_time"] = time.time() - start_time
+        
+        return results
+
+
+# ============================================================================
+# GLOBAL INSTANCES
+# ============================================================================
+
+performance_optimizer = PerformanceOptimizer()
+security_manager = SecurityManager()
+enhanced_serializer = EnhancedDataSerializer()
+test_generator = TestDataGenerator()
+validator_tester = DataValidatorTester()
