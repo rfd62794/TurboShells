@@ -95,11 +95,21 @@ def draw_breeding(screen, font, game_state):
                 text_y = bar_rect.y + (bar_rect.height - select_txt.get_height()) // 2
                 screen.blit(select_txt, (text_x, text_y))
                 
-                # Add warning for parent 2 (will be lost) - below the bar
+                # Add diagonal "WILL BE LOST" across the turtle image for Parent 2
                 if parent_num == "2":
-                    warning_txt = font.render("WILL BE LOST", True, (255, 150, 150))
-                    warning_x = slot_rect.x + (slot_rect.width - warning_txt.get_width()) // 2
-                    screen.blit(warning_txt, (warning_x, slot_rect.y + slot_rect.height - 25))
+                    # Create diagonal text
+                    warning_font = pygame.font.SysFont("Arial", 16, bold=True)
+                    warning_txt = warning_font.render("WILL BE LOST", True, (255, 0, 0))  # Bright red
+                    
+                    # Rotate the text for diagonal effect
+                    rotated_text = pygame.transform.rotate(warning_txt, -45)  # -45 degrees for diagonal
+                    
+                    # Position the diagonal text across the turtle image area
+                    text_x = slot_rect.x + 40  # Center over turtle image area
+                    text_y = slot_rect.y + 80  # Middle of the card
+                    
+                    # Draw the diagonal text
+                    screen.blit(rotated_text, (text_x, text_y))
             
             # Draw turtle info
             draw_breeding_turtle_card(screen, font, turtle, slot_rect, is_retired)
