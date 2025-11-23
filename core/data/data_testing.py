@@ -23,7 +23,7 @@ from .data_validation import DataValidator
 
 class TestDataGenerator:
     """Generate test data for validation and testing"""
-    
+
     @staticmethod
     def create_test_game_data(player_id: str = "test_player") -> GameData:
         """Create test game data"""
@@ -76,7 +76,7 @@ class TestDataGenerator:
                 )
             ]
         )
-    
+
     @staticmethod
     def create_test_turtle_data(turtle_id: str = "turtle_test", name: str = "Test Turtle") -> TurtleData:
         """Create test turtle data"""
@@ -161,7 +161,7 @@ class TestDataGenerator:
                 total_earnings=125
             )
         )
-    
+
     @staticmethod
     def create_test_preference_data(player_id: str = "test_player") -> PlayerPreferences:
         """Create test preference data"""
@@ -238,83 +238,83 @@ class TestDataGenerator:
 
 class DataValidatorTester:
     """Testing utilities for data validation"""
-    
+
     def __init__(self):
         self.validator = DataValidator()
         self.test_generator = TestDataGenerator()
-    
+
     def test_all_valid_data(self) -> Dict[str, bool]:
         """Test validation of all valid data types"""
         results = {}
-        
+
         # Test game data
         game_data = self.test_generator.create_test_game_data()
         game_dict = game_data.__dict__
         results["game_data"] = self.validator.validate_game_data(game_dict)[0]
-        
+
         # Test turtle data
         turtle_data = self.test_generator.create_test_turtle_data()
         turtle_dict = turtle_data.__dict__
         results["turtle_data"] = self.validator.validate_turtle_data(turtle_dict)[0]
-        
+
         # Test preference data
         pref_data = self.test_generator.create_test_preference_data()
         pref_dict = pref_data.__dict__
         results["preference_data"] = self.validator.validate_preference_data(pref_dict)[0]
-        
+
         return results
-    
+
     def test_invalid_data(self) -> Dict[str, List[str]]:
         """Test validation of invalid data"""
         errors = {}
-        
+
         # Test invalid game data
         invalid_game = {"invalid": "data"}
         valid, error = self.validator.validate_game_data(invalid_game)
         if not valid:
             errors["game_data"] = [error]
-        
+
         # Test invalid turtle data
         invalid_turtle = {"turtle_id": "invalid_id", "genetics": "invalid"}
         valid, error = self.validator.validate_turtle_data(invalid_turtle)
         if not valid:
             errors["turtle_data"] = [error]
-        
+
         # Test invalid preference data
         invalid_pref = {"player_id": "invalid", "voting_history": "invalid"}
         valid, error = self.validator.validate_preference_data(invalid_pref)
         if not valid:
             errors["preference_data"] = [error]
-        
+
         return errors
-    
+
     def run_performance_test(self, iterations: int = 1000) -> Dict[str, float]:
         """Run performance tests"""
         # Generate test data
         game_data = self.test_generator.create_test_game_data()
         turtle_data = self.test_generator.create_test_turtle_data()
         pref_data = self.test_generator.create_test_preference_data()
-        
+
         results = {}
-        
+
         # Test game data validation performance
         start_time = time.time()
         for _ in range(iterations):
             self.validator.validate_game_data(game_data.__dict__)
         results["game_validation_time"] = time.time() - start_time
-        
+
         # Test turtle data validation performance
         start_time = time.time()
         for _ in range(iterations):
             self.validator.validate_turtle_data(turtle_data.__dict__)
         results["turtle_validation_time"] = time.time() - start_time
-        
+
         # Test preference data validation performance
         start_time = time.time()
         for _ in range(iterations):
             self.validator.validate_preference_data(pref_data.__dict__)
         results["preference_validation_time"] = time.time() - start_time
-        
+
         return results
 
 

@@ -2,6 +2,7 @@ import pygame
 from settings import *
 import ui.layouts.positions as layout
 
+
 class RosterManager:
     def __init__(self, game_state):
         self.game_state = game_state
@@ -31,20 +32,20 @@ class RosterManager:
             # Actually, looking at layout.py, the buttons are defined relative to the slot or absolute?
             # SLOT_BTN_TRAIN_RECT = pygame.Rect(580, 15, 100, 30) -> This looks like relative Y?
             # No, Y is 15. That's definitely relative to the slot.
-            
+
             # We need to calculate absolute rects for buttons
             slot_x = slot_rect.x
             slot_y = slot_rect.y
-            
-            train_rect = pygame.Rect(slot_x + layout.SLOT_BTN_TRAIN_RECT.x, slot_y + layout.SLOT_BTN_TRAIN_RECT.y, 
+
+            train_rect = pygame.Rect(slot_x + layout.SLOT_BTN_TRAIN_RECT.x, slot_y + layout.SLOT_BTN_TRAIN_RECT.y,
                                      layout.SLOT_BTN_TRAIN_RECT.width, layout.SLOT_BTN_TRAIN_RECT.height)
-            
-            retire_rect = pygame.Rect(slot_x + layout.SLOT_BTN_RETIRE_RECT.x, slot_y + layout.SLOT_BTN_RETIRE_RECT.y, 
+
+            retire_rect = pygame.Rect(slot_x + layout.SLOT_BTN_RETIRE_RECT.x, slot_y + layout.SLOT_BTN_RETIRE_RECT.y,
                                       layout.SLOT_BTN_RETIRE_RECT.width, layout.SLOT_BTN_RETIRE_RECT.height)
 
             # Check if this slot is the active racer
             is_active_racer = i == getattr(self.game_state, "active_racer_index", 0)
-            
+
             if not getattr(self.game_state, "show_retired_view", False):
                 # First check for action buttons (for any turtle with a train button)
                 if self.game_state.roster[i]:
@@ -54,7 +55,7 @@ class RosterManager:
                     elif retire_rect.collidepoint(pos):
                         self.retire_turtle(i)
                         return  # Don't continue to slot check
-                
+
                 # Then check for slot selection (profile view or select turtle)
                 if slot_rect.collidepoint(pos):
                     # Check for turtle card click (profile view access)
@@ -67,7 +68,7 @@ class RosterManager:
                     retired_index = i
                     if retired_index < len(self.game_state.retired_roster):
                         return "PROFILE"
-        
+
         return None
 
     def train_turtle(self, index):

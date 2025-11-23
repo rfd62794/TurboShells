@@ -20,7 +20,7 @@ SLOT_RECTS = [SLOT_1_RECT, SLOT_2_RECT, SLOT_3_RECT]
 SLOT_NAME_POS = (20, 10)
 SLOT_STATS_POS = (20, 35)
 SLOT_ENERGY_BG_RECT = pygame.Rect(20, 65, 400, 15)
-SLOT_ENERGY_FILL_POS = (22, 67) # Width is variable, Height is 11
+SLOT_ENERGY_FILL_POS = (22, 67)  # Width is variable, Height is 11
 SLOT_BTN_TRAIN_RECT = pygame.Rect(540, 15, 90, 32)  # Larger and more to the left
 SLOT_BTN_RETIRE_RECT = pygame.Rect(540, 52, 90, 32)  # Larger and more to the left
 
@@ -84,7 +84,7 @@ MENU_SETTINGS_RECT = pygame.Rect(200, 530, 400, 70)  # Added Settings at bottom
 
 # 4. Shop Layout - Redesigned for larger images and better layout
 SHOP_SLOT_1_RECT = pygame.Rect(50, 80, 220, 380)  # Larger and extended down
-SHOP_SLOT_2_RECT = pygame.Rect(290, 80, 220, 380)  # Larger and extended down  
+SHOP_SLOT_2_RECT = pygame.Rect(290, 80, 220, 380)  # Larger and extended down
 SHOP_SLOT_3_RECT = pygame.Rect(530, 80, 220, 380)  # Larger and extended down
 SHOP_SLOT_RECTS = [SHOP_SLOT_1_RECT, SHOP_SLOT_2_RECT, SHOP_SLOT_3_RECT]
 

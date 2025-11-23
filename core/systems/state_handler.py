@@ -10,7 +10,7 @@ import ui.layouts.positions as layout
 
 class StateHandler:
     """Manages game state transitions and click handling."""
-    
+
     def __init__(self, game):
         self.game = game
         self.state_transitions = {
@@ -23,14 +23,14 @@ class StateHandler:
             STATE_PROFILE: self._handle_profile_clicks,
             STATE_VOTING: self._handle_voting_clicks,
         }
-    
+
     def handle_click(self, pos):
         """Route click handling to appropriate state method."""
         handler = self.state_transitions.get(self.game.state)
         if handler:
             return handler(pos)
         return None
-    
+
     def _handle_menu_clicks(self, pos):
         """Handle clicks in main menu state."""
         # Check main menu button clicks
@@ -42,7 +42,7 @@ class StateHandler:
             (layout.MENU_VOTING_RECT, STATE_VOTING),  # VOTING
             (layout.MENU_SETTINGS_RECT, "SETTINGS"),  # SETTINGS - Special handling
         ]
-        
+
         for rect, new_state in menu_rects:
             if rect.collidepoint(pos):
                 if new_state == STATE_RACE:
@@ -55,7 +55,7 @@ class StateHandler:
                 else:
                     self.game.state = new_state
                 return
-    
+
     def _handle_roster_clicks(self, pos):
         """Handle clicks in roster state."""
         # Check for Menu button in header
@@ -65,7 +65,7 @@ class StateHandler:
             # Reset select racer mode when leaving
             self.game.select_racer_mode = False
             return
-        
+
         # Check if we're in select racer mode
         select_racer_mode = getattr(self.game, "select_racer_mode", False)
         if select_racer_mode:
@@ -79,7 +79,7 @@ class StateHandler:
             elif layout.BET_BTN_10_RECT.collidepoint(pos):
                 self.game.current_bet = 10
                 return
-            
+
             # Check for turtle slot clicks to select racer
             for i, slot_rect in enumerate(layout.SLOT_RECTS):
                 if slot_rect.collidepoint(pos):
@@ -93,7 +93,7 @@ class StateHandler:
                         # Reset select racer mode
                         self.game.select_racer_mode = False
                     return
-        
+
         # Normal roster handling
         action = self.game.roster_manager.handle_click(pos)
         if action == "GOTO_RACE":
@@ -113,30 +113,30 @@ class StateHandler:
             self.game.state = STATE_PROFILE
             # Set profile turtle index based on clicked turtle
             self._set_profile_turtle_index(pos)
-    
+
     def _handle_shop_clicks(self, pos):
         """Handle clicks in shop state."""
         action = self.game.shop_manager.handle_click(pos)
         if action == "GOTO_MENU":
             self.game.state = STATE_MENU
-    
+
     def _handle_breeding_clicks(self, pos):
         """Handle clicks in breeding state."""
         action = self.game.breeding_manager.handle_click(pos)
         if action == "GOTO_MENU":
             self.game.state = STATE_MENU
-    
+
     def _set_profile_turtle_index(self, pos):
         """Set the profile turtle index based on click position."""
         from ui.views.profile_view import get_all_turtles
-        
+
         all_turtles = get_all_turtles(self.game)
         if not all_turtles:
             return
-        
+
         # Check which turtle was clicked
         show_retired = getattr(self.game, "show_retired_view", False)
-        
+
         if not show_retired:
             # Active roster view
             for i, slot_rect in enumerate(layout.SLOT_RECTS):
@@ -155,12 +155,12 @@ class StateHandler:
                         if turtle == self.game.retired_roster[i]:
                             self.game.profile_turtle_index = j
                             return
-    
+
     def _handle_profile_clicks(self, pos):
         """Handle clicks in profile state."""
         from ui.views.profile_view import handle_profile_click
         result = handle_profile_click(self.game, pos, None, None, None)
-        
+
         if result == "back":
             self.game.state = STATE_ROSTER
         elif result == "navigate_prev":
@@ -177,11 +177,11 @@ class StateHandler:
             if all_turtles:
                 current_index = getattr(self.game, 'profile_turtle_index', 0)
                 self.game.profile_turtle_index = (current_index + 1) % len(all_turtles)
-    
+
     def _handle_race_clicks(self, pos):
         """Handle clicks during race."""
         self.game.race_manager.handle_click(pos)
-    
+
     def _handle_race_result_clicks(self, pos):
         """Handle clicks in race result state."""
         action = self.game.race_manager.handle_result_click(pos)
@@ -194,24 +194,24 @@ class StateHandler:
                 self.game.roster[2] = None
         elif action == "RERUN":
             self.game.state = STATE_RACE
-    
+
     def transition_to_menu(self):
         """Transition to main menu state."""
         self.game.state = STATE_MENU
-    
+
     def transition_to_roster(self):
         """Transition to roster state."""
         self.game.state = STATE_ROSTER
-    
+
     def transition_to_shop(self):
         """Transition to shop state."""
         self.game.state = STATE_SHOP
         self.game.shop_manager.refresh_stock()
-    
+
     def transition_to_breeding(self):
         """Transition to breeding state."""
         self.game.state = STATE_BREEDING
-    
+
     def transition_to_race(self):
         """Transition to race state if conditions are met."""
         active_racer = self.game.roster[getattr(self.game, "active_racer_index", 0)]
@@ -220,12 +220,12 @@ class StateHandler:
             self.game.state = STATE_RACE
             return True
         return False
-    
+
     def _handle_voting_clicks(self, pos):
         """Handle clicks in voting state."""
         from ui.voting_interface import handle_voting_click
         result = handle_voting_click(self.game, pos)
-        
+
         if result == "back_to_menu":
             self.game.state = STATE_MENU
         elif result == "vote_completed":
@@ -236,7 +236,7 @@ class StateHandler:
                 self.game.save_manager.auto_save()
         elif result == "back":
             self.game.state = STATE_MENU
-    
+
     def handle_mouse_wheel(self, button):
         """Handle mouse wheel events."""
         if self.game.state == STATE_VOTING:

@@ -3,6 +3,7 @@ from settings import *
 import pygame
 import ui.layouts.positions as layout
 
+
 class ShopManager:
     def __init__(self, game_state):
         self.game_state = game_state
@@ -14,7 +15,7 @@ class ShopManager:
         # Check Navigation - Header Back Button (like voting view)
         if hasattr(self.game_state, 'shop_back_rect') and self.game_state.shop_back_rect.collidepoint(pos):
             return "GOTO_MENU"
-        
+
         # Check Refresh Button (now at bottom)
         if layout.SHOP_BTN_REFRESH_RECT.collidepoint(pos):
             self.refresh_stock()
@@ -24,35 +25,35 @@ class ShopManager:
         for i, slot_rect in enumerate(layout.SHOP_SLOT_RECTS):
             # Calculate absolute button position
             # SHOP_BTN_BUY_RECT is relative to slot
-            buy_rect = pygame.Rect(slot_rect.x + layout.SHOP_BTN_BUY_RECT.x, 
+            buy_rect = pygame.Rect(slot_rect.x + layout.SHOP_BTN_BUY_RECT.x,
                                    slot_rect.y + layout.SHOP_BTN_BUY_RECT.y,
                                    layout.SHOP_BTN_BUY_RECT.width, layout.SHOP_BTN_BUY_RECT.height)
-            
+
             if buy_rect.collidepoint(pos):
                 self.buy_turtle(i)
-        
+
         return None
 
     def update(self):
         # Refill Shop if empty
         if not self.inventory:
             self.refresh_stock(free=True)
-        
+
         # Message Timer
         if self.message_timer > 0:
             self.message_timer -= 1
             if self.message_timer <= 0:
                 self.message = ""
-        
+
         # Sync with game state for rendering
         self.game_state.shop_inventory = self.inventory
         self.game_state.shop_message = self.message
 
     def refresh_stock(self, free=False):
         if free or self.game_state.money >= COST_REFRESH:
-            if not free: 
+            if not free:
                 self.game_state.money -= COST_REFRESH
-            
+
             self.inventory = [
                 generate_random_turtle(level=1, use_influenced_genetics=True),
                 generate_random_turtle(level=2, use_influenced_genetics=True),
@@ -83,7 +84,7 @@ class ShopManager:
                         self.game_state.money -= cost
                         self.message = f"Bought turtle for ${cost}!"
                         self.message_timer = 60
-                        
+
                         # Auto-save after purchase
                         self.game_state.auto_save("purchase")
                         return

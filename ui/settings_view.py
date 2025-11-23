@@ -44,11 +44,11 @@ class UIElement:
 class SettingsView:
     """
     Main settings view with tabbed navigation.
-    
+
     Provides a comprehensive interface for managing all game settings
     with organized tabs and intuitive controls.
     """
-    
+
     # UI Colors (can be themed)
     COLORS = {
         'background': (40, 40, 40),
@@ -67,7 +67,7 @@ class SettingsView:
         'checkbox': (80, 80, 80),
         'checkbox_checked': (100, 150, 200)
     }
-    
+
     # Fonts
     FONT_SIZES = {
         'title': 24,
@@ -76,77 +76,77 @@ class SettingsView:
         'value': 14,
         'tooltip': 12
     }
-    
+
     def __init__(self, screen_rect: pygame.Rect):
         """
         Initialize settings view.
-        
+
         Args:
             screen_rect: Screen rectangle for positioning
         """
         self.screen_rect = screen_rect
         self.logger = get_logger(__name__)
-        
+
         # Initialize fonts
         self.fonts = self._initialize_fonts()
-        
+
         # Current state
         self.active_tab: SettingsTab = SettingsTab.GRAPHICS
         self.visible: bool = False
         self.needs_redraw: bool = True
-        
+
         # UI elements
         self.tabs: Dict[SettingsTab, UIElement] = {}
         self.tab_content: Dict[SettingsTab, List[UIElement]] = {}
         self.buttons: List[UIElement] = []
-        
+
         # Layout dimensions - Responsive and centered
         panel_width = min(screen_rect.width * 0.7, 800)  # 70% of screen width, max 800px
         panel_height = min(screen_rect.height * 0.8, 600)  # 80% of screen height, max 600px
-        
+
         self.panel_rect = pygame.Rect(
             (screen_rect.width - panel_width) // 2,  # Centered X
             (screen_rect.height - panel_height) // 2,  # Centered Y
             panel_width,
             panel_height
         )
-        
+
         self.tab_bar_rect = pygame.Rect(
             self.panel_rect.x + 10,
             self.panel_rect.y + 10,
             self.panel_rect.width - 20,
             40
         )
-        
+
         self.content_rect = pygame.Rect(
             self.panel_rect.x + 10,
             self.tab_bar_rect.bottom + 10,
             self.panel_rect.width - 20,
             self.panel_rect.height - self.tab_bar_rect.height - 60
         )
-        
+
         # Initialize UI elements
         self._initialize_tabs()
         self._initialize_buttons()
         self._initialize_tab_content()
-        
+
         self.logger.info("Settings view initialized")
-    
+
     def update_layout(self, screen_rect: pygame.Rect) -> None:
         """Update layout to match new screen dimensions."""
         self.screen_rect = screen_rect
-        
+
         # Recalculate panel dimensions
         panel_width = min(screen_rect.width * 0.7, 800)  # 70% of screen width, max 800px
         panel_height = min(screen_rect.height * 0.8, 600)  # 80% of screen height, max 600px
-        
+
         self.panel_rect = pygame.Rect(
             (screen_rect.width - panel_width) // 2,  # Centered X
             (screen_rect.height - panel_height) // 2,  # Centered Y
             panel_width,
             panel_height
         )
-        
+
         # Update child rectangles
         self.tab_bar_rect = pygame.Rect(
             self.panel_rect.x + 10,
@@ -154,22 +154,22 @@ class SettingsView:
             self.panel_rect.width - 20,
             40
         )
-        
+
         self.content_rect = pygame.Rect(
             self.panel_rect.x + 10,
             self.tab_bar_rect.bottom + 10,
             self.panel_rect.width - 20,
             self.panel_rect.height - self.tab_bar_rect.height - 60
         )
-        
+
         # Reinitialize UI elements with new layout
         self._initialize_tabs()
         self._initialize_buttons()
         self._initialize_tab_content()
-        
+
         self.needs_redraw = True
         self.logger.info(f"Settings layout updated to {screen_rect.width}x{screen_rect.height}")
-    
+
     def _initialize_fonts(self) -> Dict[str, pygame.font.Font]:
         """Initialize fonts for the settings interface."""
         fonts = {}
@@ -182,13 +182,13 @@ class SettingsView:
             for name, size in self.FONT_SIZES.items():
                 fonts[name] = pygame.font.SysFont("Arial", size)
         return fonts
-    
+
     def _initialize_tabs(self) -> None:
         """Initialize tab navigation elements."""
         tab_width = 100
         tab_height = 35
         tab_spacing = 5
-        
+
         tab_configs = [
             (SettingsTab.GRAPHICS, "Graphics"),
             (SettingsTab.AUDIO, "Audio"),
@@ -200,13 +200,13 @@ class SettingsView:
             (SettingsTab.SAVES, "Saves"),
             (SettingsTab.PRIVACY, "Privacy")
         ]
-        
+
         for i, (tab, label) in enumerate(tab_configs):
             x = self.tab_bar_rect.x + i * (tab_width + tab_spacing)
             y = self.tab_bar_rect.y
-            
+
             rect = pygame.Rect(x, y, tab_width, tab_height)
-            
+
             self.tabs[tab] = UIElement(
                 rect=rect,
                 element_type="tab",
@@ -214,13 +214,13 @@ class SettingsView:
                 value=tab,
                 callback=lambda t=tab: self._switch_tab(t)
             )
-    
+
     def _initialize_buttons(self) -> None:
         """Initialize action buttons."""
         button_width = 80
         button_height = 30
         button_spacing = 10
-        
+
         # Apply button
         apply_rect = pygame.Rect(
             self.panel_rect.right - button_width * 2 - button_spacing * 2,
@@ -228,7 +228,7 @@ class SettingsView:
             button_width,
             button_height
         )
-        
+
         self.buttons.append(UIElement(
             rect=apply_rect,
             element_type="button",
@@ -236,7 +236,7 @@ class SettingsView:
             value="apply",
             callback=self._apply_settings
         ))
-        
+
         # Reset button
         reset_rect = pygame.Rect(
             self.panel_rect.right - button_width - button_spacing,
@@ -244,7 +244,7 @@ class SettingsView:
             button_width,
             button_height
         )
-        
+
         self.buttons.append(UIElement(
             rect=reset_rect,
             element_type="button",
@@ -252,7 +252,7 @@ class SettingsView:
             value="reset",
             callback=self._reset_settings
         ))
-        
+
         # Close button
         close_rect = pygame.Rect(
             self.panel_rect.right - button_width,
@@ -260,7 +260,7 @@ class SettingsView:
             button_width,
             25
         )
-        
+
         self.buttons.append(UIElement(
             rect=close_rect,
             element_type="button",
@@ -268,36 +268,36 @@ class SettingsView:
             value="close",
             callback=self._close_settings
         ))
-    
+
     def _initialize_tab_content(self) -> None:
         """Initialize content for each tab."""
         # Graphics tab content
         self._initialize_graphics_tab()
-        
+
         # Audio tab content
         self._initialize_audio_tab()
-        
+
         # Saves tab content
         self._initialize_saves_tab()
-        
+
         # Controls tab content
         self._initialize_controls_tab()
-        
+
         # Difficulty tab content
         self._initialize_difficulty_tab()
-        
+
         # Other tabs will be initialized as needed
         self.tab_content[SettingsTab.PROFILE] = []
         self.tab_content[SettingsTab.APPEARANCE] = []
         self.tab_content[SettingsTab.ACCESSIBILITY] = []
         self.tab_content[SettingsTab.PRIVACY] = []
-    
+
     def _initialize_saves_tab(self) -> None:
         """Initialize save management tab content."""
         content = []
         y_offset = self.content_rect.y + 20
         line_height = 40
-        
+
         # Save file list
         save_list_rect = pygame.Rect(
             self.content_rect.x + 20,
@@ -305,7 +305,7 @@ class SettingsView:
             300,
             200
         )
-        
+
         content.append(UIElement(
             rect=save_list_rect,
             element_type="list",
@@ -314,9 +314,9 @@ class SettingsView:
             callback=self._on_save_file_select,
             tooltip="Select a save file to manage"
         ))
-        
+
         y_offset += 220
-        
+
         # Backup button
         backup_rect = pygame.Rect(
             self.content_rect.x + 20,
@@ -324,7 +324,7 @@ class SettingsView:
             100,
             30
         )
-        
+
         content.append(UIElement(
             rect=backup_rect,
             element_type="button",
@@ -333,7 +333,7 @@ class SettingsView:
             callback=self._on_create_backup,
             tooltip="Create a backup of the selected save file"
         ))
-        
+
         # Export button
         export_rect = pygame.Rect(
             self.content_rect.x + 130,
@@ -341,7 +341,7 @@ class SettingsView:
             100,
             30
         )
-        
+
         content.append(UIElement(
             rect=export_rect,
             element_type="button",
@@ -350,9 +350,9 @@ class SettingsView:
             callback=self._on_export_save,
             tooltip="Export save file to external location"
         ))
-        
+
         y_offset += 40
-        
+
         # Import button
         import_rect = pygame.Rect(
             self.content_rect.x + 20,
@@ -360,7 +360,7 @@ class SettingsView:
             100,
             30
         )
-        
+
         content.append(UIElement(
             rect=import_rect,
             element_type="button",
@@ -369,7 +369,7 @@ class SettingsView:
             callback=self._on_import_save,
             tooltip="Import save file from external location"
         ))
-        
+
         # Delete button
         delete_rect = pygame.Rect(
             self.content_rect.x + 130,
@@ -377,7 +377,7 @@ class SettingsView:
             100,
             30
         )
-        
+
         content.append(UIElement(
             rect=delete_rect,
             element_type="button",
@@ -386,9 +386,9 @@ class SettingsView:
             callback=self._on_delete_save,
             tooltip="Delete selected save file"
         ))
-        
+
         y_offset += 40
-        
+
         # Auto-save interval slider
         autosave_rect = pygame.Rect(
             self.content_rect.x + 20,
@@ -396,7 +396,7 @@ class SettingsView:
             200,
             20
         )
-        
+
         config = config_manager.get_config()
         content.append(UIElement(
             rect=autosave_rect,
@@ -406,17 +406,17 @@ class SettingsView:
             callback=self._on_autosave_change,
             tooltip="Set automatic save interval"
         ))
-        
+
         self.tab_content[SettingsTab.SAVES] = content
-    
+
     def _initialize_controls_tab(self) -> None:
         """Initialize controls settings tab content."""
         content = []
         y_offset = self.content_rect.y + 20
         line_height = 40
-        
+
         config = config_manager.get_config()
-        
+
         # Mouse sensitivity slider
         mouse_sensitivity_rect = pygame.Rect(
             self.content_rect.x + 20,
@@ -424,7 +424,7 @@ class SettingsView:
             200,
             20
         )
-        
+
         content.append(UIElement(
             rect=mouse_sensitivity_rect,
             element_type="slider",
@@ -433,9 +433,9 @@ class SettingsView:
             callback=self._on_mouse_sensitivity_change,
             tooltip="Adjust mouse sensitivity for camera control"
         ))
-        
+
         y_offset += line_height
-        
+
         # Invert mouse Y checkbox
         invert_mouse_rect = pygame.Rect(
             self.content_rect.x + 20,
@@ -443,7 +443,7 @@ class SettingsView:
             20,
             20
         )
-        
+
         content.append(UIElement(
             rect=invert_mouse_rect,
             element_type="checkbox",
@@ -452,9 +452,9 @@ class SettingsView:
             callback=self._on_invert_mouse_y_change,
             tooltip="Invert vertical mouse movement"
         ))
-        
+
         y_offset += line_height
-        
+
         # Key bindings section
         key_bindings_label_rect = pygame.Rect(
             self.content_rect.x + 20,
@@ -462,7 +462,7 @@ class SettingsView:
             self.content_rect.width - 40,
             30
         )
-        
+
         content.append(UIElement(
             rect=key_bindings_label_rect,
             element_type="label",
@@ -471,9 +471,9 @@ class SettingsView:
             callback=None,
             tooltip="Configure keyboard controls"
         ))
-        
+
         y_offset += 40
-        
+
         # Sample key bindings (placeholder)
         key_bindings = [
             ("Move Forward", "W"),
@@ -485,11 +485,11 @@ class SettingsView:
             ("Interact", "E"),
             ("Menu", "ESC")
         ]
-        
+
         for i, (action, key) in enumerate(key_bindings):
             if i >= 8:  # Limit to 8 bindings
                 break
-                
+
             # Action label
             action_rect = pygame.Rect(
                 self.content_rect.x + 20,
@@ -497,7 +497,7 @@ class SettingsView:
                 150,
                 25
             )
-            
+
             content.append(UIElement(
                 rect=action_rect,
                 element_type="label",
@@ -506,7 +506,7 @@ class SettingsView:
                 callback=None,
                 tooltip=f"Current key: {key}"
             ))
-            
+
             # Key binding button
             key_rect = pygame.Rect(
                 self.content_rect.x + 180,
@@ -514,7 +514,7 @@ class SettingsView:
                 80,
                 25
             )
-            
+
             content.append(UIElement(
                 rect=key_rect,
                 element_type="button",
@@ -523,17 +523,17 @@ class SettingsView:
                 callback=self._on_key_binding_change,
                 tooltip=f"Click to change {action} key"
             ))
-        
+
         self.tab_content[SettingsTab.CONTROLS] = content
-    
+
     def _initialize_difficulty_tab(self) -> None:
         """Initialize difficulty settings tab content."""
         content = []
         y_offset = self.content_rect.y + 20
         line_height = 40
-        
+
         config = config_manager.get_config()
-        
+
         # Difficulty level dropdown
         difficulty_rect = pygame.Rect(
             self.content_rect.x + 20,
@@ -541,7 +541,7 @@ class SettingsView:
             200,
             25
         )
-        
+
         content.append(UIElement(
             rect=difficulty_rect,
             element_type="dropdown",
@@ -550,9 +550,9 @@ class SettingsView:
             callback=self._on_difficulty_change,
             tooltip="Select game difficulty level"
         ))
-        
+
         y_offset += line_height
-        
+
         # Auto-save checkbox
         autosave_rect = pygame.Rect(
             self.content_rect.x + 20,
@@ -560,7 +560,7 @@ class SettingsView:
             20,
             20
         )
-        
+
         content.append(UIElement(
             rect=autosave_rect,
             element_type="checkbox",
@@ -569,9 +569,9 @@ class SettingsView:
             callback=self._on_autosave_toggle,
             tooltip="Automatically save game progress"
         ))
-        
+
         y_offset += line_height
-        
+
         # Show tutorials checkbox
         tutorials_rect = pygame.Rect(
             self.content_rect.x + 20,
@@ -579,7 +579,7 @@ class SettingsView:
             20,
             20
         )
-        
+
         content.append(UIElement(
             rect=tutorials_rect,
             element_type="checkbox",
@@ -588,9 +588,9 @@ class SettingsView:
             callback=self._on_tutorials_toggle,
             tooltip="Display tutorial hints and tips"
         ))
-        
+
         y_offset += line_height
-        
+
         # Confirm actions checkbox
         confirm_rect = pygame.Rect(
             self.content_rect.x + 20,
@@ -598,7 +598,7 @@ class SettingsView:
             20,
             20
         )
-        
+
         content.append(UIElement(
             rect=confirm_rect,
             element_type="checkbox",
@@ -607,9 +607,9 @@ class SettingsView:
             callback=self._on_confirm_actions_toggle,
             tooltip="Require confirmation for important actions"
         ))
-        
+
         y_offset += line_height
-        
+
         # Accessibility options section
         accessibility_label_rect = pygame.Rect(
             self.content_rect.x + 20,
@@ -617,7 +617,7 @@ class SettingsView:
             self.content_rect.width - 40,
             30
         )
-        
+
         content.append(UIElement(
             rect=accessibility_label_rect,
             element_type="label",
@@ -626,9 +626,9 @@ class SettingsView:
             callback=None,
             tooltip="Configure accessibility features"
         ))
-        
+
         y_offset += 40
-        
+
         # Colorblind mode dropdown
         colorblind_rect = pygame.Rect(
             self.content_rect.x + 20,
@@ -636,7 +636,7 @@ class SettingsView:
             200,
             25
         )
-        
+
         content.append(UIElement(
             rect=colorblind_rect,
             element_type="dropdown",
@@ -645,9 +645,9 @@ class SettingsView:
             callback=self._on_colorblind_mode_change,
             tooltip="Select colorblind assistance mode"
         ))
-        
+
         y_offset += line_height
-        
+
         # High contrast checkbox
         high_contrast_rect = pygame.Rect(
             self.content_rect.x + 20,
@@ -655,7 +655,7 @@ class SettingsView:
             20,
             20
         )
-        
+
         content.append(UIElement(
             rect=high_contrast_rect,
             element_type="checkbox",
@@ -664,9 +664,9 @@ class SettingsView:
             callback=self._on_high_contrast_toggle,
             tooltip="Increase visual contrast for better visibility"
         ))
-        
+
         y_offset += line_height
-        
+
         # Large text checkbox
         large_text_rect = pygame.Rect(
             self.content_rect.x + 20,
@@ -674,7 +674,7 @@ class SettingsView:
             20,
             20
         )
-        
+
         content.append(UIElement(
             rect=large_text_rect,
             element_type="checkbox",
@@ -683,9 +683,9 @@ class SettingsView:
             callback=self._on_large_text_toggle,
             tooltip="Use larger text for better readability"
         ))
-        
+
         y_offset += line_height
-        
+
         # Reduced motion checkbox
         reduced_motion_rect = pygame.Rect(
             self.content_rect.x + 20,
@@ -693,7 +693,7 @@ class SettingsView:
             20,
             20
         )
-        
+
         content.append(UIElement(
             rect=reduced_motion_rect,
             element_type="checkbox",
@@ -702,17 +702,17 @@ class SettingsView:
             callback=self._on_reduced_motion_toggle,
             tooltip="Reduce animations and motion effects"
         ))
-        
+
         self.tab_content[SettingsTab.DIFFICULTY] = content
-    
+
     def _initialize_graphics_tab(self) -> None:
         """Initialize graphics settings tab content."""
         content = []
         y_offset = self.content_rect.y + 20
         line_height = 35
-        
+
         config = config_manager.get_config()
-        
+
         # Resolution dropdown
         resolution_rect = pygame.Rect(
             self.content_rect.x + 20,
@@ -720,7 +720,7 @@ class SettingsView:
             200,
             25
         )
-        
+
         current_resolution = f"{config.graphics.resolution_width}x{config.graphics.resolution_height}"
         content.append(UIElement(
             rect=resolution_rect,
@@ -730,9 +730,9 @@ class SettingsView:
             callback=self._on_resolution_change,
             tooltip="Select screen resolution"
         ))
-        
+
         y_offset += line_height
-        
+
         # Fullscreen checkbox
         fullscreen_rect = pygame.Rect(
             self.content_rect.x + 20,
@@ -740,7 +740,7 @@ class SettingsView:
             20,
             20
         )
-        
+
         content.append(UIElement(
             rect=fullscreen_rect,
             element_type="checkbox",
@@ -749,9 +749,9 @@ class SettingsView:
             callback=self._on_fullscreen_toggle,
             tooltip="Toggle fullscreen mode"
         ))
-        
+
         y_offset += line_height
-        
+
         # Quality dropdown
         quality_rect = pygame.Rect(
             self.content_rect.x + 20,
@@ -759,7 +759,7 @@ class SettingsView:
             150,
             25
         )
-        
+
         content.append(UIElement(
             rect=quality_rect,
             element_type="dropdown",
@@ -768,9 +768,9 @@ class SettingsView:
             callback=self._on_quality_change,
             tooltip="Select graphics quality"
         ))
-        
+
         y_offset += line_height
-        
+
         # VSync checkbox
         vsync_rect = pygame.Rect(
             self.content_rect.x + 20,
@@ -778,7 +778,7 @@ class SettingsView:
             20,
             20
         )
-        
+
         content.append(UIElement(
             rect=vsync_rect,
             element_type="checkbox",
@@ -787,17 +787,17 @@ class SettingsView:
             callback=self._on_vsync_toggle,
             tooltip="Enable vertical sync"
         ))
-        
+
         self.tab_content[SettingsTab.GRAPHICS] = content
-    
+
     def _initialize_audio_tab(self) -> None:
         """Initialize audio settings tab content."""
         content = []
         y_offset = self.content_rect.y + 20
         line_height = 40
-        
+
         config = config_manager.get_config()
-        
+
         # Master volume slider
         master_volume_rect = pygame.Rect(
             self.content_rect.x + 20,
@@ -805,7 +805,7 @@ class SettingsView:
             200,
             20
         )
-        
+
         content.append(UIElement(
             rect=master_volume_rect,
             element_type="slider",
@@ -814,9 +814,9 @@ class SettingsView:
             callback=self._on_master_volume_change,
             tooltip="Adjust master volume"
         ))
-        
+
         y_offset += line_height
-        
+
         # Music volume slider
         music_volume_rect = pygame.Rect(
             self.content_rect.x + 20,
@@ -824,7 +824,7 @@ class SettingsView:
             200,
             20
         )
-        
+
         content.append(UIElement(
             rect=music_volume_rect,
             element_type="slider",
@@ -833,9 +833,9 @@ class SettingsView:
             callback=self._on_music_volume_change,
             tooltip="Adjust music volume"
         ))
-        
+
         y_offset += line_height
-        
+
         # SFX volume slider
         sfx_volume_rect = pygame.Rect(
             self.content_rect.x + 20,
@@ -843,7 +843,7 @@ class SettingsView:
             200,
             20
         )
-        
+
         content.append(UIElement(
             rect=sfx_volume_rect,
             element_type="slider",
@@ -852,9 +852,9 @@ class SettingsView:
             callback=self._on_sfx_volume_change,
             tooltip="Adjust sound effects volume"
         ))
-        
+
         y_offset += line_height
-        
+
         # Audio enabled checkbox
         audio_enabled_rect = pygame.Rect(
             self.content_rect.x + 20,
@@ -862,7 +862,7 @@ class SettingsView:
             20,
             20
         )
-        
+
         content.append(UIElement(
             rect=audio_enabled_rect,
             element_type="checkbox",
@@ -871,62 +871,62 @@ class SettingsView:
             callback=self._on_audio_enabled_toggle,
             tooltip="Enable/disable all audio"
         ))
-        
+
         self.tab_content[SettingsTab.AUDIO] = content
-    
+
     def _switch_tab(self, tab: SettingsTab) -> None:
         """Switch to a different settings tab."""
         self.active_tab = tab
         self.needs_redraw = True
         self.logger.debug(f"Switched to {tab.value} tab")
-    
+
     def show(self) -> None:
         """Show the settings view."""
         self.visible = True
         self.needs_redraw = True
         self.logger.info("Settings view shown")
-    
+
     def hide(self) -> None:
         """Hide the settings view."""
         self.visible = False
         self.logger.info("Settings view hidden")
-    
+
     def toggle(self) -> None:
         """Toggle settings view visibility."""
         if self.visible:
             self.hide()
         else:
             self.show()
-    
+
     def handle_event(self, event: pygame.event.Event) -> bool:
         """
         Handle pygame events for the settings view.
-        
+
         Args:
             event: Pygame event
-            
+
         Returns:
             True if event was handled, False otherwise
         """
         if not self.visible:
             return False
-        
+
         # Handle tab clicks
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = pygame.mouse.get_pos()
-            
+
             # Check tab clicks
             for tab, element in self.tabs.items():
                 if element.rect.collidepoint(mouse_pos):
                     element.callback()
                     return True
-            
+
             # Check button clicks
             for button in self.buttons:
                 if button.rect.collidepoint(mouse_pos):
                     button.callback()
                     return True
-            
+
             # Check content element clicks
             content_elements = self.tab_content.get(self.active_tab, [])
             for element in content_elements:
@@ -934,36 +934,36 @@ class SettingsView:
                     if element.callback:
                         element.callback()
                     return True
-        
+
         return False
-    
+
     def update(self, dt: float) -> None:
         """
         Update the settings view.
-        
+
         Args:
             dt: Time delta since last update
         """
         if not self.visible:
             return
-        
+
         # Update animations, tooltips, etc.
         pass
-    
+
     def draw(self, screen: pygame.Surface) -> None:
         """
         Draw the settings view.
-        
+
         Args:
             screen: Surface to draw on
         """
         if not self.visible:
             return
-        
+
         # Draw main panel
         pygame.draw.rect(screen, self.COLORS['panel'], self.panel_rect)
         pygame.draw.rect(screen, self.COLORS['border'], self.panel_rect, 2)
-        
+
         # Draw title
         title_text = self.fonts['title'].render("Settings", True, self.COLORS['text'])
         title_rect = title_text.get_rect(
@@ -971,16 +971,16 @@ class SettingsView:
             y=self.panel_rect.y + 5
         )
         screen.blit(title_text, title_rect)
-        
+
         # Draw tab bar
         self._draw_tabs(screen)
-        
+
         # Draw tab content
         self._draw_tab_content(screen)
-        
+
         # Draw buttons
         self._draw_buttons(screen)
-    
+
     def _draw_tabs(self, screen: pygame.Surface) -> None:
         """Draw tab navigation."""
         for tab, element in self.tabs.items():
@@ -989,24 +989,24 @@ class SettingsView:
                 color = self.COLORS['tab_active']
             else:
                 color = self.COLORS['tab']
-            
+
             # Draw tab background
             pygame.draw.rect(screen, color, element.rect)
             pygame.draw.rect(screen, self.COLORS['border'], element.rect, 1)
-            
+
             # Draw tab label
             label_color = self.COLORS['text'] if tab == self.active_tab else self.COLORS['text']
             label_text = self.fonts['tab'].render(element.label, True, label_color)
             label_rect = label_text.get_rect(center=element.rect.center)
             screen.blit(label_text, label_rect)
-    
+
     def _draw_tab_content(self, screen: pygame.Surface) -> None:
         """Draw content for the active tab."""
         content_elements = self.tab_content.get(self.active_tab, [])
-        
+
         for element in content_elements:
             self._draw_ui_element(screen, element)
-    
+
     def _draw_ui_element(self, screen: pygame.Surface, element: UIElement) -> None:
         """Draw a single UI element."""
         if element.element_type == "dropdown":
@@ -1021,13 +1021,13 @@ class SettingsView:
             self._draw_list(screen, element)
         elif element.element_type == "label":
             self._draw_label(screen, element)
-    
+
     def _draw_dropdown(self, screen: pygame.Surface, element: UIElement) -> None:
         """Draw a dropdown element."""
         # Draw dropdown background
         pygame.draw.rect(screen, self.COLORS['button'], element.rect)
         pygame.draw.rect(screen, self.COLORS['border'], element.rect, 1)
-        
+
         # Draw label
         label_text = self.fonts['label'].render(element.label, True, self.COLORS['text'])
         label_rect = label_text.get_rect(
@@ -1035,7 +1035,7 @@ class SettingsView:
             centery=element.rect.centery
         )
         screen.blit(label_text, label_rect)
-        
+
         # Draw value
         value_text = self.fonts['value'].render(str(element.value), True, self.COLORS['text'])
         value_rect = value_text.get_rect(
@@ -1043,7 +1043,7 @@ class SettingsView:
             centery=element.rect.centery
         )
         screen.blit(value_text, value_rect)
-        
+
         # Draw dropdown arrow
         arrow_points = [
             (element.rect.right - 15, element.rect.centery - 5),
@@ -1051,14 +1051,14 @@ class SettingsView:
             (element.rect.right - 10, element.rect.centery + 5)
         ]
         pygame.draw.polygon(screen, self.COLORS['text'], arrow_points)
-    
+
     def _draw_checkbox(self, screen: pygame.Surface, element: UIElement) -> None:
         """Draw a checkbox element."""
         # Draw checkbox
         color = self.COLORS['checkbox_checked'] if element.value else self.COLORS['checkbox']
         pygame.draw.rect(screen, color, element.rect)
         pygame.draw.rect(screen, self.COLORS['border'], element.rect, 2)
-        
+
         # Draw checkmark if checked
         if element.value:
             check_points = [
@@ -1067,7 +1067,7 @@ class SettingsView:
                 (element.rect.right - 3, element.rect.top + 3)
             ]
             pygame.draw.lines(screen, self.COLORS['text'], False, check_points, 2)
-        
+
         # Draw label
         label_text = self.fonts['label'].render(element.label, True, self.COLORS['text'])
         label_rect = label_text.get_rect(
@@ -1075,7 +1075,7 @@ class SettingsView:
             centery=element.rect.centery
         )
         screen.blit(label_text, label_rect)
-    
+
     def _draw_slider(self, screen: pygame.Surface, element: UIElement) -> None:
         """Draw a slider element."""
         # Draw label
@@ -1085,17 +1085,17 @@ class SettingsView:
             top=element.rect.top - 20
         )
         screen.blit(label_text, label_rect)
-        
+
         # Draw track
         track_rect = pygame.Rect(element.rect.x, element.rect.centery - 2, element.rect.width, 4)
         pygame.draw.rect(screen, self.COLORS['slider_track'], track_rect)
-        
+
         # Draw handle
         handle_x = element.rect.x + int(element.value * element.rect.width)
         handle_rect = pygame.Rect(handle_x - 8, element.rect.centery - 8, 16, 16)
         pygame.draw.rect(screen, self.COLORS['slider_handle'], handle_rect)
         pygame.draw.rect(screen, self.COLORS['border'], handle_rect, 1)
-        
+
         # Draw value
         value_text = self.fonts['value'].render(f"{int(element.value * 100)}%", True, self.COLORS['text'])
         value_rect = value_text.get_rect(
@@ -1103,7 +1103,7 @@ class SettingsView:
             centery=element.rect.centery
         )
         screen.blit(value_text, value_rect)
-    
+
     def _draw_button(self, screen: pygame.Surface, element: UIElement) -> None:
         """Draw a button element."""
         # Determine button color based on hover state
@@ -1112,22 +1112,22 @@ class SettingsView:
             color = self.COLORS['button_hover']
         else:
             color = self.COLORS['button']
-        
+
         # Draw button background
         pygame.draw.rect(screen, color, element.rect)
         pygame.draw.rect(screen, self.COLORS['border'], element.rect, 1)
-        
+
         # Draw button label
         label_text = self.fonts['label'].render(element.label, True, self.COLORS['text'])
         label_rect = label_text.get_rect(center=element.rect.center)
         screen.blit(label_text, label_rect)
-    
+
     def _draw_list(self, screen: pygame.Surface, element: UIElement) -> None:
         """Draw a list element."""
         # Draw list background
         pygame.draw.rect(screen, self.COLORS['button'], element.rect)
         pygame.draw.rect(screen, self.COLORS['border'], element.rect, 1)
-        
+
         # Draw label
         label_text = self.fonts['label'].render(element.label, True, self.COLORS['text'])
         label_rect = label_text.get_rect(
@@ -1135,7 +1135,7 @@ class SettingsView:
             top=element.rect.top - 20
         )
         screen.blit(label_text, label_rect)
-        
+
         # Draw sample save files (placeholder)
         sample_saves = ["Save 1 - 2025-11-23", "Save 2 - 2025-11-22", "Save 3 - 2025-11-21"]
         for i, save_name in enumerate(sample_saves[:5]):  # Show max 5 saves
@@ -1143,19 +1143,19 @@ class SettingsView:
             if item_y + 20 < element.rect.bottom:
                 save_text = self.fonts['value'].render(save_name, True, self.COLORS['text'])
                 screen.blit(save_text, (element.rect.x + 5, item_y))
-    
+
     def _draw_label(self, screen: pygame.Surface, element: UIElement) -> None:
         """Draw a label element."""
         # Draw label text
         label_text = self.fonts['label'].render(element.label, True, self.COLORS['text'])
-        
+
         if element.value:  # If there's a value, draw it next to the label
             value_text = self.fonts['value'].render(str(element.value), True, self.COLORS['text'])
-            
+
             # Draw label
             label_rect = label_text.get_rect(left=element.rect.left, centery=element.rect.centery)
             screen.blit(label_text, label_rect)
-            
+
             # Draw value
             value_rect = value_text.get_rect(
                 left=label_rect.right + 10,
@@ -1166,183 +1166,183 @@ class SettingsView:
             # Draw centered label
             label_rect = label_text.get_rect(center=element.rect.center)
             screen.blit(label_text, label_rect)
-    
+
     def _draw_buttons(self, screen: pygame.Surface) -> None:
         """Draw all action buttons."""
         for button in self.buttons:
             self._draw_button(screen, button)
-    
+
     # Callback methods for UI elements
     def _on_resolution_change(self) -> None:
         """Handle resolution change."""
         self.logger.debug("Resolution change requested")
         # Implementation would show resolution selection dialog
-    
+
     def _on_fullscreen_toggle(self) -> None:
         """Handle fullscreen toggle."""
         config = config_manager.get_config()
         config.graphics.fullscreen = not config.graphics.fullscreen
         self.logger.info(f"Fullscreen toggled to {config.graphics.fullscreen}")
-    
+
     def _on_quality_change(self) -> None:
         """Handle quality change."""
         self.logger.debug("Quality change requested")
         # Implementation would show quality selection dialog
-    
+
     def _on_vsync_toggle(self) -> None:
         """Handle VSync toggle."""
         config = config_manager.get_config()
         config.graphics.vsync = not config.graphics.vsync
         self.logger.info(f"VSync toggled to {config.graphics.vsync}")
-    
+
     def _on_master_volume_change(self) -> None:
         """Handle master volume change."""
         self.logger.debug("Master volume change requested")
         # Implementation would handle slider interaction
-    
+
     def _on_music_volume_change(self) -> None:
         """Handle music volume change."""
         self.logger.debug("Music volume change requested")
         # Implementation would handle slider interaction
-    
+
     def _on_sfx_volume_change(self) -> None:
         """Handle SFX volume change."""
         self.logger.debug("SFX volume change requested")
         # Implementation would handle slider interaction
-    
+
     def _on_audio_enabled_toggle(self) -> None:
         """Handle audio enabled toggle."""
         config = config_manager.get_config()
         config.audio.enabled = not config.audio.enabled
         self.logger.info(f"Audio enabled toggled to {config.audio.enabled}")
-    
+
     def _apply_settings(self) -> None:
         """Apply all settings changes."""
         # Save configuration
         config_manager.save_config()
-        
+
         # Apply graphics settings
         graphics_manager.initialize_display()
-        
+
         # Apply audio settings
         audio_manager.apply_volume_settings()
-        
+
         self.logger.info("Settings applied")
         self.hide()
-    
+
     def _reset_settings(self) -> None:
         """Reset all settings to defaults."""
         config_manager.reset_to_defaults()
         graphics_manager.reset_to_defaults()
         audio_manager.reset_to_defaults()
-        
+
         # Reinitialize tab content with new defaults
         self._initialize_tab_content()
-        
+
         self.logger.info("Settings reset to defaults")
         self.needs_redraw = True
-    
+
     def _close_settings(self) -> None:
         """Close settings without applying changes."""
         self.hide()
-    
+
     # Save management callbacks
     def _on_save_file_select(self) -> None:
         """Handle save file selection."""
         self.logger.debug("Save file selection requested")
         # Implementation would show file selection dialog
-    
+
     def _on_create_backup(self) -> None:
         """Handle backup creation."""
         from core.save_protection import SaveProtectionManager
         save_manager = SaveProtectionManager()
-        
+
         # Create backup of current save
         success = save_manager.create_backup("current_save.json", "manual")
         if success:
             self.logger.info("Backup created successfully")
         else:
             self.logger.error("Failed to create backup")
-    
+
     def _on_export_save(self) -> None:
         """Handle save export."""
         self.logger.debug("Save export requested")
         # Implementation would show file dialog for export location
-    
+
     def _on_import_save(self) -> None:
         """Handle save import."""
         self.logger.debug("Save import requested")
         # Implementation would show file dialog for import selection
-    
+
     def _on_delete_save(self) -> None:
         """Handle save deletion."""
         self.logger.debug("Save deletion requested")
         # Implementation would show confirmation dialog
-    
+
     def _on_autosave_change(self) -> None:
         """Handle auto-save interval change."""
         self.logger.debug("Auto-save interval change requested")
         # Implementation would handle slider interaction
-    
+
     # Controls callbacks
     def _on_mouse_sensitivity_change(self) -> None:
         """Handle mouse sensitivity change."""
         self.logger.debug("Mouse sensitivity change requested")
         # Implementation would handle slider interaction
-    
+
     def _on_invert_mouse_y_change(self) -> None:
         """Handle invert mouse Y toggle."""
         config = config_manager.get_config()
         config.controls.invert_mouse_y = not config.controls.invert_mouse_y
         self.logger.info(f"Invert mouse Y toggled to {config.controls.invert_mouse_y}")
-    
+
     def _on_key_binding_change(self) -> None:
         """Handle key binding change."""
         self.logger.debug("Key binding change requested")
         # Implementation would show key capture dialog
-    
+
     # Difficulty callbacks
     def _on_difficulty_change(self) -> None:
         """Handle difficulty level change."""
         self.logger.debug("Difficulty level change requested")
         # Implementation would show difficulty selection dialog
-    
+
     def _on_autosave_toggle(self) -> None:
         """Handle auto-save toggle."""
         config = config_manager.get_config()
         config.difficulty.auto_save = not config.difficulty.auto_save
         self.logger.info(f"Auto-save toggled to {config.difficulty.auto_save}")
-    
+
     def _on_tutorials_toggle(self) -> None:
         """Handle tutorials toggle."""
         config = config_manager.get_config()
         config.difficulty.show_tutorials = not config.difficulty.show_tutorials
         self.logger.info(f"Show tutorials toggled to {config.difficulty.show_tutorials}")
-    
+
     def _on_confirm_actions_toggle(self) -> None:
         """Handle confirm actions toggle."""
         config = config_manager.get_config()
         config.difficulty.confirm_actions = not config.difficulty.confirm_actions
         self.logger.info(f"Confirm actions toggled to {config.difficulty.confirm_actions}")
-    
+
     # Accessibility callbacks
     def _on_colorblind_mode_change(self) -> None:
         """Handle colorblind mode change."""
         self.logger.debug("Colorblind mode change requested")
         # Implementation would show colorblind mode selection dialog
-    
+
     def _on_high_contrast_toggle(self) -> None:
         """Handle high contrast toggle."""
         config = config_manager.get_config()
         config.accessibility.high_contrast = not config.accessibility.high_contrast
         self.logger.info(f"High contrast toggled to {config.accessibility.high_contrast}")
-    
+
     def _on_large_text_toggle(self) -> None:
         """Handle large text toggle."""
         config = config_manager.get_config()
         config.accessibility.large_text = not config.accessibility.large_text
         self.logger.info(f"Large text toggled to {config.accessibility.large_text}")
-    
+
     def _on_reduced_motion_toggle(self) -> None:
         """Handle reduced motion toggle."""
         config = config_manager.get_config()

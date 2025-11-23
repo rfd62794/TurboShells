@@ -9,6 +9,7 @@ from ui.breeding_view import draw_breeding as draw_breeding_view
 from ui.views.profile_view import draw_profile as draw_profile_view
 from ui.voting_interface import draw_voting as draw_voting_view
 
+
 class Renderer:
     def __init__(self, screen, font):
         self.screen = screen
@@ -42,17 +43,18 @@ class Renderer:
     def draw_turtle_sprite(self, turtle, y_pos):
         # Convert Logical Distance (1500) to Screen Pixels (700)
         screen_x = (turtle.race_distance / TRACK_LENGTH_LOGIC) * TRACK_LENGTH_PIXELS
-        
+
         # Draw Body
         color = GREEN
-        if turtle.is_resting: color = BLUE # Visual feedback for resting
-        
+        if turtle.is_resting:
+            color = BLUE  # Visual feedback for resting
+
         pygame.draw.rect(self.screen, color, (screen_x, y_pos, 40, 30))
-        
+
         # Draw Energy Bar above head
         bar_width = 40
         pct = turtle.current_energy / turtle.stats['max_energy']
         fill_width = int(pct * bar_width)
-        
+
         pygame.draw.rect(self.screen, RED, (screen_x, y_pos - 10, bar_width, 5))
         pygame.draw.rect(self.screen, color, (screen_x, y_pos - 10, fill_width, 5))

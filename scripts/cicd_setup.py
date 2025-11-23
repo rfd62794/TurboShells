@@ -11,14 +11,15 @@ import json
 from pathlib import Path
 from typing import Dict, List, Any
 
+
 class CICDSetup:
     """CI/CD infrastructure setup"""
-    
+
     def __init__(self, project_root: str = None):
         self.project_root = Path(project_root) if project_root else Path.cwd()
         self.scripts_dir = self.project_root / "scripts"
         self.logs_dir = self.project_root / "logs"
-        
+
     def create_directories(self):
         """Create necessary directories"""
         directories = [
@@ -27,11 +28,11 @@ class CICDSetup:
             self.project_root / "tests" / "reports",
             self.project_root / "docs" / "reports"
         ]
-        
+
         for directory in directories:
             directory.mkdir(parents=True, exist_ok=True)
             print(f"[PASS] Created directory: {directory}")
-    
+
     def create_requirements_file(self):
         """Create requirements.txt for development dependencies"""
         requirements = """# TurboShells Development Requirements
@@ -57,16 +58,16 @@ memory-profiler>=0.60.0
 wheel>=0.37.0
 setuptools>=60.0.0
 """
-        
+
         requirements_file = self.project_root / "requirements-dev.txt"
-        
+
         try:
             with open(requirements_file, 'w') as f:
                 f.write(requirements)
             print(f"[PASS] Created requirements file: {requirements_file}")
         except Exception as e:
             print(f"[FAIL] Could not create requirements file: {e}")
-    
+
     def create_makefile(self):
         """Create Makefile for common development tasks"""
         makefile_content = """# TurboShells Development Makefile
@@ -135,21 +136,21 @@ install:
 	pip install -r requirements-dev.txt
 	@echo "[PASS] Development dependencies installed"
 """
-        
+
         makefile_path = self.project_root / "Makefile"
-        
+
         try:
             with open(makefile_path, 'w') as f:
                 f.write(makefile_content)
             print(f"[PASS] Created Makefile: {makefile_path}")
         except Exception as e:
             print(f"[FAIL] Could not create Makefile: {e}")
-    
+
     def create_vscode_tasks(self):
         """Create VS Code tasks for development"""
         vscode_dir = self.project_root / ".vscode"
         vscode_dir.mkdir(exist_ok=True)
-        
+
         tasks_json = {
             "version": "2.0.0",
             "tasks": [
@@ -214,21 +215,21 @@ install:
                 }
             ]
         }
-        
+
         tasks_file = vscode_dir / "tasks.json"
-        
+
         try:
             with open(tasks_file, 'w') as f:
                 json.dump(tasks_json, f, indent=2)
             print(f"[PASS] Created VS Code tasks: {tasks_file}")
         except Exception as e:
             print(f"[FAIL] Could not create VS Code tasks: {e}")
-    
+
     def create_launch_json(self):
         """Create VS Code launch configuration"""
         vscode_dir = self.project_root / ".vscode"
         vscode_dir.mkdir(exist_ok=True)
-        
+
         launch_json = {
             "version": "0.2.0",
             "configurations": [
@@ -257,21 +258,21 @@ install:
                 }
             ]
         }
-        
+
         launch_file = vscode_dir / "launch.json"
-        
+
         try:
             with open(launch_file, 'w') as f:
                 json.dump(launch_json, f, indent=2)
             print(f"[PASS] Created VS Code launch config: {launch_file}")
         except Exception as e:
             print(f"[FAIL] Could not create VS Code launch config: {e}")
-    
+
     def create_settings_json(self):
         """Create VS Code settings"""
         vscode_dir = self.project_root / ".vscode"
         vscode_dir.mkdir(exist_ok=True)
-        
+
         settings_json = {
             "python.defaultInterpreterPath": "./venv/bin/python",
             "python.linting.enabled": True,
@@ -296,16 +297,16 @@ install:
                 "**/logs/**": True
             }
         }
-        
+
         settings_file = vscode_dir / "settings.json"
-        
+
         try:
             with open(settings_file, 'w') as f:
                 json.dump(settings_json, f, indent=2)
             print(f"[PASS] Created VS Code settings: {settings_file}")
         except Exception as e:
             print(f"[FAIL] Could not create VS Code settings: {e}")
-    
+
     def create_development_readme(self):
         """Create development README"""
         readme_content = """# TurboShells Development Guide
@@ -507,43 +508,43 @@ TurboShells/
 
 Happy developing! 🎮
 """
-        
+
         readme_file = self.project_root / "DEVELOPMENT.md"
-        
+
         try:
             with open(readme_file, 'w') as f:
                 f.write(readme_content)
             print(f"[PASS] Created development README: {readme_file}")
         except Exception as e:
             print(f"[FAIL] Could not create development README: {e}")
-    
+
     def setup_complete_infrastructure(self):
         """Set up complete CI/CD infrastructure"""
         print("[START] Setting up TurboShells CI/CD Infrastructure")
         print("=" * 50)
-        
+
         # Create directories
         print("\n📁 Creating directories...")
         self.create_directories()
-        
+
         # Create requirements file
         print("\n📦 Creating requirements file...")
         self.create_requirements_file()
-        
+
         # Create Makefile
         print("\n[FIX] Creating Makefile...")
         self.create_makefile()
-        
+
         # Create VS Code configuration
         print("\n💻 Creating VS Code configuration...")
         self.create_vscode_tasks()
         self.create_launch_json()
         self.create_settings_json()
-        
+
         # Create development documentation
         print("\n📚 Creating development documentation...")
         self.create_development_readme()
-        
+
         print("\n[PASS] CI/CD infrastructure setup complete!")
         print("\nNext steps:")
         print("1. Install dependencies: pip install -r requirements-dev.txt")
@@ -552,20 +553,22 @@ Happy developing! 🎮
         print("4. Run tests: python tests/comprehensive_test_runner.py --quick")
         print("5. Check documentation: DEVELOPMENT.md")
 
+
 def main():
     """Main function"""
     import argparse
-    
+
     parser = argparse.ArgumentParser(description="CI/CD infrastructure setup for TurboShells")
     parser.add_argument("--project-root", type=str, help="Project root directory")
-    
+
     args = parser.parse_args()
-    
+
     # Create setup instance
     setup = CICDSetup(args.project_root)
-    
+
     # Run setup
     setup.setup_complete_infrastructure()
+
 
 if __name__ == "__main__":
     main()

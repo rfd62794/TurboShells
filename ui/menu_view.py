@@ -27,19 +27,19 @@ def draw_menu(screen, font, game_state):
 
     for i, (title, desc, rect) in enumerate(menu_options):
         menu_rect = rect
-        
+
         # Hover effect
         color = GRAY
         if mouse_pos and menu_rect.collidepoint(mouse_pos):
             color = WHITE
-        
+
         pygame.draw.rect(screen, color, menu_rect, 2)
-        
+
         # Title
         title_txt = font.render(title, True, WHITE)
         title_x = menu_rect.x + (menu_rect.width - title_txt.get_width()) // 2
         screen.blit(title_txt, (title_x, menu_rect.y + 20))
-        
+
         # Description
         desc_font = pygame.font.SysFont("Arial", 18)
         desc_txt = desc_font.render(desc, True, GRAY)

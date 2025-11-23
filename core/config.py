@@ -22,11 +22,11 @@ class GraphicsSettings:
     vsync: bool = True
     frame_rate_limit: int = 60
     quality_level: str = "high"  # low, medium, high, ultra
-    
+
     def get_resolution(self) -> Tuple[int, int]:
         """Get resolution as tuple."""
         return (self.resolution_width, self.resolution_height)
-    
+
     def set_resolution(self, width: int, height: int) -> None:
         """Set resolution from tuple."""
         self.resolution_width = width
@@ -42,11 +42,11 @@ class AudioSettings:
     voice_volume: float = 1.0
     enabled: bool = True
     mute_when_inactive: bool = False
-    
+
     def get_music_volume(self) -> float:
         """Get effective music volume."""
         return self.master_volume * self.music_volume if self.enabled else 0.0
-    
+
     def get_sfx_volume(self) -> float:
         """Get effective SFX volume."""
         return self.master_volume * self.sfx_volume if self.enabled else 0.0
@@ -59,7 +59,7 @@ class ControlSettings:
     mouse_sensitivity: float = 1.0
     invert_mouse_y: bool = False
     auto_save_interval: int = 300  # seconds
-    
+
     def __post_init__(self):
         """Initialize default key bindings if not provided."""
         if self.key_bindings is None:
@@ -94,7 +94,7 @@ class DifficultySettings:
     confirm_actions: bool = True
     race_speed_multiplier: float = 1.0
     economy_multiplier: float = 1.0
-    
+
     def get_race_speed(self) -> float:
         """Get race speed based on difficulty."""
         difficulty_multipliers = {
@@ -116,7 +116,7 @@ class PlayerProfile:
     turtles_bred: int = 0
     highest_money: int = 0
     achievements_unlocked: list = None
-    
+
     def __post_init__(self):
         """Initialize achievements list if not provided."""
         if self.achievements_unlocked is None:
@@ -165,7 +165,7 @@ class GameConfig:
     ui_theme: UITheme = None
     accessibility: AccessibilitySettings = None
     privacy: PrivacySettings = None
-    
+
     def __post_init__(self):
         """Initialize default settings if not provided."""
         if self.graphics is None:
@@ -188,11 +188,11 @@ class GameConfig:
 
 class ConfigManager:
     """Manages loading, saving, and accessing game configuration."""
-    
+
     def __init__(self, config_dir: str = "config", config_file: str = "settings.json"):
         """
         Initialize configuration manager.
-        
+
         Args:
             config_dir: Directory to store configuration files
             config_file: Name of the main configuration file
@@ -201,17 +201,17 @@ class ConfigManager:
         self.config_file = self.config_dir / config_file
         self.logger = get_logger(__name__)
         self._config: Optional[GameConfig] = None
-        
+
         # Ensure config directory exists
         self.config_dir.mkdir(exist_ok=True)
-        
+
         # Load configuration
         self.load_config()
-    
+
     def load_config(self) -> GameConfig:
         """
         Load configuration from file or create defaults.
-        
+
         Returns:
             Loaded or default configuration
         """
@@ -219,7 +219,7 @@ class ConfigManager:
             if self.config_file.exists():
                 with open(self.config_file, 'r', encoding='utf-8') as f:
                     data = json.load(f)
-                
+
                 # Convert JSON to GameConfig
                 self._config = self._dict_to_config(data)
                 self.logger.info("Configuration loaded successfully")
@@ -227,17 +227,17 @@ class ConfigManager:
                 self._config = GameConfig()
                 self.save_config()  # Save default config
                 self.logger.info("Created default configuration")
-                
+
         except Exception as e:
             self.logger.error(f"Failed to load configuration: {e}")
             self._config = GameConfig()  # Fallback to defaults
-        
+
         return self._config
-    
+
     def save_config(self) -> bool:
         """
         Save current configuration to file.
-        
+
         Returns:
             True if save successful, False otherwise
         """
@@ -245,10 +245,10 @@ class ConfigManager:
             if self._config is None:
                 self.logger.error("No configuration to save")
                 return False
-            
+
             # Convert GameConfig to dictionary
             data = asdict(self._config)
-            
+
             # Save to file with backup
             backup_file = self.config_file.with_suffix('.json.bak')
             if self.config_file.exists():
@@ -256,69 +256,69 @@ class ConfigManager:
                 if backup_file.exists():
                     backup_file.unlink()
                 self.config_file.rename(backup_file)
-            
+
             with open(self.config_file, 'w', encoding='utf-8') as f:
                 json.dump(data, f, indent=2, ensure_ascii=False)
-            
+
             self.logger.info("Configuration saved successfully")
             return True
-            
+
         except Exception as e:
             self.logger.error(f"Failed to save configuration: {e}")
             return False
-    
+
     def get_config(self) -> GameConfig:
         """
         Get current configuration.
-        
+
         Returns:
             Current game configuration
         """
         if self._config is None:
             self._config = self.load_config()
         return self._config
-    
+
     def reset_to_defaults(self) -> None:
         """Reset configuration to default values."""
         self._config = GameConfig()
         self.save_config()
         self.logger.info("Configuration reset to defaults")
-    
+
     def export_config(self, export_path: str) -> bool:
         """
         Export configuration to specified path.
-        
+
         Args:
             export_path: Path to export configuration
-            
+
         Returns:
             True if export successful, False otherwise
         """
         try:
             if self._config is None:
                 return False
-            
+
             export_file = Path(export_path)
             export_file.parent.mkdir(parents=True, exist_ok=True)
-            
+
             data = asdict(self._config)
             with open(export_file, 'w', encoding='utf-8') as f:
                 json.dump(data, f, indent=2, ensure_ascii=False)
-            
+
             self.logger.info(f"Configuration exported to {export_path}")
             return True
-            
+
         except Exception as e:
             self.logger.error(f"Failed to export configuration: {e}")
             return False
-    
+
     def import_config(self, import_path: str) -> bool:
         """
         Import configuration from specified path.
-        
+
         Args:
             import_path: Path to import configuration from
-            
+
         Returns:
             True if import successful, False otherwise
         """
@@ -327,27 +327,27 @@ class ConfigManager:
             if not import_file.exists():
                 self.logger.error(f"Import file not found: {import_path}")
                 return False
-            
+
             with open(import_file, 'r', encoding='utf-8') as f:
                 data = json.load(f)
-            
+
             self._config = self._dict_to_config(data)
             self.save_config()
-            
+
             self.logger.info(f"Configuration imported from {import_path}")
             return True
-            
+
         except Exception as e:
             self.logger.error(f"Failed to import configuration: {e}")
             return False
-    
+
     def _dict_to_config(self, data: Dict[str, Any]) -> GameConfig:
         """
         Convert dictionary to GameConfig object.
-        
+
         Args:
             data: Dictionary data
-            
+
         Returns:
             GameConfig object
         """
@@ -360,7 +360,7 @@ class ConfigManager:
         theme_data = data.get('ui_theme', {})
         accessibility_data = data.get('accessibility', {})
         privacy_data = data.get('privacy', {})
-        
+
         # Create settings objects
         graphics = GraphicsSettings(**graphics_data)
         audio = AudioSettings(**audio_data)
@@ -370,7 +370,7 @@ class ConfigManager:
         theme = UITheme(**theme_data)
         accessibility = AccessibilitySettings(**accessibility_data)
         privacy = PrivacySettings(**privacy_data)
-        
+
         return GameConfig(
             graphics=graphics,
             audio=audio,

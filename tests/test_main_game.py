@@ -66,7 +66,7 @@ class TestTurboShellsGame:
         try:
             game = TurboShellsGame()
             required_managers = [
-                'renderer', 'roster_manager', 'shop_manager', 
+                'renderer', 'roster_manager', 'shop_manager',
                 'race_manager', 'breeding_manager', 'state_handler',
                 'keyboard', 'game_state_manager'
             ]

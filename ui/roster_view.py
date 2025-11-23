@@ -7,10 +7,10 @@ from ui.turtle_card import draw_stable_turtle_slot
 def draw_roster(screen, font, game_state):
     # Header bar
     pygame.draw.rect(screen, DARK_GREY, layout.HEADER_RECT)
-    
+
     # Check if we're in select racer mode
     select_racer_mode = getattr(game_state, "select_racer_mode", False)
-    
+
     if select_racer_mode:
         title = font.render("SELECT RACER", True, WHITE)
     else:
@@ -51,7 +51,11 @@ def draw_roster(screen, font, game_state):
         # Train button (for all active roster turtles, not in select racer mode)
         if turtle and not show_retired and not select_racer_mode:
             train_btn = layout.SLOT_BTN_TRAIN_RECT
-            train_rect = pygame.Rect(slot_rect.x + train_btn.x, slot_rect.y + train_btn.y, train_btn.width, train_btn.height)
+            train_rect = pygame.Rect(
+                slot_rect.x + train_btn.x,
+                slot_rect.y + train_btn.y,
+                train_btn.width,
+                train_btn.height)
 
             # Hover highlight for train button
             train_color = GRAY

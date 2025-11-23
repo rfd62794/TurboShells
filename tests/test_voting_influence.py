@@ -4,6 +4,7 @@
 from core.systems import GeneticPoolManager
 from core.game.game_state import generate_random_turtle
 
+
 def test_voting_influence():
     """Test that voting actually influences turtle genetics"""
     print('Testing Voting Influence System...')
@@ -45,6 +46,7 @@ def test_voting_influence():
     print('   - Shop turtles will now reflect player voting preferences')
     print('   - Breeding will incorporate 30% voting influence')
     print('   - Genetic pools track and apply player choices')
+
 
 if __name__ == '__main__':
     test_voting_influence()

@@ -2,6 +2,7 @@ import pygame
 from settings import *
 import ui.layouts.positions as layout
 
+
 def draw_training(screen, font, game_state):
     """Draw the training interface"""
     # Header
@@ -27,7 +28,7 @@ def draw_training(screen, font, game_state):
     # Get the selected turtle
     active_racer_index = getattr(game_state, "active_racer_index", 0)
     turtle = game_state.roster[active_racer_index]
-    
+
     if not turtle:
         # No turtle selected
         no_turtle_txt = font.render("No turtle selected for training", True, GRAY)
@@ -36,11 +37,11 @@ def draw_training(screen, font, game_state):
 
     # Draw turtle info
     info_y = 100
-    
+
     # Turtle name
     name_txt = font.render(f"Training: {turtle.name}", True, WHITE)
     screen.blit(name_txt, (50, info_y))
-    
+
     # Current stats
     stats_y = info_y + 50
     stats_lines = [
@@ -51,17 +52,17 @@ def draw_training(screen, font, game_state):
         f"Climb: {turtle.stats['climb']}",
         f"Age: {turtle.age}"
     ]
-    
+
     for i, line in enumerate(stats_lines):
         stat_txt = font.render(line, True, WHITE)
         screen.blit(stat_txt, (50, stats_y + i * 30))
 
     # Training options
     training_y = stats_y + len(stats_lines) * 30 + 50
-    
+
     training_title = font.render("Training Options:", True, WHITE)
     screen.blit(training_title, (50, training_y))
-    
+
     # Training buttons
     button_y = training_y + 50
     training_buttons = [
@@ -71,17 +72,17 @@ def draw_training(screen, font, game_state):
         ("Train Swim (+1)", "swim", 300, button_y + 60),
         ("Train Climb (+1)", "climb", 50, button_y + 120)
     ]
-    
+
     for text, stat, x, y in training_buttons:
         button_rect = pygame.Rect(x, y, 200, 40)
-        
+
         # Hover effect
         color = GREEN
         if mouse_pos and button_rect.collidepoint(mouse_pos):
             color = WHITE
-        
+
         pygame.draw.rect(screen, color, button_rect, 2)
-        
+
         # Button text
         btn_txt = font.render(text, True, WHITE)
         btn_x = button_rect.x + (button_rect.width - btn_txt.get_width()) // 2
@@ -92,11 +93,11 @@ def draw_training(screen, font, game_state):
     info_y = button_y + 180
     info_lines = [
         "• Each training session ages the turtle by 1",
-        "• Primary stat always improves by +1", 
+        "• Primary stat always improves by +1",
         "• 20% chance for other stats to improve",
         "• Turtles auto-retire at age 100"
     ]
-    
+
     for i, line in enumerate(info_lines):
         info_txt = font.render(line, True, GRAY)
         screen.blit(info_txt, (50, info_y + i * 25))

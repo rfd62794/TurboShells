@@ -11,10 +11,10 @@ class GeneDefinitions:
     Central registry of gene definitions with their types, ranges, and defaults.
     Single responsibility: Define and manage gene schemas.
     """
-    
+
     def __init__(self):
         self.definitions = self._get_base_definitions()
-    
+
     def _get_base_definitions(self) -> Dict[str, Dict]:
         """
         Define all available genes with their properties
@@ -63,7 +63,7 @@ class GeneDefinitions:
                 'default': 1.0,
                 'description': 'Shell size scaling'
             },
-            
+
             # Body Genetics
             'body_base_color': {
                 'type': 'rgb',
@@ -89,7 +89,7 @@ class GeneDefinitions:
                 'default': 0.3,
                 'description': 'Body pattern density'
             },
-            
+
             # Head Genetics
             'head_size_modifier': {
                 'type': 'continuous',
@@ -103,7 +103,7 @@ class GeneDefinitions:
                 'default': (139, 90, 43),  # Brown
                 'description': 'Head color'
             },
-            
+
             # Leg Genetics
             'leg_length': {
                 'type': 'continuous',
@@ -129,7 +129,7 @@ class GeneDefinitions:
                 'default': (101, 67, 33),  # Dark brown
                 'description': 'Leg color'
             },
-            
+
             # Eye Genetics
             'eye_color': {
                 'type': 'rgb',
@@ -144,38 +144,38 @@ class GeneDefinitions:
                 'description': 'Eye size scaling'
             }
         }
-    
+
     def get_gene_definition(self, gene_name: str) -> Dict:
         """Get definition for a specific gene"""
         return self.definitions.get(gene_name, {})
-    
+
     def get_all_gene_names(self) -> List[str]:
         """Get list of all defined gene names"""
         return list(self.definitions.keys())
-    
+
     def get_genes_by_type(self, gene_type: str) -> Dict[str, Dict]:
         """Get all genes of a specific type"""
         return {
             name: definition for name, definition in self.definitions.items()
             if definition.get('type') == gene_type
         }
-    
+
     def get_default_genetics(self) -> Dict[str, Union[Tuple, str, float]]:
         """Get default values for all genes"""
         return {
             name: definition['default']
             for name, definition in self.definitions.items()
         }
-    
+
     def validate_gene_value(self, gene_name: str, value: Union[Tuple, str, float]) -> bool:
         """Validate if a value is valid for a gene"""
         definition = self.get_gene_definition(gene_name)
         if not definition:
             return False
-        
+
         gene_type = definition['type']
         value_range = definition['range']
-        
+
         if gene_type == 'rgb':
             if not isinstance(value, tuple) or len(value) != 3:
                 return False
@@ -187,5 +187,5 @@ class GeneDefinitions:
             return value in value_range
         elif gene_type == 'continuous':
             return isinstance(value, (int, float)) and value_range[0] <= value <= value_range[1]
-        
+
         return False

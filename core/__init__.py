@@ -29,15 +29,15 @@ TurtleEntity = Turtle
 __all__ = [
     # Sub-modules
     'rendering', 'voting', 'game', 'systems',
-    
+
     # Main classes
     'VisualGenetics', 'DirectTurtleRenderer', 'VotingSystem', 'DesignPackage',
     'Turtle', 'TurtleEntity', 'KeyboardHandler', 'compute_turtle_cost', 'generate_random_turtle', 'breed_turtles', 'generate_track', 'get_terrain_at', 'run_race',
     'StateHandler', 'GeneticPoolManager', 'PatternGenerators',
-    
+
     # New entities and state
     'RaceTrack', 'GameState', 'GameConfig', 'RaceState', 'StateManager',
-    
+
     # Convenience functions
     'get_direct_renderer'
 ]

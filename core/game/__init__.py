@@ -15,6 +15,6 @@ from .race_track import generate_track, get_terrain_at
 # Import functions from simulation
 from .simulation import run_race
 
-__all__ = ['Turtle', 'KeyboardHandler', 
+__all__ = ['Turtle', 'KeyboardHandler',
            'compute_turtle_cost', 'generate_random_turtle', 'breed_turtles',
            'generate_track', 'get_terrain_at', 'run_race']

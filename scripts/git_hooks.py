@@ -11,6 +11,7 @@ import subprocess
 from pathlib import Path
 from typing import Dict, List, Any
 
+
 def create_pre_commit_hook():
     """Create pre-commit hook script"""
     hook_content = """#!/bin/bash
@@ -36,8 +37,9 @@ else
     exit 1
 fi
 """
-    
+
     return hook_content
+
 
 def create_pre_push_hook():
     """Create pre-push hook script"""
@@ -64,8 +66,9 @@ else
     exit 1
 fi
 """
-    
+
     return hook_content
+
 
 def create_commit_msg_hook():
     """Create commit message hook script"""
@@ -97,43 +100,45 @@ else
     exit 0
 fi
 """
-    
+
     return hook_content
+
 
 def setup_git_hooks(project_root: str = None):
     """Set up git hooks"""
     project_path = Path(project_root) if project_root else Path.cwd()
     git_hooks_dir = project_path / ".git" / "hooks"
-    
+
     if not git_hooks_dir.exists():
         print("[FAIL] Not a git repository")
         return False
-    
+
     # Create hooks
     hooks = {
         "pre-commit": create_pre_commit_hook(),
         "pre-push": create_pre_push_hook(),
         "commit-msg": create_commit_msg_hook()
     }
-    
+
     success = True
-    
+
     for hook_name, hook_content in hooks.items():
         hook_file = git_hooks_dir / hook_name
-        
+
         try:
             with open(hook_file, 'w') as f:
                 f.write(hook_content)
-            
+
             # Make executable
             os.chmod(hook_file, 0o755)
             print(f"[PASS] Created {hook_name} hook")
-            
+
         except Exception as e:
             print(f"[FAIL] Failed to create {hook_name} hook: {e}")
             success = False
-    
+
     return success
+
 
 def create_hook_installer():
     """Create hook installer script"""
@@ -155,9 +160,9 @@ from scripts.git_hooks import setup_git_hooks
 
 def main():
     print("[FIX] Installing TurboShells Git Hooks...")
-    
+
     success = setup_git_hooks()
-    
+
     if success:
         print("[PASS] Git hooks installed successfully!")
         print("\\nHooks installed:")
@@ -174,19 +179,20 @@ def main():
 if __name__ == "__main__":
     main()
 """
-    
+
     return installer_content
+
 
 def main():
     """Main function"""
     import argparse
-    
+
     parser = argparse.ArgumentParser(description="Git hooks setup for TurboShells")
     parser.add_argument("--install", action="store_true", help="Install git hooks")
     parser.add_argument("--project-root", type=str, help="Project root directory")
-    
+
     args = parser.parse_args()
-    
+
     if args.install:
         success = setup_git_hooks(args.project_root)
         if success:
@@ -197,6 +203,7 @@ def main():
     else:
         print("Use --install to install git hooks")
         print("Or run: python scripts/git_hooks.py --install")
+
 
 if __name__ == "__main__":
     main()

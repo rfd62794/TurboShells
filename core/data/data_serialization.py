@@ -5,6 +5,15 @@ This module contains only serialization and deserialization logic,
 following Single Responsibility Principle.
 """
 
+from core.data.data_structures import (
+    GameStateData, EconomicData, SessionStats, RosterData, LastSession,
+    GeneTrait, BaseStats, GeneticModifiers, TurtleStats, TerrainPerformance,
+    RaceResult, TurtlePerformance, TurtleParents, TraitWeights, ColorPreferences,
+    PatternPreferences, RatingBehavior, PreferenceProfile, TraitInfluence,
+    InfluenceDecay, GeneticInfluence, VotingRecord
+)
+from typing import Optional
+import datetime
 import json
 from typing import Dict, Any
 
@@ -13,34 +22,34 @@ from .data_structures import GameData, TurtleData, PlayerPreferences
 
 class DataSerializer:
     """Serialization and deserialization utilities"""
-    
+
     @staticmethod
     def serialize_game_data(game_data: GameData) -> str:
         """Serialize game data to JSON"""
         return json.dumps(game_data.__dict__, indent=2, default=str)
-    
+
     @staticmethod
     def deserialize_game_data(json_str: str) -> GameData:
         """Deserialize game data from JSON"""
         data = json.loads(json_str)
         return GameData(**data)
-    
+
     @staticmethod
     def serialize_turtle_data(turtle_data: TurtleData) -> str:
         """Serialize turtle data to JSON"""
         return json.dumps(turtle_data.__dict__, indent=2, default=str)
-    
+
     @staticmethod
     def deserialize_turtle_data(json_str: str) -> TurtleData:
         """Deserialize turtle data from JSON"""
         data = json.loads(json_str)
         return TurtleData(**data)
-    
+
     @staticmethod
     def serialize_preference_data(pref_data: PlayerPreferences) -> str:
         """Serialize preference data to JSON"""
         return json.dumps(pref_data.__dict__, indent=2, default=str)
-    
+
     @staticmethod
     def deserialize_preference_data(json_str: str) -> PlayerPreferences:
         """Deserialize preference data from JSON"""
@@ -52,22 +61,11 @@ class DataSerializer:
 # FACTORY FUNCTIONS
 # ============================================================================
 
-import datetime
-from typing import Optional
-
-from core.data.data_structures import (
-    GameStateData, EconomicData, SessionStats, RosterData, LastSession,
-    GeneTrait, BaseStats, GeneticModifiers, TurtleStats, TerrainPerformance,
-    RaceResult, TurtlePerformance, TurtleParents, TraitWeights, ColorPreferences,
-    PatternPreferences, RatingBehavior, PreferenceProfile, TraitInfluence,
-    InfluenceDecay, GeneticInfluence, VotingRecord
-)
-
 
 def create_default_game_data(player_id: str) -> GameData:
     """Create default game data structure"""
     now = datetime.datetime.now(datetime.timezone.utc).isoformat()
-    
+
     return GameData(
         version="2.2.0",
         timestamp=now,
@@ -107,7 +105,7 @@ def create_default_game_data(player_id: str) -> GameData:
 def create_default_turtle_data(turtle_id: str, name: str) -> TurtleData:
     """Create default turtle data structure"""
     now = datetime.datetime.now(datetime.timezone.utc).isoformat()
-    
+
     return TurtleData(
         turtle_id=turtle_id,
         name=name,
@@ -146,7 +144,7 @@ def create_default_turtle_data(turtle_id: str, name: str) -> TurtleData:
 def create_default_preference_data(player_id: str) -> PlayerPreferences:
     """Create default preference data structure"""
     now = datetime.datetime.now(datetime.timezone.utc).isoformat()
-    
+
     return PlayerPreferences(
         version="2.2.0",
         player_id=player_id,

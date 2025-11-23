@@ -12,20 +12,20 @@ def draw_shop(screen, font, game_state):
 
     money_txt = font.render(f"$ {game_state.money}", True, WHITE)
     screen.blit(money_txt, layout.HEADER_MONEY_POS)
-    
+
     # Back button in header (like voting view)
     back_rect = pygame.Rect(700, 5, 80, 30)
     mouse_pos = getattr(game_state, 'mouse_pos', None)
     back_color = (150, 50, 50) if mouse_pos and back_rect.collidepoint(mouse_pos) else (100, 100, 100)
-    
+
     pygame.draw.rect(screen, back_color, back_rect)
     pygame.draw.rect(screen, (200, 200, 200), back_rect, 2)
-    
+
     back_text = font.render("BACK", True, WHITE)
     text_x = back_rect.x + (back_rect.width - back_text.get_width()) // 2
     text_y = back_rect.y + (back_rect.height - back_text.get_height()) // 2
     screen.blit(back_text, (text_x, text_y))
-    
+
     # Store back rect for click handling
     game_state.shop_back_rect = back_rect
 
@@ -37,7 +37,7 @@ def draw_shop(screen, font, game_state):
     for i, turtle in enumerate(game_state.shop_inventory):
         if i >= len(layout.SHOP_SLOT_RECTS):
             break
-            
+
         slot_rect = layout.SHOP_SLOT_RECTS[i]
         card_rect = slot_rect
 
@@ -52,10 +52,10 @@ def draw_shop(screen, font, game_state):
             img_x = card_rect.x + (card_rect.width - 80) // 2
             img_y = card_rect.y + 15
             screen.blit(turtle_img, (img_x, img_y))
-        except:
+        except BaseException:
             # Fallback: draw a simple colored square
-            pygame.draw.rect(screen, (100, 150, 200), 
-                           (card_rect.x + (card_rect.width - 80) // 2, card_rect.y + 15, 80, 80))
+            pygame.draw.rect(screen, (100, 150, 200),
+                             (card_rect.x + (card_rect.width - 80) // 2, card_rect.y + 15, 80, 80))
 
         # Name below image (moved down)
         name_txt = font.render(turtle.name, True, WHITE)
@@ -70,7 +70,7 @@ def draw_shop(screen, font, game_state):
             f"Swim: {turtle.stats['swim']}",
             f"Climb: {turtle.stats['climb']}"
         ]
-        
+
         y_offset = card_rect.y + 150  # Moved down for larger images
         for line in stats_lines:
             stat_txt = font.render(line, True, WHITE)
@@ -81,7 +81,7 @@ def draw_shop(screen, font, game_state):
         # Energy bar (moved down)
         energy_bg = pygame.Rect(card_rect.x + 20, card_rect.y + 280, 180, 15)
         pygame.draw.rect(screen, (50, 50, 50), energy_bg)
-        
+
         energy_fill_width = int((turtle.current_energy / turtle.stats['max_energy']) * 176)
         if energy_fill_width > 0:
             energy_fill = pygame.Rect(card_rect.x + 22, card_rect.y + 282, energy_fill_width, 11)
