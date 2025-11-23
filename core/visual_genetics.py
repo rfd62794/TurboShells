@@ -34,6 +34,12 @@ class VisualGenetics:
                 'default': (255, 255, 255),  # White
                 'description': 'Shell pattern color'
             },
+            'pattern_color': {  # Alias for renderer compatibility
+                'type': 'rgb',
+                'range': [(0, 255), (0, 255), (0, 255)],
+                'default': (255, 255, 255),  # White
+                'description': 'Pattern color (used by renderer)'
+            },
             'shell_pattern_density': {
                 'type': 'continuous',
                 'range': (0.1, 1.0),
