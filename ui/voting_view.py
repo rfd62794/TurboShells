@@ -922,6 +922,7 @@ class VotingView:
     def _handle_click(self, pos: Tuple[int, int]):
         """Handle mouse click"""
         x, y = pos
+        print(f"Click at ({x}, {y})")
         
         # Check feedback popup
         if self.show_feedback:
@@ -936,13 +937,18 @@ class VotingView:
             return
         
         current_design = designs[self.current_design_index]
+        print(f"Current design voting status: {current_design.voting_status}")
         
         # Check star ratings using screen coordinates directly
         if current_design.voting_status == 'pending':
             categories = current_design.rating_categories
+            print(f"Categories: {list(categories.keys())}")
             
             # Check if click is in right panel scrollable area
-            if x >= self.left_panel_width + 30 and y >= 200:
+            right_panel_start = self.left_panel_width + 30
+            print(f"Right panel starts at x={right_panel_start}")
+            if x >= right_panel_start and y >= 200:
+                print("Click is in right panel area")
                 y_offset = 0
                 for category_name in categories:
                     # Calculate screen position for this category's stars
@@ -950,23 +956,29 @@ class VotingView:
                     
                     # Check if this star row is visible on screen
                     if star_y_screen + 20 >= 200 and star_y_screen <= self.height:
+                        print(f"  Checking category '{category_name}' at y_screen={star_y_screen}")
                         for i in range(5):
                             star_spacing = 35
                             star_x_screen = self.left_panel_width + 30 + 30 + i * star_spacing  # left_panel + 30 + star_start_x
                             
                             # Debug 5th star specifically
                             if i == 4:  # 5th star (0-indexed)
-                                print(f"5th star: screen_x={star_x_screen}, click_x={x}, range={star_x_screen-2}-{star_x_screen+22}")
+                                print(f"    5th star: screen_x={star_x_screen}, click_x={x}, range={star_x_screen-2}-{star_x_screen+22}")
                             
                             # Click area exactly matches star size (20px) with small padding
                             click_padding = 2
                             if (star_x_screen - click_padding <= x <= star_x_screen + 20 + click_padding and 
                                 star_y_screen - click_padding <= y <= star_y_screen + 20 + click_padding):
                                 # Set rating for this category
+                                print(f"    >>> CLICKED STAR {i+1} for {category_name}")
                                 self.selected_ratings[category_name] = i + 1
                                 return
+                    else:
+                        print(f"  Category '{category_name}' not visible (y_screen={star_y_screen})")
                     
                     y_offset += 120  # 120px per category
+            else:
+                print(f"Click NOT in right panel area (x={x} < {right_panel_start} or y={y} < 200)")
         
         # Check submit button (matching new scrolled layout)
         if self._can_submit_ratings():
