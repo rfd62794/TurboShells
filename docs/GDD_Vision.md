@@ -231,7 +231,302 @@ def draw_turtle_visual(screen, turtle, position, size):
 
 ---
 
-## 4. Phase 12: Advanced Genetics & Evolution
+## 4. Phase 12: Community Store & Genetic Democracy
+
+### 4.1 Community-Driven Store System
+
+#### **Player Store Concept**
+Transform the economic system from a simple shop to a community-driven marketplace where players can:
+
+- **Sell Excess Turtles**: List unwanted turtles from their roster
+- **Dynamic Pricing**: AI-valued based on stats, age, and race history
+- **Community Trading**: Buy and sell with other players
+- **Genetic Marketplace**: Special focus on visual traits and rarity
+
+#### **Store Interface Design**
+```python
+class CommunityStore:
+    def __init__(self):
+        self.listings = []
+        self.trending_designs = []
+        self.rating_system = DesignRatingSystem()
+    
+    def create_listing(self, turtle, seller_id, asking_price=None):
+        # AI pricing if no price specified
+        if asking_price is None:
+            asking_price = self.calculate_turtle_value(turtle)
+        
+        listing = StoreListing(turtle, seller_id, asking_price)
+        self.listings.append(listing)
+        return listing.id
+    
+    def calculate_turtle_value(self, turtle):
+        # Multi-factor valuation
+        base_value = self.calculate_stat_value(turtle.stats)
+        age_modifier = self.calculate_age_modifier(turtle.age)
+        history_bonus = self.calculate_race_history_bonus(turtle.race_history)
+        visual_value = self.calculate_visual_rarity(turtle.visual_genetics)
+        
+        return base_value * age_modifier + history_bonus + visual_value
+```
+
+#### **Advanced Pricing Algorithm**
+```python
+def calculate_comprehensive_value(self, turtle):
+    # Base stats value (40% weight)
+    stat_value = sum(turtle.stats.values()) * STAT_MULTIPLIER
+    
+    # Age factor (20% weight) - younger is better
+    age_factor = max(0.1, (100 - turtle.age) / 100)
+    
+    # Race history value (25% weight)
+    history_value = 0
+    if turtle.race_history:
+        for race in turtle.race_history[-10:]:  # Last 10 races
+            if race['position'] == 1:
+                history_value += 50
+            elif race['position'] == 2:
+                history_value += 25
+            elif race['position'] == 3:
+                history_value += 10
+    
+    # Visual rarity value (15% weight)
+    visual_rarity = self.calculate_visual_rarity_score(turtle.visual_genetics)
+    
+    total_value = (stat_value * 0.4) + (age_factor * 100 * 0.2) + (history_value * 0.25) + (visual_rarity * 0.15)
+    
+    return int(total_value)
+```
+
+### 4.2 Genetic Democracy: Design Voting System
+
+#### **Community Design Voting**
+Empower players to influence the genetic output through democratic voting:
+
+- **Daily Design Showcase**: 5 randomly generated shell designs featured daily
+- **1-5 Star Rating System**: Players rate designs on aesthetics and appeal
+- **Genetic Influence**: Higher-rated designs have increased probability in future generations
+- **Rarity Boost**: Top-rated designs become more valuable and sought-after
+
+#### **Voting Interface**
+```python
+class DesignVotingSystem:
+    def __init__(self):
+        self.daily_designs = []
+        self.voting_history = {}
+        self.genetic_weights = {}
+    
+    def generate_daily_designs(self):
+        # Generate 5 random visual genetics combinations
+        self.daily_designs = []
+        for _ in range(5):
+            design = self.generate_random_visual_genetics()
+            self.daily_designs.append({
+                'id': design['id'],
+                'genetics': design,
+                'votes': [],
+                'average_rating': 0,
+                'total_votes': 0
+            })
+    
+    def vote_for_design(self, design_id, user_id, rating):
+        # Record vote
+        design = self.find_design(design_id)
+        design['votes'].append({'user_id': user_id, 'rating': rating})
+        design['total_votes'] += 1
+        design['average_rating'] = sum(v['rating'] for v in design['votes']) / design['total_votes']
+        
+        # Update genetic weights
+        self.update_genetic_influence(design_id, rating)
+    
+    def update_genetic_influence(self, design_id, rating):
+        # Higher ratings increase genetic probability
+        influence_multiplier = rating / 5.0  # Normalize to 0-1
+        self.genetic_weights[design_id] = influence_multiplier
+```
+
+#### **Genetic Integration**
+```python
+class CommunityInfluencedGenetics:
+    def __init__(self, voting_system):
+        self.voting_system = voting_system
+        self.base_genetics = self.load_base_genetics()
+    
+    def generate_turtle_genetics(self, parent_genetics=None):
+        # Start with base genetics or parent inheritance
+        if parent_genetics:
+            child_genetics = self.inherit_from_parents(parent_genetics)
+        else:
+            child_genetics = self.generate_random_genetics()
+        
+        # Apply community influence
+        community_influence = self.apply_community_preferences(child_genetics)
+        
+        return self.merge_genetics(child_genetics, community_influence)
+    
+    def apply_community_preferences(self, base_genetics):
+        # Weight random generation based on community preferences
+        influenced_genetics = base_genetics.copy()
+        
+        # Get top community designs
+        top_designs = self.voting_system.get_top_rated_designs(limit=3)
+        
+        # Blend in popular traits
+        for design in top_designs:
+            influence_weight = self.voting_system.genetic_weights[design['id']]
+            
+            # Apply color influences
+            if random.random() < influence_weight:
+                influenced_genetics['shell_base_color'] = self.blend_colors(
+                    base_genetics['shell_base_color'],
+                    design['genetics']['shell_base_color'],
+                    influence_weight
+                )
+            
+            # Apply pattern influences
+            if random.random() < influence_weight:
+                influenced_genetics['shell_pattern_type'] = design['genetics']['shell_pattern_type']
+        
+        return influenced_genetics
+```
+
+### 4.3 Store Features & Economics
+
+#### **Player Storefront**
+- **Personal Store**: Each player has their own store page
+- **Store Reputation**: Based on successful trades and turtle quality
+- **Featured Turtles**: Highlight rare or valuable turtles
+- **Sales History**: Track marketplace performance
+
+#### **Market Dynamics**
+```python
+class MarketplaceEconomics:
+    def __init__(self):
+        self.market_trends = {}
+        self.price_history = {}
+        self.demand_indicators = {}
+    
+    def update_market_trends(self):
+        # Analyze recent sales data
+        recent_sales = self.get_recent_sales(days=7)
+        
+        # Update demand for different traits
+        for trait_type in ['shell_pattern_type', 'body_pattern_type']:
+            trait_demand = self.calculate_trait_demand(trait_type, recent_sales)
+            self.demand_indicators[trait_type] = trait_demand
+        
+        # Update price trends
+        for stat in ['speed', 'max_energy', 'recovery', 'swim', 'climb']:
+            stat_prices = [sale['turtle'].stats[stat] for sale in recent_sales]
+            self.price_history[stat] = self.calculate_price_trend(stat_prices)
+    
+    def calculate_market_price(self, turtle):
+        base_price = self.calculate_comprehensive_value(turtle)
+        
+        # Apply market modifiers
+        for trait_type, value in turtle.visual_genetics.items():
+            if trait_type in self.demand_indicators:
+                demand_multiplier = self.demand_indicators[trait_type]
+                base_price *= (1 + demand_multiplier)
+        
+        return int(base_price)
+```
+
+#### **Store Management Tools**
+- **Bulk Listing**: List multiple turtles at once
+- **Price Suggestions**: AI-recommended pricing based on market data
+- **Sales Analytics**: Track performance and optimize pricing
+- **Inventory Management**: Organize and filter turtle collection
+
+### 4.4 Social Features & Community Building
+
+#### **Community Leaderboards**
+- **Top Sellers**: Most successful traders
+- **Trendsetters**: Players whose designs get high ratings
+- **Collection Masters**: Players with rare turtle collections
+- **Breeding Experts**: Players with successful breeding programs
+
+#### **Social Integration**
+```python
+class CommunityFeatures:
+    def __init__(self):
+        self.player_profiles = {}
+        self.social_networks = {}
+        self.community_events = []
+    
+    def create_player_profile(self, player_id):
+        profile = {
+            'player_id': player_id,
+            'store_reputation': 0,
+            'total_sales': 0,
+            'design_ratings_given': 0,
+            'favorite_designs': [],
+            'trading_partners': [],
+            'achievements': []
+        }
+        self.player_profiles[player_id] = profile
+        return profile
+    
+    def add_trading_partner(self, player_id, partner_id):
+        if partner_id not in self.player_profiles[player_id]['trading_partners']:
+            self.player_profiles[player_id]['trading_partners'].append(partner_id)
+    
+    def award_achievement(self, player_id, achievement):
+        self.player_profiles[player_id]['achievements'].append(achievement)
+```
+
+#### **Community Events**
+- **Design Contests**: Weekly themed design competitions
+- **Trading Festivals**: Special marketplace events with reduced fees
+- **Breeding Tournaments**: Community breeding challenges
+- **Showcase Events**: Display rare and valuable turtles
+
+### 4.5 Technical Implementation
+
+#### **Store Backend Architecture**
+```python
+class CommunityStoreBackend:
+    def __init__(self):
+        self.database = self.connect_to_database()
+        self.cache = RedisCache()
+        self.messaging = MessageQueue()
+    
+    def create_listing(self, turtle_data, seller_info):
+        # Validate listing
+        if not self.validate_turtle_ownership(turtle_data, seller_info):
+            raise InvalidOwnershipError()
+        
+        # Create listing record
+        listing = {
+            'id': generate_uuid(),
+            'turtle_id': turtle_data['id'],
+            'seller_id': seller_info['id'],
+            'price': self.calculate_suggested_price(turtle_data),
+            'created_at': datetime.now(),
+            'status': 'active'
+        }
+        
+        # Save to database
+        self.database.save_listing(listing)
+        
+        # Update cache
+        self.cache.set(f"listing:{listing['id']}", listing)
+        
+        # Notify interested buyers
+        self.messaging.notify_new_listing(listing)
+        
+        return listing['id']
+```
+
+#### **Scalability Considerations**
+- **Database Optimization**: Efficient queries for large marketplace
+- **Caching Strategy**: Redis for frequently accessed data
+- **Load Balancing**: Handle high traffic during peak times
+- **Data Analytics**: Real-time market trend analysis
+
+---
+
+## 5. Phase 13: Advanced Genetics & Evolution
 
 ### 4.1 Complex Gene Expression
 
