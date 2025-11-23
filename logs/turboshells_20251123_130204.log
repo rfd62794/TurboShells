@@ -1,0 +1,2 @@
+2025-11-23 13:02:04,870 - monitoring_system - INFO - Integrated monitoring system initialized
+2025-11-23 13:02:04,871 - overlay - ERROR - Failed to initialize overlay: font not initialized
