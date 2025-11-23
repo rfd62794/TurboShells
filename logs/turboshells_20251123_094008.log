@@ -1,0 +1,8 @@
+2025-11-23 09:40:08,539 - core.config - INFO - Configuration loaded successfully
+2025-11-23 09:40:08,556 - core.graphics_manager - INFO - Loaded graphics settings: 1024x768
+2025-11-23 09:40:08,684 - core.graphics_manager - INFO - Display initialized: (1024, 768), Fullscreen: False
+2025-11-23 09:40:08,693 - core.audio_manager - INFO - Loaded audio settings: Master Volume 1.0, Enabled True
+2025-11-23 09:40:09,478 - core.audio_manager - INFO - Audio system initialized successfully
+2025-11-23 09:40:09,483 - core.config - ERROR - Failed to save configuration: [WinError 183] Cannot create a file when that file already exists: 'config\\settings.json' -> 'config\\settings.json.bak'
+2025-11-23 09:40:09,484 - core.audio_manager - INFO - Master volume set to 0.50
+2025-11-23 09:40:09,509 - core.config - ERROR - Failed to save configuration: [WinError 183] Cannot create a file when that file already exists: 'config\\settings.json' -> 'config\\settings.json.bak'
