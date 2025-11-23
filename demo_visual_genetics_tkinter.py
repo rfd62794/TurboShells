@@ -279,8 +279,15 @@ class VisualGeneticsDemo:
         stats_text += f"Genetic Pool Influence: {pool_stats['average_weight']:.2f} average weight\n"
         
         if pool_stats['most_influenced_traits']:
-            traits = ', '.join(pool_stats['most_influenced_traits'][:3])
-            stats_text += f"Most Influenced Traits: {traits}"
+            # Handle both string and tuple formats
+            traits = pool_stats['most_influenced_traits']
+            if traits and isinstance(traits[0], tuple):
+                # Extract trait names from tuples
+                trait_names = [trait[0] for trait in traits[:3]]
+            else:
+                trait_names = traits[:3]
+            traits_str = ', '.join(trait_names)
+            stats_text += f"Most Influenced Traits: {traits_str}"
         
         self.stats_label.config(text=stats_text)
     
