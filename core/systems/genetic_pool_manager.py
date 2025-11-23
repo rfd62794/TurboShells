@@ -199,7 +199,7 @@ class GeneticPoolManager:
         """Initialize genetic pools for all genes"""
         pools = {}
         
-        for gene_name, gene_def in self.visual_genetics.gene_definitions.items():
+        for gene_name, gene_def in self.visual_genetics.gene_definitions.definitions.items():
             gene_type = gene_def['type']
             default_value = gene_def['default']
             
@@ -390,7 +390,7 @@ class GeneticPoolManager:
         """Generate genetics influenced by the current pool"""
         influenced_genetics = {}
         
-        for gene_name, gene_def in self.visual_genetics.gene_definitions.items():
+        for gene_name, gene_def in self.visual_genetics.gene_definitions.definitions.items():
             if gene_name in self.genetic_pools:
                 pool = self.genetic_pools[gene_name]
                 influenced_value = pool.generate_influenced_value(self.visual_genetics)

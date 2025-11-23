@@ -14,10 +14,10 @@ from . import systems
 
 # Convenience imports for backward compatibility
 from genetics import VisualGenetics
-from rendering import DirectTurtleRenderer, get_direct_renderer
-from voting import VotingSystem, DesignPackage
-from game import Turtle, GameState, KeyboardHandler, RaceTrack, Simulation
-from systems import StateHandler, GeneticPoolManager, PatternGenerators
+from .rendering import DirectTurtleRenderer, get_direct_renderer
+from .voting import VotingSystem, DesignPackage
+from .game import Turtle, KeyboardHandler, compute_turtle_cost, generate_random_turtle, breed_turtles, generate_track, get_terrain_at, run_race
+from .systems import StateHandler, GeneticPoolManager, PatternGenerators
 
 __all__ = [
     # Sub-modules
@@ -25,7 +25,7 @@ __all__ = [
     
     # Main classes
     'VisualGenetics', 'DirectTurtleRenderer', 'VotingSystem', 'DesignPackage',
-    'Turtle', 'Race', 'GameState', 'KeyboardHandler', 'RaceTrack', 'Simulation',
+    'Turtle', 'KeyboardHandler', 'compute_turtle_cost', 'generate_random_turtle', 'breed_turtles', 'generate_track', 'get_terrain_at', 'run_race',
     'StateHandler', 'GeneticPoolManager', 'PatternGenerators',
     
     # Convenience functions
