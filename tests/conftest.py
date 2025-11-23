@@ -53,8 +53,6 @@ def sample_turtle(sample_turtle_data):
         recovery=sample_turtle_data.recovery,
         swim=sample_turtle_data.swim,
         climb=sample_turtle_data.climb,
-        age=sample_turtle_data.age,
-        is_active=sample_turtle_data.is_active
     )
 
 
