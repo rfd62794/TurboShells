@@ -74,28 +74,81 @@ If you prefer manual setup:
 
 ### Development Tools
 
-This project includes several development tools to maintain code quality:
+This project includes a comprehensive development setup with professional code quality tools:
 
-- **Black**: Code formatter for consistent style
-- **Pylint**: Code quality and error checking
-- **PyTest**: Testing framework with coverage
-- **Pre-commit**: Automatic code quality checks before commits
+#### 🎨 Code Quality Tools
+- **Black**: Automatic code formatter for consistent style (88 character line length)
+- **Pylint**: Code quality and error checking with game-development-friendly rules
+- **isort**: Import statement organizer
+- **mypy**: Static type checking (optional)
+
+#### 🧪 Testing Framework
+- **PyTest**: Testing framework with comprehensive test suite
+- **pytest-cov**: Coverage reporting with HTML output
+- **pytest-mock**: Mocking support for isolated testing
+- **pytest-xdist**: Parallel testing for faster test runs
+
+#### 📊 Code Analysis
+- **Coverage**: Advanced coverage measurement and reporting
+- **Bandit**: Security vulnerability scanning
+- **Memory Profiler**: Memory usage analysis
+- **Line Profiler**: Performance profiling
+
+#### 📚 Documentation
+- **Sphinx**: Documentation generation
+- **ReadTheDocs Theme**: Professional documentation styling
+
+#### 🔧 Development Workflow
+- **Pre-commit**: Automatic quality checks before commits
+- **Build Tools**: Package building and publishing utilities
 
 #### Running Development Tools
 
 ```bash
-# Format code
-black .
+# Code formatting
+python -m black src/ tests/
 
-# Lint code
-pylint .
+# Import sorting
+python -m isort src/ tests/
 
-# Run tests
-pytest tests/ -v
+# Code linting
+python -m pylint src/
+
+# Type checking (optional)
+python -mypy src/
+
+# Run all tests
+python -m pytest tests/ -v
 
 # Run tests with coverage
-pytest tests/ --cov=. --cov-report=html
+python -m pytest tests/ --cov=. --cov-report=html --cov-report=term-missing
+
+# Run tests in parallel
+python -m pytest tests/ -n auto
+
+# Security scanning
+python -m bandit -r src/
+
+# Performance profiling
+python -m memory_profiler src/main.py
 ```
+
+#### Quality Gates
+
+The project enforces several quality standards:
+- **Code Formatting**: All code must be Black-formatted
+- **Linting**: Pylint score of 8.0+ for new code
+- **Test Coverage**: Minimum 70% coverage for core modules
+- **Documentation**: All public functions must have docstrings
+
+#### IDE Configuration
+
+For optimal development experience, configure your IDE with:
+- **Python Interpreter**: Point to your virtual environment
+- **Code Formatting**: Enable Black integration
+- **Linting**: Enable Pylint integration
+- **Testing**: Configure PyTest test discovery
+- **Debugging**: Set breakpoints in `src/main.py`
 
 ## 🕹️ How to Play
 
