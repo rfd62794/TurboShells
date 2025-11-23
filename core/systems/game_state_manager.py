@@ -138,12 +138,12 @@ class GameStateManager:
         return roster, retired_roster
     
     def create_save_data(self, roster: List[Optional[Turtle]], retired_roster: List[Turtle], 
-                        money: int, state: str, race_results: List) -> Tuple[Dict, List[Dict], Dict]:
+                        money: int, state: str, race_results: List) -> Tuple[Any, List[Any], Any]:
         """
         Convert current game state to save data structures
         
         Returns:
-            Tuple of (game_data_dict, turtle_data_list, preferences_dict)
+            Tuple of (GameData, List[TurtleData], PlayerPreferences)
         """
         from core.data import (
             GameData, TurtleData, PlayerPreferences, create_default_preference_data,
@@ -157,116 +157,128 @@ class GameStateManager:
         if not self.player_id:
             self.player_id = f"player_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
         
-        # Convert game state to dictionary
-        game_state_dict = {
-            "money": money,
-            "current_phase": state,
-            "unlocked_features": ["roster", "racing", "voting"],
-            "tutorial_progress": {
+        # Create game state data
+        game_state = GameStateData(
+            money=money,
+            current_phase=state,
+            unlocked_features=["roster", "racing", "voting"],
+            tutorial_progress={
                 "roster_intro": True,
                 "racing_basics": True,
                 "breeding_intro": False,
                 "voting_system": True
             },
-            "session_stats": {
-                "total_playtime_minutes": 0,
-                "races_completed": len(race_results),
-                "turtles_bred": 0,
-                "votes_cast": 0
-            }
-        }
+            session_stats=SessionStats(
+                total_playtime_minutes=0,
+                races_completed=len(race_results),
+                turtles_bred=0,
+                votes_cast=0
+            )
+        )
         
         # Convert turtles to data structures
         turtle_data_list = self._convert_turtles_to_save_data(roster, retired_roster)
         
-        # Create game data dictionary
-        game_data_dict = {
-            "version": "2.2.0",
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "player_id": self.player_id,
-            "game_state": game_state_dict,
-            "economy": {
-                "total_earned": money,
-                "total_spent": 0,
-                "transaction_history": []
-            },
-            "roster": {
-                "active_slots": 3,
-                "active_turtles": [f"turtle_{i:03d}" for i, t in enumerate(roster) if t],
-                "retired_turtles": [f"turtle_retired_{i:03d}" for i in range(len(retired_roster))],
-                "max_retired": 20
-            },
-            "last_sessions": []
-        }
+        # Create game data object
+        game_data = GameData(
+            version="2.2.0",
+            timestamp=datetime.now(timezone.utc).isoformat(),
+            player_id=self.player_id,
+            game_state=game_state,
+            economy=EconomicData(
+                total_earned=money,
+                total_spent=0,
+                transaction_history=[]
+            ),
+            roster=RosterData(
+                active_slots=3,
+                active_turtles=[f"turtle_{i:03d}" for i, t in enumerate(roster) if t],
+                retired_turtles=[f"turtle_retired_{i:03d}" for i in range(len(retired_roster))],
+                max_retired=20
+            ),
+            last_sessions=[]
+        )
         
-        # Get or create preferences dictionary
-        preferences_dict = create_default_preference_data(self.player_id)
-        if hasattr(preferences_dict, '__dict__'):
-            preferences_dict = preferences_dict.__dict__
+        # Get or create preferences object
+        preferences = create_default_preference_data(self.player_id)
         
-        return game_data_dict, turtle_data_list, preferences_dict
+        return game_data, turtle_data_list, preferences
     
     def _convert_turtles_to_save_data(self, roster: List[Optional[Turtle]], 
-                                    retired_roster: List[Turtle]) -> List[Dict]:
-        """Convert turtle objects to save data dictionaries"""
+                                    retired_roster: List[Turtle]) -> List[Any]:
+        """Convert turtle objects to TurtleData objects"""
+        from core.data import (
+            TurtleData, TurtleParents, GeneTrait, BaseStats, GeneticModifiers, 
+            TurtleStats, TerrainPerformance, TurtlePerformance
+        )
+        
         turtle_data_list = []
         
         # Process active roster
         for i, turtle in enumerate(roster):
             if turtle:
                 turtle_id = f"turtle_{i:03d}"
-                turtle_dict = self._create_turtle_dict(turtle, turtle_id)
-                turtle_data_list.append(turtle_dict)
+                turtle_data = self._create_turtle_data(turtle, turtle_id)
+                turtle_data_list.append(turtle_data)
         
         # Process retired roster
         for i, turtle in enumerate(retired_roster):
             turtle_id = f"turtle_retired_{i:03d}"
-            turtle_dict = self._create_turtle_dict(turtle, turtle_id)
-            turtle_data_list.append(turtle_dict)
+            turtle_data = self._create_turtle_data(turtle, turtle_id)
+            turtle_data_list.append(turtle_data)
         
         return turtle_data_list
     
-    def _create_turtle_dict(self, turtle: Turtle, turtle_id: str) -> Dict:
-        """Create save data dictionary for a single turtle"""
-        return {
-            "turtle_id": turtle_id,
-            "name": turtle.name,
-            "generation": 0,
-            "created_timestamp": "2025-11-22T00:00:00Z",
-            "parents": None,
-            "genetics": {
-                "shell_pattern": {"value": "hex", "dominance": 1.0, "mutation_source": "random"},
-                "shell_color": {"value": "#4A90E2", "dominance": 1.0, "mutation_source": "random"},
-                "pattern_color": {"value": "#E74C3C", "dominance": 1.0, "mutation_source": "random"},
-                "limb_shape": {"value": "flippers", "dominance": 1.0, "mutation_source": "random"},
-                "limb_length": {"value": 1.0, "dominance": 1.0, "mutation_source": "random"},
-                "head_size": {"value": 1.0, "dominance": 1.0, "mutation_source": "random"},
-                "eye_color": {"value": "#2ECC71", "dominance": 1.0, "mutation_source": "random"},
-                "skin_texture": {"value": "smooth", "dominance": 1.0, "mutation_source": "random"}
+    def _create_turtle_data(self, turtle: Turtle, turtle_id: str) -> Any:
+        """Create TurtleData object for a single turtle"""
+        from core.data import (
+            TurtleData, TurtleParents, GeneTrait, BaseStats, GeneticModifiers, 
+            TurtleStats, TerrainPerformance, TurtlePerformance
+        )
+        
+        return TurtleData(
+            turtle_id=turtle_id,
+            name=turtle.name,
+            generation=0,
+            created_timestamp="2025-11-22T00:00:00Z",
+            parents=TurtleParents(
+                parent1_id=None,
+                parent2_id=None,
+                breeding_timestamp=None
+            ),
+            genetics={
+                "shell_pattern": GeneTrait(value="hex", dominance=1.0, mutation_source="random"),
+                "shell_color": GeneTrait(value="#4A90E2", dominance=1.0, mutation_source="random"),
+                "pattern_color": GeneTrait(value="#E74C3C", dominance=1.0, mutation_source="random"),
+                "limb_shape": GeneTrait(value="flippers", dominance=1.0, mutation_source="random"),
+                "limb_length": GeneTrait(value=1.0, dominance=1.0, mutation_source="random"),
+                "head_size": GeneTrait(value=1.0, dominance=1.0, mutation_source="random"),
+                "eye_color": GeneTrait(value="#2ECC71", dominance=1.0, mutation_source="random"),
+                "skin_texture": GeneTrait(value="smooth", dominance=1.0, mutation_source="random")
             },
-            "stats": {
-                "speed": turtle.speed,
-                "max_energy": turtle.max_energy,
-                "recovery": turtle.recovery,
-                "swim": turtle.swim,
-                "climb": turtle.climb,
-                "base_stats": {
-                    "speed": turtle.speed,
-                    "max_energy": turtle.max_energy,
-                    "recovery": turtle.recovery,
-                    "swim": turtle.swim,
-                    "climb": turtle.climb
-                },
-                "genetic_modifiers": {"speed": 0, "max_energy": 0, "recovery": 0, "swim": 0, "climb": 0}
-            },
-            "performance": {
-                "race_history": [],
-                "total_races": 0,
-                "wins": 0,
-                "average_position": 0.0,
-                "total_earnings": 0
-            }
-        }
+            stats=TurtleStats(
+                speed=BaseStats(value=turtle.speed, base_value=turtle.speed),
+                max_energy=BaseStats(value=turtle.max_energy, base_value=turtle.max_energy),
+                recovery=BaseStats(value=turtle.recovery, base_value=turtle.recovery),
+                swim=BaseStats(value=turtle.swim, base_value=turtle.swim),
+                climb=BaseStats(value=turtle.climb, base_value=turtle.climb),
+                genetic_modifiers=GeneticModifiers(
+                    speed=0, max_energy=0, recovery=0, swim=0, climb=0
+                )
+            ),
+            performance=TurtlePerformance(
+                race_history=[],
+                total_races=0,
+                wins=0,
+                average_position=0.0,
+                total_earnings=0,
+                terrain_performance={
+                    "grass": TerrainPerformance(bonus=0.0, races=0, wins=0),
+                    "water": TerrainPerformance(bonus=0.0, races=0, wins=0),
+                    "rock": TerrainPerformance(bonus=0.0, races=0, wins=0)
+                }
+            )
+        )
     
     def auto_save(self, roster: List[Optional[Turtle]], retired_roster: List[Turtle],
                   money: int, state: str, race_results: List, trigger: str = "manual") -> bool:
