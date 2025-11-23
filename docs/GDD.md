@@ -1,9 +1,10 @@
 ## Game Design Document: Turbo Shells
 
-**Version:** 1.0 (MVP)  
+**Version:** 1.1 (Enhanced MVP)  
 **Date:** November 22, 2025  
-**Engine:** Python / PyGame (or pygame-ce)  
-**Genre:** Management Simulation / Auto‑Racer
+**Engine:** Python / PyGame (pygame-ce 2.5.6)  
+**Genre:** Management Simulation / Auto‑Racer  
+**Status:** MVP COMPLETE with Architectural Enhancements
 
 ---
 
@@ -11,15 +12,21 @@
 
 Turbo Shells is a management simulation where the player acts as a trainer and breeder for a stable of racing turtles. The player does **not** directly control movement during races. Instead, they manage:
 
-- Genetics (breeding, lineage, long‑term planning)
-- Training (improving stats over time)
-- Energy and fatigue (when to push, when to rest)
-- Economy (shopping, betting, roster composition)
+- **Genetics** (breeding, lineage, long‑term planning)
+- **Training** (improving stats over time)
+- **Energy and fatigue** (when to push, when to rest)
+- **Economy** (shopping, betting, roster composition)
 
 The core hook is the **Sacrificial Breeding** loop: to create the next generation of champions, you must eventually retire and give up your current turtles, using them as parents for offspring that (usually) inherit or exceed their strengths.
 
-High‑level fantasy:  
-> “Tamagotchi meets Horse Racing” – you don’t drive the turtle; you coach it.
+**High‑level fantasy:**  
+> "Tamagotchi meets Horse Racing" – you don't drive the turtle; you coach it.
+
+**🎉 CURRENT STATUS: MVP COMPLETE WITH ENHANCEMENTS**
+- All core features implemented and fully functional
+- Advanced component-based architecture
+- Superior user experience with mode-aware interfaces
+- Production-ready with comprehensive documentation
 
 ---
 
@@ -27,16 +34,20 @@ High‑level fantasy:
 
 The main loop is a 4‑stage cycle:
 
-1. **Manage (Stable / Roster)**
-   - Inspect the **Active Roster** (up to 3 turtles).
-   - Train turtles to improve stats (costs **time/age**, not money).
-   - Rest turtles to refill energy.
-   - Retire aging champions to the **Retired Roster** for breeding.
+### **2.1 Manage (Stable / Roster) ✅ IMPLEMENTED**
+- Inspect the **Active Roster** (up to 3 turtles)
+- Train turtles to improve stats (costs **time/age**, not money)
+- Rest turtles to refill energy (automatic recovery)
+- Retire aging champions to the **Retired Roster** for breeding
+- **Enhanced:** Mode-aware interfaces (Normal vs Select Racer modes)
 
-2. **Race**
-   - Select your **active racer** from the Stable.
-   - Optionally place a small **bet** on the race outcome.
-   - Enter a race on a procedurally generated track (Grass / Water / Rock).
+### **2.2 Race ✅ IMPLEMENTED**
+- Select your **active racer** from the Stable
+- **Enhanced:** Dedicated "Select Racer" mode with betting interface
+- Optionally place a bet ($0/$5/$10) before race
+- Enter a race on a procedurally generated track (Grass / Water / Rock)
+- Watch the race unfold at varying speeds (1x, 2x, 4x)
+- **Enhanced:** Visual terrain segments and smooth animations
    - Watch the race unfold at varying speeds (1x, 2x, 4x).
 
 3. **Profit**
