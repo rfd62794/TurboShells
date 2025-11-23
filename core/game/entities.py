@@ -7,6 +7,9 @@ movement/energy logic. It must not import or depend on any UI code.
 import random
 import uuid
 
+# Import the new modular genetics system
+from genetics import VisualGenetics
+
 # --- SHARED PHYSICS CONSTANTS ---
 # These are the "Balanced" values found in your simulation
 TERRAIN_DIFFICULTY = 0.8
@@ -14,7 +17,7 @@ RECOVERY_RATE = 0.1
 RECOVERY_THRESHOLD = 0.5
 
 class Turtle:
-    def __init__(self, name, speed, energy, recovery, swim, climb):
+    def __init__(self, name, speed, energy, recovery, swim, climb, genetics=None):
         # Identity
         self.id = str(uuid.uuid4())[:8] # Unique ID for tracking
         self.name = name
@@ -42,28 +45,14 @@ class Turtle:
         self.total_races = 0
         self.total_earnings = 0
         
-        # Visual Genetics (Foundation for future shell styles/colors)
-        self.visual_genetics = {
-            # Shell color genes (RGB values 0-255)
-            "shell_base_color": [random.randint(50, 200), random.randint(50, 150), random.randint(50, 100)],
-            "shell_pattern_color": [random.randint(100, 255), random.randint(100, 255), random.randint(100, 255)],
-            "shell_accent_color": [random.randint(150, 255), random.randint(150, 255), random.randint(150, 255)],
-            
-            # Pattern genes (0-10 scale)
-            "shell_pattern_type": random.randint(0, 5),  # 0=plain, 1=stripes, 2=spots, 3=spiral, 4=geometric, 5=complex
-            "shell_pattern_density": random.randint(1, 10),
-            "shell_pattern_size": random.randint(1, 10),
-            
-            # Body genes
-            "body_base_color": [random.randint(100, 200), random.randint(150, 200), random.randint(50, 150)],
-            "body_pattern_type": random.randint(0, 3),  # 0=plain, 1=mottled, 2=gradient, 3=two-tone
-            
-            # Physical traits (affect future SVG generation)
-            "shell_size_factor": random.uniform(0.8, 1.2),  # Size variation
-            "shell_curvature": random.uniform(0.8, 1.2),  # Shell shape
-            "head_size_factor": random.uniform(0.9, 1.1),
-            "limb_length_factor": random.uniform(0.9, 1.1),
-        }
+        # Visual Genetics - Use new modular system
+        self.genetics_system = VisualGenetics()
+        
+        # Use provided genetics or generate random ones
+        if genetics is not None:
+            self.visual_genetics = genetics.copy()
+        else:
+            self.visual_genetics = self.genetics_system.generate_random_genetics()
         
         # Lineage tracking (for inheritance system)
         self.parent_ids = []  # Will store parent IDs when breeding is implemented
@@ -175,6 +164,57 @@ class Turtle:
     @property
     def climb(self):
         return self.stats["climb"]
+    
+    # --- Genetics Methods ---
+    
+    def get_genetic_trait(self, trait_name: str):
+        """Get a specific genetic trait value"""
+        return self.visual_genetics.get(trait_name)
+    
+    def set_genetic_trait(self, trait_name: str, value):
+        """Set a specific genetic trait value"""
+        self.visual_genetics[trait_name] = value
+    
+    def get_all_genetics(self):
+        """Get complete genetics dictionary"""
+        return self.visual_genetics.copy()
+    
+    def inherit_from_parents(self, parent1_genetics, parent2_genetics):
+        """Create child genetics from two parents"""
+        self.visual_genetics = self.genetics_system.inherit_genetics(parent1_genetics, parent2_genetics)
+        self.parent_ids = [parent1_genetics.get('turtle_id'), parent2_genetics.get('turtle_id')]
+        self.generation = max(parent1_genetics.get('generation', 0), parent2_genetics.get('generation', 0)) + 1
+    
+    def mutate_trait(self, trait_name: str = None):
+        """Apply mutation to a specific trait or random trait"""
+        if trait_name is None:
+            # Pick a random trait to mutate
+            trait_name = random.choice(self.genetics_system.get_gene_definitions().get_all_gene_names())
+        
+        current_value = self.visual_genetics.get(trait_name)
+        if current_value is not None:
+            mutated_value = self.genetics_system.mutate_gene(trait_name, current_value)
+            self.visual_genetics[trait_name] = mutated_value
+    
+    def get_trait_summary(self) -> str:
+        """Get human-readable summary of key genetic traits"""
+        traits = []
+        
+        # Shell traits
+        shell_pattern = self.get_genetic_trait('shell_pattern_type')
+        shell_color = self.get_genetic_trait('shell_base_color')
+        traits.append(f"{shell_pattern} shell")
+        
+        # Limb traits
+        limb_shape = self.get_genetic_trait('limb_shape')
+        leg_length = self.get_genetic_trait('leg_length')
+        traits.append(f"{limb_shape} legs")
+        
+        # Body traits
+        body_pattern = self.get_genetic_trait('body_pattern_type')
+        traits.append(f"{body_pattern} body")
+        
+        return ", ".join(traits)
         
     def __repr__(self):
         return f"<{self.name} (Spd:{self.stats['speed']})>"
