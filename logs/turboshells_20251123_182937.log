@@ -1,0 +1,66 @@
+2025-11-23 18:29:37,771 - monitoring_system - INFO - Integrated monitoring system initialized
+2025-11-23 18:29:37,917 - managers.save_manager - INFO - SaveManager initialized with directory: C:\Users\cheat\AppData\Roaming\TurboShells
+2025-11-23 18:29:37,918 - managers.save_manager - INFO - SaveManager initialized with directory: C:\Users\cheat\AppData\Roaming\TurboShells
+2025-11-23 18:29:37,951 - core.config - INFO - Configuration loaded successfully
+2025-11-23 18:29:37,954 - core.graphics_manager - INFO - Loaded graphics settings: 1024x768
+2025-11-23 18:29:38,187 - core.graphics_manager - INFO - Display initialized: (1024, 768), Fullscreen: False
+2025-11-23 18:29:38,190 - core.audio_manager - INFO - Loaded audio settings: Master Volume 1.0, Enabled True
+2025-11-23 18:29:38,503 - core.audio_manager - INFO - Audio system initialized successfully
+2025-11-23 18:29:38,512 - overlay - ERROR - Failed to initialize overlay: font not initialized
+2025-11-23 18:29:38,666 - main - INFO - Initializing TurboShells game...
+2025-11-23 18:29:38,667 - monitoring - WARNING - Low FPS: 0.0
+2025-11-23 18:29:38,667 - monitoring - INFO - Real-time monitoring started
+2025-11-23 18:29:38,668 - statistics - INFO - New gaming session started
+2025-11-23 18:29:38,668 - monitoring_system - INFO - Monitoring system started
+2025-11-23 18:29:38,668 - main - INFO - Monitoring system started
+2025-11-23 18:29:38,671 - ui.settings_view - INFO - Settings view initialized
+2025-11-23 18:29:38,671 - managers.settings_manager - INFO - Settings manager initialized
+2025-11-23 18:29:38,672 - managers.save_manager - INFO - SaveManager initialized with directory: C:\Users\cheat\AppData\Roaming\TurboShells
+2025-11-23 18:29:38,687 - core.auto_load_system - INFO - Save file found at C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 18:29:38,687 - core.auto_load_system - INFO - Attempting to restore game state from save file
+2025-11-23 18:29:38,707 - managers.save_manager - INFO - Game loaded successfully from C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 18:29:38,708 - core.auto_load_system - INFO - Successfully restored game state for player player_20251123_112134
+2025-11-23 18:29:50,179 - statistics - INFO - Race recorded: Won, $50.00, Position 1
+2025-11-23 18:29:50,193 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 18:29:50,196 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 18:29:51,897 - statistics - INFO - Race recorded: Won, $50.00, Position 1
+2025-11-23 18:29:51,902 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 18:29:51,903 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 18:29:52,525 - statistics - INFO - Race recorded: Won, $50.00, Position 1
+2025-11-23 18:29:52,534 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 18:29:52,536 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 18:29:53,115 - statistics - INFO - Race recorded: Won, $50.00, Position 1
+2025-11-23 18:29:53,124 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 18:29:53,126 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 18:29:53,435 - statistics - INFO - Race recorded: Won, $50.00, Position 1
+2025-11-23 18:29:53,442 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 18:29:53,444 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 18:29:53,749 - statistics - INFO - Race recorded: Won, $50.00, Position 1
+2025-11-23 18:29:53,757 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 18:29:53,759 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 18:29:53,897 - statistics - INFO - Race recorded: Won, $50.00, Position 1
+2025-11-23 18:29:53,903 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 18:29:53,905 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 18:29:54,099 - statistics - INFO - Race recorded: Won, $50.00, Position 1
+2025-11-23 18:29:54,107 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 18:29:54,143 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 18:29:54,396 - statistics - INFO - Race recorded: Won, $50.00, Position 1
+2025-11-23 18:29:54,404 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 18:29:54,407 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 18:29:54,578 - statistics - INFO - Race recorded: Won, $50.00, Position 1
+2025-11-23 18:29:54,585 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 18:29:54,587 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 18:29:54,878 - statistics - INFO - Race recorded: Won, $50.00, Position 1
+2025-11-23 18:29:54,883 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 18:29:54,885 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 18:29:55,078 - statistics - INFO - Race recorded: Won, $50.00, Position 1
+2025-11-23 18:29:55,085 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 18:29:55,087 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 18:29:55,314 - statistics - INFO - Race recorded: Won, $50.00, Position 1
+2025-11-23 18:29:55,323 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 18:29:55,325 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 18:29:56,428 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 18:29:56,429 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 18:29:56,708 - monitoring - INFO - Real-time monitoring stopped
+2025-11-23 18:29:56,709 - statistics - INFO - Session ended: {'start_time': '2025-11-23T18:29:38.668300', 'duration_minutes': 0, 'races_completed': 13, 'races_won': 13, 'earnings': 650.0}
+2025-11-23 18:29:56,710 - monitoring_system - INFO - Monitoring system stopped
