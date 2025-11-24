@@ -217,7 +217,7 @@ class TestSettingsViewRefactored(unittest.TestCase):
     def test_settings_callbacks(self):
         """Test that settings callbacks work correctly."""
         # Test fullscreen toggle
-        with patch('core.config.config_manager') as mock_config:
+        with patch('ui.components.settings_view_refactored.config_manager') as mock_config:
             mock_config.get_config.return_value.graphics.fullscreen = False
             
             self.settings_view._on_fullscreen_toggle()
@@ -226,9 +226,9 @@ class TestSettingsViewRefactored(unittest.TestCase):
             self.assertTrue(mock_config.get_config.return_value.graphics.fullscreen)
         
         # Test apply settings
-        with patch('core.config.config_manager') as mock_config:
-            with patch('core.graphics_manager.graphics_manager') as mock_graphics:
-                with patch('core.audio_manager.audio_manager') as mock_audio:
+        with patch('ui.components.settings_view_refactored.config_manager') as mock_config:
+            with patch('ui.components.settings_view_refactored.graphics_manager') as mock_graphics:
+                with patch('ui.components.settings_view_refactored.audio_manager') as mock_audio:
                     
                     self.settings_view._apply_settings()
                     
@@ -241,9 +241,9 @@ class TestSettingsViewRefactored(unittest.TestCase):
                     self.assertFalse(self.settings_view.visible)
         
         # Test reset settings
-        with patch('core.config.config_manager') as mock_config:
-            with patch('core.graphics_manager.graphics_manager') as mock_graphics:
-                with patch('core.audio_manager.audio_manager') as mock_audio:
+        with patch('ui.components.settings_view_refactored.config_manager') as mock_config:
+            with patch('ui.components.settings_view_refactored.graphics_manager') as mock_graphics:
+                with patch('ui.components.settings_view_refactored.audio_manager') as mock_audio:
                     
                     self.settings_view._reset_settings()
                     

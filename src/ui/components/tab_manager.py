@@ -229,6 +229,8 @@ class TabManager:
         for tab_id, tab_element in self.tabs.items():
             if tab_element.rect.collidepoint(mouse_pos):
                 if tab_element.config.enabled:
+                    # Switch to the clicked tab
+                    self.switch_to_tab(tab_id)
                     return tab_id
                 else:
                     self.logger.debug(f"Clicked on disabled tab {tab_id.value}")

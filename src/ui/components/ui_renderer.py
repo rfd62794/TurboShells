@@ -61,20 +61,30 @@ class StyleManager:
     def __init__(self):
         """Initialize style manager."""
         self.logger = get_logger(__name__)
-        self.fonts = self._initialize_fonts()
+        self.fonts = {}
+        self._initialize_fonts_safe()
     
-    def _initialize_fonts(self) -> Dict[str, pygame.font.Font]:
-        """Initialize fonts for the UI."""
-        fonts = {}
+    def _initialize_fonts_safe(self) -> None:
+        """Initialize fonts for the UI with error handling."""
         try:
+            # Try to initialize pygame font system
+            pygame.font.init()
+            
             for name, size in self.FONT_SIZES.items():
-                fonts[name] = pygame.font.Font(None, size)
+                try:
+                    self.fonts[name] = pygame.font.Font(None, size)
+                except Exception as e:
+                    self.logger.warning(f"Failed to create font {name} size {size}: {e}")
+                    # Create a simple fallback font
+                    self.fonts[name] = pygame.font.SysFont("Arial", size)
+            
+            self.logger.debug("Fonts initialized successfully")
+            
         except Exception as e:
-            self.logger.error(f"Failed to initialize fonts: {e}")
-            # Fallback to default font
+            self.logger.error(f"Failed to initialize font system: {e}")
+            # Create minimal font fallbacks without pygame.font.init()
             for name, size in self.FONT_SIZES.items():
-                fonts[name] = pygame.font.SysFont("Arial", size)
-        return fonts
+                self.fonts[name] = None
     
     def get_color(self, color_name: str) -> Tuple[int, int, int]:
         """Get color by name."""
@@ -82,7 +92,23 @@ class StyleManager:
     
     def get_font(self, font_name: str) -> pygame.font.Font:
         """Get font by name."""
-        return self.fonts.get(font_name, self.fonts["label"])
+        font = self.fonts.get(font_name, self.fonts.get("label"))
+        
+        if font is None:
+            # Create a fallback font on demand
+            try:
+                font = pygame.font.SysFont("Arial", self.FONT_SIZES.get(font_name, 14))
+                self.fonts[font_name] = font
+            except Exception:
+                # Last resort - return a dummy font object
+                class DummyFont:
+                    def render(self, text, antialias, color):
+                        return pygame.Surface((1, 1))
+                    def size(self, text):
+                        return (len(text) * 8, 16)
+                font = DummyFont()
+        
+        return font
 
 
 class UIRenderer:
