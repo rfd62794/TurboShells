@@ -1,4 +1,4 @@
-from core.game.game_state import generate_random_turtle, compute_turtle_cost
+from game.game_state import generate_random_turtle, compute_turtle_cost
 from settings import *
 import pygame
 import ui.layouts.positions as layout

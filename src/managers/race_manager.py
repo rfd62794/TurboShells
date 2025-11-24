@@ -1,7 +1,7 @@
-from core.game.game_state import generate_random_turtle, generate_balanced_opponent
+from game.game_state import generate_random_turtle, generate_balanced_opponent
 from settings import *
 import ui.layout as layout
-from core.game.race_track import generate_track, get_terrain_at
+from game.race_track import generate_track, get_terrain_at
 from core.monitoring_system import monitoring_system
 
 

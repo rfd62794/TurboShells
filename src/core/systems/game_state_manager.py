@@ -5,7 +5,7 @@ Handles game state initialization, loading, and saving logic
 
 from typing import Optional, Tuple, Dict, Any, List
 from datetime import datetime, timezone
-from core.game.entities import Turtle
+from game.entities import Turtle
 from core.auto_load_system import auto_load_system
 from managers.save_manager import SaveManager
 

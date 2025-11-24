@@ -15,7 +15,6 @@ except ImportError:
 # Import all sub-modules
 from . import rendering
 from . import voting
-from . import game
 from . import systems
 from . import race_track
 
@@ -27,7 +26,7 @@ from .game_state import GameState, GameConfig, RaceState, StateManager
 if VisualGenetics:
     from .rendering import DirectTurtleRenderer, get_direct_renderer
     from .voting import VotingSystem, DesignPackage
-    from .game import (
+    from game import (
         Turtle,
         KeyboardHandler,
         compute_turtle_cost,

@@ -13,8 +13,8 @@ from ui.settings_view import SettingsView
 from ui.components.tab_manager import SettingsTab
 from ui.ui_components import Button, Checkbox, Slider, Dropdown, Panel, ComponentStyle
 from core.config import config_manager
-from core.graphics_manager import graphics_manager
-from core.audio_manager import audio_manager
+from audio.audio_manager import audio_manager
+from graphics.graphics_manager import graphics_manager
 from core.logging_config import get_logger
 
 

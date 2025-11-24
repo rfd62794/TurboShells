@@ -9,10 +9,10 @@ import pygame
 from typing import Dict, List, Tuple, Optional, Any, Callable
 from dataclasses import dataclass
 
-from core.config import config_manager
-from core.graphics_manager import graphics_manager
-from core.audio_manager import audio_manager
+from audio.audio_manager import audio_manager
+from graphics.graphics_manager import graphics_manager
 from core.logging_config import get_logger
+from core.config import config_manager
 
 from ui.components.tab_manager import TabManager, SettingsTab, TabConfig
 from ui.components.ui_renderer import UIRenderer, UIElement, StyleManager

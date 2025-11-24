@@ -29,15 +29,15 @@ except ImportError:
         STATE_VOTING = "voting"
         AUTO_SAVE_INTERVAL = 300  # 5 minutes in seconds
 
-from core.game.entities import Turtle
-from ui.renderer import Renderer
+from game.entities import Turtle
+from ui.views.renderer import Renderer
 from managers.shop_manager import ShopManager
 from managers.race_manager import RaceManager
 from managers.breeding_manager import BreedingManager
 from managers.roster_manager import RosterManager
-from core.game.game_state import generate_random_turtle
+from game.game_state import generate_random_turtle
 from core.systems.state_handler import StateHandler
-from core.game.keyboard_handler import KeyboardHandler
+from game.keyboard_handler import KeyboardHandler
 from core.systems.game_state_manager import GameStateManager
 from managers.save_manager import SaveManager
 from managers.settings_manager import SettingsManager

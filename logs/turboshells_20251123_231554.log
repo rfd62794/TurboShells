@@ -1,0 +1,67 @@
+2025-11-23 23:15:54,691 - monitoring_system - INFO - Integrated monitoring system initialized
+2025-11-23 23:15:54,793 - managers.save_manager - INFO - SaveManager initialized with directory: C:\Users\cheat\AppData\Roaming\TurboShells
+2025-11-23 23:15:54,793 - managers.save_manager - INFO - SaveManager initialized with directory: C:\Users\cheat\AppData\Roaming\TurboShells
+2025-11-23 23:15:54,816 - core.config - INFO - Configuration loaded successfully
+2025-11-23 23:15:54,817 - audio.audio_manager - INFO - Loaded audio settings: Master Volume 0.5, Enabled True
+2025-11-23 23:15:55,069 - audio.audio_manager - INFO - Audio system initialized successfully
+2025-11-23 23:15:55,072 - graphics.graphics_manager - INFO - Loaded graphics settings: 1024x768
+2025-11-23 23:15:55,125 - graphics.graphics_manager - INFO - Display initialized: (1024, 768), Fullscreen: False
+2025-11-23 23:15:55,132 - overlay - ERROR - Failed to initialize overlay: font not initialized
+2025-11-23 23:15:55,191 - main - INFO - Initializing TurboShells game...
+2025-11-23 23:15:55,193 - monitoring - WARNING - Low FPS: 0.0
+2025-11-23 23:15:55,193 - monitoring - INFO - Real-time monitoring started
+2025-11-23 23:15:55,193 - statistics - INFO - New gaming session started
+2025-11-23 23:15:55,194 - monitoring_system - INFO - Monitoring system started
+2025-11-23 23:15:55,194 - main - INFO - Monitoring system started
+2025-11-23 23:15:55,196 - components.settings_view_refactored - INFO - Refactored settings view initialized
+2025-11-23 23:15:55,197 - managers.settings_manager - INFO - Settings manager initialized
+2025-11-23 23:15:55,198 - managers.save_manager - INFO - SaveManager initialized with directory: C:\Users\cheat\AppData\Roaming\TurboShells
+2025-11-23 23:15:55,211 - core.auto_load_system - INFO - Save file found at C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 23:15:55,211 - core.auto_load_system - INFO - Attempting to restore game state from save file
+2025-11-23 23:15:55,231 - managers.save_manager - INFO - Game loaded successfully from C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 23:15:55,233 - core.auto_load_system - INFO - Successfully restored game state for player player_20251123_112134
+2025-11-23 23:15:59,056 - components.settings_view_refactored - INFO - Settings view shown
+2025-11-23 23:15:59,056 - managers.settings_manager - INFO - Settings shown, tab: graphics
+2025-11-23 23:16:00,663 - components.settings_view_refactored - INFO - Settings view hidden
+2025-11-23 23:16:07,266 - statistics - INFO - Race recorded: Won, $50.00, Position 1
+2025-11-23 23:16:07,271 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 23:16:07,272 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 23:16:13,403 - statistics - INFO - Turtle bred (total: 1)
+2025-11-23 23:16:13,407 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 23:16:13,408 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 23:16:25,339 - statistics - INFO - Turtle bred (total: 2)
+2025-11-23 23:16:25,345 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 23:16:25,347 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 23:16:28,563 - statistics - INFO - Turtle bred (total: 3)
+2025-11-23 23:16:28,567 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 23:16:28,568 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 23:16:31,708 - statistics - INFO - Turtle bred (total: 4)
+2025-11-23 23:16:31,713 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 23:16:31,714 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 23:16:35,033 - statistics - INFO - Turtle bred (total: 5)
+2025-11-23 23:16:35,037 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 23:16:35,038 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 23:16:37,444 - statistics - INFO - Turtle bred (total: 6)
+2025-11-23 23:16:37,447 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 23:16:37,449 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 23:16:39,718 - statistics - INFO - Turtle bred (total: 7)
+2025-11-23 23:16:39,724 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 23:16:39,725 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 23:16:42,439 - statistics - INFO - Turtle bred (total: 8)
+2025-11-23 23:16:42,444 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 23:16:42,446 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 23:16:45,235 - statistics - INFO - Turtle bred (total: 9)
+2025-11-23 23:16:45,238 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 23:16:45,239 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 23:16:47,419 - statistics - INFO - Turtle bred (total: 10)
+2025-11-23 23:16:47,423 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 23:16:47,424 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 23:16:53,092 - statistics - INFO - Turtle bred (total: 11)
+2025-11-23 23:16:53,096 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 23:16:53,097 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 23:16:56,657 - statistics - INFO - Turtle bred (total: 12)
+2025-11-23 23:16:56,661 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 23:16:56,662 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 23:16:59,599 - statistics - INFO - Turtle bred (total: 13)
+2025-11-23 23:16:59,604 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 23:16:59,605 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json

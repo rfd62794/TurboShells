@@ -1,7 +1,7 @@
 import pygame
 from settings import *
 import ui.layouts.positions as layout
-from ui.turtle_card import draw_stable_turtle_slot
+from ui.views.turtle_card import draw_stable_turtle_slot
 
 
 def draw_breeding(screen, font, game_state):
