@@ -31,6 +31,7 @@
   - Phase 22: SRP Separation → [phases/Phase_22_SRP_Separation.md](phases/Phase_22_SRP_Separation.md)
   - Phase 23: PyGame Separation → [phases/Phase_23_PyGame_Separation.md](phases/Phase_23_PyGame_Separation.md)
   - Phase 25: UI Component SRP → [phases/Phase_25_UI_Component_SRP.md](phases/Phase_25_UI_Component_SRP.md)
+  - Phase 26: Settings Integration Debugging → [phases/Phase_26_Settings_Integration_Debugging.md](phases/Phase_26_Settings_Integration_Debugging.md)
 
 ---
 
@@ -38,10 +39,11 @@
 
 ### **User Provided Phases (Pending)**
 1. ~~**Phase 21: Test Suite Extension** - Comprehensive testing infrastructure~~
-2. **Phase 22: SRP Separation** - Single Responsibility Principle refactoring **✅ IN PROGRESS**
+2. ~~**Phase 22: SRP Separation** - Single Responsibility Principle refactoring **✅ COMPLETE**~~
 3. **Phase 23: PyGame Separation** - Engine abstraction layer
 4. **Phase 24: Proper Organization Plan** - Codebase restructuring
 5. **Phase 25: UI Component SRP** - UI component modularization
+6. **Phase 26: Settings Integration Debugging** - Fix all settings menu interactions **🔄 NEW PRIORITY**
 
 ### **SHORT-TERM PRIORITY (2-4 months)**
 1. **Phase 7: Pond/Glade Environment** - Immediate visual payoff
@@ -185,9 +187,29 @@
 > **Detailed Plan**: See [phases/Phase_23_PyGame_Separation.md](phases/Phase_23_PyGame_Separation.md)
 > Engine abstraction layer with platform-independent graphics, input handling, audio systems, and multi-backend support for cross-platform deployment
 
-### **Phase 25: UI Component SRP** - **0% COMPLETE**
-> **Detailed Plan**: See [phases/Phase_25_UI_Component_SRP.md](phases/Phase_25_UI_Component_SRP.md)
-> UI component modularization with standardized base classes, component lifecycle management, comprehensive component library, theming, animation, and accessibility features
+### **Phase 26: Settings Integration Debugging** - **0% COMPLETE**
+> **Detailed Plan**: See [phases/Phase_26_Settings_Integration_Debugging.md](phases/Phase_26_Settings_Integration_Debugging.md)
+> Comprehensive debugging and fixing of all settings menu interactions to ensure complete functionality following the SRP refactoring
+> 
+> **🎯 Current Status:**
+> - ✅ **SRP Architecture**: Settings menu successfully refactored with modular components
+> - ✅ **Basic Functionality**: Settings menu opens, tabs switch, some settings work
+> - 🔄 **Known Issues**: Checkbox visual state, slider feedback, dropdown functionality, settings persistence
+> - 🔄 **Next Phase**: Debug all settings interactions for complete functionality
+> 
+> **🐛 Issues to Address:**
+> - **Graphics Tab**: Resolution dropdown, quality settings, VSync toggle
+> - **Audio Tab**: Volume sliders, audio enable toggle, real-time updates
+> - **Controls Tab**: Mouse sensitivity, invert mouse Y, key bindings
+> - **Gameplay Tab**: Difficulty settings, auto-save toggle, tutorial displays
+> - **System Tab**: Save file list, backup creation, privacy settings
+> 
+> **📋 Implementation Plan:**
+> - **Phase 26.1**: Issue assessment and documentation (1-2 days)
+> - **Phase 26.2**: Core UI interaction fixes (3-4 days)
+> - **Phase 26.3**: Settings callback implementation (4-5 days)
+> - **Phase 26.4**: Persistence and validation (2-3 days)
+> - **Phase 26.5**: Integration testing and polish (2-3 days)
 
 ---
 

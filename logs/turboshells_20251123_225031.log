@@ -1,0 +1,39 @@
+2025-11-23 22:50:31,504 - monitoring_system - INFO - Integrated monitoring system initialized
+2025-11-23 22:50:31,602 - managers.save_manager - INFO - SaveManager initialized with directory: C:\Users\cheat\AppData\Roaming\TurboShells
+2025-11-23 22:50:31,602 - managers.save_manager - INFO - SaveManager initialized with directory: C:\Users\cheat\AppData\Roaming\TurboShells
+2025-11-23 22:50:31,635 - core.config - INFO - Configuration loaded successfully
+2025-11-23 22:50:31,637 - core.graphics_manager - INFO - Loaded graphics settings: 1024x768
+2025-11-23 22:50:31,706 - core.graphics_manager - INFO - Display initialized: (1024, 768), Fullscreen: False
+2025-11-23 22:50:31,708 - core.audio_manager - INFO - Loaded audio settings: Master Volume 0.5, Enabled True
+2025-11-23 22:50:32,133 - core.audio_manager - INFO - Audio system initialized successfully
+2025-11-23 22:50:32,146 - overlay - ERROR - Failed to initialize overlay: font not initialized
+2025-11-23 22:50:32,204 - main - INFO - Initializing TurboShells game...
+2025-11-23 22:50:32,205 - monitoring - WARNING - Low FPS: 0.0
+2025-11-23 22:50:32,205 - monitoring - INFO - Real-time monitoring started
+2025-11-23 22:50:32,205 - statistics - INFO - New gaming session started
+2025-11-23 22:50:32,206 - monitoring_system - INFO - Monitoring system started
+2025-11-23 22:50:32,206 - main - INFO - Monitoring system started
+2025-11-23 22:50:32,208 - components.settings_view_refactored - INFO - Refactored settings view initialized
+2025-11-23 22:50:32,208 - managers.settings_manager - INFO - Settings manager initialized
+2025-11-23 22:50:32,209 - managers.save_manager - INFO - SaveManager initialized with directory: C:\Users\cheat\AppData\Roaming\TurboShells
+2025-11-23 22:50:32,220 - core.auto_load_system - INFO - Save file found at C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 22:50:32,220 - core.auto_load_system - INFO - Attempting to restore game state from save file
+2025-11-23 22:50:32,231 - managers.save_manager - INFO - Game loaded successfully from C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 22:50:32,232 - core.auto_load_system - INFO - Successfully restored game state for player player_20251123_112134
+2025-11-23 22:51:17,380 - ui.components.layout_manager - INFO - Layout resized from (760, 540) to (950, 700)
+2025-11-23 22:51:17,381 - components.settings_view_refactored - INFO - Settings layout updated to 1536x841
+2025-11-23 22:51:17,381 - managers.settings_manager - INFO - Settings manager updated for screen size 1536x841
+2025-11-23 22:51:18,405 - ui.components.layout_manager - INFO - Layout resized from (950, 700) to (760, 540)
+2025-11-23 22:51:18,405 - components.settings_view_refactored - INFO - Settings layout updated to 800x600
+2025-11-23 22:51:18,405 - managers.settings_manager - INFO - Settings manager updated for screen size 800x600
+2025-11-23 22:51:34,031 - statistics - INFO - Race recorded: Won, $50.00, Position 1
+2025-11-23 22:51:34,037 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 22:51:34,038 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 22:52:30,974 - components.settings_view_refactored - INFO - Settings view shown
+2025-11-23 22:52:30,974 - managers.settings_manager - INFO - Settings shown, tab: graphics
+2025-11-23 22:52:35,337 - components.settings_view_refactored - INFO - Settings view hidden
+2025-11-23 22:52:58,688 - managers.save_manager - INFO - Backup created successfully
+2025-11-23 22:52:58,689 - managers.save_manager - INFO - Game saved successfully to C:\Users\cheat\AppData\Roaming\TurboShells\turbo_shells_save.json
+2025-11-23 22:52:59,371 - monitoring - INFO - Real-time monitoring stopped
+2025-11-23 22:52:59,371 - statistics - INFO - Session ended: {'start_time': '2025-11-23T22:50:32.205854', 'duration_minutes': 2, 'races_completed': 1, 'races_won': 1, 'earnings': 50.0}
+2025-11-23 22:52:59,372 - monitoring_system - INFO - Monitoring system stopped
