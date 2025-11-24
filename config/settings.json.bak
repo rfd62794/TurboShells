@@ -1,8 +1,8 @@
 {
   "graphics": {
-    "resolution_width": 1280,
+    "resolution_width": 1024,
     "resolution_height": 768,
-    "fullscreen": false,
+    "fullscreen": true,
     "vsync": true,
     "frame_rate_limit": 60,
     "quality_level": "high"
@@ -49,7 +49,7 @@
     "economy_multiplier": 1.0
   },
   "player_profile": {
-    "name": "TestPlayer",
+    "name": "Player",
     "avatar_index": 0,
     "total_playtime": 0,
     "races_completed": 0,

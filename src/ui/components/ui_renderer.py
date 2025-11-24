@@ -163,13 +163,13 @@ class UIRenderer:
     
     def draw_tabs(self, screen: pygame.Surface, tab_manager: TabManager) -> None:
         """
-        Draw all tabs from tab manager.
+        Draw all tabs.
         
         Args:
             screen: Surface to draw on
             tab_manager: Tab manager with tab data
         """
-        for tab_id, tab_element in tab_manager.get_all_tab_elements():
+        for tab_id, tab_element in tab_manager.tabs.items():
             self._draw_single_tab(screen, tab_element, tab_manager.is_tab_active(tab_id))
     
     def _draw_single_tab(self, screen: pygame.Surface, tab_element, is_active: bool) -> None:
