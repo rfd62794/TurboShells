@@ -1,13 +1,16 @@
 import pygame
 from settings import *
 import ui.layout as layout
-from ui import draw_menu as draw_main_menu_view
-from ui import draw_roster as draw_menu_view
-from ui import draw_race as draw_race_view, draw_race_result as draw_race_result_view
-from ui import draw_shop as draw_shop_view
-from ui import draw_breeding as draw_breeding_view
-from ui.views.profile_view import draw_profile as draw_profile_view
-from ui.views.voting_interface import draw_voting as draw_voting_view
+from .menu_view import draw_menu as draw_main_menu_view
+from .roster_view import draw_roster as draw_menu_view
+from .race_view import (
+    draw_race as draw_race_view,
+    draw_race_result as draw_race_result_view,
+)
+from .shop_view import draw_shop as draw_shop_view
+from .breeding_view import draw_breeding as draw_breeding_view
+from .profile_view import draw_profile as draw_profile_view
+from .voting_interface import draw_voting as draw_voting_view
 
 
 class Renderer:
