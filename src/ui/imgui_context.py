@@ -52,25 +52,9 @@ class ImGuiContext:
     
     def _setup_game_style(self) -> None:
         """Configure ImGui style for game aesthetic."""
-        style = imgui.get_style()
-        
-        # Dark theme suitable for games
-        style.colors[imgui.COLOR_WINDOW_BACKGROUND] = (0.1, 0.1, 0.15, 0.9)
-        style.colors[imgui.COLOR_TITLE_BACKGROUND] = (0.2, 0.2, 0.3, 1.0)
-        style.colors[imgui.COLOR_TITLE_BACKGROUND_ACTIVE] = (0.3, 0.3, 0.4, 1.0)
-        style.colors[imgui.COLOR_BUTTON] = (0.2, 0.3, 0.4, 1.0)
-        style.colors[imgui.COLOR_BUTTON_HOVERED] = (0.3, 0.4, 0.5, 1.0)
-        style.colors[imgui.COLOR_BUTTON_ACTIVE] = (0.4, 0.5, 0.6, 1.0)
-        
-        # Rounded corners for modern look
-        style.window_rounding = 5.0
-        style.frame_rounding = 3.0
-        style.popup_rounding = 3.0
-        
-        # Padding for better spacing
-        style.window_padding = (10, 10)
-        style.frame_padding = (8, 4)
-        style.item_spacing = (8, 4)
+        # Use default style for now - imgui_bundle has different styling API
+        # This can be enhanced later with proper imgui_bundle style configuration
+        pass
     
     def begin_frame(self) -> None:
         """Start new ImGui frame.
