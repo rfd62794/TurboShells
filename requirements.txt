@@ -2,6 +2,11 @@
 pygame-ce>=2.5
 setuptools>=61.0
 
+# ImGui Integration (Hybrid Architecture)
+imgui[pygame]>=2.0.0
+PyOpenGL>=3.1.0
+PyOpenGL-accelerate>=3.1.0
+
 # Image Processing
 Pillow>=9.0.0
 
@@ -38,9 +43,7 @@ twine>=4.0.0
 sphinx>=5.0.0
 sphinx-rtd-theme>=1.2.0
 
-# REMOVED PACKAGES (require compilation):
-# - imgui: Requires Visual C++ Build Tools
-# - PyOpenGL: Often requires compilation 
+# PREVIOUSLY REMOVED PACKAGES (now available with precompiled wheels):
 # - memory-profiler: Requires compilation
 # - line-profiler: Requires compilation
 
