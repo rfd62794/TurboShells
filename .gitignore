@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 *.pyc
 
+
 # Virtual environments
 venv/
 env/
@@ -18,3 +19,5 @@ env/
 # OS files
 .DS_Store
 Thumbs.db
+
+*.log
