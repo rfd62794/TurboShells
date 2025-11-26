@@ -1,6 +1,10 @@
 # Core Dependencies
 pygame-ce>=2.5
 
+# ImGui Integration
+imgui[pygame]>=2.0.0
+PyOpenGL>=3.1.0
+
 # System Monitoring
 psutil>=5.8.0
 
