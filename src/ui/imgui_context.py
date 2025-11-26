@@ -5,9 +5,8 @@ Follows Single Responsibility Principle by managing only ImGui lifecycle.
 """
 
 import pygame
-import imgui
-import OpenGL.GL as gl
-from imgui.integrations.pygame import PygameRenderer
+import imgui_bundle as imgui
+import imgui_bundle.integrations.pygame as pygame_integration
 from typing import Optional
 
 
@@ -31,7 +30,7 @@ class ImGuiContext:
         """
         self.screen = pygame_surface
         self.context: Optional[imgui.Context] = None
-        self.impl: Optional[PygameRenderer] = None
+        self.impl: Optional[pygame_integration.PygameRenderer] = None
         self._initialized = False
         
     def initialize(self) -> bool:
@@ -45,7 +44,7 @@ class ImGuiContext:
             self.context = imgui.create_context()
             
             # Initialize PyGame renderer
-            self.impl = PygameRenderer()
+            self.impl = pygame_integration.PygameRenderer()
             
             # Set up initial ImGui style for game UI
             self._setup_game_style()
