@@ -1,0 +1,8 @@
+2025-11-26 18:05:38,508 - monitoring_system - INFO - Integrated monitoring system initialized
+2025-11-26 18:05:38,633 - managers.save_manager - INFO - SaveManager initialized with directory: C:\Users\cheat\AppData\Roaming\TurboShells
+2025-11-26 18:05:38,634 - managers.save_manager - INFO - SaveManager initialized with directory: C:\Users\cheat\AppData\Roaming\TurboShells
+2025-11-26 18:05:38,649 - core.config - INFO - Configuration loaded successfully
+2025-11-26 18:05:38,649 - audio.audio_manager - INFO - Loaded audio settings: Master Volume 0.5, Enabled True
+2025-11-26 18:05:39,126 - audio.audio_manager - INFO - Audio system initialized successfully
+2025-11-26 18:05:39,130 - graphics.graphics_manager - INFO - Loaded graphics settings: 1024x768
+2025-11-26 18:05:39,238 - graphics.graphics_manager - INFO - Display initialized: (1024, 768), Fullscreen: False

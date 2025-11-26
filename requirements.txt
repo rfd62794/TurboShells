@@ -1,6 +1,9 @@
 # Core Dependencies
 pygame-ce>=2.5
 
+# Image Processing
+Pillow>=9.0.0
+
 # ImGui Integration
 imgui[pygame]>=2.0.0
 PyOpenGL>=3.1.0
@@ -8,19 +11,43 @@ PyOpenGL>=3.1.0
 # System Monitoring
 psutil>=5.8.0
 
+# Visual Genetics System
+drawsvg>=1.6.0
+svgwrite>=1.4.3
+
 # Development Tools - Code Quality
 black>=23.0.0
 pylint>=3.0.0
+isort>=5.12.0
+mypy>=1.0.0
+bandit>=1.7.0
+flake8>=6.0.0
 
 # Development Tools - Testing
 pytest>=7.0.0
 pytest-cov>=4.0.0
+pytest-mock>=3.10.0
+pytest-xdist>=3.0.0
 
 # Development Tools - Optional Enhancements
 coverage>=7.0.0
-isort>=5.12.0
-mypy>=1.0.0
+pre-commit>=3.0.0
+
+# Development Tools - Performance Analysis
+memory-profiler>=0.61.0
+line-profiler>=4.0.0
+
+# Development Tools - Build & Distribution
+build>=0.10.0
+twine>=4.0.0
 
 # Documentation (optional)
 sphinx>=5.0.0
 sphinx-rtd-theme>=1.2.0
+
+# Optional SVG Rendering (uncomment if needed)
+# svglib>=1.6.0          # Requires Cairo library
+# reportlab>=4.4.0       # Requires Cairo library  
+# wand>=0.6.13          # Requires ImageMagick
+# svg2png>=1.2          # Simple SVG to PNG conversion
+# cairosvg>=2.5.2       # Requires Cairo library
