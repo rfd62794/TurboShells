@@ -41,7 +41,7 @@ class ImGuiContext:
         """
         try:
             # Create ImGui context
-            self.context = imgui.create_context()
+            self.context = imgui.imgui.create_context()
             
             # Initialize PyGame renderer
             self.impl = CustomPygameRenderer(self.screen)
@@ -58,15 +58,15 @@ class ImGuiContext:
     
     def _setup_game_style(self) -> None:
         """Configure ImGui style for game aesthetic."""
-        style = imgui.get_style()
+        style = imgui.imgui.get_style()
         
         # Dark theme suitable for games
-        style.colors[imgui.COLOR_WINDOW_BACKGROUND] = (0.1, 0.1, 0.15, 0.9)
-        style.colors[imgui.COLOR_TITLE_BACKGROUND] = (0.2, 0.2, 0.3, 1.0)
-        style.colors[imgui.COLOR_TITLE_BACKGROUND_ACTIVE] = (0.3, 0.3, 0.4, 1.0)
-        style.colors[imgui.COLOR_BUTTON] = (0.2, 0.3, 0.4, 1.0)
-        style.colors[imgui.COLOR_BUTTON_HOVERED] = (0.3, 0.4, 0.5, 1.0)
-        style.colors[imgui.COLOR_BUTTON_ACTIVE] = (0.4, 0.5, 0.6, 1.0)
+        style.colors[imgui.imgui.COLOR_WINDOW_BACKGROUND] = (0.1, 0.1, 0.15, 0.9)
+        style.colors[imgui.imgui.COLOR_TITLE_BACKGROUND] = (0.2, 0.2, 0.3, 1.0)
+        style.colors[imgui.imgui.COLOR_TITLE_BACKGROUND_ACTIVE] = (0.3, 0.3, 0.4, 1.0)
+        style.colors[imgui.imgui.COLOR_BUTTON] = (0.2, 0.3, 0.4, 1.0)
+        style.colors[imgui.imgui.COLOR_BUTTON_HOVERED] = (0.3, 0.4, 0.5, 1.0)
+        style.colors[imgui.imgui.COLOR_BUTTON_ACTIVE] = (0.4, 0.5, 0.6, 1.0)
         
         # Rounded corners for modern look
         style.window_rounding = 5.0
@@ -90,7 +90,7 @@ class ImGuiContext:
         self.impl.process_event(pygame.event.Event(pygame.USEREVENT, {}))
         
         # Start new ImGui frame
-        imgui.new_frame()
+        imgui.imgui.new_frame()
     
     def end_frame(self) -> None:
         """End ImGui frame and render to screen.
@@ -101,8 +101,8 @@ class ImGuiContext:
             return
             
         # Render ImGui draw data
-        imgui.render()
-        self.impl.render(imgui.get_draw_data())
+        imgui.imgui.render()
+        self.impl.render(imgui.imgui.get_draw_data())
     
     def handle_event(self, event: pygame.event.Event) -> bool:
         """Process PyGame event through ImGui.
@@ -129,7 +129,7 @@ class ImGuiContext:
             self.impl = None
             
         if self.context:
-            imgui.destroy_context(self.context)
+            imgui.imgui.destroy_context(self.context)
             self.context = None
             
         self._initialized = False
@@ -141,7 +141,7 @@ class ImGuiContext:
     def set_display_size(self, width: int, height: int) -> None:
         """Update ImGui display size for window resizing."""
         if self._initialized:
-            imgui.get_io().display_size = (width, height)
+            imgui.imgui.get_io().display_size = (width, height)
 
 
 class CustomPygameRenderer:
@@ -149,7 +149,7 @@ class CustomPygameRenderer:
     
     def __init__(self, screen: pygame.Surface):
         self.screen = screen
-        self.io = imgui.get_io()
+        self.io = imgui.imgui.get_io()
         self.io.display_size = screen.get_size()
         self.io.display_fb_scale = (1, 1)
         
