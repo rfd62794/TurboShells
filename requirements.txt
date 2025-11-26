@@ -5,8 +5,8 @@ setuptools>=61.0
 # Image Processing
 Pillow>=9.0.0
 
-# ImGui Integration
-imgui[pygame-ce]>=2.0.0
+# ImGui Integration - Use precompiled version
+imgui>=2.0.0
 PyOpenGL>=3.1.0
 
 # System Monitoring
@@ -34,9 +34,9 @@ pytest-xdist>=3.0.0
 coverage>=7.0.0
 pre-commit>=3.0.0
 
-# Development Tools - Performance Analysis
-memory-profiler>=0.61.0
-line-profiler>=4.0.0
+# Development Tools - Performance Analysis (REMOVED - requires compilation)
+# memory-profiler>=0.61.0
+# line-profiler>=4.0.0
 
 # Development Tools - Build & Distribution
 build>=0.10.0
