@@ -9,6 +9,7 @@ import pygame_gui
 import math
 from typing import Dict, Any, Optional, List, Tuple
 from ui.panels.base_panel import BasePanel
+from core.rendering.pygame_turtle_renderer import render_turtle_pygame
 
 
 class VotingPanel(BasePanel):
@@ -75,7 +76,7 @@ class VotingPanel(BasePanel):
         return designs
         
     def _create_window(self) -> None:
-        """Create the voting window and elements."""
+        """Create the voting window with left-right layout matching original."""
         super()._create_window()
         
         if not self.window:
@@ -137,25 +138,19 @@ class VotingPanel(BasePanel):
         )
         y_pos += 70
         
-        # Design info
-        self.design_info_label = pygame_gui.elements.UILabel(
-            relative_rect=pygame.Rect((10, y_pos), (width, 25)),
-            text="",
-            manager=self.manager,
-            container=container
-        )
-        y_pos += 35
-        
-        # Left panel - Design display
+        # Left panel - Turtle image display (larger, like original)
         self.design_container = pygame_gui.elements.UIPanel(
-            relative_rect=pygame.Rect((10, y_pos), (width // 2 - 20, 300)),
+            relative_rect=pygame.Rect((10, y_pos), (width // 2 - 20, 400)),
             manager=self.manager,
             container=container
         )
         
-        # Right panel - Voting controls
+        # Create turtle display area
+        self._create_turtle_display()
+        
+        # Right panel - Voting controls (scrollable)
         self.voting_container = pygame_gui.elements.UIPanel(
-            relative_rect=pygame.Rect((width // 2, y_pos), (width // 2 - 10, 300)),
+            relative_rect=pygame.Rect((width // 2, y_pos), (width // 2 - 10, 400)),
             manager=self.manager,
             container=container
         )
@@ -165,7 +160,7 @@ class VotingPanel(BasePanel):
         
         # Submit button (initially disabled)
         self.btn_submit = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((width // 2 + 50, y_pos + 320), (150, 40)),
+            relative_rect=pygame.Rect((width // 2 + 50, y_pos + 420), (150, 40)),
             text="Submit & Earn $1",
             manager=self.manager,
             container=container
@@ -174,6 +169,35 @@ class VotingPanel(BasePanel):
         
         # Update display
         self._update_design_display()
+        
+    def _create_turtle_display(self) -> None:
+        """Create turtle image display area like the original voting view."""
+        if not self.design_container:
+            return
+            
+        # Design name label
+        self.design_info_label = pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect((10, 10), (300, 25)),
+            text="",
+            manager=self.manager,
+            container=self.design_container
+        )
+        
+        # Turtle image placeholder
+        self.turtle_image = pygame_gui.elements.UIImage(
+            relative_rect=pygame.Rect((50, 50), (200, 200)),
+            image_surface=pygame.Surface((200, 200)),
+            manager=self.manager,
+            container=self.design_container
+        )
+        
+        # Design stats/info area
+        self.design_stats_label = pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect((10, 260), (300, 120)),
+            text="Design preview and stats\nwill appear here",
+            manager=self.manager,
+            container=self.design_container
+        )
         
     def _create_voting_controls(self) -> None:
         """Create star rating controls for each category."""
@@ -221,7 +245,7 @@ class VotingPanel(BasePanel):
             y_pos += 100
             
     def _update_design_display(self) -> None:
-        """Update the design information display."""
+        """Update the design information display with turtle image."""
         if not self.daily_designs or self.current_design_index >= len(self.daily_designs):
             return
             
@@ -231,6 +255,34 @@ class VotingPanel(BasePanel):
         design_text = f"{current_design['name']} - Status: {current_design['voting_status'].upper()}"
         if self.design_info_label:
             self.design_info_label.set_text(design_text)
+            
+        # Update turtle image (mock turtle for now)
+        if hasattr(self, 'turtle_image') and self.turtle_image:
+            try:
+                # Create a mock turtle for demonstration
+                class MockTurtle:
+                    def __init__(self, design_id):
+                        self.name = f"Design #{design_id}"
+                        self.id = design_id
+                        self.color_scheme = (design_id * 50 % 255, 100, 150)
+                        
+                mock_turtle = MockTurtle(current_design['id'])
+                turtle_surface = render_turtle_pygame(mock_turtle, 180)
+                if turtle_surface:
+                    self.turtle_image.set_image(turtle_surface)
+            except Exception as e:
+                print(f"Error rendering design turtle: {e}")
+                
+        # Update design stats
+        if self.design_stats_label:
+            stats_text = (
+                f"Design ID: {current_design['id']}\n"
+                f"Status: {current_design['voting_status'].upper()}\n"
+                f"Categories: {len(current_design['rating_categories'])}\n\n"
+                f"Rate each category to\n"
+                f"influence future genetics!"
+            )
+            self.design_stats_label.set_text(stats_text)
             
         # Update progress
         progress_text = f"Design {self.current_design_index + 1} of {len(self.daily_designs)}"

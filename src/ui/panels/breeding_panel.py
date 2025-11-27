@@ -240,50 +240,45 @@ class BreedingPanel(BasePanel):
         self._update_info_label()
         
     def _update_selection_indicators(self) -> None:
-        """Update parent selection indicators with colored backgrounds and loss status."""
+        """Update parent selection indicators with clear visual borders."""
         for slot in self.breeding_slots:
             if hasattr(slot, 'container_element') and hasattr(slot, 'turtle_data'):
                 container = slot.container_element
                 turtle = slot.turtle_data
                 is_selected = turtle in self.selected_parents
                 
-                # Update container background based on selection
-                if is_selected:
-                    parent_num = "1" if self.selected_parents[0] == turtle else "2"
-                    
-                    # Create colored surface for container background
-                    if parent_num == "1":
-                        # Parent 1 - Green background (survives breeding)
-                        bg_surface = pygame.Surface((container.rect.width, container.rect.height))
-                        bg_surface.fill((0, 255, 0, 50))  # Semi-transparent green
-                        container.background_image = bg_surface
-                    else:
-                        # Parent 2 - Red background (lost in breeding)
-                        bg_surface = pygame.Surface((container.rect.width, container.rect.height))
-                        bg_surface.fill((255, 0, 0, 50))  # Semi-transparent red
-                        container.background_image = bg_surface
-                else:
-                    # Not selected - default background
-                    container.background_image = None
-                
-                # Update parent indicator label
+                # Update parent indicator label with prominent styling
                 slot_index = getattr(slot, 'slot_index', 0)
                 if slot_index < len(self.parent_labels):
                     parent_label = self.parent_labels[slot_index]
                     if is_selected:
                         parent_num = "1" if self.selected_parents[0] == turtle else "2"
-                        loss_text = " (LOST)" if parent_num == "2" else ""
+                        loss_text = " (WILL BE LOST)" if parent_num == "2" else " (SURVIVES)"
                         
-                        # Set label color based on parent number
-                        if parent_num == "1":
-                            parent_label.text_colour = (0, 200, 0)  # Green
-                        else:
-                            parent_label.text_colour = (200, 0, 0)  # Red
-                            
-                        parent_label.set_text(f"PARENT {parent_num}{loss_text}")
+                        # Make label very prominent
+                        parent_label.set_text(f"=== PARENT {parent_num}{loss_text} ===")
                         parent_label.show()
+                        
+                        # Position label at top of slot for visibility
+                        if hasattr(parent_label, 'set_position'):
+                            parent_label.set_position(pygame.Rect(
+                                container.rect.x + 5, 
+                                container.rect.y + 5, 
+                                container.rect.width - 10, 
+                                25
+                            ))
                     else:
                         parent_label.hide()
+                        
+                # Draw colored border indicator directly on container
+                if is_selected:
+                    parent_num = "1" if self.selected_parents[0] == turtle else "2"
+                    # We'll override the container's draw method to add borders
+                    container.draw_border = True
+                    container.border_color = (0, 255, 0) if parent_num == "1" else (255, 0, 0)
+                    container.border_width = 4
+                else:
+                    container.draw_border = False
                         
     def _update_breed_button(self) -> None:
         """Update breed button state based on selection."""
