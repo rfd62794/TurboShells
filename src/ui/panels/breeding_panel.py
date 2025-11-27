@@ -19,9 +19,9 @@ class BreedingPanel(BasePanel):
         
         self.game_state = game_state_interface
         
-        # Set default size and position
-        self.size = (800, 600)
-        self.position = (100, 50)
+        # Set default size and position to use full window
+        self.size = (900, 700)
+        self.position = (50, 25)
         
         # Breeding state
         self.selected_parents = []
@@ -155,13 +155,17 @@ class BreedingPanel(BasePanel):
                 turtle = candidates[i]
                 is_retired = turtle in retired_roster
                 
-                # Create slot container
+                # Create slot container with border support
                 slot_container = pygame_gui.elements.UIPanel(
                     relative_rect=pygame.Rect(pos, (slot_width, slot_height)),
                     manager=self.manager,
                     container=self.slots_container,
                     object_id=f"#breeding_slot_container_{i}"
                 )
+                
+                # Store reference to container for border updates
+                slot_container.slot_index = i
+                slot_container.turtle_data = turtle
                 
                 # Create turtle image (separate from button)
                 turtle_img = pygame_gui.elements.UIImage(
@@ -194,6 +198,7 @@ class BreedingPanel(BasePanel):
                 select_btn.is_retired = is_retired
                 select_btn.slot_index = i
                 select_btn.image_element = turtle_img  # Reference to image
+                select_btn.container_element = slot_container  # Reference to container for border
                 
                 self.breeding_slots.append(select_btn)
                 
@@ -235,18 +240,36 @@ class BreedingPanel(BasePanel):
         self._update_info_label()
         
     def _update_selection_indicators(self) -> None:
-        """Update only the parent selection indicators (not the slots themselves)."""
-        for i, slot in enumerate(self.breeding_slots):
-            if hasattr(slot, 'turtle_data'):
+        """Update parent selection indicators with borders and loss status."""
+        for slot in self.breeding_slots:
+            if hasattr(slot, 'container_element') and hasattr(slot, 'turtle_data'):
+                container = slot.container_element
                 turtle = slot.turtle_data
                 is_selected = turtle in self.selected_parents
                 
-                # Update parent indicator
-                if i < len(self.parent_labels):
-                    parent_label = self.parent_labels[i]
+                # Update container border based on selection
+                if is_selected:
+                    parent_num = "1" if self.selected_parents[0] == turtle else "2"
+                    
+                    # Set border color based on parent number and loss status
+                    if parent_num == "1":
+                        # Parent 1 - Green border (survives breeding)
+                        container.object_id = "#breeding_slot_container_parent1"
+                    else:
+                        # Parent 2 - Red border (lost in breeding)
+                        container.object_id = "#breeding_slot_container_parent2"
+                else:
+                    # Not selected - default border
+                    container.object_id = "#breeding_slot_container_default"
+                
+                # Update parent indicator label
+                slot_index = getattr(slot, 'slot_index', 0)
+                if slot_index < len(self.parent_labels):
+                    parent_label = self.parent_labels[slot_index]
                     if is_selected:
                         parent_num = "1" if self.selected_parents[0] == turtle else "2"
-                        parent_label.set_text(f"PARENT {parent_num}")
+                        loss_text = " (LOST)" if parent_num == "2" else ""
+                        parent_label.set_text(f"PARENT {parent_num}{loss_text}")
                         parent_label.show()
                     else:
                         parent_label.hide()
