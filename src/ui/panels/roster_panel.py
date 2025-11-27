@@ -236,10 +236,21 @@ class RosterPanel(BasePanel):
                 slot['txt_stats'].set_text(stats_text)
                 
                 try:
+                    print(f"[DEBUG] Attempting to render turtle: {turtle.name}")
+                    print(f"[DEBUG]   Has genetics_system: {turtle.genetics_system is not None}")
+                    print(f"[DEBUG]   visual_genetics present: {bool(turtle.visual_genetics)}")
+                    if turtle.visual_genetics:
+                        print(f"[DEBUG]   genetics keys: {list(turtle.visual_genetics.keys())[:5]}")
+                    
                     surf = render_turtle_pygame(turtle, size=100)
+                    print(f"[DEBUG]   ✓ Render successful, surface type: {type(surf)}")
+                    
                     slot['img'].set_image(surf)
-                except:
-                    pass
+                    print(f"[DEBUG]   ✓ Image set on UIImage element")
+                except Exception as e:
+                    print(f"[ERROR] Failed to render turtle {turtle.name}: {e}")
+                    import traceback
+                    traceback.print_exc()
                     
                 # Buttons visibility
                 if show_retired:
