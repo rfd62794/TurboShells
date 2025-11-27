@@ -183,6 +183,32 @@ class TurboShellsGame:
         self.game_state_manager = GameStateManager()
         self.load_notification = None
         self._initialize_game_state()
+
+    def _initialize_game_state(self):
+        """Initialize game state with default values or load from save."""
+        # Try to load existing save
+        success, roster, retired_roster, money, state, notification = self.game_state_manager.initialize_game_state()
+        
+        if success and roster:
+            # Load existing game state
+            self.roster = roster
+            self.retired_roster = retired_roster
+            self.money = money
+            self.state = state
+            self.load_notification = notification
+        else:
+            # Initialize new game state
+            self.roster = []
+            self.retired_roster = []
+            self.money = 1000  # Starting money
+            self.state = STATE_MENU
+            self.load_notification = None
+            
+            # Generate initial turtles
+            for i in range(3):
+                turtle = generate_random_turtle()
+                turtle.name = f"Turtle_{i+1}"
+                self.roster.append(turtle)
         
 
     def handle_input(self):
@@ -376,7 +402,7 @@ class TurboShellsGame:
         self.ui_manager.draw_ui(self.screen)
         
         # Draw monitoring overlay
-        monitoring_overlay.draw(self.screen)
+        # monitoring_overlay.draw(self.screen)  # Temporarily disabled
         
         pygame.display.flip()
 
