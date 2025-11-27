@@ -17,22 +17,22 @@ class WindowManager:
         self.min_size = (800, 600)
         self.max_size = (1920, 1080)
         
-        # Layout constants
-        self.header_height = 40
-        self.footer_height = 40
-        self.margin = 20
+        # Layout constants - reduced for maximum space usage
+        self.header_height = 20
+        self.footer_height = 20
+        self.margin = 10
         self.panel_spacing = 10
         
-        # Panel size ratios (relative to available space)
+        # Panel size ratios (relative to available space) - updated for full window usage
         self.panel_ratios = {
-            'main_menu': (0.8, 0.7),
-            'shop': (0.8, 0.7),
-            'roster': (0.8, 0.7),
-            'breeding': (0.8, 0.75),
-            'voting': (0.8, 0.75),
-            'profile': (0.7, 0.8),
+            'main_menu': (0.9, 0.85),
+            'shop': (0.9, 0.85),
+            'roster': (0.9, 0.85),
+            'breeding': (0.95, 0.9),
+            'voting': (0.95, 0.9),
+            'profile': (0.8, 0.85),
             'race': (1.0, 0.3),  # Full width, bottom third
-            'race_result': (0.6, 0.6)
+            'race_result': (0.7, 0.7)
         }
     
     def set_window_size(self, size: Tuple[int, int]) -> None:

@@ -103,9 +103,9 @@ class BreedingPanel(BasePanel):
         )
         y_pos += 45
         
-        # Create breeding slots container
+        # Create breeding slots container - use almost full available space
         self.slots_container = pygame_gui.elements.UIPanel(
-            relative_rect=pygame.Rect((10, y_pos), (width - 20, 330)),
+            relative_rect=pygame.Rect((5, y_pos), (width - 10, 350)),
             manager=self.manager,
             container=container
         )
@@ -164,10 +164,10 @@ class BreedingPanel(BasePanel):
                 slot_container.slot_index = i
                 slot_container.turtle_data = turtle
                 
-                # Create turtle image (separate from button)
+                # Create turtle image (separate from button) - increased size for better space usage
                 turtle_img = pygame_gui.elements.UIImage(
-                    relative_rect=pygame.Rect((10, 10), (slot_width - 20, 90)),
-                    image_surface=pygame.Surface((slot_width - 20, 90)),  # Placeholder
+                    relative_rect=pygame.Rect((10, 10), (slot_width - 20, 100)),
+                    image_surface=pygame.Surface((slot_width - 20, 100)),  # Placeholder
                     manager=self.manager,
                     container=slot_container,
                     object_id=f"#breeding_turtle_img_{i}"
@@ -175,7 +175,7 @@ class BreedingPanel(BasePanel):
                 
                 # Set turtle image
                 try:
-                    turtle_surface = render_turtle_pygame(turtle, 80)  # Smaller turtle
+                    turtle_surface = render_turtle_pygame(turtle, 90)  # Larger for better space usage
                     if turtle_surface:
                         turtle_img.set_image(turtle_surface)
                 except Exception as e:
@@ -183,7 +183,7 @@ class BreedingPanel(BasePanel):
                 
                 # Create selection button below image
                 select_btn = pygame_gui.elements.UIButton(
-                    relative_rect=pygame.Rect((10, 110), (slot_width - 20, 30)),
+                    relative_rect=pygame.Rect((10, 120), (slot_width - 20, 25)),
                     text=f"{turtle.name}\n{'(RETIRED)' if is_retired else ''}",
                     manager=self.manager,
                     container=slot_container,
