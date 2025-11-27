@@ -16,6 +16,7 @@ class RaceResultPanel(BasePanel):
         self.container_results = None
         self.btn_menu = None
         self.btn_race_again = None
+        self.result_rows = []
         
         # Observers
         # We refresh on show() usually
@@ -61,7 +62,10 @@ class RaceResultPanel(BasePanel):
         if not self.container_results:
             return
             
-        self.container_results.clear()
+        # Clear existing
+        for row in self.result_rows:
+            row.kill()
+        self.result_rows = []
         
         results = self.game_state.get('race_results', [])
         active_racer_idx = self.game_state.get('active_racer_index', 0)
@@ -77,12 +81,13 @@ class RaceResultPanel(BasePanel):
             if is_player:
                 text = f"<b>{text} [YOU]</b>"
                 
-            pygame_gui.elements.UITextBox(
+            row = pygame_gui.elements.UITextBox(
                 relative_rect=pygame.Rect((10, y_pos), (400, 40)),
                 html_text=text,
                 manager=self.manager,
                 container=self.container_results
             )
+            self.result_rows.append(row)
             y_pos += 50
             
         # Reward message
