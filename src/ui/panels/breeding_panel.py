@@ -158,7 +158,7 @@ class BreedingPanel(BasePanel):
                 # Create slot button with turtle image
                 slot_btn = pygame_gui.elements.UIButton(
                     relative_rect=pygame.Rect(pos, (slot_width, slot_height)),
-                    text="",  # Text will be set in update
+                    text="",  # Will use image instead
                     manager=self.manager,
                     container=self.slots_container,
                     object_id=f"#breeding_slot_{i}"
@@ -169,34 +169,42 @@ class BreedingPanel(BasePanel):
                 slot_btn.is_retired = is_retired
                 slot_btn.slot_index = i
                 
-                # Render turtle and set as button image
+                # Create and set turtle image (only once during creation)
                 try:
-                    turtle_surface = render_turtle_pygame(turtle, 120)  # Smaller size for slots
+                    turtle_surface = render_turtle_pygame(turtle, 100)  # Smaller size for slots
                     if turtle_surface:
-                        # Create a temporary surface to hold the turtle + info
+                        # Create a composite surface with turtle + name
                         slot_surface = pygame.Surface((slot_width, slot_height), pygame.SRCALPHA)
                         slot_surface.fill((240, 240, 240))  # Light gray background
                         
                         # Center turtle image
                         turtle_x = (slot_width - turtle_surface.get_width()) // 2
-                        turtle_y = 20  # Leave room for text at top
+                        turtle_y = 10  # Leave room for name at bottom
                         slot_surface.blit(turtle_surface, (turtle_x, turtle_y))
                         
-                        # Add turtle name
+                        # Add turtle name at bottom
                         font = pygame.font.Font(None, 16)
                         name_text = turtle.name
                         if is_retired:
-                            name_text += " (RETIRED)"
-                        name_surface = font.render(name_text, True, (0, 0, 0))
-                        name_x = (slot_width - name_surface.get_width()) // 2
-                        slot_surface.blit(name_surface, (name_x, slot_height - 25))
+                            name_text += "\n(RETIRED)"
                         
-                        # Convert surface to pygame_gui compatible format
+                        # Render name lines
+                        lines = name_text.split('\n')
+                        for j, line in enumerate(lines):
+                            name_surface = font.render(line, True, (0, 0, 0))
+                            name_x = (slot_width - name_surface.get_width()) // 2
+                            name_y = slot_height - 35 + (j * 18)
+                            slot_surface.blit(name_surface, (name_x, name_y))
+                        
+                        # Set the image once (don't change during updates)
                         slot_btn.set_image(slot_surface)
+                    else:
+                        # Fallback to text if image fails
+                        slot_btn.set_text(f"{turtle.name}\n{'(RETIRED)' if is_retired else ''}")
                 except Exception as e:
-                    print(f"Error rendering turtle in breeding slot: {e}")
-                    # Fallback to text-only button
-                    pass
+                    print(f"Error rendering turtle in breeding slot {i}: {e}")
+                    # Fallback to text
+                    slot_btn.set_text(f"{turtle.name}\n{'(RETIRED)' if is_retired else ''}")
                 
                 self.breeding_slots.append(slot_btn)
                 
@@ -228,8 +236,8 @@ class BreedingPanel(BasePanel):
         if hasattr(self, 'money_label') and self.money_label:
             self.money_label.set_text(f"$ {money}")
         
-        # Update breeding slots
-        self._update_breeding_slots()
+        # Only update selection indicators (don't recreate slots)
+        self._update_selection_indicators()
         
         # Update breed button state
         self._update_breed_button()
@@ -237,8 +245,8 @@ class BreedingPanel(BasePanel):
         # Update info label
         self._update_info_label()
         
-    def _update_breeding_slots(self) -> None:
-        """Update breeding slot buttons with selection state."""
+    def _update_selection_indicators(self) -> None:
+        """Update only the parent selection indicators (not the slots themselves)."""
         for i, slot in enumerate(self.breeding_slots):
             if hasattr(slot, 'turtle_data'):
                 turtle = slot.turtle_data
@@ -313,10 +321,11 @@ class BreedingPanel(BasePanel):
         return False
         
     def refresh_slots(self) -> None:
-        """Refresh breeding slots when roster changes."""
+        """Refresh breeding slots when roster changes (only call when actually needed)."""
         self._create_breeding_slots()
         
     def clear_selection(self) -> None:
         """Clear parent selection."""
         self.selected_parents = []
         self.game_state.set('breeding_parents', [])
+        self._update_selection_indicators()
