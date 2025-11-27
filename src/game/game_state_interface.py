@@ -558,13 +558,37 @@ class TurboShellsGameStateInterface(GameStateInterface):
 
     def _start_race(self, game):
         """Start a new race from roster selection."""
+        print(f"[DEBUG] Starting race with active_racer_index: {getattr(game, 'active_racer_index', 0)}")
+        
         # Ensure active racer is valid
         idx = getattr(game, 'active_racer_index', 0)
         roster = getattr(game, 'roster', [])
+        
+        print(f"[DEBUG] Roster length: {len(roster)}")
+        print(f"[DEBUG] Roster contents: {[t.name if t else None for t in roster]}")
+        
         if 0 <= idx < len(roster) and roster[idx]:
+            print(f"[DEBUG] Valid racer found: {roster[idx].name}")
+            # Start the race through race manager
             game.race_manager.start_race()
+            
+            # Verify race roster was created
+            if hasattr(game.race_manager, 'race_roster') and game.race_manager.race_roster:
+                print(f"[DEBUG] Race roster created with {len(game.race_manager.race_roster)} turtles")
+                for i, turtle in enumerate(game.race_manager.race_roster):
+                    print(f"[DEBUG]   Racer {i}: {turtle.name} at distance {turtle.race_distance}")
+            else:
+                print(f"[ERROR] Race roster not created properly!")
+                return False
+                
+            # Transition to race state
             game.state = 'race'
             game.select_racer_mode = False
+            print(f"[DEBUG] Race started successfully, state set to: {game.state}")
+            return True
+        else:
+            print(f"[ERROR] Invalid active racer index {idx} or no turtle found")
+            return False
             
     def _view_profile(self, game, index):
         """View a turtle's profile."""

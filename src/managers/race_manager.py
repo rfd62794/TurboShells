@@ -11,27 +11,39 @@ class RaceManager:
         self.results = []
 
     def start_race(self):
+        print(f"[DEBUG] RaceManager.start_race() called")
         self.results = []
         self.game_state.race_results = []
+        
         # Handle betting: deduct current bet upfront if affordable
         self.bet_amount = 0
         bet = getattr(self.game_state, "current_bet", 0)
+        print(f"[DEBUG] Current bet: ${bet}, Player money: ${self.game_state.money}")
+        
         if bet > 0 and self.game_state.money >= bet:
             self.bet_amount = bet
             self.game_state.money -= bet
+            print(f"[DEBUG] Bet deducted: ${self.bet_amount}, Remaining money: ${self.game_state.money}")
         elif bet > 0 and self.game_state.money < bet:
             # Not enough money; clear the bet
             self.game_state.current_bet = 0
+            print(f"[DEBUG] Not enough money for bet, bet cleared")
+            
         # Generate a new track for this race
         self.track = generate_track(TRACK_LENGTH_LOGIC)
+        print(f"[DEBUG] Track generated with {len(self.track)} segments")
 
         # Get player's turtle for balanced opponent generation
         player_idx = getattr(self.game_state, "active_racer_index", 0)
+        print(f"[DEBUG] Player active_racer_index: {player_idx}")
+        
         player_turtle = (
             self.game_state.roster[player_idx]
             if player_idx < len(self.game_state.roster)
             else None
         )
+        
+        print(f"[DEBUG] Player turtle found: {player_turtle.name if player_turtle else None}")
 
         # Create race roster: player turtle + 2 temporary opponents
         self.race_roster = []
@@ -44,6 +56,7 @@ class RaceManager:
             race_player = copy.deepcopy(player_turtle)
             race_player.reset_for_race()
             self.race_roster.append(race_player)
+            print(f"[DEBUG] Player turtle added to race: {race_player.name}")
 
         # Generate 2 balanced opponents
         if player_turtle:
@@ -52,6 +65,13 @@ class RaceManager:
                 opponent.is_temp = True
                 opponent.reset_for_race()
                 self.race_roster.append(opponent)
+                print(f"[DEBUG] Opponent {i+1} generated: {opponent.name}")
+        else:
+            print(f"[ERROR] No player turtle available, cannot generate opponents")
+            
+        print(f"[DEBUG] Final race roster: {len(self.race_roster)} turtles")
+        for i, turtle in enumerate(self.race_roster):
+            print(f"[DEBUG]   {i}: {turtle.name} (speed: {turtle.stats['speed']}, energy: {turtle.stats['max_energy']})")
 
     def handle_click(self, pos):
         """Handle mouse clicks on the Race HUD (speed controls)."""
