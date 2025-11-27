@@ -60,12 +60,14 @@ class RaceManager:
 
         # Generate 2 balanced opponents
         if player_turtle:
+            print(f"[DEBUG] About to generate 2 opponents for player {player_turtle.name}")
             for i in range(2):
+                print(f"[DEBUG] Generating opponent {i+1}...")
                 opponent = generate_balanced_opponent(player_turtle)
                 opponent.is_temp = True
                 opponent.reset_for_race()
                 self.race_roster.append(opponent)
-                print(f"[DEBUG] Opponent {i+1} generated: {opponent.name}")
+                print(f"[DEBUG] Opponent {i+1} generated: {opponent.name} (speed: {opponent.stats['speed']}, energy: {opponent.stats['max_energy']})")
         else:
             print(f"[ERROR] No player turtle available, cannot generate opponents")
             

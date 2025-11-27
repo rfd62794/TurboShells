@@ -84,10 +84,10 @@ def generate_balanced_opponent(player_turtle):
     budget = player_points - 9  # Subtract base points (1+1+1+1+5=9)
     print(f"[DEBUG] Opponent generation budget: {budget}")
 
-    # Randomly distribute points with slight bias toward speed
+    # Randomly distribute points with reduced bias toward speed
     while budget > 0:
-        # 30% chance to boost speed, 70% for other stats (reduced from 35%)
-        if random.random() < 0.34:
+        # 15% chance to boost speed (reduced from 34%), 85% for other stats
+        if random.random() < 0.15:
             speed += 1
             budget -= 1
         else:
