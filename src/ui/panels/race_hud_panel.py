@@ -135,9 +135,15 @@ class RaceHUDPanel(BasePanel):
             race_roster = None
             if hasattr(self.game_state, 'race_manager') and hasattr(self.game_state.race_manager, 'race_roster'):
                 race_roster = self.game_state.race_manager.race_roster
-                print(f"[DEBUG] RaceHUD: Found race roster with {len(race_roster)} turtles")
+                if race_roster and len(race_roster) > 0:
+                    print(f"[DEBUG] RaceHUD: Found race roster with {len(race_roster)} turtles")
+                else:
+                    print(f"[DEBUG] RaceHUD: Race roster exists but is empty")
             else:
                 print(f"[DEBUG] RaceHUD: No race_manager or race_roster found")
+                print(f"[DEBUG] Has race_manager: {hasattr(self.game_state, 'race_manager')}")
+                if hasattr(self.game_state, 'race_manager'):
+                    print(f"[DEBUG] Has race_roster: {hasattr(self.game_state.race_manager, 'race_roster')}")
                 
             if race_roster and len(race_roster) > 0:
                 # Get player turtle (first in roster)
