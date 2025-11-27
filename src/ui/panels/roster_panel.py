@@ -273,6 +273,8 @@ class RosterPanel(BasePanel):
             self.btn_bet_0.show()
             self.btn_bet_5.show()
             self.btn_bet_10.show()
+            if self.btn_start_race:
+                self.btn_start_race.show()
             self.window.set_display_title("Select Racer")
         else:
             self.btn_view_active.show()
@@ -280,6 +282,8 @@ class RosterPanel(BasePanel):
             self.btn_bet_0.hide()
             self.btn_bet_5.hide()
             self.btn_bet_10.hide()
+            if self.btn_start_race:
+                self.btn_start_race.hide()
             self.window.set_display_title("Roster")
             
         self._update_slot_content()
@@ -288,6 +292,7 @@ class RosterPanel(BasePanel):
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
             if event.ui_element == self.btn_menu:
                 self.game_state.set('state', 'menu')
+                self.game_state.set('select_racer_mode', False) # Reset mode
                 return True
             elif event.ui_element == self.btn_view_active:
                 self.game_state.set('toggle_view', False)
@@ -303,6 +308,9 @@ class RosterPanel(BasePanel):
                 return True
             elif event.ui_element == self.btn_bet_10:
                 self.game_state.set('set_bet', 10)
+                return True
+            elif self.btn_start_race and event.ui_element == self.btn_start_race:
+                self.game_state.set('start_race', True)
                 return True
             else:
                 for slot in self.slots:
