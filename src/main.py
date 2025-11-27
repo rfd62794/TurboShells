@@ -373,7 +373,9 @@ class TurboShellsGame:
             if self.state == STATE_SHOP:
                 self.shop_manager.update()
             elif self.state == STATE_RACE:
+                print(f"[DEBUG] Updating race manager")
                 race_finished = self.race_manager.update()
+                print(f"[DEBUG] Race finished: {race_finished}")
                 if race_finished:
                     self.state = STATE_RACE_RESULT
                 
@@ -398,7 +400,26 @@ class TurboShellsGame:
         """Render the game."""
         self.screen.fill(BLACK)
         
-        # Draw UI panels
+        # Draw game world for states that need it
+        if self.state == STATE_RACE:
+            print(f"[DEBUG] Drawing race state")
+            self.renderer.draw_race(self)  # Draw race track and turtles
+        elif self.state == STATE_MENU:
+            pass  # Handled by MainMenuPanel
+        elif self.state == STATE_ROSTER:
+            pass  # Handled by RosterPanel
+        elif self.state == STATE_RACE_RESULT:
+            pass  # Handled by RaceResultPanel
+        elif self.state == STATE_SHOP:
+            pass  # Handled by ShopPanel
+        elif self.state == STATE_BREEDING:
+            pass  # Handled by BreedingPanel
+        elif self.state == STATE_PROFILE:
+            pass  # Handled by ProfilePanel
+        elif self.state == STATE_VOTING:
+            pass  # Handled by VotingPanel
+        
+        # Draw UI panels on top
         self.ui_manager.draw_ui(self.screen)
         
         # Draw monitoring overlay
