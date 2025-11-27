@@ -51,6 +51,8 @@ from ui.panels.roster_panel import RosterPanel
 from ui.panels.race_hud_panel import RaceHUDPanel
 from ui.panels.race_result_panel import RaceResultPanel
 from ui.panels.profile_panel import ProfilePanel
+from ui.panels.breeding_panel import BreedingPanel
+from ui.panels.voting_panel import VotingPanel
 from ui.data_binding import DataBindingManager
 from game.game_state_interface import TurboShellsGameStateInterface
 
@@ -145,6 +147,12 @@ class TurboShellsGame:
         self.profile_panel = ProfilePanel(self.ui_manager.manager, self.game_state_interface)
         self.ui_manager.register_panel("profile", self.profile_panel)
         
+        self.breeding_panel = BreedingPanel(self.ui_manager.manager, self.game_state_interface)
+        self.ui_manager.register_panel("breeding", self.breeding_panel)
+        
+        self.voting_panel = VotingPanel(self.ui_manager.manager, self.game_state_interface)
+        self.ui_manager.register_panel("voting", self.voting_panel)
+        
         # --- MANAGERS ---
         self.renderer = Renderer(self.screen, self.font)
         self.roster_manager = RosterManager(self)
@@ -202,6 +210,10 @@ class TurboShellsGame:
                 self.race_hud_panel.handle_event(event)
             elif self.state == STATE_RACE_RESULT:
                 self.race_result_panel.handle_event(event)
+            elif self.state == STATE_BREEDING:
+                self.breeding_panel.handle_event(event)
+            elif self.state == STATE_VOTING:
+                self.voting_panel.handle_event(event)
             
             # 2. Handle monitoring overlay input
             monitoring_overlay.handle_key_event(event)
@@ -336,11 +348,11 @@ class TurboShellsGame:
         elif self.state == STATE_SHOP:
             pass  # Handled by ShopPanel
         elif self.state == STATE_BREEDING:
-            self.renderer.draw_breeding(self)  # TODO: Migrate to BreedingPanel
+            pass  # Handled by BreedingPanel
         elif self.state == STATE_PROFILE:
             pass  # Handled by ProfilePanel
         elif self.state == STATE_VOTING:
-            self.renderer.draw_voting(self)  # TODO: Migrate to VotingPanel
+            pass  # Handled by VotingPanel
 
         # 3. Render UI overlay (pygame_gui)
         self.ui_manager.draw_ui(self.screen)
