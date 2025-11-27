@@ -155,62 +155,51 @@ class BreedingPanel(BasePanel):
                 turtle = candidates[i]
                 is_retired = turtle in retired_roster
                 
-                # Create slot button with turtle image
-                slot_btn = pygame_gui.elements.UIButton(
+                # Create slot container
+                slot_container = pygame_gui.elements.UIPanel(
                     relative_rect=pygame.Rect(pos, (slot_width, slot_height)),
-                    text="",  # Will use image instead
                     manager=self.manager,
                     container=self.slots_container,
+                    object_id=f"#breeding_slot_container_{i}"
+                )
+                
+                # Create turtle image (separate from button)
+                turtle_img = pygame_gui.elements.UIImage(
+                    relative_rect=pygame.Rect((10, 10), (slot_width - 20, 120)),
+                    image_surface=pygame.Surface((slot_width - 20, 120)),  # Placeholder
+                    manager=self.manager,
+                    container=slot_container,
+                    object_id=f"#breeding_turtle_img_{i}"
+                )
+                
+                # Set turtle image
+                try:
+                    turtle_surface = render_turtle_pygame(turtle, 100)
+                    if turtle_surface:
+                        turtle_img.set_image(turtle_surface)
+                except Exception as e:
+                    print(f"Error rendering turtle in breeding slot {i}: {e}")
+                
+                # Create selection button below image
+                select_btn = pygame_gui.elements.UIButton(
+                    relative_rect=pygame.Rect((10, 140), (slot_width - 20, 30)),
+                    text=f"{turtle.name}\n{'(RETIRED)' if is_retired else ''}",
+                    manager=self.manager,
+                    container=slot_container,
                     object_id=f"#breeding_slot_{i}"
                 )
                 
                 # Store turtle data with the button
-                slot_btn.turtle_data = turtle
-                slot_btn.is_retired = is_retired
-                slot_btn.slot_index = i
+                select_btn.turtle_data = turtle
+                select_btn.is_retired = is_retired
+                select_btn.slot_index = i
+                select_btn.image_element = turtle_img  # Reference to image
                 
-                # Create and set turtle image (only once during creation)
-                try:
-                    turtle_surface = render_turtle_pygame(turtle, 100)  # Smaller size for slots
-                    if turtle_surface:
-                        # Create a composite surface with turtle + name
-                        slot_surface = pygame.Surface((slot_width, slot_height), pygame.SRCALPHA)
-                        slot_surface.fill((240, 240, 240))  # Light gray background
-                        
-                        # Center turtle image
-                        turtle_x = (slot_width - turtle_surface.get_width()) // 2
-                        turtle_y = 10  # Leave room for name at bottom
-                        slot_surface.blit(turtle_surface, (turtle_x, turtle_y))
-                        
-                        # Add turtle name at bottom
-                        font = pygame.font.Font(None, 16)
-                        name_text = turtle.name
-                        if is_retired:
-                            name_text += "\n(RETIRED)"
-                        
-                        # Render name lines
-                        lines = name_text.split('\n')
-                        for j, line in enumerate(lines):
-                            name_surface = font.render(line, True, (0, 0, 0))
-                            name_x = (slot_width - name_surface.get_width()) // 2
-                            name_y = slot_height - 35 + (j * 18)
-                            slot_surface.blit(name_surface, (name_x, name_y))
-                        
-                        # Set the image once (don't change during updates)
-                        slot_btn.set_image(slot_surface)
-                    else:
-                        # Fallback to text if image fails
-                        slot_btn.set_text(f"{turtle.name}\n{'(RETIRED)' if is_retired else ''}")
-                except Exception as e:
-                    print(f"Error rendering turtle in breeding slot {i}: {e}")
-                    # Fallback to text
-                    slot_btn.set_text(f"{turtle.name}\n{'(RETIRED)' if is_retired else ''}")
-                
-                self.breeding_slots.append(slot_btn)
+                self.breeding_slots.append(select_btn)
                 
                 # Create parent indicator label (initially hidden)
                 parent_label = pygame_gui.elements.UILabel(
-                    relative_rect=pygame.Rect((pos[0] + 5, pos[1] + slot_height - 30), (slot_width - 10, 25)),
+                    relative_rect=pygame.Rect((pos[0] + 10, pos[1] + slot_height - 25), (slot_width - 20, 20)),
                     text="",
                     manager=self.manager,
                     container=self.slots_container
