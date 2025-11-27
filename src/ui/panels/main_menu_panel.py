@@ -2,6 +2,7 @@ import pygame
 import pygame_gui
 from .base_panel import BasePanel
 from game.game_state_interface import TurboShellsGameStateInterface
+from settings import STATE_ROSTER, STATE_SHOP, STATE_BREEDING, STATE_VOTING
 
 class MainMenuPanel(BasePanel):
     """Main Menu Panel using pygame_gui."""
@@ -110,20 +111,22 @@ class MainMenuPanel(BasePanel):
     def handle_event(self, event: pygame.event.Event) -> bool:
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
             if event.ui_element == self.btn_roster:
-                self.game_state.set('state', 'roster')
+                print(f"[DEBUG] Roster button clicked, setting state to {STATE_ROSTER}")
+                self.game_state.set('state', STATE_ROSTER)
                 return True
             elif event.ui_element == self.btn_shop:
-                self.game_state.set('state', 'shop')
+                print(f"[DEBUG] Shop button clicked, setting state to {STATE_SHOP}")
+                self.game_state.set('state', STATE_SHOP)
                 return True
             elif event.ui_element == self.btn_breeding:
-                self.game_state.set('state', 'breeding')
+                self.game_state.set('state', STATE_BREEDING)
                 return True
             elif event.ui_element == self.btn_race:
-                self.game_state.set('state', 'roster')
+                self.game_state.set('state', STATE_ROSTER)
                 self.game_state.set('select_racer_mode', True)
                 return True
             elif event.ui_element == self.btn_voting:
-                self.game_state.set('state', 'voting')
+                self.game_state.set('state', STATE_VOTING)
                 return True
             elif event.ui_element == self.btn_settings:
                 # Toggle settings panel via game instance if possible, or just show it
