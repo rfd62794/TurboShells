@@ -133,17 +133,18 @@ class RaceHUDPanel(BasePanel):
         if self.visible:
             # Update progress bar
             race_roster = self.game_state.get('race_roster', [])
-            if race_roster:
-                # Assuming first turtle is player? Or just max progress?
-                # The original code used race_roster[0] (player)
+            if race_roster and len(race_roster) > 0:
+                # Get player turtle (first in roster)
                 player = race_roster[0]
-                # Need to know track length. It was imported from settings.
-                # I'll assume 1500 logic length or get it from somewhere.
-                # Ideally game_state exposes progress percentage.
-                # For now I'll hardcode 1500 as per settings.py
-                progress = min(1.0, player.race_distance / 1500.0)
-                if self.progress_bar:
-                    self.progress_bar.set_current_progress(progress)
+                if hasattr(player, 'race_distance'):
+                    # Use correct track length from settings
+                    from settings import TRACK_LENGTH_LOGIC
+                    progress = min(1.0, player.race_distance / TRACK_LENGTH_LOGIC)
+                    if self.progress_bar:
+                        self.progress_bar.set_current_progress(progress)
+                        # Debug progress updates
+                        if int(progress * 100) % 10 == 0:  # Log every 10% progress
+                            print(f"[DEBUG] Race progress: {progress:.1%} ({player.race_distance:.1f}/{TRACK_LENGTH_LOGIC})")
             
             # Update header text periodically or on change
             # self._update_header() # Only if needed
