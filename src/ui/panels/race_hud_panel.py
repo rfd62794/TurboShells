@@ -131,8 +131,11 @@ class RaceHUDPanel(BasePanel):
     def update(self, time_delta: float) -> None:
         super().update(time_delta)
         if self.visible:
-            # Update progress bar
-            race_roster = self.game_state.get('race_roster', [])
+            # Update progress bar - get from race manager
+            race_roster = None
+            if hasattr(self.game_state, 'race_manager') and hasattr(self.game_state.race_manager, 'race_roster'):
+                race_roster = self.game_state.race_manager.race_roster
+                
             if race_roster and len(race_roster) > 0:
                 # Get player turtle (first in roster)
                 player = race_roster[0]
@@ -145,6 +148,8 @@ class RaceHUDPanel(BasePanel):
                         # Debug progress updates
                         if int(progress * 100) % 10 == 0:  # Log every 10% progress
                             print(f"[DEBUG] Race progress: {progress:.1%} ({player.race_distance:.1f}/{TRACK_LENGTH_LOGIC})")
+            else:
+                print(f"[DEBUG] No race roster found for progress bar update")
             
             # Update header text periodically or on change
             # self._update_header() # Only if needed

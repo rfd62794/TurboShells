@@ -7,6 +7,10 @@ import math
 def draw_race(screen, font, game_state):
     print(f"[DEBUG] Drawing race screen")
     
+    # Draw terrain first (background)
+    from core.racing.terrain_system import terrain_renderer
+    terrain_renderer.render_terrain(screen)
+    
     # Draw Finish Line
     pygame.draw.line(
         screen,

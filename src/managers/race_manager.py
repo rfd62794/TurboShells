@@ -3,6 +3,7 @@ from settings import *
 import ui.layout as layout
 from game.race_track import generate_track, get_terrain_at
 from core.monitoring_system import monitoring_system
+from core.racing.terrain_system import terrain_generator, terrain_renderer
 
 
 class RaceManager:
@@ -74,6 +75,12 @@ class RaceManager:
         print(f"[DEBUG] Final race roster: {len(self.race_roster)} turtles")
         for i, turtle in enumerate(self.race_roster):
             print(f"[DEBUG]   {i}: {turtle.name} (speed: {turtle.stats['speed']}, energy: {turtle.stats['max_energy']})")
+        
+        # Generate terrain for this race
+        print(f"[DEBUG] Generating terrain for race...")
+        terrain_segments = terrain_generator.generate_terrain(difficulty="normal")
+        terrain_renderer.set_terrain(terrain_segments)
+        print(f"[DEBUG] Generated {len(terrain_segments)} terrain segments")
 
     def handle_click(self, pos):
         """Handle mouse clicks on the Race HUD (speed controls)."""
