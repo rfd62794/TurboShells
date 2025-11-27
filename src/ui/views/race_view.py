@@ -92,7 +92,7 @@ def draw_race_result(screen, font, game_state):
 
 
 def draw_turtle_sprite(screen, font, turtle, y_pos, race_direction="horizontal"):
-    """Draw turtle using the unified TurtleRenderEngine"""
+    """Draw turtle using the unified TurtleRenderEngine with proper rotation"""
     print(f"[DEBUG] Drawing turtle sprite for {turtle.name} at distance {turtle.race_distance}")
     
     # Convert Logical Distance (1500) to Screen Pixels (700)
@@ -116,10 +116,28 @@ def draw_turtle_sprite(screen, font, turtle, y_pos, race_direction="horizontal")
         
         # Generate turtle sprite (40x30 for race)
         sprite_size = (40, 30)
-        position = (int(screen_x), int(screen_y))
         
-        if turtle_render_engine.render_turtle_sprite(screen, turtle, position, sprite_size):
+        # Create a temporary surface to render the turtle
+        temp_surface = pygame.Surface(sprite_size, pygame.SRCALPHA)
+        
+        if turtle_render_engine.render_turtle_sprite(temp_surface, turtle, (0, 0), sprite_size):
             print(f"[DEBUG] Turtle surface generated successfully")
+            
+            # Rotate the sprite for horizontal racing (face right)
+            if race_direction == "horizontal":
+                # Rotate 90 degrees clockwise to face right
+                rotated_surface = pygame.transform.rotate(temp_surface, -90)
+                
+                # Adjust position to account for rotation
+                # After rotation, dimensions are swapped (40x30 becomes 30x40)
+                rotated_size = rotated_surface.get_size()
+                adjusted_x = screen_x - (rotated_size[0] - sprite_size[0]) // 2
+                adjusted_y = screen_y - (rotated_size[1] - sprite_size[1]) // 2
+                
+                screen.blit(rotated_surface, (int(adjusted_x), int(adjusted_y)))
+            else:
+                # Vertical racing - no rotation needed (face up)
+                screen.blit(temp_surface, (int(screen_x), int(screen_y)))
             
             # Add energy bar overlay
             bar_width = 40
