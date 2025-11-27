@@ -211,6 +211,8 @@ class RosterPanel(BasePanel):
         else:
             turtles = list(self.game_state.get('roster', []))
             
+        print(f"[DEBUG] RosterPanel update: {len(turtles)} turtles found. Content: {[t.name if t else None for t in turtles]}")
+            
         # Pad
         while len(turtles) < 3:
             turtles.append(None)

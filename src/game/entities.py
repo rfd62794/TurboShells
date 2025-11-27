@@ -132,6 +132,8 @@ class Turtle:
         for stat in other_stats:
             if random.random() < 0.2:  # 20% chance
                 self.stats[stat] += 1
+        
+        return True
 
     def add_race_result(self, position, earnings, race_number=None):
         """
