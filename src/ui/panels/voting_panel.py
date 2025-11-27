@@ -10,6 +10,7 @@ import math
 from typing import Dict, Any, Optional, List, Tuple
 from ui.panels.base_panel import BasePanel
 from core.rendering.pygame_turtle_renderer import render_turtle_pygame
+from core.ui.window_manager import window_manager
 
 
 class VotingPanel(BasePanel):
@@ -20,9 +21,10 @@ class VotingPanel(BasePanel):
         
         self.game_state = game_state_interface
         
-        # Set default size and position to fit within game window
-        self.size = (800, 550)
-        self.position = (100, 75)
+        # Use window manager for sizing
+        self.panel_rect = window_manager.get_panel_rect('voting')
+        self.size = (self.panel_rect.width, self.panel_rect.height)
+        self.position = (self.panel_rect.x, self.panel_rect.y)
         
         # Voting state
         self.current_design_index = 0
@@ -348,11 +350,12 @@ class VotingPanel(BasePanel):
     def handle_event(self, event: pygame.event.Event) -> bool:
         """Handle voting panel events."""
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
-            # Navigation buttons
+            # Back button
             if event.ui_element == self.btn_back:
                 self.game_state.set('goto_menu', True)
                 return True
                 
+            # Navigation buttons
             elif event.ui_element == self.btn_previous:
                 if self.current_design_index > 0:
                     self.current_design_index -= 1
@@ -365,6 +368,7 @@ class VotingPanel(BasePanel):
                     self._update_design_display()
                 return True
                 
+            # Submit button
             elif event.ui_element == self.btn_submit:
                 self._submit_ratings()
                 return True
@@ -421,4 +425,22 @@ class VotingPanel(BasePanel):
         self.current_design_index = 0
         self.selected_ratings = {}
         self.daily_designs = self._generate_mock_designs()
+        self._update_design_display()
+        
+    def handle_window_resize(self, new_size: Tuple[int, int]) -> None:
+        """Handle window resize events using window manager."""
+        adjustments = window_manager.adjust_for_window_resize(new_size)
+        
+        # Update panel size and position
+        self.panel_rect = window_manager.get_panel_rect('voting')
+        self.size = (self.panel_rect.width, self.panel_rect.height)
+        self.position = (self.panel_rect.x, self.panel_rect.y)
+        
+        # Recreate UI with new layout
+        if self.window:
+            self.window.kill()
+            self.window = None
+            self._create_window()
+        
+        # Update display
         self._update_design_display()

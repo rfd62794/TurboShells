@@ -9,6 +9,7 @@ import pygame_gui
 from typing import List, Optional, Tuple
 from ui.panels.base_panel import BasePanel
 from core.rendering.pygame_turtle_renderer import render_turtle_pygame
+from core.ui.window_manager import window_manager
 
 
 class BreedingPanel(BasePanel):
@@ -19,9 +20,10 @@ class BreedingPanel(BasePanel):
         
         self.game_state = game_state_interface
         
-        # Set default size and position to fit within game window
-        self.size = (800, 550)
-        self.position = (100, 75)
+        # Use window manager for sizing
+        self.panel_rect = window_manager.get_panel_rect('breeding')
+        self.size = (self.panel_rect.width, self.panel_rect.height)
+        self.position = (self.panel_rect.x, self.panel_rect.y)
         
         # Breeding state
         self.selected_parents = []
@@ -140,15 +142,10 @@ class BreedingPanel(BasePanel):
         retired_roster = self.game_state.get('retired_roster', [])
         candidates = [t for t in roster if t is not None] + list(retired_roster)
         
-        # Create slot buttons in 2x3 grid with adjusted sizing
-        slot_width = 180
-        slot_height = 150
-        spacing = 10
-        
-        positions = [
-            (10, 10), (200, 10), (390, 10),  # Top row
-            (10, 170), (200, 170), (390, 170)  # Bottom row
-        ]
+        # Create slot buttons in 2x3 grid using window manager
+        slot_layout = window_manager.get_slot_layout('breeding', (3, 2))
+        slot_width, slot_height = slot_layout['slot_size']
+        positions = slot_layout['positions']
         
         for i, pos in enumerate(positions):
             if i < len(candidates):
@@ -287,9 +284,15 @@ class BreedingPanel(BasePanel):
         if not self.btn_breed:
             return
             
+        print(f"[DEBUG] Updating breed button. Selected parents: {len(self.selected_parents)}")
+        for i, parent in enumerate(self.selected_parents):
+            print(f"[DEBUG] Parent {i+1}: {parent.name}")
+            
         if len(self.selected_parents) == 2:
+            print(f"[DEBUG] Enabling breed button")
             self.btn_breed.enable()
         else:
+            print(f"[DEBUG] Disabling breed button")
             self.btn_breed.disable()
             
     def _update_info_label(self) -> None:
@@ -360,3 +363,20 @@ class BreedingPanel(BasePanel):
         self.selected_parents = []
         self.game_state.set('breeding_parents', [])
         self._update_selection_indicators()
+        
+    def handle_window_resize(self, new_size: Tuple[int, int]) -> None:
+        """Handle window resize events using window manager."""
+        adjustments = window_manager.adjust_for_window_resize(new_size)
+        
+        # Update panel size and position
+        self.panel_rect = window_manager.get_panel_rect('breeding')
+        self.size = (self.panel_rect.width, self.panel_rect.height)
+        self.position = (self.panel_rect.x, self.panel_rect.y)
+        
+        # Recreate slots with new layout
+        self._create_breeding_slots()
+        
+        # Update window if it exists
+        if self.window:
+            self.window.set_position((self.position[0], self.position[1]))
+            self.window.set_dimensions((self.size[0], self.size[1]))

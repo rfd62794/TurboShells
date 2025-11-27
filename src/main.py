@@ -18,16 +18,24 @@ except ImportError:
         SCREEN_WIDTH = 1024
         SCREEN_HEIGHT = 768
         FPS = 60
-        BLACK = (0, 0, 0)
-        STATE_MENU = "menu"
-        STATE_ROSTER = "roster"
-        STATE_RACE = "race"
-        STATE_RACE_RESULT = "race_result"
-        STATE_SHOP = "shop"
-        STATE_BREEDING = "breeding"
-        STATE_PROFILE = "profile"
-        STATE_VOTING = "voting"
-        AUTO_SAVE_INTERVAL = 300  # 5 minutes in seconds
+
+# Import window manager
+from core.ui.window_manager import window_manager
+
+# Define constants if not imported from settings
+try:
+    BLACK
+except NameError:
+    BLACK = (0, 0, 0)
+    STATE_MENU = "menu"
+    STATE_ROSTER = "roster"
+    STATE_RACE = "race"
+    STATE_RACE_RESULT = "race_result"
+    STATE_SHOP = "shop"
+    STATE_BREEDING = "breeding"
+    STATE_PROFILE = "profile"
+    STATE_VOTING = "voting"
+    AUTO_SAVE_INTERVAL = 300  # 5 minutes in seconds
 
 from game.entities import Turtle
 from ui.views.renderer import Renderer
@@ -74,6 +82,9 @@ class TurboShellsGame:
         pygame.display.set_caption("Turbo Shells MVP")
         self.clock = pygame.time.Clock()
         self.font = pygame.font.SysFont("Arial", 24)
+        
+        # Initialize window manager with initial screen size
+        window_manager.set_window_size((SCREEN_WIDTH, SCREEN_HEIGHT))
         
         # Initialize monitoring system
         self.game_logger = GameLogger("main")
@@ -233,6 +244,21 @@ class TurboShellsGame:
                     (event.w, event.h), pygame.RESIZABLE
                 )
                 new_screen_rect = pygame.Rect(0, 0, event.w, event.h)
+                
+                # Update window manager
+                window_manager.set_window_size((event.w, event.h))
+                
+                # Notify all panels of resize
+                if hasattr(self, 'breeding_panel') and self.breeding_panel:
+                    self.breeding_panel.handle_window_resize((event.w, event.h))
+                    
+                if hasattr(self, 'voting_panel') and self.voting_panel:
+                    self.voting_panel.handle_window_resize((event.w, event.h))
+                    
+                # Update UI manager with new screen size
+                if self.ui_manager:
+                    self.ui_manager.set_window_resolution((event.w, event.h))
+                    
                 # self.settings_manager.update_screen_rect(new_screen_rect)
                 self.ui_manager.handle_screen_resize(new_screen_rect)
                 continue
