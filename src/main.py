@@ -286,6 +286,15 @@ class TurboShellsGame:
                     self.ui_manager.toggle_panel("settings")
                     continue
                 
+                # Debug: Print window utilization report with F1
+                if event.key == pygame.K_F1:
+                    print("\n" + "="*50)
+                    print("WINDOW UTILIZATION REPORT (F1)")
+                    print("="*50)
+                    print(window_manager.get_window_report())
+                    print("="*50)
+                    continue
+                
                 # Handle other keyboard input through keyboard handler
                 self.keyboard_handler.handle_keydown(event)
 
@@ -360,53 +369,16 @@ class TurboShellsGame:
             game_loop_profiler.end_frame()
 
     def draw(self):
-        # 1. Clear screen (PyGame)
+        """Render the game."""
         self.screen.fill(BLACK)
-
-        # 2. Render game world (PyGame - sprites, entities)
-        # Only render states that still use legacy renderer
-        if self.state == STATE_MENU:
-            pass  # Handled by MainMenuPanel
-        elif self.state == STATE_ROSTER:
-            pass  # Handled by RosterPanel
-        elif self.state == STATE_RACE:
-            self.renderer.draw_race(self)  # Only draws world now
-        elif self.state == STATE_RACE_RESULT:
-            pass  # Handled by RaceResultPanel
-        elif self.state == STATE_SHOP:
-            pass  # Handled by ShopPanel
-        elif self.state == STATE_BREEDING:
-            pass  # Handled by BreedingPanel
-        elif self.state == STATE_PROFILE:
-            pass  # Handled by ProfilePanel
-        elif self.state == STATE_VOTING:
-            pass  # Handled by VotingPanel
-
-        # 3. Render UI overlay (pygame_gui)
+        
+        # Draw UI panels
         self.ui_manager.draw_ui(self.screen)
-
-        # 4. Draw legacy overlays on top
-        # if self.settings_manager.is_visible():
-        #     self.settings_manager.draw(self.screen)
-            
-        # 5. Draw monitoring overlay on top of everything
-        monitoring_overlay.render(self.screen)
-
-        # 6. Final PyGame display flip
+        
+        # Draw monitoring overlay
+        monitoring_overlay.draw(self.screen)
+        
         pygame.display.flip()
-
-    def _initialize_game_state(self):
-        """Initialize game state using GameStateManager"""
-        success, roster, retired_roster, money, state, notification = (
-            self.game_state_manager.initialize_game_state()
-        )
-
-        # Update game state
-        self.roster = roster
-        self.retired_roster = retired_roster
-        self.money = money
-        self.state = state
-        self.load_notification = notification
 
     def auto_save(self, trigger="manual"):
         """Auto-save game state using GameStateManager"""

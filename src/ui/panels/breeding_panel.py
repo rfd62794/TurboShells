@@ -65,34 +65,14 @@ class BreedingPanel(BasePanel):
             manager=self.manager,
             container=container
         )
-        y_pos += 40
         
-        # Instructions
-        self.instruction_label = pygame_gui.elements.UILabel(
-            relative_rect=pygame.Rect((10, y_pos), (width, 25)),
-            text="Select 2 Parents",
-            manager=self.manager,
-            container=container
-        )
-        y_pos += 30
-        
-        # Warning
-        self.warning_label = pygame_gui.elements.UILabel(
-            relative_rect=pygame.Rect((10, y_pos), (width, 25)),
-            text="Parent 2 will be lost after breeding.",
-            manager=self.manager,
-            container=container
-        )
-        y_pos += 35
-        
-        # Breed button (initially disabled)
+        # Breed button
         self.btn_breed = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((10, y_pos), (120, 35)),
+            relative_rect=pygame.Rect((10, y_pos), (120, 30)),
             text="BREED",
             manager=self.manager,
             container=container
         )
-        self.btn_breed.disable()
         
         # Info label for breeding info
         self.info_label = pygame_gui.elements.UILabel(
@@ -120,6 +100,10 @@ class BreedingPanel(BasePanel):
             manager=self.manager,
             container=container
         )
+        
+        # Register panel with window manager for space tracking
+        if hasattr(window_manager, 'register_panel'):
+            window_manager.register_panel('breeding', pygame.Rect(self.position, self.size))
         
     def _create_breeding_slots(self) -> None:
         """Create breeding selection slots with turtle rendering."""
@@ -380,3 +364,19 @@ class BreedingPanel(BasePanel):
         if self.window:
             self.window.set_position((self.position[0], self.position[1]))
             self.window.set_dimensions((self.size[0], self.size[1]))
+        
+        # Re-register with updated dimensions
+        if hasattr(window_manager, 'register_panel'):
+            window_manager.register_panel('breeding', pygame.Rect(self.position, self.size))
+    
+    def destroy(self) -> None:
+        """Clean up panel resources."""
+        # Unregister from window manager
+        if hasattr(window_manager, 'unregister_panel'):
+            window_manager.unregister_panel('breeding')
+        
+        # Clean up UI elements
+        if self.window:
+            self.window.kill()
+        
+        super().destroy() if hasattr(super(), 'destroy') else None
