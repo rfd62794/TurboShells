@@ -1,11 +1,11 @@
-"""Base Panel System for TurboShells ImGui UI
+"""Base Panel System for TurboShells Thorpy UI
 
 Foundation for all UI panels following Single Responsibility Principle.
 Provides common functionality and consistent interface for all panels.
 """
 
 import pygame
-import imgui
+import thorpy
 from typing import Optional, Dict, Any, Callable, Tuple, List
 from dataclasses import dataclass
 from abc import ABC, abstractmethod
@@ -23,9 +23,9 @@ class PanelState(Enum):
 @dataclass
 class PanelStyle:
     """Styling configuration for panels."""
-    title_color: Tuple[float, float, float] = (1.0, 1.0, 1.0)
-    background_color: Tuple[float, float, float, float] = (0.1, 0.1, 0.15, 0.9)
-    border_color: Tuple[float, float, float] = (0.3, 0.3, 0.4)
+    title_color: Tuple[int, int, int] = (255, 255, 255)
+    background_color: Tuple[int, int, int, int] = (25, 25, 40, 230)
+    border_color: Tuple[int, int, int] = (76, 76, 102)
     padding: Tuple[int, int] = (10, 10)
     rounding: float = 5.0
     flags: int = 0
@@ -36,7 +36,7 @@ class BasePanel(ABC):
     
     Responsibilities:
     - Manage panel lifecycle and state
-    - Handle common ImGui window operations
+    - Handle common Thorpy element operations
     - Provide event handling interface
     - Support data binding framework
     - Maintain consistent styling behavior
@@ -66,7 +66,6 @@ class BasePanel(ABC):
         # Position and size
         self.position = (100, 100)
         self.size = (300, 200)
-        self.auto_resize = True
         
         # UI Manager reference
         self.ui_manager: Optional['UIManager'] = None
@@ -75,13 +74,19 @@ class BasePanel(ABC):
         self.data_bindings: Dict[str, Any] = {}
         self.change_callbacks: Dict[str, List[Callable]] = {}
         
-        # Child components
-        self.children: List['BasePanel'] = []
-        self.parent: Optional['BasePanel'] = None
+        # Thorpy element
+        self.element: Optional[thorpy.Element] = None
+        self._create_element()
         
-        # ImGui-specific state
-        self._imgui_window_open = True
-        self._last_frame_visible = False
+    def _create_element(self) -> None:
+        """Create the Thorpy element for this panel."""
+        # Default implementation creates a draggable box (window-like)
+        self.element = thorpy.Draggable(text=self.title)
+        self.element.set_size(self.size)
+        self.element.set_topleft(self.position)
+        # Apply style
+        # Thorpy styling is different, we can set main color etc.
+        # self.element.set_main_color(self.style.background_color)
         
     def set_ui_manager(self, manager: Optional['UIManager']) -> None:
         """Set the UI manager for this panel.
@@ -90,10 +95,6 @@ class BasePanel(ABC):
             manager: UI manager instance or None
         """
         self.ui_manager = manager
-        
-        # Propagate to children
-        for child in self.children:
-            child.set_ui_manager(manager)
     
     def render(self, game_state: Any) -> None:
         """Render the panel and its children.
@@ -101,112 +102,16 @@ class BasePanel(ABC):
         Args:
             game_state: Current game state object
         """
-        if not self.visible or self.state == PanelState.HIDDEN:
-            self._last_frame_visible = False
-            return
+        # Thorpy handles rendering via updater, but if we need manual updates:
+        pass
         
-        self._last_frame_visible = True
-        
-        # Set up window properties
-        self._setup_window_properties()
-        
-        # Begin ImGui window
-        expanded, opened = imgui.begin(self._get_window_title(), self._imgui_window_open, self.style.flags)
-        
-        # Update open state
-        self._imgui_window_open = opened
-        if not opened:
-            self.visible = False
-        
-        # Update focus state
-        self.focused = imgui.is_window_focused()
-        
-        if expanded:
-            # Apply panel styling
-            self._apply_styling()
-            
-            # Render panel content
-            self.render_content(game_state)
-            
-            # Render child panels
-            self._render_children(game_state)
-        
-        # End ImGui window
-        imgui.end()
-        
-        # Handle post-render logic
-        self._post_render(game_state)
-    
-    @abstractmethod
-    def render_content(self, game_state: Any) -> None:
-        """Render panel-specific content.
+    def update(self, game_state: Any) -> None:
+        """Update panel content from game state.
         
         Args:
             game_state: Current game state object
-            
-        Note:
-            This method must be implemented by subclasses
         """
         pass
-    
-    def _setup_window_properties(self) -> None:
-        """Set up ImGui window properties."""
-        if self.auto_resize:
-            imgui.set_next_window_size(self.size[0], self.size[1])
-        else:
-            imgui.set_next_window_size_constraints(
-                (self.size[0], self.size[1]),
-                (self.size[0] * 2, self.size[1] * 2)
-            )
-        
-        imgui.set_next_window_position(self.position[0], self.position[1])
-    
-    def _get_window_title(self) -> str:
-        """Get the window title with state indicators.
-        
-        Returns:
-            Window title string
-        """
-        title = self.title
-        if not title:
-            title = self.panel_id.replace('_', ' ').title()
-        
-        # Add state indicators
-        if self.state == PanelState.MINIMIZED:
-            title += " [Minimized]"
-        elif self.state == PanelState.FOCUSED:
-            title += " [Focused]"
-        
-        return title
-    
-    def _apply_styling(self) -> None:
-        """Apply panel-specific styling."""
-        # This could apply custom colors, fonts, etc.
-        # For now, we'll rely on the global style
-        pass
-    
-    def _render_children(self, game_state: Any) -> None:
-        """Render child panels.
-        
-        Args:
-            game_state: Current game state object
-        """
-        for child in self.children:
-            if child.visible:
-                child.render(game_state)
-    
-    def _post_render(self, game_state: Any) -> None:
-        """Handle post-render logic.
-        
-        Args:
-            game_state: Current game state object
-        """
-        # Update position and size from ImGui
-        if self._last_frame_visible:
-            pos = imgui.get_window_position()
-            size = imgui.get_window_size()
-            self.position = (int(pos.x), int(pos.y))
-            self.size = (int(size.x), int(size.y))
     
     def handle_event(self, event: pygame.event.Event) -> bool:
         """Handle events specific to this panel.
@@ -217,24 +122,7 @@ class BasePanel(ABC):
         Returns:
             True if event was consumed, False otherwise
         """
-        # Let children handle events first
-        for child in self.children:
-            if child.visible and child.handle_event(event):
-                return True
-        
-        # Handle panel-specific events
-        return self._handle_panel_event(event)
-    
-    def _handle_panel_event(self, event: pygame.event.Event) -> bool:
-        """Handle panel-specific events.
-        
-        Args:
-            event: PyGame event to handle
-            
-        Returns:
-            True if event was consumed, False otherwise
-        """
-        # Default implementation doesn't handle any events
+        # Thorpy handles events via menu.react(), but we can add custom logic here
         return False
     
     def handle_screen_resize(self, new_rect: pygame.Rect) -> None:
@@ -245,19 +133,18 @@ class BasePanel(ABC):
         """
         # Adjust panel position if needed
         screen_width, screen_height = new_rect.width, new_rect.height
-        panel_right = self.position[0] + self.size[0]
-        panel_bottom = self.position[1] + self.size[1]
         
-        # Keep panel on screen
-        if panel_right > screen_width:
-            self.position = (screen_width - self.size[0] - 10, self.position[1])
-        
-        if panel_bottom > screen_height:
-            self.position = (self.position[0], screen_height - self.size[1] - 10)
-        
-        # Propagate to children
-        for child in self.children:
-            child.handle_screen_resize(new_rect)
+        if self.element:
+            # Ensure panel stays on screen
+            rect = self.element.get_rect()
+            x, y = rect.x, rect.y
+            w, h = rect.width, rect.height
+            
+            new_x = min(x, screen_width - w)
+            new_y = min(y, screen_height - h)
+            
+            if new_x != x or new_y != y:
+                self.element.set_topleft((max(0, new_x), max(0, new_y)))
     
     # Data binding methods
     def bind_data(self, key: str, data_source: Any) -> None:
@@ -310,45 +197,20 @@ class BasePanel(ABC):
             self.change_callbacks[key] = []
         self.change_callbacks[key].append(callback)
     
-    # Child management methods
-    def add_child(self, child: 'BasePanel') -> None:
-        """Add a child panel.
-        
-        Args:
-            child: Child panel to add
-        """
-        if child not in self.children:
-            self.children.append(child)
-            child.parent = self
-            child.set_ui_manager(self.ui_manager)
-    
-    def remove_child(self, child: 'BasePanel') -> bool:
-        """Remove a child panel.
-        
-        Args:
-            child: Child panel to remove
-            
-        Returns:
-            True if child was found and removed, False otherwise
-        """
-        if child in self.children:
-            self.children.remove(child)
-            child.parent = None
-            child.set_ui_manager(None)
-            return True
-        return False
-    
     # State management methods
     def show(self) -> None:
         """Show the panel."""
         self.visible = True
         self.state = PanelState.NORMAL
-        self._imgui_window_open = True
+        if self.element:
+            self.element.set_visible(True)
     
     def hide(self) -> None:
         """Hide the panel."""
         self.visible = False
         self.state = PanelState.HIDDEN
+        if self.element:
+            self.element.set_visible(False)
     
     def toggle_visibility(self) -> None:
         """Toggle panel visibility."""
@@ -356,19 +218,6 @@ class BasePanel(ABC):
             self.hide()
         else:
             self.show()
-    
-    def minimize(self) -> None:
-        """Minimize the panel."""
-        self.state = PanelState.MINIMIZED
-    
-    def restore(self) -> None:
-        """Restore the panel to normal state."""
-        self.state = PanelState.NORMAL
-    
-    def focus(self) -> None:
-        """Focus the panel."""
-        self.state = PanelState.FOCUSED
-        self.focused = True
     
     def is_visible(self) -> bool:
         """Check if panel is visible.
@@ -378,14 +227,6 @@ class BasePanel(ABC):
         """
         return self.visible and self.state != PanelState.HIDDEN
     
-    def is_focused(self) -> bool:
-        """Check if panel has focus.
-        
-        Returns:
-            True if focused, False otherwise
-        """
-        return self.focused
-    
     # Utility methods
     def get_screen_rect(self) -> pygame.Rect:
         """Get panel screen rectangle.
@@ -393,6 +234,8 @@ class BasePanel(ABC):
         Returns:
             Rectangle representing panel position and size
         """
+        if self.element:
+            return self.element.get_rect()
         return pygame.Rect(self.position[0], self.position[1], self.size[0], self.size[1])
     
     def contains_point(self, point: Tuple[int, int]) -> bool:
@@ -405,30 +248,3 @@ class BasePanel(ABC):
             True if point is within panel, False otherwise
         """
         return self.get_screen_rect().collidepoint(point)
-    
-    def get_info(self) -> Dict[str, Any]:
-        """Get panel information.
-        
-        Returns:
-            Dictionary with panel information
-        """
-        return {
-            'panel_id': self.panel_id,
-            'title': self.title,
-            'state': self.state.value,
-            'visible': self.visible,
-            'enabled': self.enabled,
-            'focused': self.focused,
-            'position': self.position,
-            'size': self.size,
-            'children': len(self.children),
-            'data_bindings': len(self.data_bindings)
-        }
-    
-    def print_info(self) -> None:
-        """Print panel information for debugging."""
-        info = self.get_info()
-        print(f"=== Panel Info: {self.panel_id} ===")
-        for key, value in info.items():
-            print(f"  {key}: {value}")
-        print("=" * 35)
