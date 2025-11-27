@@ -71,6 +71,10 @@ class ShopManager:
                     t.shop_cost = compute_turtle_cost(t)
                 except Exception:
                     t.shop_cost = COST_TURTLE
+            
+            # Immediately update game state for UI (don't wait for update() loop)
+            self.game_state.shop_inventory = list(self.inventory)
+            
             self.message = "Shop Refreshed!"
             self.message_timer = 60
         else:
