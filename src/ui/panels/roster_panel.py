@@ -299,6 +299,7 @@ class RosterPanel(BasePanel):
                 return True
                 
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
+            print(f"[DEBUG] RosterPanel button pressed: {event.ui_element}")
             if event.ui_element == self.btn_menu:
                 self.game_state.set('state', 'MENU')
                 self.game_state.set('select_racer_mode', False) # Reset mode
@@ -319,15 +320,19 @@ class RosterPanel(BasePanel):
                 self.game_state.set('set_bet', 10)
                 return True
             elif self.btn_start_race and event.ui_element == self.btn_start_race:
+                print(f"[DEBUG] START RACE button pressed!")
                 self.game_state.set('start_race', True)
                 return True
             else:
+                # Check slot buttons
                 for slot in self.slots:
                     if event.ui_element == slot['btn_train']:
+                        print(f"[DEBUG] Train button clicked for slot {slot['index']}")
                         self.game_state.set('train_turtle', slot['index'])
                         self._update_slot_content() # Refresh stats
                         return True
                     elif event.ui_element == slot['btn_select']:
+                        print(f"[DEBUG] Select button clicked for slot {slot['index']}")
                         self.game_state.set('set_active_racer', slot['index'])
                         self._update_slot_content() # Refresh selection
                         return True
