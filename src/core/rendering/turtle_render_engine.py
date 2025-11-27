@@ -89,9 +89,16 @@ class TurtleRenderEngine:
         try:
             # Use the existing pygame turtle renderer
             font = pygame.font.Font(None, 12)
-            sprite = self.pygame_renderer.render_turtle(turtle, font, size)
+            
+            # The PygameTurtleRenderer.render_turtle() takes (turtle, size) parameters
+            # size should be an integer (square dimensions)
+            sprite_size = max(size)  # Use the larger dimension for square sprite
+            sprite = self.pygame_renderer.render_turtle(turtle, sprite_size)
             
             if sprite:
+                # Resize to the exact dimensions requested
+                if sprite.get_size() != size:
+                    sprite = pygame.transform.scale(sprite, size)
                 print(f"[DEBUG] TurtleRenderEngine: Generated sprite for {getattr(turtle, 'name', 'Unknown')}")
                 return sprite
             else:
