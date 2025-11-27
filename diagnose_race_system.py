@@ -106,6 +106,7 @@ def test_rendering_pipeline():
         class MockGameState:
             def __init__(self):
                 from managers.race_manager import RaceManager
+                from game.entities import Turtle
                 self.race_manager = RaceManager(self)
                 self.roster = [
                     Turtle("TestTurtle", speed=5, energy=100, recovery=5, swim=5, climb=5)
