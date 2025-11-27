@@ -19,6 +19,10 @@ This GDD has been reorganized into specialized documents for better maintainabil
 - **[GDD_Technical.md](GDD_Technical.md)** - Technical implementation and architecture
 - **[GDD_Vision.md](GDD_Vision.md)** - Future expansion and long-term roadmap
 
+### **🌟 System-Specific Documents**
+- **[GDD_Terrain_System.md](GDD_Terrain_System.md)** - Terrain mechanics and regional expansion
+- **[GDD_Auto_Racing_System.md](GDD_Auto_Racing_System.md)** - Automated racing and ambient viewing system
+
 ---
 
 ## 🚀 **Quick Reference**
@@ -44,9 +48,10 @@ This GDD has been reorganized into specialized documents for better maintainabil
 - ✅ Professional settings interface with adaptive design
 
 ### **Next Phases**
-- 🔄 **Phase 10**: Pond/Glade ambient viewing environment
-- 📋 **Phase 11**: Visual genetics with SVG generation
-- 🌟 **Future**: NEAT evolution, multiplayer, advanced features
+- 🔄 **Phase 10**: Automated Racing System with ambient viewing
+- 📋 **Phase 11**: Pond/Glade environment with retired turtle ecosystem
+- 🌟 **Phase 12**: Wild wanderer breeding and egg discovery system
+- 🚀 **Future**: Multi-region expansion and advanced genetics
 
 ---
 
