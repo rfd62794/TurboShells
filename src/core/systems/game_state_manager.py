@@ -238,6 +238,26 @@ class GameStateManager:
                             "age": getattr(turtle_stats, "age", 0),  # Load turtle age
                         }
 
+                    # Extract genetics
+                    genetics = turtle_data.get("genetics", {})
+                    # If genetics is a dict of objects/dicts, we might need to simplify it for VisualGenetics?
+                    # Turtle._create_turtle_data saves it as dict of GeneTrait objects (converted to dicts).
+                    # VisualGenetics likely expects simple key-value pairs or the full structure?
+                    # Let's pass it as is, assuming Turtle handles it or it matches.
+                    # Actually, looking at _create_turtle_data, it saves GeneTrait objects.
+                    # When loaded back, they are dicts: {'value': ..., 'dominance': ...}
+                    # We might need to extract 'value' if VisualGenetics expects simple values,
+                    # OR if VisualGenetics works with GeneTrait dicts.
+                    # Given I don't see VisualGenetics code, I'll assume it might need 'value' if it's simple,
+                    # but let's try passing the whole thing first.
+                    # Wait, Turtle.visual_genetics is used by renderer.
+                    # PygameTurtleRenderer._get_color_from_genetics looks for:
+                    # color_data = genetics.get(key, {})
+                    # if isinstance(color_data, dict) and "value" in color_data:
+                    #     color_str = color_data["value"]
+                    # So it EXPECTS the dict with "value" key!
+                    # So passing the loaded dict (which has "value" keys) is CORRECT.
+                    
                     roster[i] = Turtle(
                         turtle_data.get("name", "Unknown"),
                         speed=turtle_stats.get("speed", 5),
@@ -245,6 +265,7 @@ class GameStateManager:
                         recovery=turtle_stats.get("recovery", 5),
                         swim=turtle_stats.get("swim", 5),
                         climb=turtle_stats.get("climb", 5),
+                        genetics=genetics
                     )
                     # Restore turtle age
                     roster[i].age = turtle_stats.get("age", 0)
@@ -291,6 +312,9 @@ class GameStateManager:
                         "age": getattr(turtle_stats, "age", 0),  # Load turtle age
                     }
 
+                # Extract genetics
+                genetics = turtle_data.get("genetics", {})
+
                 retired_turtle = Turtle(
                     turtle_data.get("name", "Unknown"),
                     speed=turtle_stats.get("speed", 5),
@@ -298,6 +322,7 @@ class GameStateManager:
                     recovery=turtle_stats.get("recovery", 5),
                     swim=turtle_stats.get("swim", 5),
                     climb=turtle_stats.get("climb", 5),
+                    genetics=genetics
                 )
                 # Restore turtle age and mark as retired
                 retired_turtle.age = turtle_stats.get("age", 0)
