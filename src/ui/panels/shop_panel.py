@@ -93,7 +93,9 @@ class ShopPanel(BasePanel):
             return
             
         # Clear existing
-        self.container_inventory.clear()
+        for slot in self.inventory_slots:
+            if 'card' in slot:
+                slot['card'].kill()
         self.inventory_slots = []
         
         inventory = self.game_state.get('shop_inventory', [])
@@ -172,6 +174,7 @@ class ShopPanel(BasePanel):
             )
             
             self.inventory_slots.append({
+                'card': card,
                 'index': i,
                 'btn_buy': btn_buy
             })
