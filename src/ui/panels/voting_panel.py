@@ -14,9 +14,12 @@ from ui.panels.base_panel import BasePanel
 class VotingPanel(BasePanel):
     """Voting interface panel using pygame_gui components."""
     
-    def __init__(self, manager: pygame_gui.UIManager, game_state_interface):
-        super().__init__(manager, game_state_interface)
+    def __init__(self, game_state_interface):
+        super().__init__("voting", "Daily Design Voting")
         
+        self.game_state = game_state_interface
+        
+        # Set default size and position
         self.size = (900, 700)
         self.position = (50, 25)
         
@@ -37,6 +40,8 @@ class VotingPanel(BasePanel):
         self.rating_buttons = {}
         self.design_info_label = None
         self.progress_label = None
+        self.design_container = None
+        self.voting_container = None
         
     def _generate_mock_designs(self) -> List[Dict]:
         """Generate mock design data for testing."""

@@ -13,9 +13,12 @@ from ui.panels.base_panel import BasePanel
 class BreedingPanel(BasePanel):
     """Breeding interface panel using pygame_gui components."""
     
-    def __init__(self, manager: pygame_gui.UIManager, game_state_interface):
-        super().__init__(manager, game_state_interface)
+    def __init__(self, game_state_interface):
+        super().__init__("breeding", "Breeding Center")
         
+        self.game_state = game_state_interface
+        
+        # Set default size and position
         self.size = (800, 600)
         self.position = (100, 50)
         
@@ -29,6 +32,8 @@ class BreedingPanel(BasePanel):
         self.btn_menu = None
         self.info_label = None
         self.warning_label = None
+        self.money_label = None
+        self.slots_container = None
         
     def _create_window(self) -> None:
         """Create the breeding window and elements."""

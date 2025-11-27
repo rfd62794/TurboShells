@@ -147,10 +147,10 @@ class TurboShellsGame:
         self.profile_panel = ProfilePanel(self.ui_manager.manager, self.game_state_interface)
         self.ui_manager.register_panel("profile", self.profile_panel)
         
-        self.breeding_panel = BreedingPanel(self.ui_manager.manager, self.game_state_interface)
+        self.breeding_panel = BreedingPanel(self.game_state_interface)
         self.ui_manager.register_panel("breeding", self.breeding_panel)
         
-        self.voting_panel = VotingPanel(self.ui_manager.manager, self.game_state_interface)
+        self.voting_panel = VotingPanel(self.game_state_interface)
         self.ui_manager.register_panel("voting", self.voting_panel)
         
         # --- MANAGERS ---
@@ -287,6 +287,8 @@ class TurboShellsGame:
                 (STATE_MENU, self.main_menu_panel, 'MainMenu'),
                 (STATE_SHOP, self.shop_panel, 'Shop'),
                 (STATE_ROSTER, self.roster_panel, 'Roster'),
+                (STATE_BREEDING, self.breeding_panel, 'Breeding'),
+                (STATE_VOTING, self.voting_panel, 'Voting'),
                 (STATE_PROFILE, self.profile_panel, 'Profile'),
                 (STATE_RACE, self.race_hud_panel, 'RaceHUD'),
                 (STATE_RACE_RESULT, self.race_result_panel, 'RaceResult')
