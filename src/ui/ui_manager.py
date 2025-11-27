@@ -5,7 +5,7 @@ Acts as the main interface between the game engine and the UI layer.
 """
 
 import pygame
-import imgui_bundle as imgui
+import imgui
 from typing import Dict, List, Optional, Any, Callable
 from collections import defaultdict
 
