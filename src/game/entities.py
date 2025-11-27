@@ -53,13 +53,16 @@ class Turtle:
         self.total_earnings = 0
 
         # Visual Genetics - Use new modular system
-        self.genetics_system = VisualGenetics()
-
-        # Use provided genetics or generate random ones
-        if genetics is not None:
-            self.visual_genetics = genetics.copy()
+        if VisualGenetics:
+            self.genetics_system = VisualGenetics()
+            # Use provided genetics or generate random ones
+            if genetics is not None:
+                self.visual_genetics = genetics.copy()
+            else:
+                self.visual_genetics = self.genetics_system.generate_random_genetics()
         else:
-            self.visual_genetics = self.genetics_system.generate_random_genetics()
+            self.genetics_system = None
+            self.visual_genetics = genetics.copy() if genetics else {}
 
         # Lineage tracking (for inheritance system)
         self.parent_ids = []  # Will store parent IDs when breeding is implemented
@@ -188,9 +191,14 @@ class Turtle:
 
     def inherit_from_parents(self, parent1_genetics, parent2_genetics):
         """Create child genetics from two parents"""
-        self.visual_genetics = self.genetics_system.inherit_genetics(
-            parent1_genetics, parent2_genetics
-        )
+        if self.genetics_system:
+            self.visual_genetics = self.genetics_system.inherit_genetics(
+                parent1_genetics, parent2_genetics
+            )
+        else:
+            # Fallback: just copy parent1
+            self.visual_genetics = parent1_genetics.copy()
+            
         self.parent_ids = [
             parent1_genetics.get("turtle_id"),
             parent2_genetics.get("turtle_id"),
@@ -205,6 +213,9 @@ class Turtle:
 
     def mutate_trait(self, trait_name: str = None):
         """Apply mutation to a specific trait or random trait"""
+        if not self.genetics_system:
+            return
+
         if trait_name is None:
             # Pick a random trait to mutate
             trait_name = random.choice(
