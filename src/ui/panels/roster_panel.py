@@ -114,9 +114,9 @@ class RosterPanel(BasePanel):
         )
         
         # Start Race Button (for select mode)
-        # Created AFTER slots container to ensure it's drawn on top
+        # MOVED TO TOP for visibility check
         self.btn_start_race = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((width - 220, 540), (200, 40)),
+            relative_rect=pygame.Rect((20, 70), (100, 30)),
             text="START RACE",
             manager=self.manager,
             container=container,
@@ -356,7 +356,11 @@ class RosterPanel(BasePanel):
                 if hasattr(event.ui_element, 'object_ids'):
                     print(f"[DEBUG] Button Object IDs: {event.ui_element.object_ids}")
                 elif hasattr(event.ui_element, 'object_id'):
-                    print(f"[DEBUG] Button Object ID: {event.ui_element.object_id}")
+                    obj_id = event.ui_element.object_id
+                    if obj_id == '#close_button':
+                        print(f"[DEBUG] Ignoring close button event")
+                    else:
+                        print(f"[DEBUG] Button Object ID: {obj_id}")
         return False
 
     def _on_money_changed(self, key, old, new):
