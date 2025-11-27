@@ -60,7 +60,9 @@ class UIManager:
             return True
             
         except Exception as e:
-            print(f"Failed to initialize UI Manager: {e}")
+            print(f"Failed to initialize UI Manager: {repr(e)}")
+            import traceback
+            traceback.print_exc()
             return False
     
     def handle_event(self, event: pygame.event.Event) -> bool:

@@ -110,12 +110,12 @@ class SettingsPanel(BasePanel):
         btn_apply = thorpy.make_button("Apply Changes", func=self._apply_settings)
         btn_close = thorpy.make_button("Close", func=self.hide)
         
-        button_box = thorpy.Box(elements=[btn_apply, btn_close])
+        button_box = thorpy.Box(children=[btn_apply, btn_close])
         button_box.set_main_color((0,0,0,0))
         elements.append(button_box)
         
         # Main Box
-        self.element = thorpy.Box(elements=elements)
+        self.element = thorpy.Box(children=elements)
         self.element.set_size(self.size)
         self.element.set_topleft(self.position)
         self.element.set_main_color((40, 40, 50, 230))
