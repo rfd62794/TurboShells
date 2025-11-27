@@ -100,8 +100,8 @@ class BreedingPanel(BasePanel):
         )
         y_pos += 45
         
-        # Create breeding slots container
-        self.slots_container = pygame_gui.elements.UIScrollableContainer(
+        # Create breeding slots container (using UIPanel instead)
+        self.slots_container = pygame_gui.elements.UIPanel(
             relative_rect=pygame.Rect((10, y_pos), (width - 20, 380)),
             manager=self.manager,
             container=container

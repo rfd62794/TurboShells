@@ -154,7 +154,7 @@ class VotingPanel(BasePanel):
         )
         
         # Right panel - Voting controls
-        self.voting_container = pygame_gui.elements.UIScrollableContainer(
+        self.voting_container = pygame_gui.elements.UIPanel(
             relative_rect=pygame.Rect((width // 2, y_pos), (width // 2 - 10, 300)),
             manager=self.manager,
             container=container
