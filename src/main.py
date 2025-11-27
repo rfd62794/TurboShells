@@ -169,11 +169,21 @@ class TurboShellsGame:
     def handle_input(self):
         for event in pygame.event.get():
             # 1. UI Manager gets first priority (pygame_gui)
-            if self.ui_manager.handle_event(event):
-                # Even if consumed, we might want to process some global keys like ESC
-                # But typically if UI consumes it, we stop.
-                # However, for toggling the settings panel itself, we need to check keydown
-                pass
+            ui_consumed = self.ui_manager.handle_event(event)
+            
+            # Check for ESC key even if UI consumed the event (for settings toggle)
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                # Toggle settings panel regardless of UI consumption
+                if hasattr(self, 'settings_panel') and self.settings_panel:
+                    if self.settings_panel.visible:
+                        self.settings_panel.hide()
+                    else:
+                        self.settings_panel.show()
+                # Continue processing other ESC logic if needed
+            
+            if ui_consumed:
+                # UI consumed the event, but we still need to handle ESC above
+                continue
             
             # Handle specific panel events if needed (e.g. SettingsPanel custom logic)
             # self.settings_panel.handle_event(event) # pygame_gui handles this internally mostly
@@ -314,29 +324,23 @@ class TurboShellsGame:
         self.screen.fill(BLACK)
 
         # 2. Render game world (PyGame - sprites, entities)
-        # Only draw legacy menu if we are NOT using the new panel (or maybe draw background?)
-        # For now, let's disable legacy menu drawing to avoid overlap/confusion
+        # Only render states that still use legacy renderer
         if self.state == STATE_MENU:
-            # self.renderer.draw_main_menu(self) # Replaced by MainMenuPanel
-            pass
+            pass  # Handled by MainMenuPanel
         elif self.state == STATE_ROSTER:
-            # self.renderer.draw_menu(self) # Replaced by RosterPanel
-            pass
+            pass  # Handled by RosterPanel
         elif self.state == STATE_RACE:
-            self.renderer.draw_race(self) # Only draws world now
+            self.renderer.draw_race(self)  # Only draws world now
         elif self.state == STATE_RACE_RESULT:
-            # self.renderer.draw_race_result(self) # Replaced by RaceResultPanel
-            pass
+            pass  # Handled by RaceResultPanel
         elif self.state == STATE_SHOP:
-            # self.renderer.draw_shop(self) # Replaced by ShopPanel
-            pass
+            pass  # Handled by ShopPanel
         elif self.state == STATE_BREEDING:
-            self.renderer.draw_breeding(self)
+            self.renderer.draw_breeding(self)  # TODO: Migrate to BreedingPanel
         elif self.state == STATE_PROFILE:
-            # self.renderer.draw_profile(self) # Now handled by ProfilePanel
-            pass
+            pass  # Handled by ProfilePanel
         elif self.state == STATE_VOTING:
-            self.renderer.draw_voting(self)
+            self.renderer.draw_voting(self)  # TODO: Migrate to VotingPanel
 
         # 3. Render UI overlay (pygame_gui)
         self.ui_manager.draw_ui(self.screen)

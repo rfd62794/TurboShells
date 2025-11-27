@@ -8,6 +8,8 @@ following Single Responsibility Principle.
 import json
 import hashlib
 import hmac
+import os
+import secrets
 from typing import Dict, Any, Optional
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
@@ -31,9 +33,37 @@ class SecurityManager:
         self.fernet = Fernet(self.encryption_key)
 
     def _generate_encryption_key(self) -> bytes:
-        """Generate encryption key from password"""
-        password = b"turbo_shells_save_key_2025"  # In production, use user-specific key
-        salt = b"turbo_shells_salt_2025"  # In production, use random salt
+        """Generate encryption key from secure sources"""
+        # Try environment variables first (most secure for production)
+        password = os.getenv('TURBO_SHELLS_ENCRYPTION_PASSWORD')
+        salt = os.getenv('TURBO_SHELLS_ENCRYPTION_SALT')
+        
+        # Fallback to secure defaults for development
+        if not password:
+            # Generate a unique key per machine/user combination
+            machine_id = os.environ.get('COMPUTERNAME', os.environ.get('HOSTNAME', 'localhost'))
+            user_id = os.environ.get('USERNAME', os.environ.get('USER', 'user'))
+            password = f"turbo_shells_{machine_id}_{user_id}".encode('utf-8')
+        else:
+            password = password.encode('utf-8')
+            
+        if not salt:
+            # Generate a persistent salt for this installation
+            salt_file = os.path.join(os.path.dirname(__file__), '.turbo_shells_salt')
+            try:
+                if os.path.exists(salt_file):
+                    with open(salt_file, 'rb') as f:
+                        salt = f.read()
+                else:
+                    salt = secrets.token_bytes(32)
+                    with open(salt_file, 'wb') as f:
+                        f.write(salt)
+            except (OSError, IOError):
+                # Ultimate fallback to a deterministic but unique salt
+                machine_id = os.environ.get('COMPUTERNAME', os.environ.get('HOSTNAME', 'localhost'))
+                salt = f"turbo_shells_salt_{machine_id}".encode('utf-8')
+        else:
+            salt = salt.encode('utf-8')
 
         kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(),
