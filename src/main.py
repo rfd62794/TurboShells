@@ -228,8 +228,6 @@ class TurboShellsGame:
                         self.state_handler.handle_click(event.pos)
                     else:
                         print(f"[DEBUG] Click at {event.pos} - handled by pygame_gui panels, skipping state_handler")
-                elif event.button in [4, 5]:  # Mouse wheel
-                    self.state_handler.handle_mouse_wheel(event.button)
 
             # 6. Keyboard handling (legacy)
             if event.type == pygame.KEYDOWN:
