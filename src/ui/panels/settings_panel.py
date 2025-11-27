@@ -9,7 +9,7 @@ import pygame
 from typing import Dict, Any, Optional, List
 from .base_panel import BasePanel, PanelStyle, PanelState
 from ..data_binding import DataBindingManager, BindingDirection
-from ..game_state_interface import TurboShellsGameStateInterface
+from game.game_state_interface import TurboShellsGameStateInterface
 
 
 class SettingsPanel(BasePanel):
