@@ -48,10 +48,13 @@ class UIManager:
             True if initialization successful, False otherwise
         """
         try:
+            # Initialize Thorpy
+            thorpy.init(pygame_surface, thorpy.theme_classic)
+            
             # Create a root element (invisible container)
             self.root_element = thorpy.Box(children=[])
             self.root_element.set_size(self.screen_rect.size)
-            self.root_element.set_main_color((0, 0, 0, 0)) # Transparent
+            self.root_element.set_bck_color((0, 0, 0, 0)) # Transparent
             
             # Create Thorpy Menu
             self.menu = thorpy.Menu(self.root_element)
