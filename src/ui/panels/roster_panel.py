@@ -105,6 +105,16 @@ class RosterPanel(BasePanel):
             visible=False
         )
         
+        # Start Race Button (for select mode)
+        self.btn_start_race = pygame_gui.elements.UIButton(
+            relative_rect=pygame.Rect((width - 220, 550), (200, 40)),
+            text="START RACE",
+            manager=self.manager,
+            container=container,
+            visible=False,
+            object_id="#btn_start_race"
+        )
+        
         # Slots Container
         self.container_slots = pygame_gui.elements.UIPanel(
             relative_rect=pygame.Rect((0, 110), (width + 40, 450)),

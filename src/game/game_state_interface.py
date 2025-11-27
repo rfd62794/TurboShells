@@ -536,6 +536,8 @@ class TurboShellsGameStateInterface(GameStateInterface):
                            DataType.SCALAR, "Set race speed multiplier")
         self.register_writer('race_again', lambda g, _: self._race_again(g),
                            DataType.SCALAR, "Restart race")
+        self.register_writer('start_race', lambda g, _: self._start_race(g),
+                           DataType.SCALAR, "Start new race")
         self.register_writer('goto_menu', lambda g, _: setattr(g, 'state', 'menu'),
                            DataType.SCALAR, "Go to menu")
 
@@ -543,6 +545,16 @@ class TurboShellsGameStateInterface(GameStateInterface):
         """Restart the race."""
         game.race_manager.start_race()
         game.state = 'race'
+
+    def _start_race(self, game):
+        """Start a new race from roster selection."""
+        # Ensure active racer is valid
+        idx = getattr(game, 'active_racer_index', 0)
+        roster = getattr(game, 'roster', [])
+        if 0 <= idx < len(roster) and roster[idx]:
+            game.race_manager.start_race()
+            game.state = 'race'
+            game.select_racer_mode = False
     
     def _validate_money(self, game, value) -> bool:
         """Validate and set money value."""
