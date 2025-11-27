@@ -106,3 +106,22 @@ class RosterManager:
             self.game_state.roster[index] = None
             self.game_state.retired_roster.append(t)
             print(f"Retired {t.name}")
+            
+    def release_turtle(self, index):
+        """Permanently release a turtle from the roster (frees up space)"""
+        show_retired = getattr(self.game_state, 'show_retired_view', False)
+        
+        if show_retired:
+            # Release from retired roster
+            retired_roster = self.game_state.retired_roster
+            if 0 <= index < len(retired_roster):
+                t = retired_roster.pop(index)
+                print(f"Released {t.name} from retired roster")
+                self.game_state.auto_save("release")
+        else:
+            # Release from active roster
+            if 0 <= index < len(self.game_state.roster) and self.game_state.roster[index] is not None:
+                t = self.game_state.roster[index]
+                self.game_state.roster[index] = None
+                print(f"Released {t.name} from active roster")
+                self.game_state.auto_save("release")

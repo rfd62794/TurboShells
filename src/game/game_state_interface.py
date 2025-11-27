@@ -540,6 +540,16 @@ class TurboShellsGameStateInterface(GameStateInterface):
                            DataType.SCALAR, "Start new race")
         self.register_writer('goto_menu', lambda g, _: setattr(g, 'state', 'menu'),
                            DataType.SCALAR, "Go to menu")
+        
+        # Profile Actions
+        self.register_reader('profile_turtle_index', lambda g: getattr(g, 'profile_turtle_index', 0),
+                           DataType.SCALAR, "Index of turtle being viewed in profile")
+        self.register_writer('profile_turtle_index', lambda g, v: setattr(g, 'profile_turtle_index', v),
+                           DataType.SCALAR, "Index of turtle being viewed in profile")
+        self.register_writer('view_profile', lambda g, index: self._view_profile(g, index),
+                           DataType.SCALAR, "View turtle profile")
+        self.register_writer('release_turtle', lambda g, index: g.roster_manager.release_turtle(index),
+                           DataType.SCALAR, "Release turtle from roster")
 
     def _race_again(self, game):
         """Restart the race."""
@@ -555,6 +565,11 @@ class TurboShellsGameStateInterface(GameStateInterface):
             game.race_manager.start_race()
             game.state = 'race'
             game.select_racer_mode = False
+            
+    def _view_profile(self, game, index):
+        """View a turtle's profile."""
+        game.profile_turtle_index = index
+        game.state = 'PROFILE'
     
     def _validate_money(self, game, value) -> bool:
         """Validate and set money value."""

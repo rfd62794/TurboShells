@@ -184,6 +184,14 @@ class RosterPanel(BasePanel):
                     container=panel
                 )
                 
+                # View Button (view profile)
+                btn_view = pygame_gui.elements.UIButton(
+                    relative_rect=pygame.Rect((70, 270), (100, 30)),
+                    text="View",
+                    manager=self.manager,
+                    container=panel
+                )
+                
                 # Select Button (for race selection)
                 btn_select = pygame_gui.elements.UIButton(
                     relative_rect=pygame.Rect((70, 350), (100, 30)),
@@ -199,6 +207,7 @@ class RosterPanel(BasePanel):
                     'lbl_name': lbl_name,
                     'txt_stats': txt_stats,
                     'btn_train': btn_train,
+                    'btn_view': btn_view,
                     'btn_select': btn_select,
                     'index': i
                 })
@@ -345,6 +354,10 @@ class RosterPanel(BasePanel):
                         print(f"[DEBUG] ✓ MATCHED Train button for slot {slot['index']}")
                         self.game_state.set('train_turtle', slot['index'])
                         self._update_slot_content()
+                        return True
+                    elif event.ui_element == slot['btn_view']:
+                        print(f"[DEBUG] ✓ MATCHED View button for slot {slot['index']}")
+                        self.game_state.set('view_profile', slot['index'])
                         return True
                     elif event.ui_element == slot['btn_select']:
                         print(f"[DEBUG] ✓ MATCHED Select button for slot {slot['index']}")

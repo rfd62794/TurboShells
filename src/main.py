@@ -50,6 +50,7 @@ from ui.panels.shop_panel import ShopPanel
 from ui.panels.roster_panel import RosterPanel
 from ui.panels.race_hud_panel import RaceHUDPanel
 from ui.panels.race_result_panel import RaceResultPanel
+from ui.panels.profile_panel import ProfilePanel
 from ui.data_binding import DataBindingManager
 from game.game_state_interface import TurboShellsGameStateInterface
 
@@ -141,6 +142,9 @@ class TurboShellsGame:
         self.race_result_panel = RaceResultPanel(self.game_state_interface)
         self.ui_manager.register_panel("race_result", self.race_result_panel)
         
+        self.profile_panel = ProfilePanel(self.ui_manager.manager, self.game_state_interface)
+        self.ui_manager.register_panel("profile", self.profile_panel)
+        
         # --- MANAGERS ---
         self.renderer = Renderer(self.screen, self.font)
         self.roster_manager = RosterManager(self)
@@ -182,6 +186,8 @@ class TurboShellsGame:
                 self.shop_panel.handle_event(event)
             elif self.state == STATE_ROSTER:
                 self.roster_panel.handle_event(event)
+            elif self.state == STATE_PROFILE:
+                self.profile_panel.handle_event(event)
             elif self.state == STATE_RACE:
                 self.race_hud_panel.handle_event(event)
             elif self.state == STATE_RACE_RESULT:
@@ -217,7 +223,7 @@ class TurboShellsGame:
                 # Only process game clicks if UI didn't consume event
                 if event.button == 1:  # Left Click
                     # Only use legacy state_handler for states NOT using pygame_gui panels
-                    legacy_states = [STATE_BREEDING, STATE_PROFILE, STATE_VOTING]
+                    legacy_states = [STATE_BREEDING, STATE_VOTING]
                     if self.state in legacy_states:
                         self.state_handler.handle_click(event.pos)
                     else:
@@ -259,6 +265,7 @@ class TurboShellsGame:
                 (STATE_MENU, self.main_menu_panel, 'MainMenu'),
                 (STATE_SHOP, self.shop_panel, 'Shop'),
                 (STATE_ROSTER, self.roster_panel, 'Roster'),
+                (STATE_PROFILE, self.profile_panel, 'Profile'),
                 (STATE_RACE, self.race_hud_panel, 'RaceHUD'),
                 (STATE_RACE_RESULT, self.race_result_panel, 'RaceResult')
             ]
@@ -326,7 +333,8 @@ class TurboShellsGame:
         elif self.state == STATE_BREEDING:
             self.renderer.draw_breeding(self)
         elif self.state == STATE_PROFILE:
-            self.renderer.draw_profile(self)
+            # self.renderer.draw_profile(self) # Now handled by ProfilePanel
+            pass
         elif self.state == STATE_VOTING:
             self.renderer.draw_voting(self)
 
