@@ -581,8 +581,9 @@ class TurboShellsGameStateInterface(GameStateInterface):
                 print(f"[ERROR] Race roster not created properly!")
                 return False
                 
-            # Transition to race state
-            game.state = 'race'
+            # Transition to race state - use the correct constant
+            from settings import STATE_RACE
+            game.state = STATE_RACE
             game.select_racer_mode = False
             print(f"[DEBUG] Race started successfully, state set to: {game.state}")
             return True
