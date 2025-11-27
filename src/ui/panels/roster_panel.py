@@ -2,7 +2,7 @@ import pygame
 import pygame_gui
 from .base_panel import BasePanel
 from game.game_state_interface import TurboShellsGameStateInterface
-from core.rendering.pygame_turtle_renderer import render_turtle_pygame
+from core.rendering.turtle_render_engine import turtle_render_engine
 
 class RosterPanel(BasePanel):
     """Roster Panel using pygame_gui."""
@@ -246,10 +246,28 @@ class RosterPanel(BasePanel):
                 slot['txt_stats'].set_text(stats_text)
                 
                 try:
-                    surf = render_turtle_pygame(turtle, size=100)
-                    slot['img'].set_image(surf)
+                    # Use unified TurtleRenderEngine
+                    surf = pygame.Surface((100, 100), pygame.SRCALPHA)
+                    if turtle_render_engine.render_turtle_sprite(surf, turtle, (0, 0), (100, 100)):
+                        slot['img'].set_image(surf)
+                    else:
+                        # Fallback to simple colored rectangle
+                        surf.fill((100, 150, 100))
+                        font = pygame.font.Font(None, 20)
+                        text = font.render(turtle.name[:8], True, (255, 255, 255))
+                        text_rect = text.get_rect(center=(50, 50))
+                        surf.blit(text, text_rect)
+                        slot['img'].set_image(surf)
                 except Exception as e:
                     print(f"[ERROR] Failed to render turtle {turtle.name}: {e}")
+                    # Create fallback surface
+                    surf = pygame.Surface((100, 100), pygame.SRCALPHA)
+                    surf.fill((100, 100, 100))
+                    font = pygame.font.Font(None, 20)
+                    text = font.render(turtle.name[:8], True, (255, 255, 255))
+                    text_rect = text.get_rect(center=(50, 50))
+                    surf.blit(text, text_rect)
+                    slot['img'].set_image(surf)
                     
                 # Buttons visibility
                 if show_retired:
