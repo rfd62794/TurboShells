@@ -40,10 +40,13 @@ from core.systems.state_handler import StateHandler
 from game.keyboard_handler import KeyboardHandler
 from core.systems.game_state_manager import GameStateManager
 from managers.save_manager import SaveManager
-from managers.settings_manager import SettingsManager
+# from managers.settings_manager import SettingsManager # Legacy settings
 
 # UI System imports
 from ui.ui_manager import UIManager
+from ui.panels.settings_panel import SettingsPanel
+from ui.data_binding import DataBindingManager
+from game.game_state_interface import TurboShellsGameStateInterface
 
 # Monitoring system imports
 from core.monitoring_system import monitoring_system
@@ -105,13 +108,25 @@ class TurboShellsGame:
         # --- UI SYSTEM ---
         self.ui_manager = UIManager(self.screen.get_rect())
         
+        # Initialize UI Manager first
+        if not self.ui_manager.initialize(self.screen):
+            print("Warning: Failed to initialize UI Manager")
+            
+        # Initialize Game State Interface and Data Binding
+        self.game_state_interface = TurboShellsGameStateInterface(self)
+        self.data_binding_manager = DataBindingManager()
+        
+        # Create and Register Panels
+        self.settings_panel = SettingsPanel(self.game_state_interface, self.data_binding_manager)
+        self.ui_manager.register_panel("settings", self.settings_panel)
+        
         # --- MANAGERS ---
         self.renderer = Renderer(self.screen, self.font)
         self.roster_manager = RosterManager(self)
         self.shop_manager = ShopManager(self)
         self.race_manager = RaceManager(self)
         self.breeding_manager = BreedingManager(self)
-        self.settings_manager = SettingsManager(self.screen.get_rect())
+        # self.settings_manager = SettingsManager(self.screen.get_rect()) # Legacy
 
         # Initialize shop with stock
         self.shop_manager.refresh_stock(free=True)
@@ -125,25 +140,23 @@ class TurboShellsGame:
         self.load_notification = None
         self._initialize_game_state()
         
-        # --- INITIALIZE UI SYSTEM ---
-        if not self.ui_manager.initialize(self.screen):
-            print("Warning: Failed to initialize UI Manager")
 
     def handle_input(self):
         for event in pygame.event.get():
-            # 1. UI Manager gets first priority (ImGui)
+            # 1. UI Manager gets first priority (pygame_gui)
             if self.ui_manager.handle_event(event):
-                continue  # Event consumed by ImGui
+                # Even if consumed, we might want to process some global keys like ESC
+                # But typically if UI consumes it, we stop.
+                # However, for toggling the settings panel itself, we need to check keydown
+                pass
+            
+            # Handle specific panel events if needed (e.g. SettingsPanel custom logic)
+            # self.settings_panel.handle_event(event) # pygame_gui handles this internally mostly
             
             # 2. Handle monitoring overlay input
             monitoring_overlay.handle_key_event(event)
             
-            # 3. Handle settings input (legacy overlay)
-            if self.settings_manager.is_visible():
-                if self.settings_manager.handle_event(event):
-                    continue  # Event was handled by settings
-
-            # 4. Core game events
+            # 3. Core game events
             if event.type == pygame.QUIT:
                 self.save_on_exit()
                 monitoring_system.stop()
@@ -152,51 +165,64 @@ class TurboShellsGame:
                 pygame.quit()
                 sys.exit()
 
-            # 5. Window resize handling
+            # 4. Window resize handling
             if event.type == pygame.VIDEORESIZE:
                 self.screen = pygame.display.set_mode(
                     (event.w, event.h), pygame.RESIZABLE
                 )
                 new_screen_rect = pygame.Rect(0, 0, event.w, event.h)
-                self.settings_manager.update_screen_rect(new_screen_rect)
+                # self.settings_manager.update_screen_rect(new_screen_rect)
                 self.ui_manager.handle_screen_resize(new_screen_rect)
                 continue
 
-            # 6. Mouse handling (for legacy systems)
+            # 5. Mouse handling (for legacy systems)
             if event.type == pygame.MOUSEMOTION:
                 self.mouse_pos = event.pos
 
             if event.type == pygame.MOUSEBUTTONDOWN:
+                # Only process game clicks if UI didn't consume event
+                # We can check if mouse is over any UI window, but pygame_gui consumes event if so.
+                # Since we passed event to ui_manager.handle_event above, we should check return value.
+                # But handle_event returns bool.
+                # Let's refine step 1.
+                pass
+                
                 if event.button == 1:  # Left Click
                     self.state_handler.handle_click(event.pos)
                 elif event.button in [4, 5]:  # Mouse wheel
                     self.state_handler.handle_mouse_wheel(event.button)
 
-            # 7. Keyboard handling (legacy)
+            # 6. Keyboard handling (legacy)
             if event.type == pygame.KEYDOWN:
                 # Check for settings toggle
                 if event.key == pygame.K_ESCAPE:
-                    self.settings_manager.toggle_settings()
+                    self.ui_manager.toggle_panel("settings")
                     continue
                 
                 # Handle other keyboard input through keyboard handler
                 self.keyboard_handler.handle_keydown(event)
 
-        # Draw settings overlay on top of everything
-        if self.settings_manager.is_visible():
-            self.settings_manager.draw(self.screen)
+        # Draw settings overlay on top of everything (Legacy)
+        # if self.settings_manager.is_visible():
+        #     self.settings_manager.draw(self.screen)
 
     def update(self):
         # Start frame profiling
         game_loop_profiler.start_frame()
         
         try:
+            # Calculate time delta
+            time_delta = self.clock.get_time() / 1000.0
+            
             # Update monitoring overlay
             current_time = pygame.time.get_ticks() / 1000.0
             monitoring_overlay.update(current_time)
             
-            # Update settings manager (always active)
-            self.settings_manager.update(1.0 / FPS)
+            # Update UI Manager
+            self.ui_manager.update(time_delta)
+            
+            # Update settings manager (legacy)
+            # self.settings_manager.update(1.0 / FPS)
 
             if self.state == STATE_SHOP:
                 self.shop_manager.update()
@@ -244,13 +270,12 @@ class TurboShellsGame:
         elif self.state == STATE_VOTING:
             self.renderer.draw_voting(self)
 
-        # 3. Render UI overlay (ImGui)
-        if self.ui_manager and self.ui_manager.visible():
-            self.ui_manager.render_ui_panels(self)
+        # 3. Render UI overlay (pygame_gui)
+        self.ui_manager.draw_ui(self.screen)
 
         # 4. Draw legacy overlays on top
-        if self.settings_manager.is_visible():
-            self.settings_manager.draw(self.screen)
+        # if self.settings_manager.is_visible():
+        #     self.settings_manager.draw(self.screen)
             
         # 5. Draw monitoring overlay on top of everything
         monitoring_overlay.render(self.screen)
