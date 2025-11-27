@@ -61,6 +61,13 @@ class GameStateManager:
                     f"Roster loaded separately: {len([t for t in roster if t])} turtles"
                 )
 
+                # Ensure at least one turtle exists if roster is empty
+                if not any(roster):
+                    print("Roster empty after load, creating default starter turtle.")
+                    roster[0] = Turtle(
+                        "Starter", speed=5, energy=100, recovery=5, swim=5, climb=5
+                    )
+
                 return True, roster, retired_roster, money, state, notification
 
             else:
