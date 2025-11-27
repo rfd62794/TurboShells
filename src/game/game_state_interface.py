@@ -554,7 +554,8 @@ class TurboShellsGameStateInterface(GameStateInterface):
     def _race_again(self, game):
         """Restart the race."""
         game.race_manager.start_race()
-        game.state = 'race'
+        from settings import STATE_RACE
+        game.state = STATE_RACE
 
     def _start_race(self, game):
         """Start a new race from roster selection."""
