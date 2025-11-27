@@ -184,15 +184,13 @@ class ShopPanel(BasePanel):
         self.container_inventory.set_scrollable_area_dimensions((max(total_width, self.container_inventory.relative_rect.width), 400))
 
     def handle_event(self, event: pygame.event.Event) -> bool:
-        # Handle window close button (X)
-        if event.type == pygame_gui.UI_WINDOW_CLOSE:
-            if event.ui_element == self.window:
-                self.game_state.set('state', 'MENU')
-                return True
+        # Let base panel handle window close first
+        if super().handle_event(event):
+            return True
                 
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
             if event.ui_element == self.btn_back:
-                self.game_state.set('state', 'MENU')
+                self.game_state.set('goto_menu', True)
                 return True
             elif event.ui_element == self.btn_refresh:
                 self.game_state.set('shop_refresh', True)

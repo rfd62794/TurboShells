@@ -319,12 +319,9 @@ class RosterPanel(BasePanel):
         self._update_slot_content()
 
     def handle_event(self, event: pygame.event.Event) -> bool:
-        # Handle window close button (X)
-        if event.type == pygame_gui.UI_WINDOW_CLOSE:
-            if event.ui_element == self.window:
-                self.game_state.set('state', 'MENU')
-                self.game_state.set('select_racer_mode', False)
-                return True
+        # Let base panel handle window close first
+        if super().handle_event(event):
+            return True
                 
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
             print(f"[DEBUG] RosterPanel button pressed: {event.ui_element}")

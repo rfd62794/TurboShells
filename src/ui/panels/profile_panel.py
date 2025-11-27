@@ -244,14 +244,10 @@ class ProfilePanel:
         self.txt_history.set_text(history_html)
         
     def handle_event(self, event: pygame.event.Event) -> bool:
-        """Handle events for this panel"""
-        # Handle window close
-        if event.type == pygame_gui.UI_WINDOW_CLOSE:
-            if event.ui_element == self.window:
-                self.game_state.set('state', 'ROSTER')
-                return True
-        
-        # Handle button clicks
+        # Let base panel handle window close first
+        if super().handle_event(event):
+            return True
+                
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
             if event.ui_element == self.btn_back:
                 self.game_state.set('state', 'ROSTER')

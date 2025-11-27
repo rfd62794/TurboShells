@@ -54,7 +54,19 @@ class BasePanel:
         """Hide the panel."""
         if self.window:
             self.window.hide()
-            self.visible = False
+        self.visible = False
+            
+    def handle_event(self, event: pygame.event.Event) -> bool:
+        """Handle base panel events. Override in subclasses."""
+        # Handle window close button (X) - transition to menu for main panels
+        if event.type == pygame_gui.UI_WINDOW_CLOSE:
+            if hasattr(self, 'game_state'):
+                # For main panels, go back to menu instead of hiding
+                if self.panel_id in ['main_menu', 'shop', 'roster', 'profile', 'breeding', 'voting']:
+                    self.game_state.set('goto_menu', True)
+                    return True
+            return False
+        return False
             
     def toggle(self) -> None:
         """Toggle visibility."""
@@ -84,5 +96,7 @@ class BasePanel:
             rect=rect,
             manager=self.manager,
             window_display_title=self.title,
-            object_id=f"#{self.panel_id}_window"
+            object_id=f"#{self.panel_id}_window",
+            draggable=False,  # Disable dragging for main panels
+            resizable=False  # Disable resizing
         )
