@@ -215,19 +215,15 @@ class TurboShellsGame:
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 # Only process game clicks if UI didn't consume event
-                # We can check if mouse is over any UI window, but pygame_gui consumes event if so.
-                # Since we passed event to ui_manager.handle_event above, we should check return value.
-                # But handle_event returns bool.
-                # Let's refine step 1.
-                pass
-                
-            if event.button == 1:  # Left Click
+                if event.button == 1:  # Left Click
                     # Only use legacy state_handler for states NOT using pygame_gui panels
                     legacy_states = [STATE_BREEDING, STATE_PROFILE, STATE_VOTING]
                     if self.state in legacy_states:
                         self.state_handler.handle_click(event.pos)
                     else:
                         print(f"[DEBUG] Click at {event.pos} - handled by pygame_gui panels, skipping state_handler")
+                elif event.button in [4, 5]:  # Mouse wheel
+                    self.state_handler.handle_mouse_wheel(event.button)
 
             # 6. Keyboard handling (legacy)
             if event.type == pygame.KEYDOWN:
