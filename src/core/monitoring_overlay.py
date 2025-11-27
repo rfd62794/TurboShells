@@ -55,6 +55,14 @@ class MonitoringOverlay:
         self.margin = 10
         self.line_height = 20
         
+        self.margin = 10
+        self.line_height = 20
+        
+        # Defer initialization until pygame is ready
+        # self._initialize_pygame_components()
+        
+    def initialize(self):
+        """Initialize pygame components. Must be called after pygame.init()."""
         self._initialize_pygame_components()
         
     def _initialize_pygame_components(self):

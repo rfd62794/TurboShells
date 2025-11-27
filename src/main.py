@@ -78,6 +78,7 @@ class TurboShellsGame:
         
         # Start monitoring
         monitoring_system.start()
+        monitoring_overlay.initialize()
         self.game_logger.info("Monitoring system started")
 
         self.state = STATE_MENU
