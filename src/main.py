@@ -48,6 +48,8 @@ from ui.panels.settings_panel import SettingsPanel
 from ui.panels.main_menu_panel import MainMenuPanel
 from ui.panels.shop_panel import ShopPanel
 from ui.panels.roster_panel import RosterPanel
+from ui.panels.race_hud_panel import RaceHUDPanel
+from ui.panels.race_result_panel import RaceResultPanel
 from ui.data_binding import DataBindingManager
 from game.game_state_interface import TurboShellsGameStateInterface
 
@@ -132,6 +134,12 @@ class TurboShellsGame:
         self.roster_panel = RosterPanel(self.game_state_interface)
         self.ui_manager.register_panel("roster", self.roster_panel)
         
+        self.race_hud_panel = RaceHUDPanel(self.game_state_interface)
+        self.ui_manager.register_panel("race_hud", self.race_hud_panel)
+        
+        self.race_result_panel = RaceResultPanel(self.game_state_interface)
+        self.ui_manager.register_panel("race_result", self.race_result_panel)
+        
         # --- MANAGERS ---
         self.renderer = Renderer(self.screen, self.font)
         self.roster_manager = RosterManager(self)
@@ -173,6 +181,10 @@ class TurboShellsGame:
                 self.shop_panel.handle_event(event)
             elif self.state == STATE_ROSTER:
                 self.roster_panel.handle_event(event)
+            elif self.state == STATE_RACE:
+                self.race_hud_panel.handle_event(event)
+            elif self.state == STATE_RACE_RESULT:
+                self.race_result_panel.handle_event(event)
             
             # 2. Handle monitoring overlay input
             monitoring_overlay.handle_key_event(event)
@@ -263,6 +275,20 @@ class TurboShellsGame:
             else:
                 if self.roster_panel.visible:
                     self.roster_panel.hide()
+                    
+            if self.state == STATE_RACE:
+                if not self.race_hud_panel.visible:
+                    self.race_hud_panel.show()
+            else:
+                if self.race_hud_panel.visible:
+                    self.race_hud_panel.hide()
+                    
+            if self.state == STATE_RACE_RESULT:
+                if not self.race_result_panel.visible:
+                    self.race_result_panel.show()
+            else:
+                if self.race_result_panel.visible:
+                    self.race_result_panel.hide()
             
             # Update settings manager (legacy)
             # self.settings_manager.update(1.0 / FPS)
@@ -305,9 +331,10 @@ class TurboShellsGame:
             # self.renderer.draw_menu(self) # Replaced by RosterPanel
             pass
         elif self.state == STATE_RACE:
-            self.renderer.draw_race(self)
+            self.renderer.draw_race(self) # Only draws world now
         elif self.state == STATE_RACE_RESULT:
-            self.renderer.draw_race_result(self)
+            # self.renderer.draw_race_result(self) # Replaced by RaceResultPanel
+            pass
         elif self.state == STATE_SHOP:
             # self.renderer.draw_shop(self) # Replaced by ShopPanel
             pass

@@ -505,10 +505,17 @@ class TurboShellsGameStateInterface(GameStateInterface):
                            DataType.SCALAR, "Refresh shop inventory")
                            
         # Roster Properties
-        self.register_property('active_racer_index', DataType.SCALAR, "Index of active racer")
-        self.register_property('show_retired_view', DataType.SCALAR, "Show retired turtles")
-        self.register_property('current_bet', DataType.SCALAR, "Current bet amount")
-        self.register_property('select_racer_mode', DataType.SCALAR, "In racer selection mode")
+        self.register_reader('active_racer_index', lambda g: getattr(g, 'active_racer_index', 0), DataType.SCALAR, "Index of active racer")
+        self.register_writer('active_racer_index', lambda g, v: setattr(g, 'active_racer_index', v), DataType.SCALAR, "Index of active racer")
+        
+        self.register_reader('show_retired_view', lambda g: getattr(g, 'show_retired_view', False), DataType.SCALAR, "Show retired turtles")
+        self.register_writer('show_retired_view', lambda g, v: setattr(g, 'show_retired_view', v), DataType.SCALAR, "Show retired turtles")
+        
+        self.register_reader('current_bet', lambda g: getattr(g, 'current_bet', 0), DataType.SCALAR, "Current bet amount")
+        self.register_writer('current_bet', lambda g, v: setattr(g, 'current_bet', v), DataType.SCALAR, "Current bet amount")
+        
+        self.register_reader('select_racer_mode', lambda g: getattr(g, 'select_racer_mode', False), DataType.SCALAR, "In racer selection mode")
+        self.register_writer('select_racer_mode', lambda g, v: setattr(g, 'select_racer_mode', v), DataType.SCALAR, "In racer selection mode")
         
         # Roster Actions
         self.register_writer('train_turtle', lambda g, index: g.roster_manager.train_turtle(index),
@@ -520,11 +527,9 @@ class TurboShellsGameStateInterface(GameStateInterface):
         self.register_writer('set_bet', lambda g, amount: setattr(g, 'current_bet', amount),
                            DataType.SCALAR, "Set bet amount")
                            
-        # Race Properties
-        self.register_property('race_speed_multiplier', DataType.SCALAR, "Race speed multiplier")
-        self.register_property('race_results', DataType.LIST, "List of race results")
+        # Race Properties (Duplicates removed, kept computed)
         self.register_computed_property('race_roster', lambda g: getattr(g.race_manager, 'race_roster', []),
-                                      DataType.LIST, "Current race roster")
+                                      DataType.COLLECTION, "Current race roster")
         
         # Race Actions
         self.register_writer('set_race_speed', lambda g, speed: setattr(g, 'race_speed_multiplier', speed),
