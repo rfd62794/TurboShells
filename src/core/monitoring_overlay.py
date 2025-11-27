@@ -16,7 +16,7 @@ from .logging_config import get_logger
 @dataclass
 class OverlayConfig:
     """Configuration for the monitoring overlay."""
-    enabled: bool = True
+    enabled: bool = False  # Disabled by default, toggle with 'O' key
     position: str = "top-left"  # top-left, top-right, bottom-left, bottom-right
     font_size: int = 14
     background_alpha: int = 180  # 0-255

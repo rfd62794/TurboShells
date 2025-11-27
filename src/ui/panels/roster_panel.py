@@ -300,47 +300,59 @@ class RosterPanel(BasePanel):
                 
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
             print(f"[DEBUG] RosterPanel button pressed: {event.ui_element}")
+            print(f"[DEBUG] Main buttons:")
+            print(f"  btn_menu: {self.btn_menu}")
+            print(f"  btn_view_active: {self.btn_view_active}")
+            print(f"  btn_view_retired: {self.btn_view_retired}")
+            print(f"  btn_bet_0: {self.btn_bet_0}")
+            print(f"  btn_start_race: {self.btn_start_race}")
             print(f"[DEBUG] Checking against {len(self.slots)} slots")
             
             if event.ui_element == self.btn_menu:
+                print(f"[DEBUG] ✓ MATCHED Menu button")
                 self.game_state.set('state', 'MENU')
-                self.game_state.set('select_racer_mode', False) # Reset mode
+                self.game_state.set('select_racer_mode', False)
                 return True
             elif event.ui_element == self.btn_view_active:
+                print(f"[DEBUG] ✓ MATCHED View Active button")
                 self.game_state.set('toggle_view', False)
                 return True
             elif event.ui_element == self.btn_view_retired:
+                print(f"[DEBUG] ✓ MATCHED View Retired button")
                 self.game_state.set('toggle_view', True)
                 return True
             elif event.ui_element == self.btn_bet_0:
+                print(f"[DEBUG] ✓ MATCHED Bet $0 button")
                 self.game_state.set('set_bet', 0)
                 return True
             elif event.ui_element == self.btn_bet_5:
+                print(f"[DEBUG] ✓ MATCHED Bet $5 button")
                 self.game_state.set('set_bet', 5)
                 return True
             elif event.ui_element == self.btn_bet_10:
+                print(f"[DEBUG] ✓ MATCHED Bet $10 button")
                 self.game_state.set('set_bet', 10)
                 return True
             elif self.btn_start_race and event.ui_element == self.btn_start_race:
-                print(f"[DEBUG] START RACE button pressed!")
+                print(f"[DEBUG] ✓ MATCHED START RACE button!")
                 self.game_state.set('start_race', True)
                 return True
             else:
                 # Check slot buttons
                 for slot_idx, slot in enumerate(self.slots):
-                    print(f"[DEBUG] Slot {slot_idx}: train={slot['btn_train']}, select={slot['btn_select']}")
                     if event.ui_element == slot['btn_train']:
                         print(f"[DEBUG] ✓ MATCHED Train button for slot {slot['index']}")
                         self.game_state.set('train_turtle', slot['index'])
-                        self._update_slot_content() # Refresh stats
+                        self._update_slot_content()
                         return True
                     elif event.ui_element == slot['btn_select']:
                         print(f"[DEBUG] ✓ MATCHED Select button for slot {slot['index']}")
                         self.game_state.set('set_active_racer', slot['index'])
-                        self._update_slot_content() # Refresh selection
+                        self._update_slot_content()
                         return True
                 
-                print(f"[DEBUG] ✗ NO MATCH found for button: {event.ui_element}")
+                print(f"[DEBUG] ✗ NO MATCH found for button")
+                print(f"[DEBUG] Button ID: {id(event.ui_element)}")
         return False
 
     def _on_money_changed(self, key, old, new):
