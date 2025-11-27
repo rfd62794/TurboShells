@@ -19,9 +19,9 @@ class BreedingPanel(BasePanel):
         
         self.game_state = game_state_interface
         
-        # Set default size and position to use full window
-        self.size = (900, 700)
-        self.position = (50, 25)
+        # Set default size and position to fit within game window
+        self.size = (800, 550)
+        self.position = (100, 75)
         
         # Breeding state
         self.selected_parents = []
@@ -101,9 +101,9 @@ class BreedingPanel(BasePanel):
         )
         y_pos += 45
         
-        # Create breeding slots container (using UIPanel instead)
+        # Create breeding slots container
         self.slots_container = pygame_gui.elements.UIPanel(
-            relative_rect=pygame.Rect((10, y_pos), (width - 20, 380)),
+            relative_rect=pygame.Rect((10, y_pos), (width - 20, 330)),
             manager=self.manager,
             container=container
         )
@@ -140,14 +140,14 @@ class BreedingPanel(BasePanel):
         retired_roster = self.game_state.get('retired_roster', [])
         candidates = [t for t in roster if t is not None] + list(retired_roster)
         
-        # Create slot buttons in 2x3 grid
-        slot_width = 220
-        slot_height = 180
+        # Create slot buttons in 2x3 grid with adjusted sizing
+        slot_width = 180
+        slot_height = 150
         spacing = 10
         
         positions = [
-            (10, 10), (240, 10), (470, 10),  # Top row
-            (10, 200), (240, 200), (470, 200)  # Bottom row
+            (10, 10), (200, 10), (390, 10),  # Top row
+            (10, 170), (200, 170), (390, 170)  # Bottom row
         ]
         
         for i, pos in enumerate(positions):
@@ -169,8 +169,8 @@ class BreedingPanel(BasePanel):
                 
                 # Create turtle image (separate from button)
                 turtle_img = pygame_gui.elements.UIImage(
-                    relative_rect=pygame.Rect((10, 10), (slot_width - 20, 120)),
-                    image_surface=pygame.Surface((slot_width - 20, 120)),  # Placeholder
+                    relative_rect=pygame.Rect((10, 10), (slot_width - 20, 90)),
+                    image_surface=pygame.Surface((slot_width - 20, 90)),  # Placeholder
                     manager=self.manager,
                     container=slot_container,
                     object_id=f"#breeding_turtle_img_{i}"
@@ -178,7 +178,7 @@ class BreedingPanel(BasePanel):
                 
                 # Set turtle image
                 try:
-                    turtle_surface = render_turtle_pygame(turtle, 100)
+                    turtle_surface = render_turtle_pygame(turtle, 80)  # Smaller turtle
                     if turtle_surface:
                         turtle_img.set_image(turtle_surface)
                 except Exception as e:
@@ -186,7 +186,7 @@ class BreedingPanel(BasePanel):
                 
                 # Create selection button below image
                 select_btn = pygame_gui.elements.UIButton(
-                    relative_rect=pygame.Rect((10, 140), (slot_width - 20, 30)),
+                    relative_rect=pygame.Rect((10, 110), (slot_width - 20, 30)),
                     text=f"{turtle.name}\n{'(RETIRED)' if is_retired else ''}",
                     manager=self.manager,
                     container=slot_container,
@@ -200,11 +200,13 @@ class BreedingPanel(BasePanel):
                 select_btn.image_element = turtle_img  # Reference to image
                 select_btn.container_element = slot_container  # Reference to container for border
                 
+                print(f"[DEBUG] Created breeding slot button for turtle: {turtle.name}")
+                
                 self.breeding_slots.append(select_btn)
                 
                 # Create parent indicator label (initially hidden)
                 parent_label = pygame_gui.elements.UILabel(
-                    relative_rect=pygame.Rect((pos[0] + 10, pos[1] + slot_height - 25), (slot_width - 20, 20)),
+                    relative_rect=pygame.Rect((pos[0] + 5, pos[1] + slot_height - 20), (slot_width - 10, 18)),
                     text="",
                     manager=self.manager,
                     container=self.slots_container
@@ -305,34 +307,45 @@ class BreedingPanel(BasePanel):
     def handle_event(self, event: pygame.event.Event) -> bool:
         """Handle breeding panel events."""
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
+            print(f"[DEBUG] Breeding panel received button press: {event.ui_element}")
+            
             # Check breeding slot clicks
             if hasattr(event.ui_element, 'turtle_data'):
                 turtle = event.ui_element.turtle_data
+                print(f"[DEBUG] Turtle selected: {turtle.name}")
                 
                 # Toggle selection
                 if turtle in self.selected_parents:
                     self.selected_parents.remove(turtle)
+                    print(f"[DEBUG] Deselected turtle: {turtle.name}")
                 elif len(self.selected_parents) < 2:
                     self.selected_parents.append(turtle)
+                    print(f"[DEBUG] Selected turtle: {turtle.name} (Parent {len(self.selected_parents)})")
                 else:
                     # Already have 2 parents, replace the second one
+                    old_turtle = self.selected_parents[1]
                     self.selected_parents[1] = turtle
+                    print(f"[DEBUG] Replaced parent 2: {old_turtle.name} -> {turtle.name}")
                     
                 # Update game state
                 self.game_state.set('breeding_parents', self.selected_parents.copy())
+                self._update_selection_indicators()  # Update visual indicators
                 return True
                 
             # Breed button
             elif event.ui_element == self.btn_breed:
+                print(f"[DEBUG] Breed button pressed with {len(self.selected_parents)} parents")
                 if len(self.selected_parents) == 2:
                     self.game_state.set('breed_now', True)
                     # Clear selection after breeding
                     self.selected_parents = []
                     self.game_state.set('breeding_parents', [])
+                    self._update_selection_indicators()
                 return True
                 
             # Menu button
             elif event.ui_element == self.btn_menu:
+                print(f"[DEBUG] Menu button pressed")
                 self.game_state.set('goto_menu', True)
                 return True
                 

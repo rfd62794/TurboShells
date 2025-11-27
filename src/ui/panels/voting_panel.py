@@ -20,9 +20,9 @@ class VotingPanel(BasePanel):
         
         self.game_state = game_state_interface
         
-        # Set default size and position
-        self.size = (900, 700)
-        self.position = (50, 25)
+        # Set default size and position to fit within game window
+        self.size = (800, 550)
+        self.position = (100, 75)
         
         # Voting state
         self.current_design_index = 0
@@ -138,9 +138,9 @@ class VotingPanel(BasePanel):
         )
         y_pos += 70
         
-        # Left panel - Turtle image display (larger, like original)
+        # Left panel - Turtle image display (adjusted for smaller window)
         self.design_container = pygame_gui.elements.UIPanel(
-            relative_rect=pygame.Rect((10, y_pos), (width // 2 - 20, 400)),
+            relative_rect=pygame.Rect((10, y_pos), (width // 2 - 20, 300)),
             manager=self.manager,
             container=container
         )
@@ -148,9 +148,9 @@ class VotingPanel(BasePanel):
         # Create turtle display area
         self._create_turtle_display()
         
-        # Right panel - Voting controls (scrollable)
+        # Right panel - Voting controls (adjusted for smaller window)
         self.voting_container = pygame_gui.elements.UIPanel(
-            relative_rect=pygame.Rect((width // 2, y_pos), (width // 2 - 10, 400)),
+            relative_rect=pygame.Rect((width // 2, y_pos), (width // 2 - 10, 300)),
             manager=self.manager,
             container=container
         )
@@ -158,9 +158,9 @@ class VotingPanel(BasePanel):
         # Create voting controls
         self._create_voting_controls()
         
-        # Submit button (initially disabled)
+        # Submit button (adjusted position)
         self.btn_submit = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((width // 2 + 50, y_pos + 420), (150, 40)),
+            relative_rect=pygame.Rect((width // 2 + 50, y_pos + 320), (150, 40)),
             text="Submit & Earn $1",
             manager=self.manager,
             container=container
@@ -183,17 +183,17 @@ class VotingPanel(BasePanel):
             container=self.design_container
         )
         
-        # Turtle image placeholder
+        # Turtle image placeholder (adjusted for smaller panel)
         self.turtle_image = pygame_gui.elements.UIImage(
-            relative_rect=pygame.Rect((50, 50), (200, 200)),
-            image_surface=pygame.Surface((200, 200)),
+            relative_rect=pygame.Rect((25, 40), (150, 150)),
+            image_surface=pygame.Surface((150, 150)),
             manager=self.manager,
             container=self.design_container
         )
         
-        # Design stats/info area
+        # Design stats/info area (adjusted)
         self.design_stats_label = pygame_gui.elements.UILabel(
-            relative_rect=pygame.Rect((10, 260), (300, 120)),
+            relative_rect=pygame.Rect((10, 200), (300, 90)),
             text="Design preview and stats\nwill appear here",
             manager=self.manager,
             container=self.design_container
@@ -267,7 +267,7 @@ class VotingPanel(BasePanel):
                         self.color_scheme = (design_id * 50 % 255, 100, 150)
                         
                 mock_turtle = MockTurtle(current_design['id'])
-                turtle_surface = render_turtle_pygame(mock_turtle, 180)
+                turtle_surface = render_turtle_pygame(mock_turtle, 140)  # Smaller for adjusted panel
                 if turtle_surface:
                     self.turtle_image.set_image(turtle_surface)
             except Exception as e:
