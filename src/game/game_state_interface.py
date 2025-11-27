@@ -519,6 +519,25 @@ class TurboShellsGameStateInterface(GameStateInterface):
                            DataType.SCALAR, "Set retired view visibility")
         self.register_writer('set_bet', lambda g, amount: setattr(g, 'current_bet', amount),
                            DataType.SCALAR, "Set bet amount")
+                           
+        # Race Properties
+        self.register_property('race_speed_multiplier', DataType.SCALAR, "Race speed multiplier")
+        self.register_property('race_results', DataType.LIST, "List of race results")
+        self.register_computed_property('race_roster', lambda g: getattr(g.race_manager, 'race_roster', []),
+                                      DataType.LIST, "Current race roster")
+        
+        # Race Actions
+        self.register_writer('set_race_speed', lambda g, speed: setattr(g, 'race_speed_multiplier', speed),
+                           DataType.SCALAR, "Set race speed multiplier")
+        self.register_writer('race_again', lambda g, _: self._race_again(g),
+                           DataType.SCALAR, "Restart race")
+        self.register_writer('goto_menu', lambda g, _: setattr(g, 'state', 'menu'),
+                           DataType.SCALAR, "Go to menu")
+
+    def _race_again(self, game):
+        """Restart the race."""
+        game.race_manager.start_race()
+        game.state = 'race'
     
     def _validate_money(self, game, value) -> bool:
         """Validate and set money value."""

@@ -5,13 +5,6 @@ import math
 
 
 def draw_race(screen, font, game_state):
-    header = font.render(
-        f"RACE (Speed: {game_state.race_speed_multiplier}x | Bet: ${getattr(game_state, 'current_bet', 0)} )",
-        True,
-        WHITE,
-    )
-    screen.blit(header, layout.HEADER_TITLE_POS)
-
     # Draw Finish Line
     pygame.draw.line(
         screen,
@@ -33,36 +26,6 @@ def draw_race(screen, font, game_state):
 
         if turtle:
             draw_turtle_sprite(screen, font, turtle, lane_y)
-
-    # Draw Race HUD panel
-    pygame.draw.rect(screen, (0, 0, 0), layout.RACE_HUD_RECT)
-
-    # Speed buttons
-    pygame.draw.rect(screen, GRAY, layout.SPEED_1X_RECT, 2)
-    pygame.draw.rect(screen, GRAY, layout.SPEED_2X_RECT, 2)
-    pygame.draw.rect(screen, GRAY, layout.SPEED_4X_RECT, 2)
-
-    one_txt = font.render("1x", True, WHITE)
-    two_txt = font.render("2x", True, WHITE)
-    four_txt = font.render("4x", True, WHITE)
-
-    screen.blit(one_txt, (layout.SPEED_1X_RECT.x + 10, layout.SPEED_1X_RECT.y + 10))
-    screen.blit(two_txt, (layout.SPEED_2X_RECT.x + 10, layout.SPEED_2X_RECT.y + 10))
-    screen.blit(four_txt, (layout.SPEED_4X_RECT.x + 10, layout.SPEED_4X_RECT.y + 10))
-
-    # Progress bar (simple overall race progress for player turtle)
-    player = race_turtles[0] if race_turtles else None
-    pygame.draw.rect(screen, GRAY, layout.PROGRESS_BAR_RECT, 1)
-    if player:
-        pct = min(1.0, player.race_distance / TRACK_LENGTH_LOGIC)
-        fill_width = int(layout.PROGRESS_BAR_RECT.width * pct)
-        fill_rect = pygame.Rect(
-            layout.PROGRESS_BAR_RECT.x,
-            layout.PROGRESS_BAR_RECT.y,
-            fill_width,
-            layout.PROGRESS_BAR_RECT.height,
-        )
-        pygame.draw.rect(screen, GREEN, fill_rect)
 
 
 def draw_race_result(screen, font, game_state):

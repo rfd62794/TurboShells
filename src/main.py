@@ -47,6 +47,7 @@ from ui.ui_manager import UIManager
 from ui.panels.settings_panel import SettingsPanel
 from ui.panels.main_menu_panel import MainMenuPanel
 from ui.panels.shop_panel import ShopPanel
+from ui.panels.roster_panel import RosterPanel
 from ui.data_binding import DataBindingManager
 from game.game_state_interface import TurboShellsGameStateInterface
 
@@ -128,6 +129,9 @@ class TurboShellsGame:
         self.shop_panel = ShopPanel(self.game_state_interface)
         self.ui_manager.register_panel("shop", self.shop_panel)
         
+        self.roster_panel = RosterPanel(self.game_state_interface)
+        self.ui_manager.register_panel("roster", self.roster_panel)
+        
         # --- MANAGERS ---
         self.renderer = Renderer(self.screen, self.font)
         self.roster_manager = RosterManager(self)
@@ -167,6 +171,8 @@ class TurboShellsGame:
                 self.main_menu_panel.handle_event(event)
             elif self.state == STATE_SHOP:
                 self.shop_panel.handle_event(event)
+            elif self.state == STATE_ROSTER:
+                self.roster_panel.handle_event(event)
             
             # 2. Handle monitoring overlay input
             monitoring_overlay.handle_key_event(event)
@@ -250,6 +256,13 @@ class TurboShellsGame:
             else:
                 if self.shop_panel.visible:
                     self.shop_panel.hide()
+                    
+            if self.state == STATE_ROSTER:
+                if not self.roster_panel.visible:
+                    self.roster_panel.show()
+            else:
+                if self.roster_panel.visible:
+                    self.roster_panel.hide()
             
             # Update settings manager (legacy)
             # self.settings_manager.update(1.0 / FPS)
@@ -289,7 +302,8 @@ class TurboShellsGame:
             # self.renderer.draw_main_menu(self) # Replaced by MainMenuPanel
             pass
         elif self.state == STATE_ROSTER:
-            self.renderer.draw_menu(self)
+            # self.renderer.draw_menu(self) # Replaced by RosterPanel
+            pass
         elif self.state == STATE_RACE:
             self.renderer.draw_race(self)
         elif self.state == STATE_RACE_RESULT:
