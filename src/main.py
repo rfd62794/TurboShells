@@ -255,41 +255,26 @@ class TurboShellsGame:
             # Update UI Manager
             self.ui_manager.update(time_delta)
             
-            # Manage Panel Visibility based on State
-            if self.state == STATE_MENU:
-                if not self.main_menu_panel.visible:
-                    self.main_menu_panel.show()
-            else:
-                if self.main_menu_panel.visible:
-                    self.main_menu_panel.hide()
-                    
-            if self.state == STATE_SHOP:
-                if not self.shop_panel.visible:
-                    self.shop_panel.show()
-            else:
-                if self.shop_panel.visible:
-                    self.shop_panel.hide()
-                    
-            if self.state == STATE_ROSTER:
-                if not self.roster_panel.visible:
-                    self.roster_panel.show()
-            else:
-                if self.roster_panel.visible:
-                    self.roster_panel.hide()
-                    
-            if self.state == STATE_RACE:
-                if not self.race_hud_panel.visible:
-                    self.race_hud_panel.show()
-            else:
-                if self.race_hud_panel.visible:
-                    self.race_hud_panel.hide()
-                    
-            if self.state == STATE_RACE_RESULT:
-                if not self.race_result_panel.visible:
-                    self.race_result_panel.show()
-            else:
-                if self.race_result_panel.visible:
-                    self.race_result_panel.hide()
+            # Manage Panel Visibility - HIDE ALL FIRST for proper isolation
+            panels_to_manage = [
+                (STATE_MENU, self.main_menu_panel, 'MainMenu'),
+                (STATE_SHOP, self.shop_panel, 'Shop'),
+                (STATE_ROSTER, self.roster_panel, 'Roster'),
+                (STATE_RACE, self.race_hud_panel, 'RaceHUD'),
+                (STATE_RACE_RESULT, self.race_result_panel, 'RaceResult')
+            ]
+            
+            # First, hide all panels
+            for state_const, panel, name in panels_to_manage:
+                if panel.visible and self.state != state_const:
+                    print(f"[DEBUG] Hiding {name} panel (state={self.state})")
+                    panel.hide()
+            
+            # Then, show only the appropriate panel
+            for state_const, panel, name in panels_to_manage:
+                if self.state == state_const and not panel.visible:
+                    print(f"[DEBUG] Showing {name} panel (state={self.state})")
+                    panel.show()
             
             # Update settings manager (legacy)
             # self.settings_manager.update(1.0 / FPS)

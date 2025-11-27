@@ -348,9 +348,15 @@ class RosterPanel(BasePanel):
         self._update_visibility()
 
     def show(self):
+        print(f"[DEBUG] RosterPanel.show() called")
         super().show()
         self._update_visibility()
         self._update_slot_content()
+        print(f"[DEBUG] RosterPanel.show() complete - window visible: {self.window.visible if self.window else 'NO WINDOW'}")
+    
+    def hide(self):
+        print(f"[DEBUG] RosterPanel.hide() called")
+        super().hide()
         
     def update(self, time_delta: float) -> None:
         super().update(time_delta)
