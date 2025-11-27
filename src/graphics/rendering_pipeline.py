@@ -175,23 +175,23 @@ class RenderingPipeline:
             return
             
         # Render based on current game state
-        state = getattr(game_state, 'state', 'menu')
+        state = getattr(game_state, 'state', 'MENU')
         
-        if state == 'menu':
+        if state == 'MENU':
             self.game_renderer.draw_main_menu(game_state)
-        elif state == 'roster':
+        elif state == 'ROSTER':
             self.game_renderer.draw_menu(game_state)
-        elif state == 'race':
+        elif state == 'RACE':
             self.game_renderer.draw_race(game_state)
-        elif state == 'race_result':
+        elif state == 'RACE_RESULT':
             self.game_renderer.draw_race_result(game_state)
-        elif state == 'shop':
+        elif state == 'SHOP':
             self.game_renderer.draw_shop(game_state)
-        elif state == 'breeding':
+        elif state == 'BREEDING':
             self.game_renderer.draw_breeding(game_state)
-        elif state == 'profile':
+        elif state == 'PROFILE':
             self.game_renderer.draw_profile(game_state)
-        elif state == 'voting':
+        elif state == 'VOTING':
             self.game_renderer.draw_voting(game_state)
     
     def _render_game_ui(self, game_state: Any) -> None:

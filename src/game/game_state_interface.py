@@ -538,7 +538,7 @@ class TurboShellsGameStateInterface(GameStateInterface):
                            DataType.SCALAR, "Restart race")
         self.register_writer('start_race', lambda g, _: self._start_race(g),
                            DataType.SCALAR, "Start new race")
-        self.register_writer('goto_menu', lambda g, _: setattr(g, 'state', 'menu'),
+        self.register_writer('goto_menu', lambda g, _: setattr(g, 'state', 'MENU'),
                            DataType.SCALAR, "Go to menu")
         
         # Profile Actions
@@ -595,7 +595,8 @@ class TurboShellsGameStateInterface(GameStateInterface):
     def _view_profile(self, game, index):
         """View a turtle's profile."""
         game.profile_turtle_index = index
-        game.state = 'PROFILE'
+        from settings import STATE_PROFILE
+        game.state = STATE_PROFILE
     
     def _validate_money(self, game, value) -> bool:
         """Validate and set money value."""

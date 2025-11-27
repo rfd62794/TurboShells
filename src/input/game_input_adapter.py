@@ -222,7 +222,8 @@ class GameInputAdapter:
     # Navigation action implementations
     def _navigate_to_menu(self, parameters: Dict[str, Any]) -> bool:
         """Navigate to main menu."""
-        self.game_state.state = "menu"
+        from settings import STATE_MENU
+        self.game_state.state = STATE_MENU
         self.game_state._clear_temporary_opponents()
         return True
     
@@ -248,12 +249,14 @@ class GameInputAdapter:
     
     def _navigate_to_profile(self, parameters: Dict[str, Any]) -> bool:
         """Navigate to profile screen."""
-        self.game_state.state = "profile"
+        from settings import STATE_PROFILE
+        self.game_state.state = STATE_PROFILE
         return True
     
     def _navigate_to_voting(self, parameters: Dict[str, Any]) -> bool:
         """Navigate to voting screen."""
-        self.game_state.state = "voting"
+        from settings import STATE_VOTING
+        self.game_state.state = STATE_VOTING
         return True
     
     # Turtle action implementations
@@ -322,7 +325,8 @@ class GameInputAdapter:
     def _attempt_breeding(self, parameters: Dict[str, Any]) -> bool:
         """Attempt breeding between selected parents."""
         if self.game_state.breeding_manager.breed():
-            self.game_state.state = "menu"
+            from settings import STATE_MENU
+            self.game_state.state = STATE_MENU
         return True
     
     def _clear_breeding_selection(self, parameters: Dict[str, Any]) -> bool:
