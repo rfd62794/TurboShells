@@ -202,6 +202,8 @@ class ShopPanel(BasePanel):
                 for slot in self.inventory_slots:
                     if event.ui_element == slot['btn_buy']:
                         self.game_state.set('shop_buy', slot['index'])
+                        # Force refresh inventory display immediately
+                        self._populate_inventory()
                         return True
         return False
 

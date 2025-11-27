@@ -105,22 +105,23 @@ class RosterPanel(BasePanel):
             visible=False
         )
         
+        # Slots Container
+        self.container_slots = pygame_gui.elements.UIPanel(
+            relative_rect=pygame.Rect((0, 110), (width + 40, 420)),
+            manager=self.manager,
+            container=container,
+            object_id="#roster_slots_container"
+        )
+        
         # Start Race Button (for select mode)
+        # Created AFTER slots container to ensure it's drawn on top
         self.btn_start_race = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((width - 220, 550), (200, 40)),
+            relative_rect=pygame.Rect((width - 220, 540), (200, 40)),
             text="START RACE",
             manager=self.manager,
             container=container,
             visible=False,
             object_id="#btn_start_race"
-        )
-        
-        # Slots Container
-        self.container_slots = pygame_gui.elements.UIPanel(
-            relative_rect=pygame.Rect((0, 110), (width + 40, 450)),
-            manager=self.manager,
-            container=container,
-            object_id="#roster_slots_container"
         )
         
         self._populate_slots()
@@ -351,8 +352,11 @@ class RosterPanel(BasePanel):
                         self._update_slot_content()
                         return True
                 
-                print(f"[DEBUG] ✗ NO MATCH found for button")
-                print(f"[DEBUG] Button ID: {id(event.ui_element)}")
+                print(f"[DEBUG] ✗ NO MATCH found for button: {event.ui_element}")
+                if hasattr(event.ui_element, 'object_ids'):
+                    print(f"[DEBUG] Button Object IDs: {event.ui_element.object_ids}")
+                elif hasattr(event.ui_element, 'object_id'):
+                    print(f"[DEBUG] Button Object ID: {event.ui_element.object_id}")
         return False
 
     def _on_money_changed(self, key, old, new):
