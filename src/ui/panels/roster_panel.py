@@ -211,7 +211,7 @@ class RosterPanel(BasePanel):
         else:
             turtles = list(self.game_state.get('roster', []))
             
-        print(f"[DEBUG] RosterPanel update: {len(turtles)} turtles found. Content: {[t.name if t else None for t in turtles]}")
+        print(f"[DEBUG] RosterPanel update: {len(turtles)} turtles")
             
         # Pad
         while len(turtles) < 3:
@@ -236,21 +236,10 @@ class RosterPanel(BasePanel):
                 slot['txt_stats'].set_text(stats_text)
                 
                 try:
-                    print(f"[DEBUG] Attempting to render turtle: {turtle.name}")
-                    print(f"[DEBUG]   Has genetics_system: {turtle.genetics_system is not None}")
-                    print(f"[DEBUG]   visual_genetics present: {bool(turtle.visual_genetics)}")
-                    if turtle.visual_genetics:
-                        print(f"[DEBUG]   genetics keys: {list(turtle.visual_genetics.keys())[:5]}")
-                    
                     surf = render_turtle_pygame(turtle, size=100)
-                    print(f"[DEBUG]   ✓ Render successful, surface type: {type(surf)}")
-                    
                     slot['img'].set_image(surf)
-                    print(f"[DEBUG]   ✓ Image set on UIImage element")
                 except Exception as e:
                     print(f"[ERROR] Failed to render turtle {turtle.name}: {e}")
-                    import traceback
-                    traceback.print_exc()
                     
                 # Buttons visibility
                 if show_retired:
@@ -302,9 +291,16 @@ class RosterPanel(BasePanel):
         self._update_slot_content()
 
     def handle_event(self, event: pygame.event.Event) -> bool:
+        # Handle window close button (X)
+        if event.type == pygame_gui.UI_WINDOW_CLOSE:
+            if event.ui_element == self.window:
+                self.game_state.set('state', 'MENU')
+                self.game_state.set('select_racer_mode', False)
+                return True
+                
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
             if event.ui_element == self.btn_menu:
-                self.game_state.set('state', 'menu')
+                self.game_state.set('state', 'MENU')
                 self.game_state.set('select_racer_mode', False) # Reset mode
                 return True
             elif event.ui_element == self.btn_view_active:
@@ -348,14 +344,11 @@ class RosterPanel(BasePanel):
         self._update_visibility()
 
     def show(self):
-        print(f"[DEBUG] RosterPanel.show() called")
         super().show()
         self._update_visibility()
         self._update_slot_content()
-        print(f"[DEBUG] RosterPanel.show() complete - window visible: {self.window.visible if self.window else 'NO WINDOW'}")
     
     def hide(self):
-        print(f"[DEBUG] RosterPanel.hide() called")
         super().hide()
         
     def update(self, time_delta: float) -> None:
