@@ -89,6 +89,9 @@ class ShopManager:
                         self.game_state.money -= cost
                         self.message = f"Bought turtle for ${cost}!"
                         self.message_timer = 60
+                        
+                        # Update shop inventory to trigger UI refresh
+                        self.game_state.shop_inventory = self.inventory
 
                         # Auto-save after purchase
                         self.game_state.auto_save("purchase")
