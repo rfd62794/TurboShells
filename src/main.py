@@ -45,6 +45,7 @@ from managers.save_manager import SaveManager
 # UI System imports
 from ui.ui_manager import UIManager
 from ui.panels.settings_panel import SettingsPanel
+from ui.panels.main_menu_panel import MainMenuPanel
 from ui.data_binding import DataBindingManager
 from game.game_state_interface import TurboShellsGameStateInterface
 
@@ -120,6 +121,9 @@ class TurboShellsGame:
         self.settings_panel = SettingsPanel(self.game_state_interface, self.data_binding_manager)
         self.ui_manager.register_panel("settings", self.settings_panel)
         
+        self.main_menu_panel = MainMenuPanel(self.game_state_interface)
+        self.ui_manager.register_panel("main_menu", self.main_menu_panel)
+        
         # --- MANAGERS ---
         self.renderer = Renderer(self.screen, self.font)
         self.roster_manager = RosterManager(self)
@@ -152,6 +156,11 @@ class TurboShellsGame:
             
             # Handle specific panel events if needed (e.g. SettingsPanel custom logic)
             # self.settings_panel.handle_event(event) # pygame_gui handles this internally mostly
+            # self.main_menu_panel.handle_event(event) # Main menu custom handling
+            
+            # Pass events to active panels if they need custom handling
+            if self.state == STATE_MENU:
+                self.main_menu_panel.handle_event(event)
             
             # 2. Handle monitoring overlay input
             monitoring_overlay.handle_key_event(event)
@@ -221,6 +230,14 @@ class TurboShellsGame:
             # Update UI Manager
             self.ui_manager.update(time_delta)
             
+            # Manage Panel Visibility based on State
+            if self.state == STATE_MENU:
+                if not self.main_menu_panel.visible:
+                    self.main_menu_panel.show()
+            else:
+                if self.main_menu_panel.visible:
+                    self.main_menu_panel.hide()
+            
             # Update settings manager (legacy)
             # self.settings_manager.update(1.0 / FPS)
 
@@ -253,8 +270,11 @@ class TurboShellsGame:
         self.screen.fill(BLACK)
 
         # 2. Render game world (PyGame - sprites, entities)
+        # Only draw legacy menu if we are NOT using the new panel (or maybe draw background?)
+        # For now, let's disable legacy menu drawing to avoid overlap/confusion
         if self.state == STATE_MENU:
-            self.renderer.draw_main_menu(self)
+            # self.renderer.draw_main_menu(self) # Replaced by MainMenuPanel
+            pass
         elif self.state == STATE_ROSTER:
             self.renderer.draw_menu(self)
         elif self.state == STATE_RACE:
