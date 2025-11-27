@@ -221,8 +221,13 @@ class TurboShellsGame:
                 # Let's refine step 1.
                 pass
                 
-                if event.button == 1:  # Left Click
-                    self.state_handler.handle_click(event.pos)
+            if event.button == 1:  # Left Click
+                    # Only use legacy state_handler for states NOT using pygame_gui panels
+                    legacy_states = [STATE_BREEDING, STATE_PROFILE, STATE_VOTING]
+                    if self.state in legacy_states:
+                        self.state_handler.handle_click(event.pos)
+                    else:
+                        print(f"[DEBUG] Click at {event.pos} - handled by pygame_gui panels, skipping state_handler")
                 elif event.button in [4, 5]:  # Mouse wheel
                     self.state_handler.handle_mouse_wheel(event.button)
 
