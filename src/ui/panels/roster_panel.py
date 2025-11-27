@@ -300,6 +300,8 @@ class RosterPanel(BasePanel):
                 
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
             print(f"[DEBUG] RosterPanel button pressed: {event.ui_element}")
+            print(f"[DEBUG] Checking against {len(self.slots)} slots")
+            
             if event.ui_element == self.btn_menu:
                 self.game_state.set('state', 'MENU')
                 self.game_state.set('select_racer_mode', False) # Reset mode
@@ -325,17 +327,20 @@ class RosterPanel(BasePanel):
                 return True
             else:
                 # Check slot buttons
-                for slot in self.slots:
+                for slot_idx, slot in enumerate(self.slots):
+                    print(f"[DEBUG] Slot {slot_idx}: train={slot['btn_train']}, select={slot['btn_select']}")
                     if event.ui_element == slot['btn_train']:
-                        print(f"[DEBUG] Train button clicked for slot {slot['index']}")
+                        print(f"[DEBUG] ✓ MATCHED Train button for slot {slot['index']}")
                         self.game_state.set('train_turtle', slot['index'])
                         self._update_slot_content() # Refresh stats
                         return True
                     elif event.ui_element == slot['btn_select']:
-                        print(f"[DEBUG] Select button clicked for slot {slot['index']}")
+                        print(f"[DEBUG] ✓ MATCHED Select button for slot {slot['index']}")
                         self.game_state.set('set_active_racer', slot['index'])
                         self._update_slot_content() # Refresh selection
                         return True
+                
+                print(f"[DEBUG] ✗ NO MATCH found for button: {event.ui_element}")
         return False
 
     def _on_money_changed(self, key, old, new):
