@@ -497,6 +497,12 @@ class TurboShellsGameStateInterface(GameStateInterface):
         self.register_computed_property('can_afford_shop',
                                      lambda g: self._can_afford_shop(g),
                                      DataType.SCALAR, "Whether player can afford shop items")
+                                     
+        # Shop Actions
+        self.register_writer('shop_buy', lambda g, index: g.shop_manager.buy_turtle(index),
+                           DataType.SCALAR, "Buy turtle at index")
+        self.register_writer('shop_refresh', lambda g, _: g.shop_manager.refresh_stock(free=False),
+                           DataType.SCALAR, "Refresh shop inventory")
     
     def _validate_money(self, game, value) -> bool:
         """Validate and set money value."""
