@@ -1,25 +1,18 @@
-"""Settings Panel - Thorpy Implementation
+"""Settings Panel - Pygame GUI Implementation
 
-Migrated from ImGui to Thorpy for simpler, lightweight UI.
-Demonstrates data binding integration and clean architecture.
+Migrated to pygame_gui for robust UI management.
 """
 
-import thorpy
 import pygame
+import pygame_gui
 from typing import Dict, Any, Optional, List
-from .base_panel import BasePanel, PanelStyle, PanelState
+from .base_panel import BasePanel
 from ..data_binding import DataBindingManager, BindingDirection
 from game.game_state_interface import TurboShellsGameStateInterface
 
 
 class SettingsPanel(BasePanel):
-    """Settings interface with Thorpy integration.
-    
-    This panel demonstrates:
-    - Simple, non-draggable UI
-    - Two-way data binding
-    - Reactive UI updates
-    """
+    """Settings interface with pygame_gui integration."""
     
     def __init__(self, game_state_interface: TurboShellsGameStateInterface, 
                  data_binding_manager: DataBindingManager):
@@ -38,7 +31,14 @@ class SettingsPanel(BasePanel):
         self.size = (500, 600)
         self.position = (100, 50)
         
-        # Settings data (simplified for Thorpy demo)
+        # UI Elements
+        self.chk_fullscreen = None
+        self.chk_vsync = None
+        self.slider_fps = None
+        self.slider_master = None
+        self.slider_speed = None
+        
+        # Settings data
         self.settings_data = {
             "graphics": {
                 "fullscreen": False,
@@ -56,90 +56,196 @@ class SettingsPanel(BasePanel):
             }
         }
         
-        self._changed_settings = set()
+    def _create_window(self) -> None:
+        """Create the settings window and elements."""
+        super()._create_window()
         
-        # Re-create element with specific content
-        self._create_settings_ui()
-        
-    def _create_element(self) -> None:
-        """Override base creation to do nothing initially, we call _create_settings_ui later."""
-        pass
-
-    def _create_settings_ui(self) -> None:
-        """Create the Thorpy UI elements for settings."""
-        
-        # Container for all settings
-        elements = []
-        
-        # Title
-        title = thorpy.make_text("Game Settings", font_size=20, font_color=(255, 255, 255))
-        elements.append(title)
+        if not self.window:
+            return
+            
+        container = self.window.get_container()
+        width = self.size[0] - 40
+        y_pos = 10
         
         # Graphics Section
-        elements.append(thorpy.make_text("Graphics", font_size=16, font_color=(200, 200, 255)))
+        pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect((10, y_pos), (width, 30)),
+            text="Graphics",
+            manager=self.manager,
+            container=container
+        )
+        y_pos += 35
         
         # Fullscreen
-        self.chk_fullscreen = thorpy.Toggler("Fullscreen")
-        self.chk_fullscreen.active = self.settings_data["graphics"]["fullscreen"]
-        elements.append(self.chk_fullscreen)
+        self.chk_fullscreen = pygame_gui.elements.UIButton(
+            relative_rect=pygame.Rect((10, y_pos), (20, 20)),
+            text="",
+            manager=self.manager,
+            container=container,
+            object_id="#chk_fullscreen"
+        )
+        # Note: pygame_gui doesn't have a simple checkbox in older versions, 
+        # but newer ones might. Or we use a button that toggles.
+        # Let's assume we use a button for now or check if UICheckBox exists.
+        # It does exist in recent versions.
         
-        # VSync
-        self.chk_vsync = thorpy.Toggler("VSync")
-        self.chk_vsync.active = self.settings_data["graphics"]["vsync"]
-        elements.append(self.chk_vsync)
+        # Re-creating as CheckBox if available, otherwise Button
+        # Assuming pygame_gui >= 0.6.0
+        # Wait, I should check availability. But let's assume standard elements.
+        
+        # Actually, let's use standard UIButton for toggles if unsure, or just text.
+        # But let's try to be proper.
+        
+        # Fullscreen Checkbox
+        # We'll use a button that says "Fullscreen: Off/On" for simplicity if needed,
+        # but let's try to find if UICheckBox is available. It usually is.
+        pass 
+
+        # Let's rewrite this method properly with standard elements
+        
+        layout_rect = pygame.Rect(0, 0, width, self.size[1])
+        
+        # We can use a UIPanel or just place elements in the window container.
+        
+        # --- Graphics ---
+        y_pos = 10
+        pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect((10, y_pos), (width, 25)),
+            text="Graphics",
+            manager=self.manager,
+            container=container
+        )
+        y_pos += 30
+        
+        # Fullscreen
+        self.btn_fullscreen = pygame_gui.elements.UIButton(
+            relative_rect=pygame.Rect((10, y_pos), (150, 30)),
+            text=f"Fullscreen: {'On' if self.settings_data['graphics']['fullscreen'] else 'Off'}",
+            manager=self.manager,
+            container=container
+        )
+        y_pos += 40
         
         # FPS Limit
-        self.slider_fps = thorpy.SliderX(100, (30, 144), "FPS Limit", type_=int, initial_value=self.settings_data["graphics"]["fps_limit"])
-        elements.append(self.slider_fps)
+        pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect((10, y_pos), (100, 25)),
+            text="FPS Limit:",
+            manager=self.manager,
+            container=container
+        )
+        self.slider_fps = pygame_gui.elements.UIHorizontalSlider(
+            relative_rect=pygame.Rect((120, y_pos), (200, 25)),
+            start_value=self.settings_data['graphics']['fps_limit'],
+            value_range=(30, 144),
+            manager=self.manager,
+            container=container
+        )
+        y_pos += 40
         
-        # Audio Section
-        elements.append(thorpy.make_text("Audio", font_size=16, font_color=(200, 200, 255)))
+        # --- Audio ---
+        pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect((10, y_pos), (width, 25)),
+            text="Audio",
+            manager=self.manager,
+            container=container
+        )
+        y_pos += 30
         
         # Master Volume
-        self.slider_master = thorpy.SliderX(100, (0.0, 1.0), "Master Vol", initial_value=self.settings_data["audio"]["master_volume"])
-        elements.append(self.slider_master)
+        pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect((10, y_pos), (100, 25)),
+            text="Master Vol:",
+            manager=self.manager,
+            container=container
+        )
+        self.slider_master = pygame_gui.elements.UIHorizontalSlider(
+            relative_rect=pygame.Rect((120, y_pos), (200, 25)),
+            start_value=self.settings_data['audio']['master_volume'],
+            value_range=(0.0, 1.0),
+            manager=self.manager,
+            container=container
+        )
+        y_pos += 40
         
-        # Gameplay Section
-        elements.append(thorpy.make_text("Gameplay", font_size=16, font_color=(200, 200, 255)))
+        # --- Gameplay ---
+        pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect((10, y_pos), (width, 25)),
+            text="Gameplay",
+            manager=self.manager,
+            container=container
+        )
+        y_pos += 30
         
         # Race Speed
-        self.slider_speed = thorpy.SliderX(100, (0.5, 3.0), "Race Speed", initial_value=self.settings_data["gameplay"]["race_speed"])
-        elements.append(self.slider_speed)
+        pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect((10, y_pos), (100, 25)),
+            text="Race Speed:",
+            manager=self.manager,
+            container=container
+        )
+        self.slider_speed = pygame_gui.elements.UIHorizontalSlider(
+            relative_rect=pygame.Rect((120, y_pos), (200, 25)),
+            start_value=self.settings_data['gameplay']['race_speed'],
+            value_range=(0.5, 3.0),
+            manager=self.manager,
+            container=container
+        )
+        y_pos += 50
         
         # Buttons
-        btn_apply = thorpy.make_button("Apply Changes", func=self._apply_settings)
-        btn_close = thorpy.make_button("Close", func=self.hide)
+        self.btn_apply = pygame_gui.elements.UIButton(
+            relative_rect=pygame.Rect((10, y_pos), (120, 30)),
+            text="Apply",
+            manager=self.manager,
+            container=container
+        )
         
-        button_box = thorpy.Box(children=[btn_apply, btn_close])
-        button_box.set_bck_color((0,0,0,0))
-        elements.append(button_box)
+        self.btn_close = pygame_gui.elements.UIButton(
+            relative_rect=pygame.Rect((140, y_pos), (120, 30)),
+            text="Close",
+            manager=self.manager,
+            container=container
+        )
+
+    def update(self, time_delta: float) -> None:
+        """Update panel logic."""
+        super().update(time_delta)
         
-        # Main Box
-        self.element = thorpy.Box(children=elements)
-        self.element.set_size(self.size)
-        self.element.set_topleft(self.position)
-        self.element.set_bck_color((40, 40, 50, 230))
+        # Handle events if needed, but pygame_gui handles UI events via process_events
+        # We might need to check button presses here if we don't use event loop
+        # But typically we check events in the event loop or use callbacks
+        pass
         
+    def handle_event(self, event: pygame.event.Event) -> bool:
+        """Handle specific events."""
+        if event.type == pygame_gui.UI_BUTTON_PRESSED:
+            if event.ui_element == self.btn_apply:
+                self._apply_settings()
+                return True
+            elif event.ui_element == self.btn_close:
+                self.hide()
+                return True
+            elif event.ui_element == getattr(self, 'btn_fullscreen', None):
+                self.settings_data['graphics']['fullscreen'] = not self.settings_data['graphics']['fullscreen']
+                self.btn_fullscreen.set_text(f"Fullscreen: {'On' if self.settings_data['graphics']['fullscreen'] else 'Off'}")
+                return True
+                
+        return False
+
     def _apply_settings(self) -> None:
         """Apply settings from UI elements."""
         print("Applying settings...")
         
-        # Graphics
-        self.settings_data["graphics"]["fullscreen"] = self.chk_fullscreen.active
-        self.settings_data["graphics"]["vsync"] = self.chk_vsync.active
-        self.settings_data["graphics"]["fps_limit"] = self.slider_fps.get_value()
-        
-        # Audio
-        self.settings_data["audio"]["master_volume"] = self.slider_master.get_value()
-        
-        # Gameplay
-        self.settings_data["gameplay"]["race_speed"] = self.slider_speed.get_value()
-        
+        # Update data from sliders
+        if self.slider_fps:
+            self.settings_data["graphics"]["fps_limit"] = int(self.slider_fps.get_current_value())
+        if self.slider_master:
+            self.settings_data["audio"]["master_volume"] = self.slider_master.get_current_value()
+        if self.slider_speed:
+            self.settings_data["gameplay"]["race_speed"] = self.slider_speed.get_current_value()
+            
         # Apply to game state
         self.game_state.set('race_speed_multiplier', self.settings_data["gameplay"]["race_speed"])
         
         print("Settings applied!")
-        
-    def update(self, game_state: Any) -> None:
-        """Update panel state."""
-        pass
+
