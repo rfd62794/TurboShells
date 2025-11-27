@@ -91,13 +91,46 @@ class RaceResultPanel(BasePanel):
             y_pos += 50
             
         # Reward message
-        if player_turtle and hasattr(player_turtle, 'rank'):
-             # This might be tricky as 'rank' is on the race copy, not original?
-             # But RaceManager updates original turtle too?
-             # Actually RaceManager updates `race_results` with race copies.
-             # We iterate `results` which are race copies.
-             # So we can find player rank from `results`.
-             pass
+        if player_turtle:
+            # Find player's rank from the results
+            player_rank = None
+            player_winnings = 0
+            
+            for i, turtle in enumerate(results):
+                if turtle.name == player_turtle.name:
+                    player_rank = i + 1
+                    # Calculate winnings based on rank (example: 1st=$100, 2nd=$50, 3rd=$25, others=$10)
+                    if player_rank == 1:
+                        player_winnings = 100
+                    elif player_rank == 2:
+                        player_winnings = 50
+                    elif player_rank == 3:
+                        player_winnings = 25
+                    else:
+                        player_winnings = 10
+                    break
+            
+            if player_rank:
+                reward_text = f"You finished {player_rank}{'st' if player_rank == 1 else 'nd' if player_rank == 2 else 'rd' if player_rank == 3 else 'th'} and won ${player_winnings}!"
+                
+                reward_label = pygame_gui.elements.UITextBox(
+                    relative_rect=pygame.Rect((10, y_pos), (400, 60)),
+                    html_text=f"<b>{reward_text}</b>",
+                    manager=self.manager,
+                    container=self.container_results
+                )
+                self.result_rows.append(reward_label)
+                y_pos += 70
+            else:
+                # Player didn't finish or wasn't found
+                reward_label = pygame_gui.elements.UITextBox(
+                    relative_rect=pygame.Rect((10, y_pos), (400, 40)),
+                    html_text="<b>You did not finish the race</b>",
+                    manager=self.manager,
+                    container=self.container_results
+                )
+                self.result_rows.append(reward_label)
+                y_pos += 50
              
         self.container_results.set_scrollable_area_dimensions((400, y_pos))
 

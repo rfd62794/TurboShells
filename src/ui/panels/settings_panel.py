@@ -76,48 +76,7 @@ class SettingsPanel(BasePanel):
         )
         y_pos += 35
         
-        # Fullscreen
-        self.chk_fullscreen = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((10, y_pos), (20, 20)),
-            text="",
-            manager=self.manager,
-            container=container,
-            object_id="#chk_fullscreen"
-        )
-        # Note: pygame_gui doesn't have a simple checkbox in older versions, 
-        # but newer ones might. Or we use a button that toggles.
-        # Let's assume we use a button for now or check if UICheckBox exists.
-        # It does exist in recent versions.
-        
-        # Re-creating as CheckBox if available, otherwise Button
-        # Assuming pygame_gui >= 0.6.0
-        # Wait, I should check availability. But let's assume standard elements.
-        
-        # Actually, let's use standard UIButton for toggles if unsure, or just text.
-        # But let's try to be proper.
-        
-        # Fullscreen Checkbox
-        # We'll use a button that says "Fullscreen: Off/On" for simplicity if needed,
-        # but let's try to find if UICheckBox is available. It usually is.
-        pass 
-
-        # Let's rewrite this method properly with standard elements
-        
-        layout_rect = pygame.Rect(0, 0, width, self.size[1])
-        
-        # We can use a UIPanel or just place elements in the window container.
-        
-        # --- Graphics ---
-        y_pos = 10
-        pygame_gui.elements.UILabel(
-            relative_rect=pygame.Rect((10, y_pos), (width, 25)),
-            text="Graphics",
-            manager=self.manager,
-            container=container
-        )
-        y_pos += 30
-        
-        # Fullscreen
+        # Fullscreen Toggle
         self.btn_fullscreen = pygame_gui.elements.UIButton(
             relative_rect=pygame.Rect((10, y_pos), (150, 30)),
             text=f"Fullscreen: {'On' if self.settings_data['graphics']['fullscreen'] else 'Off'}",
@@ -211,10 +170,12 @@ class SettingsPanel(BasePanel):
         """Update panel logic."""
         super().update(time_delta)
         
-        # Handle events if needed, but pygame_gui handles UI events via process_events
-        # We might need to check button presses here if we don't use event loop
-        # But typically we check events in the event loop or use callbacks
-        pass
+        # Update fullscreen button text if setting changed
+        if hasattr(self, 'btn_fullscreen') and self.btn_fullscreen:
+            current_text = self.btn_fullscreen.text
+            expected_text = f"Fullscreen: {'On' if self.settings_data['graphics']['fullscreen'] else 'Off'}"
+            if current_text != expected_text:
+                self.btn_fullscreen.set_text(expected_text)
         
     def handle_event(self, event: pygame.event.Event) -> bool:
         """Handle specific events."""
