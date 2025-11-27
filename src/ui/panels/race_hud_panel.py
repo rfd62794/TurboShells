@@ -135,6 +135,9 @@ class RaceHUDPanel(BasePanel):
             race_roster = None
             if hasattr(self.game_state, 'race_manager') and hasattr(self.game_state.race_manager, 'race_roster'):
                 race_roster = self.game_state.race_manager.race_roster
+                print(f"[DEBUG] RaceHUD: Found race roster with {len(race_roster)} turtles")
+            else:
+                print(f"[DEBUG] RaceHUD: No race_manager or race_roster found")
                 
             if race_roster and len(race_roster) > 0:
                 # Get player turtle (first in roster)
@@ -148,6 +151,10 @@ class RaceHUDPanel(BasePanel):
                         # Debug progress updates
                         if int(progress * 100) % 10 == 0:  # Log every 10% progress
                             print(f"[DEBUG] Race progress: {progress:.1%} ({player.race_distance:.1f}/{TRACK_LENGTH_LOGIC})")
+                    else:
+                        print(f"[DEBUG] RaceHUD: No progress bar available")
+                else:
+                    print(f"[DEBUG] RaceHUD: Player turtle has no race_distance attribute")
             else:
                 print(f"[DEBUG] No race roster found for progress bar update")
             

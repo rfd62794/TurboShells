@@ -76,11 +76,14 @@ class Turtle:
         self.finished = False
         self.rank = None
 
-    def update_physics(self, terrain_type):
+    def update_physics(self, terrain):
         """
         The Master Physics Logic.
         Returns: distance_moved (float)
         Used by BOTH the Simulation and the Visual Game.
+        
+        Args:
+            terrain: Terrain dict with 'type', 'speed_modifier', 'energy_drain', 'color'
         """
         if self.finished:
             return 0
@@ -97,16 +100,40 @@ class Turtle:
 
         # 2. MOVEMENT LOGIC
         move_speed = self.stats["speed"]
+        
+        # Get terrain type and modifiers
+        terrain_type = terrain.get('type', 'normal') if isinstance(terrain, dict) else terrain
+        speed_modifier = terrain.get('speed_modifier', 1.0) if isinstance(terrain, dict) else 1.0
+        energy_drain = terrain.get('energy_drain', 1.0) if isinstance(terrain, dict) else 1.0
 
         # Apply Terrain Modifiers
         if terrain_type == "water":
-            move_speed *= self.stats["swim"] / 10.0
-        elif terrain_type == "rock":
-            move_speed *= self.stats["climb"] / 10.0
+            # Swimming bonus
+            swim_bonus = self.stats["swim"] / 10.0
+            move_speed *= swim_bonus * speed_modifier
+        elif terrain_type == "rocks":
+            # Climbing bonus
+            climb_bonus = self.stats["climb"] / 10.0
+            move_speed *= climb_bonus * speed_modifier
+        elif terrain_type == "sand":
+            # Sand affects speed more, recovery helps
+            recovery_bonus = self.stats["recovery"] / 15.0
+            move_speed *= (1.0 + recovery_bonus) * speed_modifier
+        elif terrain_type == "mud":
+            # Mud is very difficult, high energy drain affects movement
+            energy_factor = self.current_energy / self.stats["max_energy"]
+            move_speed *= energy_factor * speed_modifier
+        elif terrain_type == "boost":
+            # Boost terrain gives extra speed
+            move_speed *= speed_modifier * 1.2  # Extra 20% boost
+        else:
+            # Apply general terrain speed modifier
+            move_speed *= speed_modifier
 
         # 3. ENERGY DRAIN LOGIC
-        drain = 0.5 * TERRAIN_DIFFICULTY
-        self.current_energy -= drain
+        base_drain = 0.5 * TERRAIN_DIFFICULTY
+        actual_drain = base_drain * energy_drain
+        self.current_energy -= actual_drain
 
         # Check for Exhaustion
         if self.current_energy <= 0:

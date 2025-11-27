@@ -96,8 +96,27 @@ class RaceManager:
 
         for _ in range(self.game_state.race_speed_multiplier):
             for t in active_turtles:
-                # 1. Determine Terrain using shared RaceTrack helper
-                terrain = get_terrain_at(self.track, t.race_distance)
+                # 1. Determine Terrain using new terrain system
+                from core.racing.terrain_system import terrain_renderer
+                terrain_segment = terrain_renderer.get_terrain_at_position(t.race_distance)
+                
+                if terrain_segment:
+                    # Convert new terrain system to old terrain format for compatibility
+                    terrain_type = terrain_segment.terrain_type.value
+                    
+                    # Create terrain dict with speed and energy modifiers
+                    terrain = {
+                        'type': terrain_type,
+                        'speed_modifier': terrain_segment.speed_modifier,
+                        'energy_drain': terrain_segment.energy_drain,
+                        'color': terrain_segment.color
+                    }
+                    # Debug progress updates - only log every 50 ticks to reduce spam
+                    if int(t.race_distance) % 50 == 0:
+                        print(f"[DEBUG] Turtle {t.name} on {terrain_type} terrain (speed: {terrain_segment.speed_modifier}x, energy: {terrain_segment.energy_drain}x, dist: {t.race_distance:.1f})")
+                else:
+                    # Fallback to old terrain system
+                    terrain = get_terrain_at(self.track, t.race_distance)
 
                 # 2. UPDATE PHYSICS (Using the Shared Class)
                 move_amt = t.update_physics(terrain)
