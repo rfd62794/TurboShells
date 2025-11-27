@@ -11,8 +11,8 @@ import pygame
 import thorpy
 from src.ui.ui_manager import UIManager
 from src.ui.panels.settings_panel import SettingsPanel
-from src.game_state_interface import TurboShellsGameStateInterface
-from src.data_binding import DataBindingManager
+from src.game.game_state_interface import TurboShellsGameStateInterface
+from src.ui.data_binding import DataBindingManager
 
 def main():
     print("Initializing Pygame...")
