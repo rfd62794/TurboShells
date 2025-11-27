@@ -218,5 +218,10 @@ class ShopPanel(BasePanel):
 
     def show(self):
         super().show()
-        # Refresh inventory on show to ensure up to date
+        # Check if inventory needs initialization
+        current_inventory = self.game_state.get('shop_inventory', [])
+        if not current_inventory:
+            # Trigger shop refresh via action
+            self.game_state.set('shop_refresh', True)
+        # Refresh inventory display
         self._populate_inventory()
