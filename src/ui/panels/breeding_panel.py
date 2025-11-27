@@ -8,6 +8,7 @@ import pygame
 import pygame_gui
 from typing import List, Optional, Tuple
 from ui.panels.base_panel import BasePanel
+from core.rendering.pygame_turtle_renderer import render_turtle_pygame
 
 
 class BreedingPanel(BasePanel):
@@ -119,7 +120,7 @@ class BreedingPanel(BasePanel):
         )
         
     def _create_breeding_slots(self) -> None:
-        """Create breeding selection slots."""
+        """Create breeding selection slots with turtle rendering."""
         if not self.slots_container:
             return
             
@@ -154,7 +155,7 @@ class BreedingPanel(BasePanel):
                 turtle = candidates[i]
                 is_retired = turtle in retired_roster
                 
-                # Create slot button
+                # Create slot button with turtle image
                 slot_btn = pygame_gui.elements.UIButton(
                     relative_rect=pygame.Rect(pos, (slot_width, slot_height)),
                     text="",  # Text will be set in update
@@ -167,6 +168,35 @@ class BreedingPanel(BasePanel):
                 slot_btn.turtle_data = turtle
                 slot_btn.is_retired = is_retired
                 slot_btn.slot_index = i
+                
+                # Render turtle and set as button image
+                try:
+                    turtle_surface = render_turtle_pygame(turtle, 120)  # Smaller size for slots
+                    if turtle_surface:
+                        # Create a temporary surface to hold the turtle + info
+                        slot_surface = pygame.Surface((slot_width, slot_height), pygame.SRCALPHA)
+                        slot_surface.fill((240, 240, 240))  # Light gray background
+                        
+                        # Center turtle image
+                        turtle_x = (slot_width - turtle_surface.get_width()) // 2
+                        turtle_y = 20  # Leave room for text at top
+                        slot_surface.blit(turtle_surface, (turtle_x, turtle_y))
+                        
+                        # Add turtle name
+                        font = pygame.font.Font(None, 16)
+                        name_text = turtle.name
+                        if is_retired:
+                            name_text += " (RETIRED)"
+                        name_surface = font.render(name_text, True, (0, 0, 0))
+                        name_x = (slot_width - name_surface.get_width()) // 2
+                        slot_surface.blit(name_surface, (name_x, slot_height - 25))
+                        
+                        # Convert surface to pygame_gui compatible format
+                        slot_btn.set_image(slot_surface)
+                except Exception as e:
+                    print(f"Error rendering turtle in breeding slot: {e}")
+                    # Fallback to text-only button
+                    pass
                 
                 self.breeding_slots.append(slot_btn)
                 
@@ -208,35 +238,17 @@ class BreedingPanel(BasePanel):
         self._update_info_label()
         
     def _update_breeding_slots(self) -> None:
-        """Update breeding slot buttons with turtle info."""
+        """Update breeding slot buttons with selection state."""
         for i, slot in enumerate(self.breeding_slots):
             if hasattr(slot, 'turtle_data'):
                 turtle = slot.turtle_data
                 is_selected = turtle in self.selected_parents
-                is_retired = slot.is_retired
-                
-                # Format slot text
-                name = turtle.name
-                if is_retired:
-                    name += " (RETIRED)"
-                    
-                stats_text = (
-                    f"{name}\n"
-                    f"Speed: {turtle.speed}\n"
-                    f"Energy: {turtle.max_energy}\n"
-                    f"Recovery: {turtle.recovery}\n"
-                    f"Swim: {turtle.swim}\n"
-                    f"Climb: {turtle.climb}"
-                )
-                
-                slot.set_text(stats_text)
                 
                 # Update parent indicator
                 if i < len(self.parent_labels):
                     parent_label = self.parent_labels[i]
                     if is_selected:
                         parent_num = "1" if self.selected_parents[0] == turtle else "2"
-                        color = "Green" if parent_num == "1" else "Red"
                         parent_label.set_text(f"PARENT {parent_num}")
                         parent_label.show()
                     else:
