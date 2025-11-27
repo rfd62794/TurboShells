@@ -59,6 +59,7 @@ class MainMenuPanel(BasePanel):
             manager=self.manager,
             container=container
         )
+        print(f"[DEBUG] Created Roster button at y={y_pos}, text='{self.btn_roster.text}'")
         y_pos += btn_height + spacing
         
         self.btn_shop = pygame_gui.elements.UIButton(
@@ -67,6 +68,7 @@ class MainMenuPanel(BasePanel):
             manager=self.manager,
             container=container
         )
+        print(f"[DEBUG] Created Shop button at y={y_pos}, text='{self.btn_shop.text}'")
         y_pos += btn_height + spacing
         
         self.btn_breeding = pygame_gui.elements.UIButton(
@@ -109,13 +111,19 @@ class MainMenuPanel(BasePanel):
         )
         
     def handle_event(self, event: pygame.event.Event) -> bool:
+        print(f"[DEBUG] MainMenuPanel.handle_event called: type={event.type}")
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
+            print(f"[DEBUG] Button pressed event! Element: {event.ui_element}")
+            print(f"[DEBUG] btn_roster={self.btn_roster}, btn_shop={self.btn_shop}")
+            print(f"[DEBUG] Match roster? {event.ui_element == self.btn_roster}")
+            print(f"[DEBUG] Match shop? {event.ui_element == self.btn_shop}")
+            
             if event.ui_element == self.btn_roster:
-                print(f"[DEBUG] Roster button clicked, setting state to {STATE_ROSTER}")
+                print(f"[DEBUG] >>> Roster button clicked, setting state to {STATE_ROSTER}")
                 self.game_state.set('state', STATE_ROSTER)
                 return True
             elif event.ui_element == self.btn_shop:
-                print(f"[DEBUG] Shop button clicked, setting state to {STATE_SHOP}")
+                print(f"[DEBUG] >>> Shop button clicked, setting state to {STATE_SHOP}")
                 self.game_state.set('state', STATE_SHOP)
                 return True
             elif event.ui_element == self.btn_breeding:
