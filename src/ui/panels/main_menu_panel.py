@@ -119,7 +119,8 @@ class MainMenuPanel(BasePanel):
                 self.game_state.set('state', 'breeding')
                 return True
             elif event.ui_element == self.btn_race:
-                self.game_state.set('state', 'race')
+                self.game_state.set('state', 'roster')
+                self.game_state.set('select_racer_mode', True)
                 return True
             elif event.ui_element == self.btn_voting:
                 self.game_state.set('state', 'voting')
