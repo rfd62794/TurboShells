@@ -46,6 +46,7 @@ from managers.save_manager import SaveManager
 from ui.ui_manager import UIManager
 from ui.panels.settings_panel import SettingsPanel
 from ui.panels.main_menu_panel import MainMenuPanel
+from ui.panels.shop_panel import ShopPanel
 from ui.data_binding import DataBindingManager
 from game.game_state_interface import TurboShellsGameStateInterface
 
@@ -124,6 +125,9 @@ class TurboShellsGame:
         self.main_menu_panel = MainMenuPanel(self.game_state_interface)
         self.ui_manager.register_panel("main_menu", self.main_menu_panel)
         
+        self.shop_panel = ShopPanel(self.game_state_interface)
+        self.ui_manager.register_panel("shop", self.shop_panel)
+        
         # --- MANAGERS ---
         self.renderer = Renderer(self.screen, self.font)
         self.roster_manager = RosterManager(self)
@@ -161,6 +165,8 @@ class TurboShellsGame:
             # Pass events to active panels if they need custom handling
             if self.state == STATE_MENU:
                 self.main_menu_panel.handle_event(event)
+            elif self.state == STATE_SHOP:
+                self.shop_panel.handle_event(event)
             
             # 2. Handle monitoring overlay input
             monitoring_overlay.handle_key_event(event)
@@ -237,6 +243,13 @@ class TurboShellsGame:
             else:
                 if self.main_menu_panel.visible:
                     self.main_menu_panel.hide()
+                    
+            if self.state == STATE_SHOP:
+                if not self.shop_panel.visible:
+                    self.shop_panel.show()
+            else:
+                if self.shop_panel.visible:
+                    self.shop_panel.hide()
             
             # Update settings manager (legacy)
             # self.settings_manager.update(1.0 / FPS)
@@ -282,7 +295,8 @@ class TurboShellsGame:
         elif self.state == STATE_RACE_RESULT:
             self.renderer.draw_race_result(self)
         elif self.state == STATE_SHOP:
-            self.renderer.draw_shop(self)
+            # self.renderer.draw_shop(self) # Replaced by ShopPanel
+            pass
         elif self.state == STATE_BREEDING:
             self.renderer.draw_breeding(self)
         elif self.state == STATE_PROFILE:

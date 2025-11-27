@@ -503,6 +503,22 @@ class TurboShellsGameStateInterface(GameStateInterface):
                            DataType.SCALAR, "Buy turtle at index")
         self.register_writer('shop_refresh', lambda g, _: g.shop_manager.refresh_stock(free=False),
                            DataType.SCALAR, "Refresh shop inventory")
+                           
+        # Roster Properties
+        self.register_property('active_racer_index', DataType.SCALAR, "Index of active racer")
+        self.register_property('show_retired_view', DataType.SCALAR, "Show retired turtles")
+        self.register_property('current_bet', DataType.SCALAR, "Current bet amount")
+        self.register_property('select_racer_mode', DataType.SCALAR, "In racer selection mode")
+        
+        # Roster Actions
+        self.register_writer('train_turtle', lambda g, index: g.roster_manager.train_turtle(index),
+                           DataType.SCALAR, "Train turtle at index")
+        self.register_writer('set_active_racer', lambda g, index: setattr(g, 'active_racer_index', index),
+                           DataType.SCALAR, "Set active racer index")
+        self.register_writer('toggle_view', lambda g, show_retired: setattr(g, 'show_retired_view', show_retired),
+                           DataType.SCALAR, "Set retired view visibility")
+        self.register_writer('set_bet', lambda g, amount: setattr(g, 'current_bet', amount),
+                           DataType.SCALAR, "Set bet amount")
     
     def _validate_money(self, game, value) -> bool:
         """Validate and set money value."""
