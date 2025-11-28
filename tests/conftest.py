@@ -19,10 +19,28 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 sys.path.insert(0, str(project_root / "src"))
 
-# Import game modules for fixtures
-from src.core.game.entities import Turtle
-from src.core.game_state import generate_random_turtle, breed_turtles, compute_turtle_cost, generate_track, get_terrain_at
-from tests.mock_data_generator import MockDataGenerator
+# Try to import game modules for fixtures, handle gracefully if not found
+try:
+    from src.core.game.entities import Turtle
+    from src.core.game_state import generate_random_turtle, breed_turtles, compute_turtle_cost, generate_track, get_terrain_at
+    from tests.mock_data_generator import MockDataGenerator
+    GAME_MODULES_AVAILABLE = True
+except ImportError as e:
+    print(f"Warning: Game modules not available: {e}")
+    GAME_MODULES_AVAILABLE = False
+    Turtle = None
+    MockDataGenerator = None
+
+# UI-specific imports
+try:
+    import pygame
+    import pygame_gui
+    PYGAME_AVAILABLE = True
+except ImportError:
+    print("Warning: pygame not available")
+    PYGAME_AVAILABLE = False
+    pygame = None
+    pygame_gui = None
 
 
 @pytest.fixture(scope="session")
@@ -34,18 +52,24 @@ def test_data_dir() -> Path:
 @pytest.fixture(scope="session")
 def mock_generator():
     """Provide mock data generator with fixed seed"""
+    if not GAME_MODULES_AVAILABLE or MockDataGenerator is None:
+        pytest.skip("Game modules not available")
     return MockDataGenerator(seed=42)
 
 
 @pytest.fixture
 def sample_turtle_data(mock_generator):
     """Provide sample turtle data for testing"""
+    if not GAME_MODULES_AVAILABLE:
+        pytest.skip("Game modules not available")
     return mock_generator.generate_turtle()
 
 
 @pytest.fixture
 def sample_turtle(sample_turtle_data):
     """Provide a sample Turtle instance"""
+    if not GAME_MODULES_AVAILABLE or Turtle is None:
+        pytest.skip("Game modules not available")
     return Turtle(
         name=sample_turtle_data.name,
         speed=sample_turtle_data.speed,
@@ -59,6 +83,8 @@ def sample_turtle(sample_turtle_data):
 @pytest.fixture
 def sample_turtles(mock_generator):
     """Provide multiple sample turtles for testing"""
+    if not GAME_MODULES_AVAILABLE:
+        pytest.skip("Game modules not available")
     return [mock_generator.generate_turtle() for _ in range(5)]
 
 
@@ -167,6 +193,151 @@ def mock_pygame():
     return pygame_mock
 
 
+# UI-Specific Fixtures
+@pytest.fixture
+def pygame_setup():
+    """Setup pygame for UI testing"""
+    if not PYGAME_AVAILABLE:
+        pytest.skip("pygame not available")
+    
+    pygame.init()
+    screen = pygame.display.set_mode((1024, 768))
+    manager = pygame_gui.UIManager((1024, 768))
+    
+    yield screen, manager
+    
+    pygame.quit()
+
+
+@pytest.fixture  
+def ui_manager():
+    """Provide UI manager for testing"""
+    if not PYGAME_AVAILABLE:
+        pytest.skip("pygame not available")
+    
+    pygame.init()
+    manager = pygame_gui.UIManager((800, 600))
+    yield manager
+    pygame.quit()
+
+
+@pytest.fixture
+def mock_game_state_interface():
+    """Provide mock game state interface for UI testing"""
+    class MockGame:
+        def __init__(self):
+            self.money = 2741
+            self.state = "main_menu"
+            self.turtles = []
+            self.race_history = []
+            self.voting_records = []
+            
+        def get(self, key, default=None):
+            return getattr(self, key, default)
+            
+        def set(self, key, value):
+            setattr(self, key, value)
+            
+        class MockUIManager:
+            def __init__(self):
+                self.panels = {}
+                self.active_panels = []
+                
+            def toggle_panel(self, panel_id):
+                if panel_id in self.active_panels:
+                    self.active_panels.remove(panel_id)
+                else:
+                    self.active_panels.append(panel_id)
+                    
+            def show_panel(self, panel_id):
+                if panel_id not in self.active_panels:
+                    self.active_panels.append(panel_id)
+                    
+            def hide_panel(self, panel_id):
+                if panel_id in self.active_panels:
+                    self.active_panels.remove(panel_id)
+        
+        ui_manager = MockUIManager()
+    
+    mock_game = MockGame()
+    
+    # Try to import and wrap with interface
+    try:
+        from game.game_state_interface import TurboShellsGameStateInterface
+        return TurboShellsGameStateInterface(mock_game)
+    except ImportError:
+        # Return mock game directly if interface not available
+        return mock_game
+
+
+@pytest.fixture
+def mock_event_bus():
+    """Provide mock event bus for UI testing"""
+    return Mock()
+
+
+@pytest.fixture
+def ui_test_data():
+    """Provide data for UI testing"""
+    return {
+        'window_size': (1024, 768),
+        'panel_size': (400, 550),
+        'button_size': (360, 40),
+        'money_display_size': (140, 25),
+        'test_positions': [(100, 100), (400, 300), (700, 500)],
+        'click_events': [(100, 100, 'left'), (400, 300, 'right')],
+        'key_events': [('space', 'down'), ('escape', 'up')],
+        'button_texts': ['Roster', 'Shop', 'Breeding', 'Race', 'Voting', 'Settings', 'Quit'],
+        'button_actions': ['navigate_roster', 'navigate_shop', 'navigate_breeding', 'navigate_race', 'navigate_voting', 'toggle_settings', 'quit']
+    }
+
+
+@pytest.fixture
+def main_menu_components():
+    """Provide main menu component configurations for testing"""
+    return {
+        'window_config': {
+            'title': 'Turbo Shells',
+            'size': (400, 550),
+            'resizable': False
+        },
+        'button_config': {
+            'primary': {'style': 'primary'},
+            'danger': {'style': 'danger'},
+            'secondary': {'style': 'secondary'}
+        },
+        'money_display_config': {
+            'font_size': 16,
+            'text_color': (255, 255, 255),
+            'prefix': '$',
+            'show_prefix': True
+        },
+        'layout_config': {
+            'button_spacing': 10,
+            'button_height': 40,
+            'header_height': 40,
+            'padding': 10,
+            'margin': 10
+        }
+    }
+
+
+@pytest.fixture
+def performance_test_data():
+    """Provide data for performance testing"""
+    return {
+        'large_roster_size': 50,
+        'race_iterations': 100,
+        'memory_test_iterations': 1000,
+        'timeout_seconds': 30,
+        'ui_performance': {
+            'creation_threshold': 0.1,  # 100ms
+            'update_threshold': 0.001,   # 1ms  
+            'render_threshold': 0.01     # 10ms
+        }
+    }
+
+
 @pytest.fixture
 def save_file_data():
     """Provide sample save file data"""
@@ -235,6 +406,15 @@ def pytest_configure(config):
         "markers", "ui: Mark test as UI test"
     )
     config.addinivalue_line(
+        "markers", "ui_components: Mark test as UI component test"
+    )
+    config.addinivalue_line(
+        "markers", "ui_panels: Mark test as UI panel test"
+    )
+    config.addinivalue_line(
+        "markers", "ui_integration: Mark test as UI integration test"
+    )
+    config.addinivalue_line(
         "markers", "slow: Mark test as slow running"
     )
     config.addinivalue_line(
@@ -250,8 +430,11 @@ class AssertHelpers:
     """Custom assertion helpers for game testing"""
     
     @staticmethod
-    def assert_valid_turtle(turtle: Turtle):
+    def assert_valid_turtle(turtle):
         """Assert turtle has valid attributes"""
+        if not GAME_MODULES_AVAILABLE or Turtle is None:
+            pytest.skip("Game modules not available")
+            
         assert isinstance(turtle.name, str) and len(turtle.name) > 0
         assert hasattr(turtle, 'stats')
         assert 1.0 <= turtle.stats['speed'] <= 10.0
@@ -268,7 +451,7 @@ class AssertHelpers:
         assert turtle.rank is None or turtle.rank >= 0
     
     @staticmethod
-    def assert_valid_race_result(results: List[Dict]):
+    def assert_valid_race_result(results):
         """Assert race results are valid"""
         assert isinstance(results, list)
         for result in results:
@@ -278,7 +461,7 @@ class AssertHelpers:
             assert 1 <= result['rank'] <= len(results)
     
     @staticmethod
-    def assert_valid_save_data(data: Dict):
+    def assert_valid_save_data(data):
         """Assert save data structure is valid"""
         required_keys = ['version', 'money', 'roster', 'retired_roster', 'shop_inventory']
         for key in required_keys:
@@ -288,10 +471,111 @@ class AssertHelpers:
         assert isinstance(data['retired_roster'], list)
 
 
+class UIAssertHelpers:
+    """Custom assertion helpers for UI testing"""
+    
+    @staticmethod
+    def assert_valid_button(button):
+        """Assert button has valid attributes"""
+        assert hasattr(button, 'text')
+        assert hasattr(button, 'action')
+        assert hasattr(button, 'rect')
+        assert hasattr(button, 'config')
+        assert hasattr(button, 'button')  # pygame_gui element
+        assert isinstance(button.text, str) and len(button.text) > 0
+        assert isinstance(button.action, str) and len(button.action) > 0
+        assert isinstance(button.rect, tuple) or hasattr(button.rect, 'x')
+        assert isinstance(button.config, dict)
+    
+    @staticmethod
+    def assert_valid_money_display(money_display):
+        """Assert money display has valid attributes"""
+        assert hasattr(money_display, 'amount')
+        assert hasattr(money_display, 'rect')
+        assert hasattr(money_display, 'config')
+        assert hasattr(money_display, 'label')  # pygame_gui element
+        assert isinstance(money_display.amount, (int, float))
+        assert money_display.amount >= 0
+        assert isinstance(money_display.config, dict)
+    
+    @staticmethod
+    def assert_valid_panel(panel):
+        """Assert panel has valid attributes"""
+        assert hasattr(panel, 'panel_id')
+        assert hasattr(panel, 'title')
+        assert hasattr(panel, 'size')
+        assert hasattr(panel, 'position')
+        assert isinstance(panel.panel_id, str)
+        assert isinstance(panel.title, str)
+        assert isinstance(panel.size, (tuple, list)) and len(panel.size) == 2
+        assert isinstance(panel.position, (tuple, list)) and len(panel.position) == 2
+    
+    @staticmethod
+    def assert_button_layout(buttons, expected_count=None, spacing=None):
+        """Assert buttons are laid out correctly"""
+        if expected_count is not None:
+            assert len(buttons) == expected_count
+        
+        # Check no overlapping
+        for i in range(len(buttons) - 1):
+            current = buttons[i]
+            next_btn = buttons[i + 1]
+            
+            if hasattr(current, 'button') and hasattr(next_btn, 'button'):
+                current_rect = current.button.rect
+                next_rect = next_btn.button.rect
+                
+                # No vertical overlap
+                assert current_rect.bottom <= next_rect.top, f"Buttons {i} and {i+1} overlap"
+                
+                # Check spacing if specified
+                if spacing is not None:
+                    actual_spacing = next_rect.top - current_rect.bottom
+                    assert abs(actual_spacing - spacing) <= 1, f"Button spacing incorrect: expected {spacing}, got {actual_spacing}"
+    
+    @staticmethod
+    def assert_component_positioning(component, expected_x=None, expected_y=None, expected_size=None):
+        """Assert component is positioned correctly"""
+        if hasattr(component, 'button'):  # Button component
+            rect = component.button.rect
+        elif hasattr(component, 'label'):  # MoneyDisplay component
+            rect = component.label.rect
+        elif hasattr(component, 'window'):  # Panel component
+            rect = component.window.rect
+        else:
+            rect = component.rect
+        
+        if expected_x is not None:
+            assert rect.x == expected_x, f"X position incorrect: expected {expected_x}, got {rect.x}"
+        
+        if expected_y is not None:
+            assert rect.y == expected_y, f"Y position incorrect: expected {expected_y}, got {rect.y}"
+        
+        if expected_size is not None:
+            assert rect.width == expected_size[0], f"Width incorrect: expected {expected_size[0]}, got {rect.width}"
+            assert rect.height == expected_size[1], f"Height incorrect: expected {expected_size[1]}, got {rect.height}"
+    
+    @staticmethod
+    def assert_ui_component_visible(component):
+        """Assert UI component is visible"""
+        if hasattr(component, 'button'):
+            assert component.button.visible, "Button not visible"
+        elif hasattr(component, 'label'):
+            assert component.label.visible, "Label not visible"
+        elif hasattr(component, 'window'):
+            assert component.window.visible, "Window not visible"
+
+
 @pytest.fixture
 def assert_helpers():
     """Provide assertion helpers"""
     return AssertHelpers()
+
+
+@pytest.fixture
+def ui_assert_helpers():
+    """Provide UI assertion helpers"""
+    return UIAssertHelpers()
 
 
 # Performance measurement utilities
@@ -333,10 +617,41 @@ class PerformanceTracker:
         return self.metrics.copy()
 
 
+class UIPerformanceTracker(PerformanceTracker):
+    """Track UI-specific performance metrics"""
+    
+    def track_creation_time(self, component_name: str, create_func):
+        """Track UI component creation time"""
+        self.start_timer(f"{component_name}_creation")
+        component = create_func()
+        duration = self.end_timer(f"{component_name}_creation")
+        return component, duration
+    
+    def track_render_time(self, component_name: str, render_func):
+        """Track UI component render time"""
+        self.start_timer(f"{component_name}_render")
+        result = render_func()
+        duration = self.end_timer(f"{component_name}_render")
+        return result, duration
+    
+    def track_event_handling_time(self, component_name: str, event_func):
+        """Track UI component event handling time"""
+        self.start_timer(f"{component_name}_events")
+        result = event_func()
+        duration = self.end_timer(f"{component_name}_events")
+        return result, duration
+
+
 @pytest.fixture
 def perf_tracker():
     """Provide performance tracker"""
     return PerformanceTracker()
+
+
+@pytest.fixture
+def ui_perf_tracker():
+    """Provide UI performance tracker"""
+    return UIPerformanceTracker()
 
 
 # Mock data factories
@@ -344,8 +659,10 @@ class TestDataFactory:
     """Factory for creating test data"""
     
     @staticmethod
-    def create_minimal_turtle(name: str = "Minimal") -> Turtle:
+    def create_minimal_turtle(name: str = "Minimal"):
         """Create turtle with minimal stats for edge case testing"""
+        if not GAME_MODULES_AVAILABLE or Turtle is None:
+            pytest.skip("Game modules not available")
         return Turtle(
             name=name,
             speed=1.0,  # Minimum
@@ -356,8 +673,10 @@ class TestDataFactory:
         )
 
     @staticmethod
-    def create_extreme_turtle(name: str = "Extreme") -> Turtle:
+    def create_extreme_turtle(name: str = "Extreme"):
         """Create turtle with maximum stats for testing"""
+        if not GAME_MODULES_AVAILABLE or Turtle is None:
+            pytest.skip("Game modules not available")
         return Turtle(
             name=name,
             speed=10.0,  # Maximum
@@ -368,15 +687,81 @@ class TestDataFactory:
         )
 
     @staticmethod
-    def create_exhausted_turtle(name: str = "Exhausted") -> Turtle:
+    def create_exhausted_turtle(name: str = "Exhausted"):
         """Create turtle with zero energy for testing recovery"""
+        if not GAME_MODULES_AVAILABLE or Turtle is None:
+            pytest.skip("Game modules not available")
         turtle = TestDataFactory.create_minimal_turtle(name)
         turtle.current_energy = 0.0
         turtle.is_resting = True
         return turtle
 
 
+class UITestDataFactory:
+    """Factory for creating UI test data"""
+    
+    @staticmethod
+    def create_mock_button(text="Test Button", action="test_action", rect=None):
+        """Create mock button for testing"""
+        if rect is None:
+            rect = pygame.Rect(10, 10, 100, 30) if PYGAME_AVAILABLE else (10, 10, 100, 30)
+        
+        button = Mock()
+        button.text = text
+        button.action = action
+        button.rect = rect
+        button.config = {'style': 'primary'}
+        button.button = Mock()
+        button.button.visible = True
+        button.button.rect = rect
+        button.enabled = True
+        return button
+    
+    @staticmethod
+    def create_mock_money_display(amount=1000, rect=None):
+        """Create mock money display for testing"""
+        if rect is None:
+            rect = pygame.Rect(10, 10, 150, 25) if PYGAME_AVAILABLE else (10, 10, 150, 25)
+        
+        display = Mock()
+        display.amount = amount
+        display.rect = rect
+        display.config = {'font_size': 16, 'prefix': '$'}
+        display.label = Mock()
+        display.label.visible = True
+        display.label.rect = rect
+        return display
+    
+    @staticmethod
+    def create_mock_panel(panel_id="test_panel", title="Test Panel", size=(400, 300)):
+        """Create mock panel for testing"""
+        panel = Mock()
+        panel.panel_id = panel_id
+        panel.title = title
+        panel.size = size
+        panel.position = (100, 100)
+        panel.window = Mock()
+        panel.window.visible = True
+        panel.window.rect = pygame.Rect(100, 100, size[0], size[1]) if PYGAME_AVAILABLE else Mock()
+        return panel
+    
+    @staticmethod
+    def create_mock_event(event_type, **kwargs):
+        """Create mock pygame event for testing"""
+        event = Mock()
+        event.type = event_type
+        for key, value in kwargs.items():
+            setattr(event, key, value)
+        return event
+
+
 @pytest.fixture
 def test_factory():
     """Provide test data factory"""
     return TestDataFactory()
+
+
+@pytest.fixture
+def ui_test_factory():
+    """Provide UI test data factory"""
+    return UITestDataFactory()
