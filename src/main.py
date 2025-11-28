@@ -58,7 +58,7 @@ from ui.ui_manager import UIManager
 from ui.events.ui_event_bus import UIEventBus
 from ui.scene_controller import SceneController
 from ui.panels.settings_panel import SettingsPanel
-from ui.panels.main_menu_panel import MainMenuPanel
+from ui.panels.main_menu_panel_refactored import MainMenuPanelRefactored as MainMenuPanel
 from ui.panels.shop_panel import ShopPanel
 from ui.panels.roster_panel import RosterPanel
 from ui.panels.race_hud_panel import RaceHUDPanel
