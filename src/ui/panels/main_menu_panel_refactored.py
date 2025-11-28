@@ -57,8 +57,10 @@ class MainMenuPanelRefactored(BasePanel):
             self.position = ((screen_w - self.size[0]) // 2, (screen_h - self.size[1]) // 2)
             self.window.set_position(self.position)
             
+        # Get the window's container for proper positioning
+        self.container = self.window.get_container()
+        
         # Create reusable components
-        self._create_main_panel()
         self._create_money_display()
         self._create_menu_container()
         self._create_menu_buttons()
@@ -82,15 +84,17 @@ class MainMenuPanelRefactored(BasePanel):
         
     def _create_money_display(self) -> None:
         """Create money display in header area."""
-        # Position in header area (top-right)
+        # Position in header area (top-right) relative to container
+        width = self.size[0] - 40
         money_rect = pygame.Rect(
-            self.size[0] - 150, 8, 140, 25
+            (width - 140, 8), (140, 25)  # Top-right positioning
         )
         
         self.money_display = MoneyDisplay(
             rect=money_rect,
             amount=self.game_state.get('money', 0),
             manager=self.manager,
+            container=self.container,  # Use window container
             config={
                 'font_size': 16,
                 'text_color': (255, 255, 255)
@@ -99,22 +103,15 @@ class MainMenuPanelRefactored(BasePanel):
         
     def _create_menu_container(self) -> None:
         """Create container for menu buttons."""
-        # Position in body area below header
-        container_rect = pygame.Rect(
-            10, 50,  # Below header with padding
-            self.size[0] - 20,  # Account for padding
-            self.size[1] - 60   # Account for header and padding
-        )
+        # Position in body area below header, relative to container
+        width = self.size[0] - 40
+        y_pos = 60  # Below money display
         
-        self.menu_container = Container(
-            rect=container_rect,
-            manager=self.manager,
-            config={
-                'layout_type': 'vertical',
-                'spacing': 10,
-                'padding': 0
-            }
-        )
+        # Create buttons directly in the container instead of using a nested container
+        self.button_width = width
+        self.button_height = 40
+        self.button_spacing = 10
+        self.button_start_y = y_pos
         
     def _create_menu_buttons(self) -> None:
         """Create menu navigation buttons."""
@@ -128,11 +125,13 @@ class MainMenuPanelRefactored(BasePanel):
             ("Quit", "quit")
         ]
         
-        button_height = 40
-        button_width = self.menu_container.rect.width
+        y_pos = self.button_start_y
         
         for text, action in menu_items:
-            button_rect = pygame.Rect(0, 0, button_width, button_height)
+            button_rect = pygame.Rect(
+                (10, y_pos),  # Left margin with 10px padding
+                (self.button_width, self.button_height)
+            )
             
             # Style configuration based on action type
             config = {'style': 'primary'}
@@ -146,6 +145,7 @@ class MainMenuPanelRefactored(BasePanel):
                 text=text,
                 action=action,
                 manager=self.manager,
+                container=self.container,  # Use window container
                 config=config
             )
             
@@ -153,7 +153,7 @@ class MainMenuPanelRefactored(BasePanel):
             button.set_action_callback(self._on_button_action)
             
             self.menu_buttons.append(button)
-            self.menu_container.add_child(button)
+            y_pos += self.button_height + self.button_spacing
             
     def _initialize_quit_dialog(self) -> None:
         """Initialize quit confirmation dialog."""
@@ -238,26 +238,17 @@ class MainMenuPanelRefactored(BasePanel):
             current_money = self.game_state.get('money', 0)
             self.money_display.set_amount(current_money)
             
-        # Update container and children
-        if self.menu_container:
-            self.menu_container.update(time_delta)
+        # Buttons are automatically updated by pygame_gui
+        # No custom update needed since we use the window's container
             
     def render(self, surface: pygame.Surface) -> None:
         """Render the main menu using components."""
         if not self.visible:
             return
             
-        # Render main panel (includes header and background)
-        if self.main_panel:
-            self.main_panel.render(surface)
-            
-        # Render money display (in header area)
-        if self.money_display:
-            self.money_display.render(surface)
-            
-        # Render menu container with buttons
-        if self.menu_container:
-            self.menu_container.render(surface)
+        # Components are now rendered by pygame_gui within the window container
+        # No custom rendering needed since we use the window's container
+        pass
             
     def set_navigation_callback(self, callback: Callable[[str], None]) -> None:
         """Set navigation callback for external handling."""

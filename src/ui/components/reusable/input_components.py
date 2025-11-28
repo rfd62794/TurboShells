@@ -11,21 +11,22 @@ from ..base_component import BaseComponent
 class Button(BaseComponent):
     """Reusable button component with styling options."""
     
-    def __init__(self, rect: pygame.Rect, text: str = "", action: str = "", 
-                 manager=None, config: Optional[Dict] = None):
+    def __init__(self, rect: pygame.Rect, text: str, action: str, manager=None, container=None, config=None):
         """Initialize button component.
         
         Args:
-            rect: Component position and size
+            rect: Button position and size
             text: Button text
             action: Action identifier
             manager: pygame_gui UIManager
+            container: pygame_gui container (optional)
             config: Configuration options
         """
         super().__init__(rect, manager)
         self.text = text
         self.action = action
         self.config = config or {}
+        self.container = container
         
         # Style options
         self.style = self.config.get('style', 'primary')  # primary, secondary, danger
@@ -44,7 +45,8 @@ class Button(BaseComponent):
         self.button = pygame_gui.elements.UIButton(
             relative_rect=pygame.Rect(0, 0, self.rect.width, self.rect.height),
             text=self.text,
-            manager=self.manager
+            manager=self.manager,
+            container=self.container
         )
         
     def render(self, surface: pygame.Surface) -> None:

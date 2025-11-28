@@ -340,24 +340,26 @@ class ProgressBar(BaseComponent):
 class MoneyDisplay(BaseComponent):
     """Specialized component for displaying money with formatting."""
     
-    def __init__(self, rect: pygame.Rect, amount: int = 0, manager=None, config: Optional[Dict] = None):
+    def __init__(self, rect: pygame.Rect, amount: int = 0, manager=None, container=None, config: Optional[Dict] = None):
         """Initialize money display component.
         
         Args:
             rect: Component position and size
             amount: Money amount to display
             manager: pygame_gui UIManager
+            container: pygame_gui container (optional)
             config: Configuration options
         """
         super().__init__(rect, manager)
         self.amount = amount
+        self.container = container
         self.config = config or {}
         
         # Style options
-        self.prefix = self.config.get('prefix', '$')
-        self.show_animation = self.config.get('show_animation', False)
-        self.text_color = self.config.get('text_color', (0, 100, 0))
         self.font_size = self.config.get('font_size', 20)
+        self.text_color = self.config.get('text_color', (0, 0, 0))
+        self.prefix = self.config.get('prefix', '$')
+        self.show_prefix = self.config.get('show_prefix', True)
         
         self.label: Optional[pygame_gui.elements.UILabel] = None
         self.font = pygame.font.Font(None, self.font_size)
@@ -370,7 +372,8 @@ class MoneyDisplay(BaseComponent):
         self.label = pygame_gui.elements.UILabel(
             relative_rect=pygame.Rect(0, 0, self.rect.width, self.rect.height),
             text=self._format_amount(),
-            manager=self.manager
+            manager=self.manager,
+            container=self.container
         )
         
     def _format_amount(self) -> str:
