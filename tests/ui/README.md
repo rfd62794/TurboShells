@@ -4,7 +4,7 @@ This directory contains the organized test suite for all UI-related components a
 
 ## 📁 Test Organization
 
-```
+```text
 tests/ui/
 ├── components/          # Reusable component tests
 │   ├── test_reusable_components.py
