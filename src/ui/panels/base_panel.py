@@ -2,6 +2,8 @@ import pygame
 import pygame_gui
 from typing import Optional, Tuple, Any
 
+from settings import STATE_MENU
+
 class BasePanel:
     """Base class for UI panels using pygame_gui.
     
@@ -58,13 +60,16 @@ class BasePanel:
             
     def handle_event(self, event: pygame.event.Event) -> bool:
         """Handle base panel events. Override in subclasses."""
-        # Handle window close button (X) - transition to menu for main panels
-        if event.type == pygame_gui.UI_WINDOW_CLOSE:
-            if hasattr(self, 'game_state'):
-                # For main panels, go back to menu instead of hiding
-                if self.panel_id in ['main_menu', 'shop', 'roster', 'profile', 'breeding', 'voting']:
-                    self.game_state.set('goto_menu', True)
-                    return True
+        if event.type == pygame_gui.UI_WINDOW_CLOSE and event.ui_element == self.window:
+            if hasattr(self, 'game_state') and self.game_state:
+                if self.panel_id == 'main_menu':
+                    # Main menu handles confirmation itself
+                    return False
+
+                # Return to main menu for any secondary panel
+                self.game_state.set('state', STATE_MENU)
+                self.hide()
+                return True
             return False
         return False
             
