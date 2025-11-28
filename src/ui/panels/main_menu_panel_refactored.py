@@ -27,9 +27,9 @@ class MainMenuPanelRefactored(BasePanel):
         super().__init__("main_menu", "Turbo Shells", event_bus=event_bus)
         self.game_state = game_state_interface
         
-        # Panel dimensions (will be centered)
-        self.size = (400, 500)
-        self.position = (312, 134)  # Centered on 1024x768
+        # Panel dimensions (matching original main menu size)
+        self.size = (400, 550)  # Increased height to accommodate all elements
+        self.position = (312, 109)  # Adjusted centering for new size
         
         # Reusable components
         self.main_panel: Optional[Panel] = None
@@ -87,7 +87,7 @@ class MainMenuPanelRefactored(BasePanel):
         # Position in header area (top-right) relative to container
         width = self.size[0] - 40
         money_rect = pygame.Rect(
-            (width - 140, 8), (140, 25)  # Top-right positioning
+            (width - 140, 5), (140, 25)  # Top-right positioning, higher up
         )
         
         self.money_display = MoneyDisplay(
@@ -105,7 +105,7 @@ class MainMenuPanelRefactored(BasePanel):
         """Create container for menu buttons."""
         # Position in body area below header, relative to container
         width = self.size[0] - 40
-        y_pos = 20  # Start 20px from top of container (not 60)
+        y_pos = 40  # Start lower to make room for header/money display
         
         # Create buttons directly in the container instead of using a nested container
         self.button_width = width
@@ -208,14 +208,8 @@ class MainMenuPanelRefactored(BasePanel):
             self.quit_dialog.hide()
             
     def handle_event(self, event: pygame.event.Event) -> bool:
-        """Handle events through component delegation."""
-        # Handle window close event with confirmation
-        if event.type == pygame_gui.UI_WINDOW_CLOSE:
-            if event.ui_element == self.window:
-                self._show_quit_confirmation()
-                return True
-                
-        # Let dialog handle its events first
+        """Handle events for the main menu and components."""
+        # Handle quit dialog events first
         if self.quit_dialog and self.quit_dialog.handle_event(event):
             return True
             
@@ -223,8 +217,10 @@ class MainMenuPanelRefactored(BasePanel):
         if self.money_display and self.money_display.handle_event(event):
             return True
             
-        if self.menu_container and self.menu_container.handle_event(event):
-            return True
+        # Handle button events
+        for button in self.menu_buttons:
+            if button.handle_event(event):
+                return True
             
         # Handle any remaining events
         return super().handle_event(event)
