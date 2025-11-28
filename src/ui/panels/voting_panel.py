@@ -33,6 +33,12 @@ class VotingPanel(BasePanel):
         # Rating display mode: 'stars' or 'dropdown'
         self.rating_mode = 'stars'  # Can be toggled
         
+        # Scrolling state
+        self.scroll_offset = 0
+        self.max_scroll = 0
+        self.scrollbar_visible = False
+        self.scroll_step = 30
+        
         # Mock voting system data with more realistic categories
         self.daily_designs = self._generate_mock_designs()
         
@@ -170,15 +176,25 @@ class VotingPanel(BasePanel):
         # Create turtle display area
         self._create_turtle_display()
         
-        # Right panel - Voting controls (adjusted for more categories)
+        # Right panel - Voting controls with scrolling support
         self.voting_container = pygame_gui.elements.UIPanel(
             relative_rect=pygame.Rect((width // 2, y_pos), (width // 2 - 5, 350)),
             manager=self.manager,
             container=container
         )
         
-        # Create voting controls
+        # Create scrollable area for voting controls
+        self.scroll_container = pygame_gui.elements.UIScrollingContainer(
+            relative_rect=pygame.Rect((10, 10), (width // 2 - 25, 330)),
+            manager=self.manager,
+            container=self.voting_container
+        )
+        
+        # Create voting controls in scrollable container
         self._create_voting_controls()
+        
+        # Update scroll limits
+        self._update_scroll_limits()
         
         # Submit button (adjusted position)
         self.btn_submit = pygame_gui.elements.UIButton(
@@ -222,32 +238,40 @@ class VotingPanel(BasePanel):
         )
         
     def _create_voting_controls(self) -> None:
-        """Create rating controls for each category (stars or dropdown)."""
-        if not self.voting_container or not self.daily_designs:
+        """Create rating controls for each category (stars or dropdown) in scrollable container."""
+        if not self.scroll_container or not self.daily_designs:
             return
             
         current_design = self.daily_designs[self.current_design_index]
         categories = current_design['rating_categories']
         
-        y_pos = 10
+        # Clear existing controls
         self.rating_buttons = {}
         self.rating_dropdowns = {}
+        
+        # Calculate total content height
+        content_height = len(categories) * 90 + 50  # 90px per category + submit button space
+        
+        # Set scroll container content size
+        self.scroll_container.set_scrollable_area_dimensions((self.scroll_container.container_rect.width, content_height))
+        
+        y_pos = 10
         
         for category_name, category_data in categories.items():
             # Category label
             category_label = pygame_gui.elements.UILabel(
-                relative_rect=pygame.Rect((10, y_pos), (280, 25)),
+                relative_rect=pygame.Rect((10, y_pos), (250, 25)),
                 text=category_data['display_name'],
                 manager=self.manager,
-                container=self.voting_container
+                container=self.scroll_container
             )
             
             # Description
             desc_label = pygame_gui.elements.UILabel(
-                relative_rect=pygame.Rect((10, y_pos + 25), (280, 20)),
+                relative_rect=pygame.Rect((10, y_pos + 25), (250, 20)),
                 text=category_data['description'],
                 manager=self.manager,
-                container=self.voting_container
+                container=self.scroll_container
             )
             
             if self.rating_mode == 'stars':
@@ -258,7 +282,7 @@ class VotingPanel(BasePanel):
                         relative_rect=pygame.Rect((10 + i * 32, y_pos + 50), (28, 28)),
                         text="★",
                         manager=self.manager,
-                        container=self.voting_container,
+                        container=self.scroll_container,
                         object_id=f"#star_{category_name}_{i}"
                     )
                     star_btn.category = category_name
@@ -274,12 +298,32 @@ class VotingPanel(BasePanel):
                     starting_option='No Rating',
                     relative_rect=pygame.Rect((10, y_pos + 50), (150, 30)),
                     manager=self.manager,
-                    container=self.voting_container
+                    container=self.scroll_container
                 )
                 dropdown.category = category_name
                 self.rating_dropdowns[category_name] = dropdown
                 
             y_pos += 90  # Adjusted for larger labels
+            
+    def _update_scroll_limits(self) -> None:
+        """Update scroll limits based on content height."""
+        if not self.scroll_container or not self.daily_designs:
+            return
+            
+        current_design = self.daily_designs[self.current_design_index]
+        categories = current_design['rating_categories']
+        
+        # Calculate total content height
+        content_height = len(categories) * 90 + 50  # 90px per category + submit button space
+        available_height = self.scroll_container.rect.height
+        
+        # Set scrollable area dimensions
+        if content_height > available_height:
+            self.scroll_container.set_scrollable_area_dimensions((self.scroll_container.rect.width, content_height))
+            self.scrollbar_visible = True
+        else:
+            self.scroll_container.set_scrollable_area_dimensions((self.scroll_container.rect.width, available_height))
+            self.scrollbar_visible = False
             
     def _update_design_display(self) -> None:
         """Update the design information display with proper turtle rendering."""
@@ -430,7 +474,17 @@ class VotingPanel(BasePanel):
                 self.show_feedback = False
                 
     def handle_event(self, event: pygame.event.Event) -> bool:
-        """Handle voting panel events with support for both rating modes."""
+        """Handle voting panel events with scrolling support."""
+        # Handle mouse wheel scrolling first
+        if event.type == pygame.MOUSEWHEEL:
+            if self.scroll_container and self.scrollbar_visible:
+                # Scroll up or down based on wheel direction
+                if event.y > 0:  # Scroll up
+                    self.scroll_container.scroll_up()
+                elif event.y < 0:  # Scroll down
+                    self.scroll_container.scroll_down()
+                return True
+                
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
             # Back button
             if event.ui_element == self.btn_back:
@@ -505,6 +559,7 @@ class VotingPanel(BasePanel):
             
         # Recreate voting controls with new mode
         self._create_voting_controls()
+        self._update_scroll_limits()
         self._update_design_display()
         
     def _submit_ratings(self) -> None:
