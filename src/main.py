@@ -504,8 +504,12 @@ class TurboShellsGame:
 
     def _on_ui_navigate(self, payload):
         target_state = payload.get("state")
+        print(f"[TurboShellsGame] Received ui:navigate to '{target_state}', current state: '{self.state}'")
         if target_state and target_state != self.state:
+            print(f"[TurboShellsGame] Updating state from '{self.state}' to '{target_state}'")
             self.state = target_state
+        else:
+            print(f"[TurboShellsGame] Ignoring navigate event - target_state: {target_state}, current state: '{self.state}'")
 
     def auto_save(self, trigger="manual"):
         """Auto-save game state using GameStateManager"""

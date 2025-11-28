@@ -128,16 +128,17 @@ class UIManager:
             self._active_panels.remove(panel_id)
             
     def show_panel(self, panel_id: str) -> None:
-        """Show a registered panel.
-        
-        Args:
-            panel_id: ID of panel to show
-        """
-        if panel_id in self._panels and panel_id not in self._active_panels:
-            self._active_panels.append(panel_id)
-            panel = self._panels[panel_id]
-            if hasattr(panel, 'show'):
-                panel.show()
+        """Show a specific panel by ID."""
+        panel = self._panels.get(panel_id)
+        if not panel:
+            print(f"[UIManager] show_panel: Panel '{panel_id}' not found")
+            return
+        print(f"[UIManager] show_panel: Showing panel '{panel_id}'")
+        if not panel.visible:
+            panel.show()
+        else:
+            print(f"[UIManager] show_panel: Panel '{panel_id}' already visible")
+            
                 
     def hide_panel(self, panel_id: str) -> None:
         """Hide a registered panel.
@@ -145,11 +146,17 @@ class UIManager:
         Args:
             panel_id: ID of panel to hide
         """
+        panel = self._panels.get(panel_id)
+        if not panel:
+            print(f"[UIManager] hide_panel: Panel '{panel_id}' not found")
+            return
+        print(f"[UIManager] hide_panel: Hiding panel '{panel_id}'")
         if panel_id in self._active_panels:
             self._active_panels.remove(panel_id)
-            panel = self._panels[panel_id]
-            if hasattr(panel, 'hide'):
-                panel.hide()
+        if hasattr(panel, 'hide'):
+            panel.hide()
+        else:
+            print(f"[UIManager] hide_panel: Panel '{panel_id}' has no hide method")
                 
     def toggle_panel(self, panel_id: str) -> None:
         """Toggle visibility of a panel.

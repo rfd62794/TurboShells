@@ -58,12 +58,18 @@ class BasePanel:
         self.visible = False
             
     def handle_event(self, event: pygame.event.Event) -> bool:
-        """Handle base panel events. Override in subclasses."""
-        if event.type == pygame_gui.UI_WINDOW_CLOSE and event.ui_element == self.window:
-            if self.event_bus:
-                self.event_bus.emit("ui:panel_closed", {"panel_id": self.panel_id})
+        """Handle pygame events for this panel."""
+        if event.type == pygame_gui.UI_WINDOW_CLOSE:
+            if event.ui_element == self.window:
+                print(f"[BasePanel] Window close event for panel '{self.panel_id}'")
+                self.hide()
+                # Emit panel closed event for navigation
+                if self.event_bus:
+                    print(f"[BasePanel] Emitting ui:panel_closed for '{self.panel_id}'")
+                    self.event_bus.emit("ui:panel_closed", {"panel_id": self.panel_id})
+                else:
+                    print(f"[BasePanel] No event_bus available for panel '{self.panel_id}'")
                 return True
-            return False
         return False
             
     def toggle(self) -> None:
