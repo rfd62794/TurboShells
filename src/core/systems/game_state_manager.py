@@ -541,6 +541,7 @@ class GameStateManager:
                             "swim": turtle.swim,
                             "climb": turtle.climb,
                             "age": getattr(turtle, 'age', 0),  # Include turtle age
+                            "visual_genetics": getattr(turtle, 'visual_genetics', {}),  # CRITICAL: Save visual genetics
                         }
                         if turtle
                         else None
@@ -556,6 +557,7 @@ class GameStateManager:
                         "swim": turtle.swim,
                         "climb": turtle.climb,
                         "age": getattr(turtle, 'age', 0),  # Include turtle age
+                        "visual_genetics": getattr(turtle, 'visual_genetics', {}),  # CRITICAL: Save visual genetics
                     }
                     for turtle in retired_roster
                 ],
@@ -597,6 +599,11 @@ class GameStateManager:
             active_roster = []
             for turtle_data in roster_data.get("active_roster", []):
                 if turtle_data:
+                    # Extract visual genetics, but if empty, let Turtle generate them
+                    visual_genetics = turtle_data.get("visual_genetics", {})
+                    if not visual_genetics:  # Empty or None
+                        visual_genetics = None  # Let Turtle generate new genetics
+                    
                     turtle = Turtle(
                         name=turtle_data["name"],
                         speed=turtle_data["speed"],
@@ -604,6 +611,7 @@ class GameStateManager:
                         recovery=turtle_data["recovery"],
                         swim=turtle_data["swim"],
                         climb=turtle_data["climb"],
+                        genetics=visual_genetics,  # Pass None if empty to trigger generation
                     )
                     # Restore turtle age
                     turtle.age = turtle_data.get("age", 0)
@@ -613,6 +621,11 @@ class GameStateManager:
 
             retired_roster = []
             for turtle_data in roster_data.get("retired_roster", []):
+                # Extract visual genetics, but if empty, let Turtle generate them
+                visual_genetics = turtle_data.get("visual_genetics", {})
+                if not visual_genetics:  # Empty or None
+                    visual_genetics = None  # Let Turtle generate new genetics
+                
                 turtle = Turtle(
                     name=turtle_data["name"],
                     speed=turtle_data["speed"],
@@ -620,6 +633,7 @@ class GameStateManager:
                     recovery=turtle_data["recovery"],
                     swim=turtle_data["swim"],
                     climb=turtle_data["climb"],
+                    genetics=visual_genetics,  # Pass None if empty to trigger generation
                 )
                 # Restore turtle age and mark as retired
                 turtle.age = turtle_data.get("age", 0)

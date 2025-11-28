@@ -26,6 +26,10 @@ class PygameTurtleRenderer:
         try:
             # Get genetics data from turtle
             genetics = getattr(turtle, "visual_genetics", {})
+            
+            # Fix color format: convert lists to tuples for renderer compatibility
+            genetics = self._fix_color_format(genetics)
+            
             turtle_name = getattr(turtle, 'name', 'unknown')
             print(f"[DEBUG] PygameTurtleRenderer: Genetics for {turtle_name}: {genetics}")
 
@@ -67,6 +71,24 @@ class PygameTurtleRenderer:
             print(f"Error rendering turtle with PIL converter: {e}")
             # Fallback to simple pygame rendering
             return self._render_fallback(turtle, size)
+
+    def _fix_color_format(self, genetics: dict) -> dict:
+        """Convert color lists to tuples for renderer compatibility"""
+        if not genetics:
+            return genetics
+            
+        fixed_genetics = genetics.copy()
+        color_keys = [
+            'shell_base_color', 'shell_pattern_color', 'pattern_color',
+            'body_base_color', 'body_pattern_color', 'head_color',
+            'leg_color', 'eye_color'
+        ]
+        
+        for key in color_keys:
+            if key in fixed_genetics and isinstance(fixed_genetics[key], list):
+                fixed_genetics[key] = tuple(fixed_genetics[key])
+                
+        return fixed_genetics
 
     def _patch_direct_renderer(self, seed: int):
         """Patch the DirectTurtleRenderer to use deterministic hash"""
