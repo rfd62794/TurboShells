@@ -9,6 +9,7 @@ from .container import Container, ScrollableContainer
 from .rating_component import StarRating, DropdownRating, RatingCategory
 from .turtle_display import TurtleDisplay, DesignDisplay
 from .panel_component import PanelComponent, VotingPanelComponent
+from .menu_components import MoneyDisplay, MenuButton, NavigationMenu, MainMenuComponent
 
 # Legacy components (to be refactored)
 from .button import Button, ToggleButton
@@ -26,6 +27,10 @@ __all__ = [
     'DesignDisplay',
     'PanelComponent',
     'VotingPanelComponent',
+    'MoneyDisplay',
+    'MenuButton',
+    'NavigationMenu',
+    'MainMenuComponent',
     
     # Legacy components
     'Button',
