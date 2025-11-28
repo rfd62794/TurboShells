@@ -172,16 +172,23 @@ class MainMenuPanel(BasePanel):
         self.confirmation_dialog = pygame_gui.elements.UIWindow(
             rect=dialog_rect,
             manager=self.manager,
-            window_title='Quit Game',
             draggable=False,
             resizable=False
         )
         
         container = self.confirmation_dialog.get_container()
         
+        # Add a title label
+        pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect((10, 5), (280, 20)),
+            text='Quit Game',
+            manager=self.manager,
+            container=container
+        )
+        
         # Confirmation message
         pygame_gui.elements.UILabel(
-            relative_rect=pygame.Rect((10, 10), (280, 40)),
+            relative_rect=pygame.Rect((10, 25), (280, 30)),
             text='Are you sure you want to quit?',
             manager=self.manager,
             container=container
@@ -189,7 +196,7 @@ class MainMenuPanel(BasePanel):
         
         # Yes button
         self.confirm_quit_yes = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((50, 60), (80, 30)),
+            relative_rect=pygame.Rect((50, 65), (80, 30)),
             text='Yes',
             manager=self.manager,
             container=container
@@ -197,7 +204,7 @@ class MainMenuPanel(BasePanel):
         
         # No button
         self.confirm_quit_no = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((170, 60), (80, 30)),
+            relative_rect=pygame.Rect((170, 65), (80, 30)),
             text='No',
             manager=self.manager,
             container=container
