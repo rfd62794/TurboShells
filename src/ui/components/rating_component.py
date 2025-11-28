@@ -4,7 +4,7 @@ Rating components for voting interfaces.
 
 import pygame
 import pygame_gui
-from typing import Optional, Callable, Dict, Any
+from typing import Optional, Callable, Dict, Any, Tuple
 from .base_component import BaseComponent
 
 
