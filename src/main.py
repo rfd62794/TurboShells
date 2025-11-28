@@ -412,9 +412,14 @@ class TurboShellsGame:
         """Toggle the visibility of the settings panel via UI manager."""
         if not hasattr(self, "settings_panel") or not self.settings_panel:
             return
+        if not hasattr(self, "ui_manager") or not self.ui_manager:
+            return
+
         if self.settings_panel.visible:
+            self.ui_manager.hide_panel("settings")
             self.settings_panel.hide()
         else:
+            self.ui_manager.show_panel("settings")
             self.settings_panel.show()
 
     def auto_save(self, trigger="manual"):
