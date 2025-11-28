@@ -4,7 +4,7 @@ This directory contains diagnostic and verification tools for TurboShells develo
 
 ## 📁 Directory Structure
 
-```
+```text
 tools/diagnostics/
 ├── README.md                    # This file
 ├── diagnose_race_system.py     # Race system testing
@@ -23,30 +23,35 @@ tools/diagnostics/
 ## 🚀 Usage
 
 ### Race System Diagnostics
+
 ```bash
 cd tools/diagnostics
 python diagnose_race_system.py
 ```
 
 ### Rendering Diagnostics
+
 ```bash
 cd tools/diagnostics
 python diagnose_rendering.py
 ```
 
 ### State Constants Validation
+
 ```bash
 cd tools/diagnostics
 python diagnose_state_constants.py
 ```
 
 ### UI Panel Verification
+
 ```bash
 cd tools/diagnostics
 python verify_ui_panels.py
 ```
 
 ### pygame_gui Integration Testing
+
 ```bash
 cd tools/diagnostics
 python test_pygame_gui_integration.py
