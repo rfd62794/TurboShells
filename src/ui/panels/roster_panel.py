@@ -33,8 +33,10 @@ class RosterPanel(BasePanel):
         self.game_state.observe('select_racer_mode', self._on_mode_changed)
         
     def _create_window(self) -> None:
+        print(f"[RosterPanel] _create_window() called")
         super()._create_window()
         if not self.window:
+            print(f"[RosterPanel] _create_window() failed - no window")
             return
             
         if self.manager and self.manager.window_resolution:
@@ -45,6 +47,10 @@ class RosterPanel(BasePanel):
         container = self.window.get_container()
         width = self.size[0] - 40
         
+        # Clear any existing UI elements
+        print(f"[RosterPanel] Clearing existing UI elements")
+        self._clear_ui_elements()
+        
         # Header
         top_bar = pygame_gui.elements.UIPanel(
             relative_rect=pygame.Rect((0, 0), (width + 40, 60)),
@@ -52,6 +58,7 @@ class RosterPanel(BasePanel):
             container=container,
             object_id="#roster_header"
         )
+        print(f"[RosterPanel] Created top_bar panel")
         
         self.lbl_money = pygame_gui.elements.UILabel(
             relative_rect=pygame.Rect((20, 15), (200, 30)),
@@ -59,6 +66,7 @@ class RosterPanel(BasePanel):
             manager=self.manager,
             container=top_bar
         )
+        print(f"[RosterPanel] Created money label")
         
         self.btn_menu = pygame_gui.elements.UIButton(
             relative_rect=pygame.Rect((width - 100, 10), (100, 40)),
@@ -66,6 +74,7 @@ class RosterPanel(BasePanel):
             manager=self.manager,
             container=top_bar
         )
+        print(f"[RosterPanel] Created menu button")
         
         # View Toggles (Active / Retired)
         self.btn_view_active = pygame_gui.elements.UIButton(
@@ -112,6 +121,7 @@ class RosterPanel(BasePanel):
             container=container,
             object_id="#roster_slots_container"
         )
+        print(f"[RosterPanel] Created slots container")
         
         # Start Race Button (for select mode)
         # MOVED TO TOP for visibility check
@@ -123,9 +133,11 @@ class RosterPanel(BasePanel):
             visible=False,
             object_id="#btn_start_race"
         )
+        print(f"[RosterPanel] Created start race button")
         
         self._populate_slots()
         self._update_visibility()
+        print(f"[RosterPanel] Window creation completed")
         
     def _populate_slots(self):
         if not self.container_slots:
@@ -398,6 +410,24 @@ class RosterPanel(BasePanel):
                     else:
                         print(f"[DEBUG] Button Object ID: {obj_id}")
         return False
+
+    def _clear_ui_elements(self):
+        """Clear all existing UI elements to prevent duplicates."""
+        print(f"[RosterPanel] _clear_ui_elements() called")
+        
+        # Clear all UI element references
+        self.lbl_money = None
+        self.btn_menu = None
+        self.btn_view_active = None
+        self.btn_view_retired = None
+        self.btn_bet_0 = None
+        self.btn_bet_5 = None
+        self.btn_bet_10 = None
+        self.btn_start_race = None
+        self.container_slots = None
+        self.slots = []
+        
+        print(f"[RosterPanel] UI element references cleared")
 
     def _navigate(self, state: str) -> None:
         if self.event_bus:
