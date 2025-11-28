@@ -34,36 +34,16 @@ class SecurityManager:
 
     def _generate_encryption_key(self) -> bytes:
         """Generate encryption key from secure sources"""
-        # Try environment variables first (most secure for production)
-        password = os.getenv('TURBO_SHELLS_ENCRYPTION_PASSWORD')
-        salt = os.getenv('TURBO_SHELLS_ENCRYPTION_SALT')
-        
-        # Fallback to secure defaults for development
-        if not password:
-            # Generate a unique key per machine/user combination
-            machine_id = os.environ.get('COMPUTERNAME', os.environ.get('HOSTNAME', 'localhost'))
-            user_id = os.environ.get('USERNAME', os.environ.get('USER', 'user'))
-            password = f"turbo_shells_{machine_id}_{user_id}".encode('utf-8')
-        else:
-            password = password.encode('utf-8')
-            
-        if not salt:
-            # Generate a persistent salt for this installation
-            salt_file = os.path.join(os.path.dirname(__file__), '.turbo_shells_salt')
-            try:
-                if os.path.exists(salt_file):
-                    with open(salt_file, 'rb') as f:
-                        salt = f.read()
-                else:
-                    salt = secrets.token_bytes(32)
-                    with open(salt_file, 'wb') as f:
-                        f.write(salt)
-            except (OSError, IOError):
-                # Ultimate fallback to a deterministic but unique salt
-                machine_id = os.environ.get('COMPUTERNAME', os.environ.get('HOSTNAME', 'localhost'))
-                salt = f"turbo_shells_salt_{machine_id}".encode('utf-8')
-        else:
-            salt = salt.encode('utf-8')
+        password = self._load_secret(
+            env_var="TURBO_SHELLS_ENCRYPTION_PASSWORD",
+            config_key="encryption_password",
+            fallback_factory=self._derive_machine_password,
+        )
+        salt = self._load_secret(
+            env_var="TURBO_SHELLS_ENCRYPTION_SALT",
+            config_key="encryption_salt",
+            fallback_factory=self._load_or_generate_local_salt,
+        )
 
         kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(),
@@ -73,6 +53,58 @@ class SecurityManager:
         )
         key = base64.urlsafe_b64encode(kdf.derive(password))
         return key
+
+    def _load_secret(
+        self,
+        *,
+        env_var: str,
+        config_key: str,
+        fallback_factory,
+    ) -> bytes:
+        """Load a secret from env, optional config file, or fallback factory."""
+        secret = os.getenv(env_var)
+        if secret:
+            return secret.encode("utf-8")
+
+        config_path = os.getenv("TURBO_SHELLS_SECURITY_CONFIG")
+        if config_path and os.path.exists(config_path):
+            try:
+                with open(config_path, "r", encoding="utf-8") as config_file:
+                    config_data = json.load(config_file)
+                config_secret = config_data.get(config_key)
+                if config_secret:
+                    return config_secret.encode("utf-8")
+            except (OSError, json.JSONDecodeError):
+                # Fall back to computed secret if config is inaccessible
+                pass
+
+        return fallback_factory()
+
+    def _derive_machine_password(self) -> bytes:
+        """Create a per-machine password for local development."""
+        machine_id = os.environ.get(
+            "COMPUTERNAME", os.environ.get("HOSTNAME", "localhost")
+        )
+        user_id = os.environ.get("USERNAME", os.environ.get("USER", "user"))
+        return f"turbo_shells_{machine_id}_{user_id}".encode("utf-8")
+
+    def _load_or_generate_local_salt(self) -> bytes:
+        """Persist a salt on disk for local usage when none is provided."""
+        salt_file = os.path.join(os.path.dirname(__file__), ".turbo_shells_salt")
+        try:
+            if os.path.exists(salt_file):
+                with open(salt_file, "rb") as f:
+                    return f.read()
+
+            salt = secrets.token_bytes(32)
+            with open(salt_file, "wb") as f:
+                f.write(salt)
+            return salt
+        except (OSError, IOError):
+            machine_id = os.environ.get(
+                "COMPUTERNAME", os.environ.get("HOSTNAME", "localhost")
+            )
+            return f"turbo_shells_salt_{machine_id}".encode("utf-8")
 
     def calculate_checksum(self, data: Dict[str, Any]) -> str:
         """Calculate SHA-256 checksum for data"""
