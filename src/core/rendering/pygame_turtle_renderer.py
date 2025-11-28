@@ -26,6 +26,8 @@ class PygameTurtleRenderer:
         try:
             # Get genetics data from turtle
             genetics = getattr(turtle, "visual_genetics", {})
+            turtle_name = getattr(turtle, 'name', 'unknown')
+            print(f"[DEBUG] PygameTurtleRenderer: Genetics for {turtle_name}: {genetics}")
 
             # Create deterministic seed from turtle data for consistent appearance
             turtle_name = getattr(turtle, 'name', 'unknown')
