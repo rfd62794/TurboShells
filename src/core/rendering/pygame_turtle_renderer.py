@@ -40,6 +40,9 @@ class PygameTurtleRenderer:
             seed = int(seed_hash[:8], 16)  # Use first 8 hex chars as integer
             print(f"[DEBUG] PygameTurtleRenderer: Seed for {turtle_name}: {seed} (from '{seed_data}')")
             
+            # CRITICAL: Patch the DirectTurtleRenderer to use deterministic hash
+            self._patch_direct_renderer(seed)
+            
             # Set random seed for deterministic rendering
             import random
             original_seed = random.getstate()
@@ -62,6 +65,27 @@ class PygameTurtleRenderer:
             print(f"Error rendering turtle with PIL converter: {e}")
             # Fallback to simple pygame rendering
             return self._render_fallback(turtle, size)
+
+    def _patch_direct_renderer(self, seed: int):
+        """Patch the DirectTurtleRenderer to use deterministic hash"""
+        import hashlib
+        
+        def deterministic_hash(obj_str: str) -> int:
+            # Use MD5 hash instead of Python's randomized hash()
+            hash_str = hashlib.md5(obj_str.encode()).hexdigest()
+            return int(hash_str[:8], 16)
+        
+        # Monkey patch the DirectTurtleRenderer's hash usage
+        direct_renderer = self.direct_renderer
+        
+        # Store original methods if not already stored
+        if not hasattr(direct_renderer, '_original_hash'):
+            direct_renderer._original_hash = deterministic_hash
+            direct_renderer._deterministic_hash = deterministic_hash
+            
+        # Patch the hash function in the renderer
+        direct_renderer._deterministic_hash = deterministic_hash
+        direct_renderer._seed = seed
 
     def _render_to_pil(self, genetics: Dict[str, Any], size: int) -> Image.Image:
         """Use existing renderer to create PIL Image"""

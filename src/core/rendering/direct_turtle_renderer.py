@@ -109,7 +109,11 @@ class DirectTurtleRenderer:
                 style = str(raw_pattern).lower()
 
         if style not in styles:
-            style_idx = hash(str(self.current_genetics)) % len(styles)
+            # Use deterministic hash if available, otherwise fall back to built-in
+            if hasattr(self, '_deterministic_hash'):
+                style_idx = self._deterministic_hash(str(self.current_genetics)) % len(styles)
+            else:
+                style_idx = hash(str(self.current_genetics)) % len(styles)
             style = styles[style_idx]
         return style
 
@@ -124,7 +128,11 @@ class DirectTurtleRenderer:
         # Store current genetics for helper functions
         self.current_genetics = genetics
 
-        gene_seed = hash(str(genetics))
+        # Use deterministic hash if available, otherwise fall back to built-in
+        if hasattr(self, '_deterministic_hash'):
+            gene_seed = self._deterministic_hash(str(genetics))
+        else:
+            gene_seed = hash(str(genetics))
         random.seed(gene_seed)
 
         # --- Extract Genes ---
@@ -209,7 +217,11 @@ class DirectTurtleRenderer:
                 break
 
         if not style or style not in styles:
-            style_idx = hash(str(self.current_genetics)) % len(styles)
+            # Use deterministic hash if available, otherwise fall back to built-in
+            if hasattr(self, '_deterministic_hash'):
+                style_idx = self._deterministic_hash(str(self.current_genetics)) % len(styles)
+            else:
+                style_idx = hash(str(self.current_genetics)) % len(styles)
             style = styles[style_idx]
 
         # 2. Determine Leg Length
@@ -389,7 +401,11 @@ class DirectTurtleRenderer:
 
     def _draw_tail(self, draw, cx, cy, scale, color, outline):
         # Add slight variance to tail based on seed
-        rng = random.Random(hash(str(self.current_genetics)) + 101)
+        if hasattr(self, '_deterministic_hash'):
+            seed = self._deterministic_hash(str(self.current_genetics)) + 101
+        else:
+            seed = hash(str(self.current_genetics)) + 101
+        rng = random.Random(seed)
         tail_len = int((25 + rng.randint(-5, 8)) * scale)  # Vary length
         tip_curve = int(rng.randint(-4, 4) * scale)  # Slight curve left/right
         base_w = int(6 * scale)
@@ -535,7 +551,11 @@ class DirectTurtleRenderer:
         self, genetics: Dict[str, Any], size: Optional[int] = None
     ) -> Optional[ImageTk.PhotoImage]:
         img_size = size or 200
-        cache_key = f"turtle_{hash(str(genetics))}_{img_size}"
+        # Use deterministic hash if available, otherwise fall back to built-in
+        if hasattr(self, '_deterministic_hash'):
+            cache_key = f"turtle_{self._deterministic_hash(str(genetics))}_{img_size}"
+        else:
+            cache_key = f"turtle_{hash(str(genetics))}_{img_size}"
 
         if cache_key in self.cache:
             self.cache_hits += 1
