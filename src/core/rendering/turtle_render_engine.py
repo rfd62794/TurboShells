@@ -38,13 +38,16 @@ class TurtleRenderEngine:
         try:
             # Generate cache key based on turtle attributes
             cache_key = self._generate_cache_key(turtle, size)
+            print(f"[DEBUG] TurtleRenderEngine: Cache key for {getattr(turtle, 'name', 'Unknown')}: {cache_key}")
             
             # Check cache first
             if not force_regenerate and cache_key in self._sprite_cache:
                 sprite = self._sprite_cache[cache_key]
                 self._cache_hits += 1
+                print(f"[DEBUG] TurtleRenderEngine: Cache HIT for {getattr(turtle, 'name', 'Unknown')}")
             else:
                 # Generate new sprite
+                print(f"[DEBUG] TurtleRenderEngine: Cache MISS for {getattr(turtle, 'name', 'Unknown')}, generating new sprite")
                 sprite = self._generate_turtle_sprite(turtle, size)
                 if sprite:
                     self._sprite_cache[cache_key] = sprite

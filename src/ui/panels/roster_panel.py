@@ -215,6 +215,11 @@ class RosterPanel(BasePanel):
         self._update_slot_content()
 
     def _update_slot_content(self):
+        print(f"[DEBUG] RosterPanel _update_slot_content() called")
+        if not self.slots:
+            print(f"[DEBUG] RosterPanel _update_slot_content() - no slots, returning")
+            return
+            
         show_retired = self.game_state.get('show_retired_view', False)
         if show_retired:
             turtles = list(self.game_state.get('retired_roster', []))[:3]
