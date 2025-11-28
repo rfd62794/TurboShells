@@ -61,11 +61,30 @@ class BasePanel:
         """Handle pygame events for this panel."""
         if event.type == pygame_gui.UI_WINDOW_CLOSE:
             if event.ui_element == self.window:
+                print(f"[BasePanel] X button clicked for panel '{self.panel_id}'")
+                print(f"[BasePanel] Before hide - window exists: {self.window is not None}, visible: {self.visible}")
+                # Prevent window destruction by just hiding it instead of killing it
                 self.hide()
+                print(f"[BasePanel] After hide - window exists: {self.window is not None}, visible: {self.visible}")
                 # Emit panel closed event for navigation
                 if self.event_bus:
+                    print(f"[BasePanel] Emitting ui:panel_closed for '{self.panel_id}'")
                     self.event_bus.emit("ui:panel_closed", {"panel_id": self.panel_id})
+                else:
+                    print(f"[BasePanel] No event_bus available for panel '{self.panel_id}'")
+                # Return True to prevent the default window destruction behavior
                 return True
+        elif event.type == pygame_gui.UI_BUTTON_PRESSED:
+            # Check if this is the close button within our window
+            if hasattr(event, 'ui_element') and event.ui_element:
+                # Look for close button by object_id or class
+                if (hasattr(event.ui_element, 'object_id') and 
+                    event.ui_element.object_id == f"#{self.panel_id}_window.close_button"):
+                    print(f"[BasePanel] Close button pressed for panel '{self.panel_id}'")
+                    self.hide()
+                    if self.event_bus:
+                        self.event_bus.emit("ui:panel_closed", {"panel_id": self.panel_id})
+                    return True
         return False
             
     def toggle(self) -> None:

@@ -59,7 +59,16 @@ class UIManager:
         """
         if not self._initialized or not self.manager:
             return False
-            
+        
+        # Intercept window close events to prevent panel destruction
+        if event.type == pygame_gui.UI_WINDOW_CLOSE:
+            for panel_id, panel in self._panels.items():
+                if hasattr(panel, 'window') and panel.window == event.ui_element:
+                    print(f"[UIManager] Intercepting close event for panel '{panel_id}'")
+                    # Let the panel handle it with hide instead of destroy
+                    panel.handle_event(event)
+                    return True  # Consume the event to prevent default destruction
+        
         # Pass event to pygame_gui
         consumed = self.manager.process_events(event)
         return consumed
