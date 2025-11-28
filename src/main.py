@@ -480,8 +480,6 @@ class TurboShellsGame:
         self.game_state_interface.set('state', STATE_MENU)
         if self.main_menu_panel and not self.main_menu_panel.visible:
             self.ui_manager.show_panel('main_menu')
-        if hasattr(panel, 'panel_id'):
-            self.ui_event_bus.emit("ui:panel_closed", {"panel_id": panel.panel_id})
         return True
 
     def _get_panel_by_window(self, ui_element):
