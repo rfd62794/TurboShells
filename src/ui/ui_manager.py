@@ -138,6 +138,11 @@ class UIManager:
             
     def show_panel(self, panel_id: str) -> None:
         """Show a specific panel by ID."""
+        import traceback
+        print(f"[UIManager] show_panel called for '{panel_id}' - Full call stack:")
+        for line in traceback.format_stack():
+            print(f"    {line.strip()}")
+            
         panel = self._panels.get(panel_id)
         if not panel:
             print(f"[UIManager] show_panel: Panel '{panel_id}' not found")

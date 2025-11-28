@@ -487,27 +487,17 @@ class TurboShellsGame:
         pygame.event.post(pygame.event.Event(pygame.QUIT))
 
     def _handle_panel_close_event(self, ui_element) -> bool:
-        """Handle UI window close events by returning to the main menu."""
-        # If a child element (like the close button) triggered the event,
-        # try to resolve its parent window.
-        if hasattr(ui_element, "ui_window") and ui_element.ui_window:
-            ui_element = ui_element.ui_window
+        """Handle panel close events from pygame_gui."""
         panel = self._get_panel_by_window(ui_element)
         if not panel:
             return False
         if panel is self.main_menu_panel:
-            self.show_exit_confirmation()
-            panel.show()
+            # Let the main menu panel handle its own close confirmation
+            # Don't recreate the window - let the panel's dialog system handle it
             return True
         if hasattr(self, 'ui_manager') and self.ui_manager:
             self.ui_manager.hide_panel(getattr(panel, 'panel_id', ''))
         panel.hide()
-        # Return to main menu for consistency
-        self.game_state_interface.set('state', STATE_MENU)
-        if self.main_menu_panel and not self.main_menu_panel.visible:
-            self.ui_manager.show_panel('main_menu')
-        if hasattr(self, "ui_event_bus"):
-            self.ui_event_bus.emit("ui:navigate", {"state": STATE_MENU})
         return True
 
     def _get_panel_by_window(self, ui_element):
