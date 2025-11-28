@@ -43,7 +43,7 @@ class Button(BaseComponent):
     def _create_button(self) -> None:
         """Create the pygame_gui button."""
         self.button = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect(0, 0, self.rect.width, self.rect.height),
+            relative_rect=self.rect,  # Use the component's rect directly
             text=self.text,
             manager=self.manager,
             container=self.container

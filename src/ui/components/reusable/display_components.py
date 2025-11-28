@@ -370,7 +370,7 @@ class MoneyDisplay(BaseComponent):
     def _create_label(self) -> None:
         """Create the money label."""
         self.label = pygame_gui.elements.UILabel(
-            relative_rect=pygame.Rect(0, 0, self.rect.width, self.rect.height),
+            relative_rect=self.rect,  # Use the component's rect directly
             text=self._format_amount(),
             manager=self.manager,
             container=self.container
