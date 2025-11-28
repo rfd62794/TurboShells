@@ -376,7 +376,9 @@ class TurboShellsGame:
             self.ui_manager.update(time_delta)
             
             # Ensure correct panel is visible for the current state
-            self.scene_controller.goto_state(self.state)
+            if not hasattr(self, '_last_scene_state') or self._last_scene_state != self.state:
+                self.scene_controller.goto_state(self.state)
+                self._last_scene_state = self.state
             
             # Update settings manager (legacy)
             # self.settings_manager.update(1.0 / FPS)

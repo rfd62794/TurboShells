@@ -41,21 +41,34 @@ class BasePanel:
         
     def show(self) -> None:
         """Show the panel."""
+        print(f"[BasePanel] show() called for '{self.panel_id}', manager: {self.manager is not None}, window: {self.window is not None}, visible: {self.visible}")
         if not self.manager:
+            print(f"[BasePanel] No manager for '{self.panel_id}'")
             return
             
         if not self.window:
+            print(f"[BasePanel] Creating window for '{self.panel_id}'")
             self._create_window()
+        else:
+            print(f"[BasePanel] Window already exists for '{self.panel_id}'")
             
         if self.window:
             self.window.show()
             self.visible = True
+            print(f"[BasePanel] Window shown for '{self.panel_id}', visible: {self.visible}")
+        else:
+            print(f"[BasePanel] Failed to create/show window for '{self.panel_id}'")
             
     def hide(self) -> None:
         """Hide the panel."""
+        print(f"[BasePanel] hide() called for '{self.panel_id}', window: {self.window is not None}, visible: {self.visible}")
+        if not self.visible:
+            print(f"[BasePanel] Panel '{self.panel_id}' already hidden, skipping")
+            return
         if self.window:
             self.window.hide()
         self.visible = False
+        print(f"[BasePanel] Panel '{self.panel_id}' hidden, visible: {self.visible}")
             
     def handle_event(self, event: pygame.event.Event) -> bool:
         """Handle pygame events for this panel."""
