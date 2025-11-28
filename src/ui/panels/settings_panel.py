@@ -166,6 +166,28 @@ class SettingsPanel(BasePanel):
             container=container
         )
 
+    def show(self) -> None:
+        """Show the settings panel and hide main menu."""
+        # Hide main menu first
+        if hasattr(self.game_state.game, 'ui_manager'):
+            ui_manager = self.game_state.game.ui_manager
+            if hasattr(ui_manager, 'hide_panel'):
+                ui_manager.hide_panel('main_menu')
+        
+        # Show settings panel
+        super().show()
+
+    def hide(self) -> None:
+        """Hide the settings panel and restore main menu."""
+        # Hide settings panel
+        super().hide()
+        
+        # Show main menu again
+        if hasattr(self.game_state.game, 'ui_manager'):
+            ui_manager = self.game_state.game.ui_manager
+            if hasattr(ui_manager, 'show_panel'):
+                ui_manager.show_panel('main_menu')
+
     def update(self, time_delta: float) -> None:
         """Update panel logic."""
         super().update(time_delta)

@@ -109,6 +109,16 @@ class MainMenuPanel(BasePanel):
         )
         
     def handle_event(self, event: pygame.event.Event) -> bool:
+        # Handle window close event with confirmation
+        if event.type == pygame_gui.UI_WINDOW_CLOSE:
+            if event.ui_element == self.window:
+                print(f"[MainMenuPanel] X button clicked - showing confirmation")
+                self._show_quit_confirmation()
+                return True  # Prevent default window destruction
+            elif hasattr(self, 'confirmation_dialog') and event.ui_element == self.confirmation_dialog:
+                self._hide_quit_confirmation()
+                return True
+                
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
             if event.ui_element == self.btn_roster:
                 self._navigate(STATE_ROSTER)
@@ -134,8 +144,16 @@ class MainMenuPanel(BasePanel):
                     self.game_state.game.ui_manager.toggle_panel('settings')
                 return True
             elif event.ui_element == self.btn_quit:
+                self._show_quit_confirmation()
+                return True
+            # Handle confirmation dialog buttons
+            elif hasattr(self, 'confirm_quit_yes') and event.ui_element == self.confirm_quit_yes:
                 pygame.event.post(pygame.event.Event(pygame.QUIT))
                 return True
+            elif hasattr(self, 'confirm_quit_no') and event.ui_element == self.confirm_quit_no:
+                self._hide_quit_confirmation()
+                return True
+                
         return False
 
     def _navigate(self, state: str) -> None:
@@ -143,6 +161,55 @@ class MainMenuPanel(BasePanel):
             self.event_bus.emit("ui:navigate", {"state": state})
         else:
             self.game_state.set('state', state)
+
+    def _show_quit_confirmation(self) -> None:
+        """Show a confirmation dialog for quitting."""
+        if hasattr(self, 'confirmation_dialog') and self.confirmation_dialog:
+            return  # Already showing
+            
+        # Create confirmation dialog window
+        dialog_rect = pygame.Rect(250, 250, 300, 120)
+        self.confirmation_dialog = pygame_gui.elements.UIWindow(
+            rect=dialog_rect,
+            manager=self.manager,
+            window_title='Quit Game',
+            draggable=False,
+            resizable=False
+        )
+        
+        container = self.confirmation_dialog.get_container()
+        
+        # Confirmation message
+        pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect((10, 10), (280, 40)),
+            text='Are you sure you want to quit?',
+            manager=self.manager,
+            container=container
+        )
+        
+        # Yes button
+        self.confirm_quit_yes = pygame_gui.elements.UIButton(
+            relative_rect=pygame.Rect((50, 60), (80, 30)),
+            text='Yes',
+            manager=self.manager,
+            container=container
+        )
+        
+        # No button
+        self.confirm_quit_no = pygame_gui.elements.UIButton(
+            relative_rect=pygame.Rect((170, 60), (80, 30)),
+            text='No',
+            manager=self.manager,
+            container=container
+        )
+        
+    def _hide_quit_confirmation(self) -> None:
+        """Hide the confirmation dialog."""
+        if hasattr(self, 'confirmation_dialog') and self.confirmation_dialog:
+            self.confirmation_dialog.kill()
+            self.confirmation_dialog = None
+            self.confirm_quit_yes = None
+            self.confirm_quit_no = None
 
     def update(self, time_delta: float) -> None:
         super().update(time_delta)
