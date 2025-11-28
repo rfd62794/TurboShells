@@ -5,6 +5,7 @@ routes input to managers, and delegates drawing to the UI layer.
 """
 
 import pygame
+import pygame_gui
 import sys
 
 # Import settings with fallback
@@ -51,6 +52,8 @@ from managers.save_manager import SaveManager
 # from managers.settings_manager import SettingsManager # Legacy settings
 
 # UI System imports
+from pygame_gui.windows.ui_confirmation_dialog import UIConfirmationDialog
+
 from ui.ui_manager import UIManager
 from ui.panels.settings_panel import SettingsPanel
 from ui.panels.main_menu_panel import MainMenuPanel
@@ -164,6 +167,8 @@ class TurboShellsGame:
         self.voting_panel = VotingPanel(self.game_state_interface)
         self.ui_manager.register_panel("voting", self.voting_panel)
         
+        self.exit_dialog: Optional[UIConfirmationDialog] = None
+        
         # --- MANAGERS ---
         self.renderer = Renderer(self.screen, self.font)
         self.roster_manager = RosterManager(self)
@@ -222,7 +227,21 @@ class TurboShellsGame:
                 # Skip further processing so we don't toggle twice
                 continue
             
-            if ui_consumed:
+            # Handle window close events before giving control back to UI skip logic
+            if event.type == pygame_gui.UI_WINDOW_CLOSE:
+                if self.exit_dialog and event.ui_element == self.exit_dialog:
+                    self.exit_dialog = None
+                    continue
+                if self._handle_panel_close_event(event.ui_element):
+                    continue
+            
+            # Handle confirmation dialog responses
+            if event.type == pygame_gui.UI_CONFIRMATION_DIALOG_CONFIRMED:
+                if self.exit_dialog and event.ui_element == self.exit_dialog:
+                    self._confirm_exit()
+                    continue
+            
+            if ui_consumed and event.type < pygame.USEREVENT:
                 # UI consumed the event, but we still need to handle ESC above
                 continue
             
@@ -421,6 +440,65 @@ class TurboShellsGame:
             self.ui_manager.show_panel("settings")
             self.settings_panel.show()
             print("[DEBUG] Settings panel shown")
+
+    def show_exit_confirmation(self):
+        """Display a confirmation dialog before quitting the game."""
+        if self.exit_dialog or not self.ui_manager or not self.ui_manager.manager:
+            return
+        dialog_rect = pygame.Rect(0, 0, 360, 200)
+        dialog_rect.center = self.screen.get_rect().center
+        self.exit_dialog = UIConfirmationDialog(
+            rect=dialog_rect,
+            manager=self.ui_manager.manager,
+            window_title="Exit TurboShells?",
+            action_short_name="Yes",
+            action_long_desc="Are you sure you want to quit TurboShells?",
+            blocking=True,
+        )
+
+    def _confirm_exit(self):
+        """Handle confirmation dialog approval."""
+        self.exit_dialog = None
+        pygame.event.post(pygame.event.Event(pygame.QUIT))
+
+    def _handle_panel_close_event(self, ui_element) -> bool:
+        """Handle UI window close events by returning to the main menu."""
+        # If a child element (like the close button) triggered the event,
+        # try to resolve its parent window.
+        if hasattr(ui_element, "ui_window") and ui_element.ui_window:
+            ui_element = ui_element.ui_window
+        panel = self._get_panel_by_window(ui_element)
+        if not panel:
+            return False
+        if panel is self.main_menu_panel:
+            self.show_exit_confirmation()
+            panel.show()
+            return True
+        if hasattr(self, 'ui_manager') and self.ui_manager:
+            self.ui_manager.hide_panel(getattr(panel, 'panel_id', ''))
+        panel.hide()
+        # Return to main menu for consistency
+        self.game_state_interface.set('state', STATE_MENU)
+        if self.main_menu_panel and not self.main_menu_panel.visible:
+            self.ui_manager.show_panel('main_menu')
+        return True
+
+    def _get_panel_by_window(self, ui_element):
+        panels = [
+            self.settings_panel,
+            self.main_menu_panel,
+            self.shop_panel,
+            self.roster_panel,
+            self.breeding_panel,
+            self.voting_panel,
+            self.profile_panel,
+            self.race_hud_panel,
+            self.race_result_panel,
+        ]
+        for panel in panels:
+            if panel and getattr(panel, "window", None) == ui_element:
+                return panel
+        return None
 
     def auto_save(self, trigger="manual"):
         """Auto-save game state using GameStateManager"""
