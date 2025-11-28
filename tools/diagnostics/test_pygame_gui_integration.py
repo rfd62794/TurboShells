@@ -5,8 +5,9 @@ Verifies that the pygame_gui-based UI Manager and Panels initialize and render c
 
 import sys
 import os
+
 # Add src to path
-sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
+sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
 
 import pygame
 import pygame_gui
@@ -14,6 +15,7 @@ from src.ui.ui_manager import UIManager
 from src.ui.panels.settings_panel import SettingsPanel
 from src.game.game_state_interface import TurboShellsGameStateInterface
 from src.ui.data_binding import DataBindingManager
+
 
 def main():
     print("Initializing Pygame...")
@@ -40,20 +42,22 @@ def main():
     class MockGameState:
         def __init__(self):
             self.game = MockGame()
-            
+
         def get(self, key, default=None):
-            if key == 'money': return self.game.money
-            if key == 'active_turtle_count': return self.game.active_turtle_count
+            if key == "money":
+                return self.game.money
+            if key == "active_turtle_count":
+                return self.game.active_turtle_count
             return default
-            
+
         def set(self, key, value):
-            if key == 'race_speed_multiplier':
+            if key == "race_speed_multiplier":
                 self.game.race_speed_multiplier = value
                 print(f"Game State Updated: {key} = {value}")
 
     game_state = MockGameState()
     data_binding = DataBindingManager()
-    
+
     print("Creating Settings Panel...")
     # Create and Register Settings Panel
     settings_panel = SettingsPanel(game_state, data_binding)
@@ -65,19 +69,19 @@ def main():
     frame = 0
     while running:
         time_delta = clock.tick(60) / 1000.0
-        
+
         # Event Handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            
+
             # Pass events to UI Manager
             ui_manager.handle_event(event)
-            
+
             # Pass events to active panels if they need custom handling
             # (SettingsPanel handles button clicks via handle_event)
             settings_panel.handle_event(event)
-            
+
             # Toggle settings with ESC
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
@@ -88,12 +92,12 @@ def main():
 
         # Rendering
         screen.fill((50, 50, 50))  # Dark gray background
-        
+
         # Draw UI
         ui_manager.draw_ui(screen)
 
         pygame.display.flip()
-        
+
         frame += 1
         if frame % 60 == 0:
             print(f"Frame {frame}")
@@ -104,6 +108,7 @@ def main():
 
     pygame.quit()
     sys.exit()
+
 
 if __name__ == "__main__":
     main()
