@@ -27,11 +27,36 @@ class PygameTurtleRenderer:
             # Get genetics data from turtle
             genetics = getattr(turtle, "visual_genetics", {})
 
-            # Use the existing renderer to create PIL Image
-            pil_image = self._render_to_pil(genetics, size)
+            # Create deterministic seed from turtle data for consistent appearance
+            turtle_name = getattr(turtle, 'name', 'unknown')
+            stats = getattr(turtle, 'stats', {})
+            color = getattr(turtle, 'color', (0, 0, 0))
+            age = getattr(turtle, 'age', 1)
+            # Use stable attributes instead of randomly generated ID
+            seed_data = f"{turtle_name}_{stats.get('speed', 0)}_{stats.get('max_energy', 0)}_{color}_{age}_{size}"
+            # Use deterministic hash instead of built-in hash() which is randomized
+            import hashlib
+            seed_hash = hashlib.md5(seed_data.encode()).hexdigest()
+            seed = int(seed_hash[:8], 16)  # Use first 8 hex chars as integer
+            print(f"[DEBUG] PygameTurtleRenderer: Seed for {turtle_name}: {seed} (from '{seed_data}')")
+            
+            # Set random seed for deterministic rendering
+            import random
+            original_seed = random.getstate()
+            random.seed(seed)
+            
+            try:
+                # Use the existing renderer to create PIL Image
+                pil_image = self._render_to_pil(genetics, size)
+                
+                # Convert PIL Image to pygame surface
+                result = self._pil_to_pygame(pil_image)
+                
+            finally:
+                # Restore original random state
+                random.setstate(original_seed)
 
-            # Convert PIL Image to pygame surface
-            return self._pil_to_pygame(pil_image)
+            return result
 
         except Exception as e:
             print(f"Error rendering turtle with PIL converter: {e}")
