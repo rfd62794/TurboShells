@@ -186,6 +186,7 @@ class TurboShellsGame:
             },
         )
         self.scene_controller.goto_state(self.state)
+        self.ui_event_bus.subscribe("ui:navigate", self._on_ui_navigate)
 
         self.exit_dialog: Optional[UIConfirmationDialog] = None
         
@@ -498,6 +499,11 @@ class TurboShellsGame:
             if panel and getattr(panel, "window", None) == ui_element:
                 return panel
         return None
+
+    def _on_ui_navigate(self, payload):
+        target_state = payload.get("state")
+        if target_state and target_state != self.state:
+            self.state = target_state
 
     def auto_save(self, trigger="manual"):
         """Auto-save game state using GameStateManager"""
