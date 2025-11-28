@@ -218,12 +218,7 @@ class TurboShellsGame:
             
             # Check for ESC key even if UI consumed the event (for settings toggle)
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                # Toggle settings panel regardless of UI consumption
-                if hasattr(self, 'settings_panel') and self.settings_panel:
-                    if self.settings_panel.visible:
-                        self.settings_panel.hide()
-                    else:
-                        self.settings_panel.show()
+                self._toggle_settings_panel()
                 # Continue processing other ESC logic if needed
             
             if ui_consumed:
@@ -309,7 +304,7 @@ class TurboShellsGame:
             if event.type == pygame.KEYDOWN:
                 # Check for settings toggle
                 if event.key == pygame.K_ESCAPE:
-                    self.ui_manager.toggle_panel("settings")
+                    self._toggle_settings_panel()
                     continue
                 
                 # Debug: Print window utilization report with F1
@@ -404,20 +399,6 @@ class TurboShellsGame:
         if self.state == STATE_RACE:
             print(f"[DEBUG] Drawing race state")
             self.renderer.draw_race(self)  # Draw race track and turtles
-        elif self.state == STATE_MENU:
-            pass  # Handled by MainMenuPanel
-        elif self.state == STATE_ROSTER:
-            pass  # Handled by RosterPanel
-        elif self.state == STATE_RACE_RESULT:
-            pass  # Handled by RaceResultPanel
-        elif self.state == STATE_SHOP:
-            pass  # Handled by ShopPanel
-        elif self.state == STATE_BREEDING:
-            pass  # Handled by BreedingPanel
-        elif self.state == STATE_PROFILE:
-            pass  # Handled by ProfilePanel
-        elif self.state == STATE_VOTING:
-            pass  # Handled by VotingPanel
         
         # Draw UI panels on top
         self.ui_manager.draw_ui(self.screen)
@@ -426,6 +407,15 @@ class TurboShellsGame:
         # monitoring_overlay.draw(self.screen)  # Temporarily disabled
         
         pygame.display.flip()
+
+    def _toggle_settings_panel(self):
+        """Toggle the visibility of the settings panel via UI manager."""
+        if not hasattr(self, "settings_panel") or not self.settings_panel:
+            return
+        if self.settings_panel.visible:
+            self.settings_panel.hide()
+        else:
+            self.settings_panel.show()
 
     def auto_save(self, trigger="manual"):
         """Auto-save game state using GameStateManager"""
