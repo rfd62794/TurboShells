@@ -134,10 +134,7 @@ class UIManager:
             print(f"[UIManager] show_panel: Panel '{panel_id}' not found")
             return
         print(f"[UIManager] show_panel: Showing panel '{panel_id}'")
-        if not panel.visible:
-            panel.show()
-        else:
-            print(f"[UIManager] show_panel: Panel '{panel_id}' already visible")
+        panel.show()
             
                 
     def hide_panel(self, panel_id: str) -> None:
