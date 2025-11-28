@@ -142,16 +142,17 @@ class TurboShellsGame:
         self.data_binding_manager = DataBindingManager()
         
         # Create and Register Panels
+        self.ui_event_bus = UIEventBus()
         self.settings_panel = SettingsPanel(self.game_state_interface, self.data_binding_manager)
         self.ui_manager.register_panel("settings", self.settings_panel)
         
-        self.main_menu_panel = MainMenuPanel(self.game_state_interface)
+        self.main_menu_panel = MainMenuPanel(self.game_state_interface, event_bus=self.ui_event_bus)
         self.ui_manager.register_panel("main_menu", self.main_menu_panel)
         
         self.shop_panel = ShopPanel(self.game_state_interface)
         self.ui_manager.register_panel("shop", self.shop_panel)
         
-        self.roster_panel = RosterPanel(self.game_state_interface)
+        self.roster_panel = RosterPanel(self.game_state_interface, event_bus=self.ui_event_bus)
         self.ui_manager.register_panel("roster", self.roster_panel)
         
         self.race_hud_panel = RaceHUDPanel(self.game_state_interface)
@@ -170,7 +171,6 @@ class TurboShellsGame:
         self.ui_manager.register_panel("voting", self.voting_panel)
 
         # UI orchestration
-        self.ui_event_bus = UIEventBus()
         self.scene_controller = SceneController(
             self.ui_manager,
             self.ui_event_bus,

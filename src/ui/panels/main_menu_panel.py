@@ -7,8 +7,8 @@ from settings import STATE_ROSTER, STATE_SHOP, STATE_BREEDING, STATE_VOTING
 class MainMenuPanel(BasePanel):
     """Main Menu Panel using pygame_gui."""
     
-    def __init__(self, game_state_interface: TurboShellsGameStateInterface):
-        super().__init__("main_menu", "Turbo Shells")
+    def __init__(self, game_state_interface: TurboShellsGameStateInterface, event_bus=None):
+        super().__init__("main_menu", "Turbo Shells", event_bus=event_bus)
         self.game_state = game_state_interface
         
         # Full screen centered
@@ -111,20 +111,20 @@ class MainMenuPanel(BasePanel):
     def handle_event(self, event: pygame.event.Event) -> bool:
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
             if event.ui_element == self.btn_roster:
-                self.game_state.set('state', STATE_ROSTER)
+                self._navigate(STATE_ROSTER)
                 return True
             elif event.ui_element == self.btn_shop:
-                self.game_state.set('state', STATE_SHOP)
+                self._navigate(STATE_SHOP)
                 return True
             elif event.ui_element == self.btn_breeding:
-                self.game_state.set('state', STATE_BREEDING)
+                self._navigate(STATE_BREEDING)
                 return True
             elif event.ui_element == self.btn_race:
-                self.game_state.set('state', STATE_ROSTER)
                 self.game_state.set('select_racer_mode', True)
+                self._navigate(STATE_ROSTER)
                 return True
             elif event.ui_element == self.btn_voting:
-                self.game_state.set('state', STATE_VOTING)
+                self._navigate(STATE_VOTING)
                 return True
             elif event.ui_element == self.btn_settings:
                 # Toggle settings panel via game instance if possible, or just show it
@@ -137,6 +137,12 @@ class MainMenuPanel(BasePanel):
                 pygame.event.post(pygame.event.Event(pygame.QUIT))
                 return True
         return False
+
+    def _navigate(self, state: str) -> None:
+        if self.event_bus:
+            self.event_bus.emit("ui:navigate", {"state": state})
+        else:
+            self.game_state.set('state', state)
 
     def update(self, time_delta: float) -> None:
         super().update(time_delta)

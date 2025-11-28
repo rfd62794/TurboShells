@@ -7,8 +7,8 @@ from core.rendering.turtle_render_engine import turtle_render_engine
 class RosterPanel(BasePanel):
     """Roster Panel using pygame_gui."""
     
-    def __init__(self, game_state_interface: TurboShellsGameStateInterface):
-        super().__init__("roster", "Roster")
+    def __init__(self, game_state_interface: TurboShellsGameStateInterface, event_bus=None):
+        super().__init__("roster", "Roster", event_bus=event_bus)
         self.game_state = game_state_interface
         
         self.size = (800, 600)
@@ -335,8 +335,8 @@ class RosterPanel(BasePanel):
             
             if event.ui_element == self.btn_menu:
                 print(f"[DEBUG] ✓ MATCHED Menu button")
-                self.game_state.set('state', 'MENU')
                 self.game_state.set('select_racer_mode', False)
+                self._navigate('MENU')
                 return True
             elif event.ui_element == self.btn_view_active:
                 print(f"[DEBUG] ✓ MATCHED View Active button")
@@ -390,6 +390,12 @@ class RosterPanel(BasePanel):
                     else:
                         print(f"[DEBUG] Button Object ID: {obj_id}")
         return False
+
+    def _navigate(self, state: str) -> None:
+        if self.event_bus:
+            self.event_bus.emit("ui:navigate", {"state": state})
+        else:
+            self.game_state.set('state', state)
 
     def _on_money_changed(self, key, old, new):
         if self.lbl_money:
