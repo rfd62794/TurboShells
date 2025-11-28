@@ -361,10 +361,12 @@ class RosterPanel(BasePanel):
             elif event.ui_element == self.btn_view_active:
                 print(f"[DEBUG] ✓ MATCHED View Active button")
                 self.game_state.set('toggle_view', False)
+                self._update_slot_content()
                 return True
             elif event.ui_element == self.btn_view_retired:
                 print(f"[DEBUG] ✓ MATCHED View Retired button")
                 self.game_state.set('toggle_view', True)
+                self._update_slot_content()
                 return True
             elif event.ui_element == self.btn_bet_0:
                 print(f"[DEBUG] ✓ MATCHED Bet $0 button")
