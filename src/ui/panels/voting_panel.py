@@ -17,14 +17,9 @@ class VotingPanel(BasePanel):
     """Voting interface panel using pygame_gui components."""
     
     def __init__(self, game_state_interface):
-        super().__init__("voting", "Daily Design Voting")
+        super().__init__("voting", "Daily Design Voting", use_window_manager=True)
         
         self.game_state = game_state_interface
-        
-        # Use window manager for sizing
-        self.panel_rect = window_manager.get_panel_rect('voting')
-        self.size = (self.panel_rect.width, self.panel_rect.height)
-        self.position = (self.panel_rect.x, self.panel_rect.y)
         
         # Voting state
         self.current_design_index = 0
@@ -427,21 +422,8 @@ class VotingPanel(BasePanel):
         self.daily_designs = self._generate_mock_designs()
         self._update_design_display()
         
-    def handle_window_resize(self, new_size: Tuple[int, int]) -> None:
-        """Handle window resize events using window manager."""
-        adjustments = window_manager.adjust_for_window_resize(new_size)
-        
-        # Update panel size and position
-        self.panel_rect = window_manager.get_panel_rect('voting')
-        self.size = (self.panel_rect.width, self.panel_rect.height)
-        self.position = (self.panel_rect.x, self.panel_rect.y)
-        
-        # Recreate UI with new layout
-        if self.window:
-            self.window.kill()
-            self.window = None
-            self._create_window()
-        
+    def _on_window_resize(self, new_size: Tuple[int, int]) -> None:
+        """Called after window resize. Update display if UI elements are ready."""
         # Update display only if UI elements are properly initialized
         if hasattr(self, 'design_stats_label') and self.design_stats_label:
             self._update_design_display()

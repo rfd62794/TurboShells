@@ -16,14 +16,9 @@ class BreedingPanel(BasePanel):
     """Breeding interface panel using pygame_gui components."""
     
     def __init__(self, game_state_interface):
-        super().__init__("breeding", "Breeding Center")
+        super().__init__("breeding", "Breeding Center", use_window_manager=True)
         
         self.game_state = game_state_interface
-        
-        # Use window manager for sizing
-        self.panel_rect = window_manager.get_panel_rect('breeding')
-        self.size = (self.panel_rect.width, self.panel_rect.height)
-        self.position = (self.panel_rect.x, self.panel_rect.y)
         
         # Breeding state
         self.selected_parents = []
@@ -352,26 +347,10 @@ class BreedingPanel(BasePanel):
         self.game_state.set('breeding_parents', [])
         self._update_selection_indicators()
         
-    def handle_window_resize(self, new_size: Tuple[int, int]) -> None:
-        """Handle window resize events using window manager."""
-        adjustments = window_manager.adjust_for_window_resize(new_size)
-        
-        # Update panel size and position
-        self.panel_rect = window_manager.get_panel_rect('breeding')
-        self.size = (self.panel_rect.width, self.panel_rect.height)
-        self.position = (self.panel_rect.x, self.panel_rect.y)
-        
+    def _on_window_resize(self, new_size: Tuple[int, int]) -> None:
+        """Called after window resize. Recreate slots with new layout."""
         # Recreate slots with new layout
         self._create_breeding_slots()
-        
-        # Update window if it exists
-        if self.window:
-            self.window.set_position((self.position[0], self.position[1]))
-            self.window.set_dimensions((self.size[0], self.size[1]))
-        
-        # Re-register with updated dimensions
-        if hasattr(window_manager, 'register_panel'):
-            window_manager.register_panel('breeding', pygame.Rect(self.position, self.size))
     
     def destroy(self) -> None:
         """Clean up panel resources."""

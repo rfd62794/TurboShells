@@ -311,11 +311,32 @@ class TurboShellsGame:
                 window_manager.set_window_size((event.w, event.h))
                 
                 # Notify all panels of resize
+                if hasattr(self, 'main_menu_panel') and self.main_menu_panel:
+                    self.main_menu_panel.handle_window_resize((event.w, event.h))
+                    
+                if hasattr(self, 'roster_panel') and self.roster_panel:
+                    self.roster_panel.handle_window_resize((event.w, event.h))
+                    
+                if hasattr(self, 'shop_panel') and self.shop_panel:
+                    self.shop_panel.handle_window_resize((event.w, event.h))
+                    
                 if hasattr(self, 'breeding_panel') and self.breeding_panel:
                     self.breeding_panel.handle_window_resize((event.w, event.h))
                     
                 if hasattr(self, 'voting_panel') and self.voting_panel:
                     self.voting_panel.handle_window_resize((event.w, event.h))
+                    
+                if hasattr(self, 'profile_panel') and self.profile_panel:
+                    self.profile_panel.handle_window_resize((event.w, event.h))
+                    
+                if hasattr(self, 'settings_panel') and self.settings_panel:
+                    self.settings_panel.handle_window_resize((event.w, event.h))
+                    
+                if hasattr(self, 'race_result_panel') and self.race_result_panel:
+                    self.race_result_panel.handle_window_resize((event.w, event.h))
+                    
+                if hasattr(self, 'race_hud_panel') and self.race_hud_panel:
+                    self.race_hud_panel.handle_window_resize((event.w, event.h))
                     
                 # Update UI manager with new screen size
                 if self.ui_manager:

@@ -9,14 +9,18 @@ class BasePanel:
     - Panel initialization
     - Visibility management
     - Event handling
+    - Window resize handling
+    - Dynamic sizing and positioning
     """
     
-    def __init__(self, panel_id: str, title: str, event_bus: Optional[Any] = None):
+    def __init__(self, panel_id: str, title: str, event_bus: Optional[Any] = None, use_window_manager: bool = False):
         """Initialize base panel.
         
         Args:
             panel_id: Unique identifier for the panel
             title: Display title for the panel
+            event_bus: Event bus for communication
+            use_window_manager: Whether to use window manager for dynamic sizing
         """
         self.panel_id = panel_id
         self.title = title
@@ -24,10 +28,29 @@ class BasePanel:
         self.window: Optional[pygame_gui.elements.UIWindow] = None
         self.visible = False
         self.event_bus = event_bus
+        self.use_window_manager = use_window_manager
         
-        # Default configuration
-        self.position = (100, 100)
-        self.size = (400, 300)
+        # Window manager integration
+        if self.use_window_manager:
+            try:
+                from core.ui.window_manager import window_manager
+                self.window_manager = window_manager
+                self.panel_rect = self.window_manager.get_panel_rect(panel_id)
+                self.size = (self.panel_rect.width, self.panel_rect.height)
+                self.position = (self.panel_rect.x, self.panel_rect.y)
+            except ImportError:
+                print(f"[BasePanel] Warning: window_manager not available for panel '{panel_id}', using defaults")
+                self.use_window_manager = False
+                self.window_manager = None
+                self.panel_rect = None
+                self.position = (100, 100)
+                self.size = (400, 300)
+        else:
+            self.window_manager = None
+            self.panel_rect = None
+            # Default configuration
+            self.position = (100, 100)
+            self.size = (400, 300)
         
     def setup_ui(self, manager: pygame_gui.UIManager) -> None:
         """Setup UI elements.
@@ -108,6 +131,66 @@ class BasePanel:
         Args:
             time_delta: Time passed since last frame
         """
+        pass
+        
+    def handle_window_resize(self, new_size: Tuple[int, int]) -> None:
+        """Handle window resize events. Default implementation for all panels.
+        
+        Args:
+            new_size: New window size (width, height)
+        """
+        if not self.use_window_manager or not self.window_manager:
+            # Fallback to basic centering for panels without window manager
+            self._handle_basic_resize(new_size)
+            return
+            
+        try:
+            # Update panel size and position using window manager
+            adjustments = self.window_manager.adjust_for_window_resize(new_size)
+            self.panel_rect = self.window_manager.get_panel_rect(self.panel_id)
+            self.size = (self.panel_rect.width, self.panel_rect.height)
+            self.position = (self.panel_rect.x, self.panel_rect.y)
+            
+            # Recreate window with new dimensions
+            if self.window:
+                self.window.kill()
+                self.window = None
+                self._create_window()
+                
+            # Call panel-specific resize logic
+            self._on_window_resize(new_size)
+            
+        except Exception as e:
+            print(f"[BasePanel] Error during resize for panel '{self.panel_id}': {e}")
+            # Fallback to basic resize
+            self._handle_basic_resize(new_size)
+    
+    def _handle_basic_resize(self, new_size: Tuple[int, int]) -> None:
+        """Basic resize handling - center panel in window.
+        
+        Args:
+            new_size: New window size (width, height)
+        """
+        # Calculate centered position
+        center_x = new_size[0] // 2
+        center_y = new_size[1] // 2
+        
+        # Update position to center
+        self.position = (center_x - self.size[0] // 2, center_y - self.size[1] // 2)
+        
+        # Update window if it exists
+        if self.window:
+            self.window.set_position(self.position)
+            self.window.set_dimensions(self.size)
+    
+    def _on_window_resize(self, new_size: Tuple[int, int]) -> None:
+        """Called after window resize is handled. Override in subclasses for custom logic.
+        
+        Args:
+            new_size: New window size (width, height)
+        """
+        # Default implementation does nothing
+        # Override in subclasses for panel-specific resize logic
         pass
         
     def destroy(self) -> None:
