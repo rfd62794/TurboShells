@@ -176,20 +176,15 @@ class MainMenuPanel(BasePanel):
 
     def _show_quit_confirmation(self) -> None:
         """Show the quit confirmation dialog."""
-        print(f"[MainMenuPanel] _show_quit_confirmation called")
         if self.quit_dialog:
-            print(f"[MainMenuPanel] Calling quit_dialog.show()")
             self.quit_dialog.show()
-            print(f"[MainMenuPanel] quit_dialog.show() completed")
             
     def _on_quit_confirmed(self) -> None:
         """Called when user confirms quit action."""
-        print(f"[MainMenuPanel] Quit confirmed - quitting game")
         pygame.event.post(pygame.event.Event(pygame.QUIT))
         
     def _on_quit_cancelled(self) -> None:
         """Called when user cancels quit action."""
-        print(f"[MainMenuPanel] Quit cancelled - hiding dialog")
         if self.quit_dialog:
             self.quit_dialog.hide()
 

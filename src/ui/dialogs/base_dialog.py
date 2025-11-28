@@ -39,14 +39,10 @@ class BaseDialog:
         if self.visible:
             return  # Already visible
             
-        print(f"[BaseDialog] Creating dialog '{self.title}'")
         self._create_window()
         if self.window:
             self.window.show()
             self.visible = True
-            print(f"[BaseDialog] Dialog '{self.title}' shown")
-        else:
-            print(f"[BaseDialog] Failed to create dialog '{self.title}'")
             
     def hide(self) -> None:
         """Hide and destroy the dialog."""
@@ -54,7 +50,6 @@ class BaseDialog:
             self.window.kill()
             self.window = None
         self.visible = False
-        print(f"[BaseDialog] Dialog '{self.title}' hidden")
         
     def handle_event(self, event: pygame.event.Event) -> bool:
         """Handle dialog-specific events.

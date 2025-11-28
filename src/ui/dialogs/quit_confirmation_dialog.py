@@ -74,8 +74,6 @@ class QuitConfirmationDialog(BaseDialog):
             container=container
         )
         
-        print(f"[QuitConfirmationDialog] Dialog window created")
-        
     def _handle_button_event(self, event: pygame.event.Event) -> bool:
         """Handle button press events."""
         if not self.visible:
@@ -83,7 +81,6 @@ class QuitConfirmationDialog(BaseDialog):
             
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
             if event.ui_element == self.yes_button:
-                print(f"[QuitConfirmationDialog] Yes button clicked")
                 if self.confirm_callback:
                     self.confirm_callback()
                 else:
@@ -92,7 +89,6 @@ class QuitConfirmationDialog(BaseDialog):
                 return True
                 
             elif event.ui_element == self.no_button:
-                print(f"[QuitConfirmationDialog] No button clicked")
                 if self.cancel_callback:
                     self.cancel_callback()
                 else:

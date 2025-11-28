@@ -64,11 +64,6 @@ class BasePanel:
         
     def show(self) -> None:
         """Show the panel."""
-        import traceback
-        print(f"[BasePanel] show() called for panel '{self.panel_id}' - Call stack:")
-        for line in traceback.format_stack()[-3:-1]:  # Show last 2 relevant lines
-            print(f"    {line.strip()}")
-            
         if not self.manager:
             return
             
