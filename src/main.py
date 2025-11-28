@@ -319,10 +319,12 @@ class TurboShellsGame:
                     
                 # Update UI manager with new screen size
                 if self.ui_manager:
-                    self.ui_manager.set_window_resolution((event.w, event.h))
+                    # pygame_gui.UIManager doesn't have set_window_resolution method
+                    # It automatically handles window size changes through the event system
+                    pass
                     
                 # self.settings_manager.update_screen_rect(new_screen_rect)
-                self.ui_manager.handle_screen_resize(new_screen_rect)
+                # UI manager automatically handles screen resize through pygame_gui event system
                 continue
 
             # 5. Mouse handling (for legacy systems)

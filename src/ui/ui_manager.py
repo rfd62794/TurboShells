@@ -175,15 +175,15 @@ class UIManager:
         else:
             self.show_panel(panel_id)
             
-    def handle_screen_resize(self, new_rect: pygame.Rect) -> None:
-        """Handle screen resize event.
+    def set_screen_rect(self, new_rect: pygame.Rect) -> None:
+        """Set the screen rectangle and update UI manager.
         
         Args:
             new_rect: New screen rectangle
         """
         self.screen_rect = new_rect
-        if self.manager:
-            self.manager.set_window_resolution(new_rect.size)
+        # pygame_gui.UIManager doesn't have set_window_resolution method
+        # It automatically handles window size changes through the event system
             
     def shutdown(self) -> None:
         """Clean up UI resources."""

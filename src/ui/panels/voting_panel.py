@@ -442,5 +442,6 @@ class VotingPanel(BasePanel):
             self.window = None
             self._create_window()
         
-        # Update display
-        self._update_design_display()
+        # Update display only if UI elements are properly initialized
+        if hasattr(self, 'design_stats_label') and self.design_stats_label:
+            self._update_design_display()
