@@ -51,8 +51,7 @@ def test_game_main_menu():
             ui_manager = MockUIManager()
         
         mock_game = MockGame()
-        game_state = TurboShellsGameStateInterface()
-        game_state.game = mock_game
+        game_state = TurboShellsGameStateInterface(mock_game)
         game_state.money = mock_game.money
         
         # Import and create the refactored Main Menu
