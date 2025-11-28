@@ -66,10 +66,10 @@ def test_game_main_menu():
         
         # Verify components
         components = {
-            'main_panel': main_menu.main_panel is not None,
             'money_display': main_menu.money_display is not None,
-            'menu_container': main_menu.menu_container is not None,
             'menu_buttons': len(main_menu.menu_buttons) == 7,
+            'window': main_menu.window is not None,
+            'container': hasattr(main_menu, 'container') and main_menu.container is not None,
         }
         
         print("\n📋 Component Verification:")

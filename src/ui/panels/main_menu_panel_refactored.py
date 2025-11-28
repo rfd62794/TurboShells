@@ -105,7 +105,7 @@ class MainMenuPanelRefactored(BasePanel):
         """Create container for menu buttons."""
         # Position in body area below header, relative to container
         width = self.size[0] - 40
-        y_pos = 60  # Below money display
+        y_pos = 20  # Start 20px from top of container (not 60)
         
         # Create buttons directly in the container instead of using a nested container
         self.button_width = width
