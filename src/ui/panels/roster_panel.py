@@ -251,18 +251,21 @@ class RosterPanel(BasePanel):
                 slot['txt_stats'].set_text(stats_text)
                 
                 try:
-                    # Use unified TurtleRenderEngine
-                    surf = pygame.Surface((100, 100), pygame.SRCALPHA)
-                    if turtle_render_engine.render_turtle_sprite(surf, turtle, (0, 0), (100, 100)):
-                        slot['img'].set_image(surf)
+                    # Use the new UI method from TurtleRenderEngine
+                    sprite_surface = turtle_render_engine.get_turtle_sprite_surface(turtle, (100, 100))
+                    if sprite_surface:
+                        slot['img'].set_image(sprite_surface)
+                        print(f"[DEBUG] RosterPanel: Set sprite surface for {turtle.name}")
                     else:
                         # Fallback to simple colored rectangle
+                        surf = pygame.Surface((100, 100), pygame.SRCALPHA)
                         surf.fill((100, 150, 100))
                         font = pygame.font.Font(None, 20)
                         text = font.render(turtle.name[:8], True, (255, 255, 255))
                         text_rect = text.get_rect(center=(50, 50))
                         surf.blit(text, text_rect)
                         slot['img'].set_image(surf)
+                        print(f"[DEBUG] RosterPanel: Used fallback surface for {turtle.name}")
                 except Exception as e:
                     print(f"[ERROR] Failed to render turtle {turtle.name}: {e}")
                     # Create fallback surface

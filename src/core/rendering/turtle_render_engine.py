@@ -63,6 +63,51 @@ class TurtleRenderEngine:
             print(f"[DEBUG] TurtleRenderEngine: Failed to render {getattr(turtle, 'name', 'Unknown')}: {e}")
             return False
     
+    def get_turtle_sprite_surface(self, 
+                                  turtle: Any,
+                                  size: Tuple[int, int] = (100, 100),
+                                  force_regenerate: bool = False) -> Optional[pygame.Surface]:
+        """
+        Get a turtle sprite surface for UI elements (doesn't blit to screen)
+        
+        Args:
+            turtle: Turtle object with required attributes
+            size: (width, height) of the sprite
+            force_regenerate: Force regeneration of cached sprite
+            
+        Returns:
+            pygame.Surface with the turtle sprite, or None if failed
+        """
+        try:
+            # Generate cache key based on turtle attributes
+            cache_key = self._generate_cache_key(turtle, size)
+            print(f"[DEBUG] TurtleRenderEngine: UI Surface - Cache key for {getattr(turtle, 'name', 'Unknown')}: {cache_key}")
+            
+            # Check cache first
+            if not force_regenerate and cache_key in self._sprite_cache:
+                sprite = self._sprite_cache[cache_key]
+                self._cache_hits += 1
+                print(f"[DEBUG] TurtleRenderEngine: UI Surface - Cache HIT for {getattr(turtle, 'name', 'Unknown')}")
+                # Return a copy to avoid modifying the cached surface
+                return sprite.copy()
+            else:
+                # Generate new sprite
+                print(f"[DEBUG] TurtleRenderEngine: UI Surface - Cache MISS for {getattr(turtle, 'name', 'Unknown')}, generating new sprite")
+                sprite = self._generate_turtle_sprite(turtle, size)
+                if sprite:
+                    self._sprite_cache[cache_key] = sprite
+                    self._cache_misses += 1
+                    print(f"[DEBUG] TurtleRenderEngine: UI Surface - Generated sprite for {getattr(turtle, 'name', 'Unknown')}")
+                    # Return a copy to avoid modifying the cached surface
+                    return sprite.copy()
+                else:
+                    print(f"[DEBUG] TurtleRenderEngine: UI Surface - Failed to generate sprite for {getattr(turtle, 'name', 'Unknown')}")
+                    return None
+            
+        except Exception as e:
+            print(f"[DEBUG] TurtleRenderEngine: UI Surface - Failed to get sprite for {getattr(turtle, 'name', 'Unknown')}: {e}")
+            return None
+    
     def _generate_cache_key(self, turtle: Any, size: Tuple[int, int]) -> str:
         """Generate unique cache key for turtle sprite"""
         try:
