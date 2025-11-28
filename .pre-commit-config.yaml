@@ -24,3 +24,11 @@ repos:
     hooks:
       - id: flake8
         args: [--max-line-length=88, --extend-ignore=E203,W503]
+
+  # Markdown linting hooks
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.33.0
+    hooks:
+      - id: markdownlint
+        args: [--fix]
+        files: \.md$
