@@ -55,6 +55,8 @@ from managers.save_manager import SaveManager
 from pygame_gui.windows.ui_confirmation_dialog import UIConfirmationDialog
 
 from ui.ui_manager import UIManager
+from ui.events.ui_event_bus import UIEventBus
+from ui.scene_controller import SceneController
 from ui.panels.settings_panel import SettingsPanel
 from ui.panels.main_menu_panel import MainMenuPanel
 from ui.panels.shop_panel import ShopPanel
@@ -166,7 +168,25 @@ class TurboShellsGame:
         
         self.voting_panel = VotingPanel(self.game_state_interface)
         self.ui_manager.register_panel("voting", self.voting_panel)
-        
+
+        # UI orchestration
+        self.ui_event_bus = UIEventBus()
+        self.scene_controller = SceneController(
+            self.ui_manager,
+            self.ui_event_bus,
+            {
+                STATE_MENU: "main_menu",
+                STATE_SHOP: "shop",
+                STATE_ROSTER: "roster",
+                STATE_RACE: "race_hud",
+                STATE_RACE_RESULT: "race_result",
+                STATE_PROFILE: "profile",
+                STATE_BREEDING: "breeding",
+                STATE_VOTING: "voting",
+            },
+        )
+        self.scene_controller.goto_state(self.state)
+
         self.exit_dialog: Optional[UIConfirmationDialog] = None
         
         # --- MANAGERS ---
@@ -354,29 +374,8 @@ class TurboShellsGame:
             # Update UI Manager
             self.ui_manager.update(time_delta)
             
-            # Manage Panel Visibility - HIDE ALL FIRST for proper isolation
-            panels_to_manage = [
-                (STATE_MENU, self.main_menu_panel, 'MainMenu'),
-                (STATE_SHOP, self.shop_panel, 'Shop'),
-                (STATE_ROSTER, self.roster_panel, 'Roster'),
-                (STATE_BREEDING, self.breeding_panel, 'Breeding'),
-                (STATE_VOTING, self.voting_panel, 'Voting'),
-                (STATE_PROFILE, self.profile_panel, 'Profile'),
-                (STATE_RACE, self.race_hud_panel, 'RaceHUD'),
-                (STATE_RACE_RESULT, self.race_result_panel, 'RaceResult')
-            ]
-            
-            # First, hide all panels
-            for state_const, panel, name in panels_to_manage:
-                if panel.visible and self.state != state_const:
-                    print(f"[DEBUG] Hiding {name} panel (state={self.state})")
-                    panel.hide()
-            
-            # Then, show only the appropriate panel
-            for state_const, panel, name in panels_to_manage:
-                if self.state == state_const and not panel.visible:
-                    print(f"[DEBUG] Showing {name} panel (state={self.state})")
-                    panel.show()
+            # Ensure correct panel is visible for the current state
+            self.scene_controller.goto_state(self.state)
             
             # Update settings manager (legacy)
             # self.settings_manager.update(1.0 / FPS)
@@ -481,6 +480,8 @@ class TurboShellsGame:
         self.game_state_interface.set('state', STATE_MENU)
         if self.main_menu_panel and not self.main_menu_panel.visible:
             self.ui_manager.show_panel('main_menu')
+        if hasattr(panel, 'panel_id'):
+            self.ui_event_bus.emit("ui:panel_closed", {"panel_id": panel.panel_id})
         return True
 
     def _get_panel_by_window(self, ui_element):
