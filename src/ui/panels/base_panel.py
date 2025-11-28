@@ -44,12 +44,20 @@ class BasePanel:
         if not self.manager:
             return
             
-        if not self.window:
-            self._create_window()
+        # Always recreate the window to ensure clean state
+        if self.window:
+            print(f"[BasePanel] Recreating window for panel '{self.panel_id}' (old window existed)")
+            # Clean up old window properly
+            if hasattr(self.window, 'kill'):
+                self.window.kill()
+            self.window = None
             
+        self._create_window()
+        
         if self.window:
             self.window.show()
             self.visible = True
+            print(f"[BasePanel] Panel '{self.panel_id}' shown with new window")
             
     def hide(self) -> None:
         """Hide the panel."""
