@@ -83,9 +83,10 @@ class BreedingPanel(BasePanel):
         )
         y_pos += 45
         
-        # Create breeding slots container - use almost full available space
+        # Create breeding slots container - use remaining available space
+        container_height = self.size[1] - y_pos - 50  # Leave space for bottom margin
         self.slots_container = pygame_gui.elements.UIPanel(
-            relative_rect=pygame.Rect((5, y_pos), (width - 10, 350)),
+            relative_rect=pygame.Rect((5, y_pos), (width - 10, container_height)),
             manager=self.manager,
             container=container
         )
@@ -148,10 +149,11 @@ class BreedingPanel(BasePanel):
                 slot_container.slot_index = i
                 slot_container.turtle_data = turtle
                 
-                # Create turtle image (separate from button) - increased size for better space usage
+                # Create turtle image (separate from button) - scale with available space
+                img_size = min(slot_width - 20, int(slot_height * 0.6))  # Use 60% of slot height for image
                 turtle_img = pygame_gui.elements.UIImage(
-                    relative_rect=pygame.Rect((10, 10), (slot_width - 20, 100)),
-                    image_surface=pygame.Surface((slot_width - 20, 100)),  # Placeholder
+                    relative_rect=pygame.Rect((10, 10), (img_size, img_size)),
+                    image_surface=pygame.Surface((img_size, img_size)),  # Placeholder
                     manager=self.manager,
                     container=slot_container,
                     object_id=f"#breeding_turtle_img_{i}"
@@ -159,15 +161,17 @@ class BreedingPanel(BasePanel):
                 
                 # Set turtle image
                 try:
-                    turtle_surface = render_turtle_pygame(turtle, 90)  # Larger for better space usage
+                    turtle_surface = render_turtle_pygame(turtle, img_size)  # Use calculated size
                     if turtle_surface:
                         turtle_img.set_image(turtle_surface)
                 except Exception as e:
                     print(f"Error rendering turtle in breeding slot {i}: {e}")
                 
                 # Create selection button below image
+                button_y = img_size + 20
+                button_height = slot_height - button_y - 10  # Use remaining space
                 select_btn = pygame_gui.elements.UIButton(
-                    relative_rect=pygame.Rect((10, 120), (slot_width - 20, 25)),
+                    relative_rect=pygame.Rect((10, button_y), (slot_width - 20, button_height)),
                     text=f"{turtle.name}\n{'(RETIRED)' if is_retired else ''}",
                     manager=self.manager,
                     container=slot_container,

@@ -49,7 +49,7 @@ class WindowManager:
             'main_menu': (0.9, 0.85),
             'shop': (0.9, 0.85),
             'roster': (0.9, 0.85),
-            'breeding': (0.95, 0.9),
+            'breeding': (0.98, 0.95),  # Increased to use more space
             'voting': (0.95, 0.9),
             'profile': (0.8, 0.85),
             'race': (1.0, 0.3),  # Full width, bottom third
