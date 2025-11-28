@@ -219,7 +219,8 @@ class TurboShellsGame:
             # Check for ESC key even if UI consumed the event (for settings toggle)
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 self._toggle_settings_panel()
-                # Continue processing other ESC logic if needed
+                # Skip further processing so we don't toggle twice
+                continue
             
             if ui_consumed:
                 # UI consumed the event, but we still need to handle ESC above
@@ -302,10 +303,6 @@ class TurboShellsGame:
 
             # 6. Keyboard handling (legacy)
             if event.type == pygame.KEYDOWN:
-                # Check for settings toggle
-                if event.key == pygame.K_ESCAPE:
-                    self._toggle_settings_panel()
-                    continue
                 
                 # Debug: Print window utilization report with F1
                 if event.key == pygame.K_F1:
@@ -415,12 +412,15 @@ class TurboShellsGame:
         if not hasattr(self, "ui_manager") or not self.ui_manager:
             return
 
+        print("[DEBUG] Toggling settings panel", "(currently visible)" if self.settings_panel.visible else "(currently hidden)")
         if self.settings_panel.visible:
             self.ui_manager.hide_panel("settings")
             self.settings_panel.hide()
+            print("[DEBUG] Settings panel hidden")
         else:
             self.ui_manager.show_panel("settings")
             self.settings_panel.show()
+            print("[DEBUG] Settings panel shown")
 
     def auto_save(self, trigger="manual"):
         """Auto-save game state using GameStateManager"""
