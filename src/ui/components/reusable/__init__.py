@@ -5,7 +5,8 @@ Truly reusable components that can be composed to build any interface.
 """
 
 # Display Components
-from .display_components import (
+from .display import (
+    BaseDisplayComponent,
     Label,
     TextBox,
     ImageDisplay,
@@ -42,6 +43,7 @@ from .game_components import (
 
 __all__ = [
     # Display Components
+    'BaseDisplayComponent',
     'Label',
     'TextBox',
     'ImageDisplay',
