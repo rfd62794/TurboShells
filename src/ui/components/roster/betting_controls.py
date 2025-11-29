@@ -38,9 +38,9 @@ class BettingControls(BaseComponent):
         # Calculate positions based on container width
         container_width = self.rect.width
         
-        # Betting buttons
+        # Betting buttons - move slightly left from original position
         self.btn_bet_0 = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((container_width - 330, 0), (100, 30)),
+            relative_rect=pygame.Rect((container_width - 360, 0), (100, 30)),  # 20px left
             text="Bet: $0",
             manager=self.manager,
             container=self.container,
@@ -48,7 +48,7 @@ class BettingControls(BaseComponent):
         )
         
         self.btn_bet_5 = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((container_width - 220, 0), (100, 30)),
+            relative_rect=pygame.Rect((container_width - 250, 0), (100, 30)),  # 20px left
             text="Bet: $5",
             manager=self.manager,
             container=self.container,
@@ -56,16 +56,16 @@ class BettingControls(BaseComponent):
         )
         
         self.btn_bet_10 = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((container_width - 110, 0), (100, 30)),
+            relative_rect=pygame.Rect((container_width - 140, 0), (100, 30)),  # 20px left
             text="Bet: $10",
             manager=self.manager,
             container=self.container,
             visible=False
         )
         
-        # Start race button (positioned with betting controls)
+        # Start race button - move slightly left with betting controls
         self.btn_start_race = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((container_width - 440, 0), (100, 30)),
+            relative_rect=pygame.Rect((container_width - 460, 0), (100, 30)),  # 20px left
             text="START RACE",
             manager=self.manager,
             container=self.container,
