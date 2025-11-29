@@ -61,11 +61,8 @@ class Button(BaseComponent):
     def _handle_component_event(self, event: pygame.event.Event) -> bool:
         """Handle button press events."""
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
-            print(f"[DEBUG] Button component checking event: {event.ui_element}, self.button: {self.button}")
             if event.ui_element == self.button:
-                print(f"[DEBUG] Button component matched! Action: {self.action}")
                 if self.on_action:
-                    print(f"[DEBUG] Calling action callback: {self.action}")
                     self.on_action(self.action)
                 self._emit_event('button_press', {'action': self.action})
                 return True

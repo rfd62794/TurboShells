@@ -9,33 +9,33 @@ import pygame_gui
 from typing import Optional
 from settings import *
 from core.rendering.pygame_turtle_renderer import render_turtle_pygame
+from .base_panel import BasePanel
 
 
-class ProfilePanel:
+class ProfilePanel(BasePanel):
     """Profile panel showing turtle details with pygame_gui"""
     
     def __init__(self, manager: pygame_gui.UIManager, game_state):
+        super().__init__(panel_id="profile", title="Turtle Profile")
         self.manager = manager
         self.game_state = game_state
-        self.visible = False
         self.current_turtle = None
         self.current_index = None
         
-        # Create main window
+        # Window will be created by BasePanel.show() method
         self.size = (700, 550)
+        
+    def _create_window(self):
+        """Create the window and all UI elements"""
+        # Create the main window
         self.window = pygame_gui.elements.UIWindow(
             rect=pygame.Rect((50, 25), self.size),
             window_display_title="Turtle Profile",
             manager=self.manager,
             object_id="#profile_window"
         )
-        self.window.hide()
         
-        # Create UI elements
-        self._create_window()
-        
-    def _create_window(self):
-        """Create all UI elements inside the window"""
+        # Create UI elements inside the window
         container = self.window.get_container()
         width = self.size[0] - 40
         

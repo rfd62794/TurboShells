@@ -114,8 +114,12 @@ class TurtleActionButtons(BaseComponent):
         
     def _handle_view(self) -> None:
         """Handle view button click."""
+        print(f"[DEBUG] View button clicked for turtle index: {self.turtle_index}")
         if self.game_state:
+            print(f"[DEBUG] Setting view_profile to: {self.turtle_index}")
             self.game_state.set('view_profile', self.turtle_index)
+        else:
+            print(f"[DEBUG] No game_state available!")
         self._emit_event("view_clicked", self.turtle_index)
         
     def _handle_retire(self) -> None:

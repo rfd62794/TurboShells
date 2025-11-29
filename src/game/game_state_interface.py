@@ -596,9 +596,19 @@ class TurboShellsGameStateInterface(GameStateInterface):
             
     def _view_profile(self, game, index):
         """View a turtle's profile."""
+        print(f"[DEBUG] _view_profile called with index: {index}")
         game.profile_turtle_index = index
-        from settings import STATE_PROFILE
-        game.state = STATE_PROFILE
+        print(f"[DEBUG] Set profile_turtle_index to: {game.profile_turtle_index}")
+        
+        # Use event bus for navigation instead of direct state change
+        if hasattr(game, 'ui_event_bus') and game.ui_event_bus:
+            print(f"[DEBUG] Using event bus to navigate to PROFILE")
+            game.ui_event_bus.emit("ui:navigate", {"state": "PROFILE"})
+        else:
+            print(f"[DEBUG] No event bus found, using direct state change")
+            # Fallback to direct state change
+            from settings import STATE_PROFILE
+            game.state = STATE_PROFILE
     
     def _validate_money(self, game, value) -> bool:
         """Validate and set money value."""

@@ -166,10 +166,8 @@ class MainMenuPanelRefactored(BasePanel):
             
     def _on_button_action(self, action: str) -> None:
         """Handle button actions."""
-        print(f"[DEBUG] Main menu button action: {action}")
         if action.startswith('navigate_'):
             state = action.replace('navigate_', '').upper()
-            print(f"[DEBUG] Navigating to state: {state}")
             self._navigate(state)
             
         elif action == 'toggle_settings':
@@ -180,18 +178,14 @@ class MainMenuPanelRefactored(BasePanel):
             
     def _navigate(self, state: str) -> None:
         """Navigate to specified state."""
-        print(f"[DEBUG] MainMenuPanelRefactored _navigate called with state: {state}")
         if state == "ROSTER":
             # Special handling for race mode
             self.game_state.set('select_racer_mode', True)
-            print(f"[DEBUG] Set select_racer_mode to True")
             
         # Navigate to state
         if self.event_bus:
-            print(f"[DEBUG] Emitting ui:navigate event with state: {state}")
             self.event_bus.emit("ui:navigate", {"state": state})
         else:
-            print(f"[DEBUG] No event bus, setting state directly")
             self.game_state.set('state', state)
             
     def _toggle_settings(self) -> None:
@@ -215,10 +209,6 @@ class MainMenuPanelRefactored(BasePanel):
             
     def handle_event(self, event: pygame.event.Event) -> bool:
         """Handle events for the main menu and components."""
-        # Debug: Log all events
-        if event.type == pygame_gui.UI_BUTTON_PRESSED:
-            print(f"[DEBUG] Button pressed event received: {event.ui_element}")
-            
         # Handle quit dialog events first
         if self.quit_dialog and self.quit_dialog.handle_event(event):
             return True
@@ -230,7 +220,6 @@ class MainMenuPanelRefactored(BasePanel):
         # Handle button events
         for button in self.menu_buttons:
             if button.handle_event(event):
-                print(f"[DEBUG] Button handled event: {button.text}")
                 return True
             
         # Handle any remaining events
