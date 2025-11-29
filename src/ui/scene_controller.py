@@ -9,11 +9,12 @@ from .events.event_types import UIEvents
 class SceneController:
     """Central coordinator for state-driven panel visibility."""
 
-    def __init__(self, ui_manager, event_bus, state_to_panel: Dict[str, str]):
+    def __init__(self, ui_manager, event_bus, state_to_panel: Dict[str, str], game_instance=None):
         self.ui_manager = ui_manager
         self.event_bus = event_bus
         self.state_to_panel = state_to_panel
         self.current_state: Optional[str] = None
+        self.game_instance = game_instance
 
         # Listen for UI navigation events
         self.event_bus.subscribe("ui:navigate", self._on_navigate)
@@ -30,6 +31,12 @@ class SceneController:
         print(f"[SceneController] Transitioning from '{self.current_state}' to '{state}'")
         self._hide_current_panel()
         self.current_state = state
+        
+        # Sync game state if game instance is available
+        if self.game_instance and hasattr(self.game_instance, 'state'):
+            self.game_instance.state = state
+            print(f"[SceneController] Synced game state to '{state}'")
+        
         self._show_panel_for_state(state)
 
     def _show_panel_for_state(self, state: str):

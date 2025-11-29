@@ -215,9 +215,12 @@ class TurboShellsGame:
                 STATE_BREEDING: "breeding",
                 STATE_VOTING: "voting",
             },
+            game_instance=self  # Pass game instance for state synchronization
         )
         self.scene_controller.goto_state(self.state)
-        self.ui_event_bus.subscribe("ui:navigate", self._on_ui_navigate)
+        
+        # Note: SceneController handles ui:navigate events, so we don't need duplicate subscription
+        # self.ui_event_bus.subscribe("ui:navigate", self._on_ui_navigate)
 
         self.exit_dialog: Optional[UIConfirmationDialog] = None
         
