@@ -125,19 +125,15 @@ class TurtleActionButtons(BaseComponent):
         
     def _handle_select(self) -> None:
         """Handle select button click."""
-        print(f"[DEBUG] Select button clicked for turtle index: {self.turtle_index}")
         if self.game_state:
             # Follow original pattern exactly
             self.game_state.set('set_active_racer', self.turtle_index)
-            print(f"[DEBUG] Set active_racer to {self.turtle_index}")
             # Emit to global event bus if available
             if hasattr(self, 'event_bus') and self.event_bus:
                 self.event_bus.emit('update_ui', None)
-                print(f"[DEBUG] Emitted update_ui to global event bus")
             else:
                 # Fallback to local emission
                 self._emit_event("update_ui", None)
-                print(f"[DEBUG] Emitted update_ui locally")
         
     def update_mode(self, is_retired_turtle: bool, is_select_mode: bool, 
                    is_active_racer: bool = False) -> None:

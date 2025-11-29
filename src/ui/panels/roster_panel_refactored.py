@@ -36,21 +36,15 @@ class RosterPanelRefactored(BasePanel):
         self.container_slots = None
         
         # Observers
-        print(f"[DEBUG] Setting up observers for roster panel")
         self.game_state.observe('money', self._on_money_changed)
         self.game_state.observe('show_retired_view', self._on_view_changed)
         self.game_state.observe('select_racer_mode', self._on_mode_changed)
         self.game_state.observe('current_bet', self._on_bet_changed)
         self.game_state.observe('active_racer_index', self._on_active_racer_changed)
         
-        # Listen for select_clicked events from turtle action buttons
+        # Listen for update_ui events from turtle action buttons
         if self.event_bus:
-            print(f"[DEBUG] Event bus available, subscribing to update_ui events")
             self.event_bus.subscribe('update_ui', self._on_update_ui)
-        else:
-            print(f"[DEBUG] No event bus available")
-        
-        print(f"[DEBUG] Observers set up complete")
         
     def _create_window(self) -> None:
         """Create the roster panel window using SRP components."""
@@ -365,13 +359,10 @@ class RosterPanelRefactored(BasePanel):
             
     def _on_active_racer_changed(self, key, old, new):
         """Handle active racer change - update UI immediately."""
-        print(f"[DEBUG] Active racer changed from {old} to {new}")
-        print(f"[DEBUG] Calling _update_slot_content() due to active racer change")
         self._update_slot_content()
         
     def _on_update_ui(self, event_data):
         """Handle update UI event from turtle action buttons."""
-        print(f"[DEBUG] Received update_ui event: {event_data}")
         self._update_slot_content()
             
     def show(self):
