@@ -1,9 +1,10 @@
 """Roster view toggle component for switching between Active and Retired turtles."""
 
 import pygame
+import pygame_gui
 from pygame_gui import UIManager
 from typing import Optional, Callable
-from .base_component import BaseComponent
+from ..base_component import BaseComponent
 
 
 class RosterViewToggle(BaseComponent):
@@ -22,7 +23,7 @@ class RosterViewToggle(BaseComponent):
             game_state: Game state interface for view state
             container: pygame_gui container for buttons
         """
-        super().__init__(rect, manager)
+        super().__init__(rect, manager, container)
         self.game_state = game_state
         self.container = container
         self.on_view_changed: Optional[Callable[[bool], None]] = None
@@ -57,6 +58,10 @@ class RosterViewToggle(BaseComponent):
         
         # Set initial state
         self._update_button_states()
+        
+    def handle_event(self, event: pygame.event.Event) -> bool:
+        """Handle events for this component."""
+        return self._handle_component_event(event)
         
     def _update_button_states(self) -> None:
         """Update button visual states based on current view."""

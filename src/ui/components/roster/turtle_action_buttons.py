@@ -1,9 +1,10 @@
 """Turtle action buttons component for individual turtle actions."""
 
 import pygame
+import pygame_gui
 from pygame_gui import UIManager
 from typing import Optional, Dict, Any
-from .base_component import BaseComponent
+from ..base_component import BaseComponent
 
 
 class TurtleActionButtons(BaseComponent):
@@ -23,7 +24,7 @@ class TurtleActionButtons(BaseComponent):
             game_state: Game state interface for actions
             container: pygame_gui container for buttons
         """
-        super().__init__(rect, manager)
+        super().__init__(rect, manager, container)
         self.turtle_index = turtle_index
         self.game_state = game_state
         self.container = container
@@ -80,6 +81,10 @@ class TurtleActionButtons(BaseComponent):
         
         # Set initial visibility
         self._update_visibility()
+        
+    def handle_event(self, event: pygame.event.Event) -> bool:
+        """Handle events for this component."""
+        return self._handle_component_event(event)
         
     def _handle_component_event(self, event: pygame.event.Event) -> bool:
         """Handle button click events."""
@@ -166,6 +171,11 @@ class TurtleActionButtons(BaseComponent):
                 self.btn_view.show()
                 self.btn_retire.show()
                 self.btn_select.hide()
+                
+    def update_select_button_text(self, text: str) -> None:
+        """Update only the select button text."""
+        if self.btn_select:
+            self.btn_select.set_text(text)
                 
     def get_buttons(self) -> Dict[str, Any]:
         """Get button references for external access."""

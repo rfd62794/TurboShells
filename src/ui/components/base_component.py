@@ -11,15 +11,17 @@ from pygame_gui import UIManager
 class BaseComponent(ABC):
     """Base class for all UI components following Single Responsibility Principle."""
     
-    def __init__(self, rect: pygame.Rect, manager: Optional[UIManager] = None):
+    def __init__(self, rect: pygame.Rect, manager: Optional[UIManager] = None, container=None):
         """Initialize base component.
         
         Args:
             rect: Component position and size
             manager: pygame_gui UIManager instance
+            container: pygame_gui container for this component
         """
         self.rect = rect
         self.manager = manager
+        self.container = container
         self.visible = True
         self.enabled = True
         self.parent: Optional['BaseComponent'] = None
