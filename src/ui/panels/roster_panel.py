@@ -31,6 +31,7 @@ class RosterPanel(BasePanel):
         self.game_state.observe('money', self._on_money_changed)
         self.game_state.observe('show_retired_view', self._on_view_changed)
         self.game_state.observe('select_racer_mode', self._on_mode_changed)
+        self.game_state.observe('current_bet', self._on_bet_changed)
         
     def _create_window(self) -> None:
         print(f"[RosterPanel] _create_window() called")
@@ -124,9 +125,9 @@ class RosterPanel(BasePanel):
         print(f"[RosterPanel] Created slots container")
         
         # Start Race Button (for select mode)
-        # MOVED TO TOP for visibility check
+        # Positioned with betting controls for better UX
         self.btn_start_race = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((20, 70), (100, 30)),
+            relative_rect=pygame.Rect((width - 440, 70), (100, 30)),
             text="START RACE",
             manager=self.manager,
             container=container,
@@ -198,7 +199,7 @@ class RosterPanel(BasePanel):
                 
                 # View Button (view profile)
                 btn_view = pygame_gui.elements.UIButton(
-                    relative_rect=pygame.Rect((70, 270), (100, 30)),
+                    relative_rect=pygame.Rect((70, 230), (100, 30)),
                     text="View",
                     manager=self.manager,
                     container=panel
@@ -213,6 +214,22 @@ class RosterPanel(BasePanel):
                     visible=False
                 )
                 
+                # Rest Button
+                btn_rest = pygame_gui.elements.UIButton(
+                    relative_rect=pygame.Rect((10, 270), (50, 30)),
+                    text="Rest",
+                    manager=self.manager,
+                    container=panel
+                )
+                
+                # Retire Button
+                btn_retire = pygame_gui.elements.UIButton(
+                    relative_rect=pygame.Rect((180, 270), (50, 30)),
+                    text="Retire",
+                    manager=self.manager,
+                    container=panel
+                )
+                
                 self.slots.append({
                     'panel': panel,
                     'img': img,
@@ -221,6 +238,8 @@ class RosterPanel(BasePanel):
                     'btn_train': btn_train,
                     'btn_view': btn_view,
                     'btn_select': btn_select,
+                    'btn_rest': btn_rest,
+                    'btn_retire': btn_retire,
                     'index': i
                 })
                 
@@ -292,10 +311,14 @@ class RosterPanel(BasePanel):
                 # Buttons visibility
                 if show_retired:
                     slot['btn_train'].hide()
+                    slot['btn_rest'].hide()
+                    slot['btn_retire'].hide()
                     slot['btn_select'].hide()
                 else:
                     if select_mode:
                         slot['btn_train'].hide()
+                        slot['btn_rest'].hide()
+                        slot['btn_retire'].hide()
                         slot['btn_select'].show()
                         if i == active_racer_idx:
                             slot['btn_select'].set_text("[Selected]")
@@ -305,6 +328,8 @@ class RosterPanel(BasePanel):
                             slot['panel'].set_relative_position((slot['panel'].relative_rect.x, 10))
                     else:
                         slot['btn_train'].show()
+                        slot['btn_rest'].show()
+                        slot['btn_retire'].show()
                         slot['btn_select'].hide()
                         slot['panel'].set_relative_position((slot['panel'].relative_rect.x, 10))
             else:
@@ -312,6 +337,8 @@ class RosterPanel(BasePanel):
                 slot['txt_stats'].set_text("")
                 slot['img'].set_image(pygame.Surface((100, 100))) # Clear image
                 slot['btn_train'].hide()
+                slot['btn_rest'].hide()
+                slot['btn_retire'].hide()
                 slot['btn_select'].hide()
 
     def _update_visibility(self):
@@ -396,6 +423,16 @@ class RosterPanel(BasePanel):
                         print(f"[DEBUG] ✓ MATCHED View button for slot {slot['index']}")
                         self.game_state.set('view_profile', slot['index'])
                         return True
+                    elif event.ui_element == slot['btn_rest']:
+                        print(f"[DEBUG] ✓ MATCHED Rest button for slot {slot['index']}")
+                        self.game_state.set('rest_turtle', slot['index'])
+                        self._update_slot_content()
+                        return True
+                    elif event.ui_element == slot['btn_retire']:
+                        print(f"[DEBUG] ✓ MATCHED Retire button for slot {slot['index']}")
+                        self.game_state.set('retire_turtle', slot['index'])
+                        self._update_slot_content()
+                        return True
                     elif event.ui_element == slot['btn_select']:
                         print(f"[DEBUG] ✓ MATCHED Select button for slot {slot['index']}")
                         self.game_state.set('set_active_racer', slot['index'])
@@ -446,6 +483,24 @@ class RosterPanel(BasePanel):
         
     def _on_mode_changed(self, key, old, new):
         self._update_visibility()
+        
+    def _on_bet_changed(self, key, old, new):
+        """Update betting button visual feedback based on current bet."""
+        if not all([self.btn_bet_0, self.btn_bet_5, self.btn_bet_10]):
+            return
+            
+        # Reset all buttons to normal appearance
+        self.btn_bet_0.set_text("Bet: $0")
+        self.btn_bet_5.set_text("Bet: $5")
+        self.btn_bet_10.set_text("Bet: $10")
+        
+        # Highlight the active bet button
+        if new == 0:
+            self.btn_bet_0.set_text("Bet: $0 ✓")
+        elif new == 5:
+            self.btn_bet_5.set_text("Bet: $5 ✓")
+        elif new == 10:
+            self.btn_bet_10.set_text("Bet: $10 ✓")
 
     def show(self):
         print(f"[RosterPanel] SHOW() CALLED!")
