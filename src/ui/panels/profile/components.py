@@ -129,19 +129,20 @@ class ProfileActionPanel:
 class ProfileLayout:
     """Profile layout manager that organizes all profile components."""
     
-    def __init__(self, container_rect: pygame.Rect, manager, container=None):
+    def __init__(self, container, manager, container_parent=None):
         """Initialize profile layout."""
-        self.container_rect = container_rect
-        self.manager = manager
         self.container = container
+        self.container_parent = container_parent
+        self.manager = manager
         self.logger = get_ui_rich_logger()
         
-        # Component positions
+        # Component positions (absolute coordinates within container)
         self.positions = self._calculate_positions()
         
     def _calculate_positions(self) -> Dict[str, pygame.Rect]:
         """Calculate component positions within the container."""
-        width = self.container_rect.width - 40
+        # Use fixed dimensions based on the panel size (700x550)
+        width = 700 - 40  # Account for padding
         
         return {
             'header': pygame.Rect((0, 0), (width + 40, 60)),
@@ -155,7 +156,7 @@ class ProfileLayout:
         """Get the position for a specific component."""
         return self.positions.get(component_name, pygame.Rect(0, 0, 100, 100))
         
-    def update_layout(self, new_container_rect: pygame.Rect) -> None:
-        """Update layout for new container size."""
-        self.container_rect = new_container_rect
+    def update_layout(self, new_container) -> None:
+        """Update layout for new container."""
+        self.container = new_container
         self.positions = self._calculate_positions()

@@ -57,10 +57,8 @@ class ProfilePanelRefactored(BasePanel):
             
         # Get the window's container for proper positioning
         container = self.window.get_container()
-        container_rect = pygame.Rect(0, 0, self.size[0] - 40, self.size[1] - 40)
-        
-        # Create layout manager
-        self.layout = ProfileLayout(container_rect, self.manager, container)
+        # Create layout manager with container reference (positions will be calculated relative to container)
+        self.layout = ProfileLayout(container, self.manager, container)
         
         # Create specialized components
         self._create_header()
