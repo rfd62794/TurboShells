@@ -15,6 +15,7 @@ class RosterPanel(BasePanel):
         self.position = (112, 84)
         
         self.lbl_money = None
+        self.btn_race = None
         self.btn_menu = None
         self.btn_view_active = None
         self.btn_view_retired = None
@@ -69,6 +70,14 @@ class RosterPanel(BasePanel):
         )
         print(f"[RosterPanel] Created money label")
         
+        # Race Button (middle right, with betting controls)
+        self.btn_race = pygame_gui.elements.UIButton(
+            relative_rect=pygame.Rect((width - 440, 70), (100, 30)),
+            text="Race",
+            manager=self.manager,
+            container=container
+        )
+        
         self.btn_menu = pygame_gui.elements.UIButton(
             relative_rect=pygame.Rect((width - 100, 10), (100, 40)),
             text="Menu",
@@ -77,7 +86,7 @@ class RosterPanel(BasePanel):
         )
         print(f"[RosterPanel] Created menu button")
         
-        # View Toggles (Active / Retired)
+        # View Toggles (Active / Retired) - back in main content area
         self.btn_view_active = pygame_gui.elements.UIButton(
             relative_rect=pygame.Rect((20, 70), (100, 30)),
             text="Active",
@@ -307,7 +316,8 @@ class RosterPanel(BasePanel):
                 else:
                     if select_mode:
                         slot['btn_train'].hide()
-                        slot['btn_retire'].hide()
+                        # Keep Retire button visible even in select mode for active turtles
+                        slot['btn_retire'].show()
                         slot['btn_select'].show()
                         if i == active_racer_idx:
                             slot['btn_select'].set_text("[Selected]")
@@ -332,8 +342,9 @@ class RosterPanel(BasePanel):
         select_mode = self.game_state.get('select_racer_mode', False)
         
         if select_mode:
-            self.btn_view_active.hide()
-            self.btn_view_retired.hide()
+            # Always show Active/Retired toggles, even in select mode
+            self.btn_view_active.show()
+            self.btn_view_retired.show()
             self.btn_bet_0.show()
             self.btn_bet_5.show()
             self.btn_bet_10.show()
@@ -361,6 +372,7 @@ class RosterPanel(BasePanel):
             print(f"[DEBUG] RosterPanel button pressed: {event.ui_element}")
             print(f"[DEBUG] Main buttons:")
             print(f"  btn_menu: {self.btn_menu}")
+            print(f"  btn_race: {self.btn_race}")
             print(f"  btn_view_active: {self.btn_view_active}")
             print(f"  btn_view_retired: {self.btn_view_retired}")
             print(f"  btn_bet_0: {self.btn_bet_0}")
@@ -371,6 +383,11 @@ class RosterPanel(BasePanel):
                 print(f"[DEBUG] ✓ MATCHED Menu button")
                 self.game_state.set('select_racer_mode', False)
                 self._navigate('MENU')
+                return True
+            elif event.ui_element == self.btn_race:
+                print(f"[DEBUG] ✓ MATCHED Race button")
+                self.game_state.set('select_racer_mode', False)
+                self._navigate('RACE')
                 return True
             elif event.ui_element == self.btn_view_active:
                 print(f"[DEBUG] ✓ MATCHED View Active button")
@@ -438,6 +455,7 @@ class RosterPanel(BasePanel):
         
         # Clear all UI element references
         self.lbl_money = None
+        self.btn_race = None
         self.btn_menu = None
         self.btn_view_active = None
         self.btn_view_retired = None
