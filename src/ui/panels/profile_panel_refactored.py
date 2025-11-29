@@ -262,15 +262,14 @@ class ProfilePanelRefactored(BasePanel):
         except Exception as e:
             print(f"[DEBUG] Error rendering turtle image: {e}")
             
-        # Update name with HTML formatting like original
+        # Update name with plain text
         if self.name_label:
-            self.name_label.set_text(f"<b><font size=5>{self.current_turtle.name}</font></b>")
+            self.name_label.set_text(f"{self.current_turtle.name}")
             
         # Update status
         if self.status_label:
             status = "ACTIVE" if not self.is_retired else "RETIRED"
-            status_color = "#00FF00" if not self.is_retired else "#FFFF00"
-            self.status_label.set_text(f"<font color={status_color}>[{status}]</font>")
+            self.status_label.set_text(f"[{status}]")
             
         # Update age
         if self.age_label:
