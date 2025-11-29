@@ -66,7 +66,7 @@ class ProfilePanelRefactored(BasePanel):
         )
         
         # Back button using our auto-sizing component
-        from ..components.reusable.input_components import Button
+        from ..components.reusable.input import Button
         self.back_button = Button(
             rect=pygame.Rect((width - 100, 10), (80, 40)),
             text="Back",
@@ -191,7 +191,7 @@ class ProfilePanelRefactored(BasePanel):
         )
         
         # Release button using our auto-sizing component
-        from ..components.reusable.input_components import Button
+        from ..components.reusable.input import Button
         self.release_button = Button(
             rect=pygame.Rect((260, 50), (80, 40)),
             text="Release",
