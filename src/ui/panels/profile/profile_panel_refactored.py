@@ -26,7 +26,7 @@ class ProfilePanelRefactored(BasePanel):
     def __init__(self, panel_id: str, title: str, game_state: TurboShellsGameStateInterface, 
                  event_bus: Optional[Any] = None):
         """Initialize the profile panel."""
-        super().__init__(panel_id, title, event_bus)
+        super().__init__(panel_id, title, event_bus, auto_close_event=False)  # Disable auto-close
         self.game_state = game_state
         self.logger = get_ui_rich_logger()
         
@@ -136,7 +136,8 @@ class ProfilePanelRefactored(BasePanel):
         """Show the profile panel and load turtle data."""
         if not self.manager:
             return
-        self.logger.info(f"Showing profile panel for turtle index: {self.game_state.get('profile_turtle_index', 'unknown')}")
+        self.logger.info(f"[ProfilePanel] Showing profile panel for turtle index: {self.game_state.get('profile_turtle_index', 'unknown')}")
+        self.logger.debug(f"[ProfilePanel] auto_close_event disabled: {not self.auto_close_event}")
         super().show()
         self._load_turtle_data()
         
@@ -227,12 +228,15 @@ class ProfilePanelRefactored(BasePanel):
     def handle_event(self, event: pygame.event.Event) -> bool:
         """Handle pygame events for the profile panel."""
         # Let base panel handle window close first
-        if super().handle_event(event):
+        base_result = super().handle_event(event)
+        if base_result:
+            self.logger.debug(f"[ProfilePanel] Base panel handled event: {event}")
             return True
                 
         # Handle button events through specialized components
         if hasattr(event, 'ui_element'):
             if self.header and event.ui_element == self.header.back_button.button:
+                self.logger.debug("[ProfilePanel] Back button clicked")
                 # Navigate back to roster
                 if self.event_bus:
                     self.event_bus.emit("ui:navigate", {"state": "ROSTER"})
@@ -241,6 +245,7 @@ class ProfilePanelRefactored(BasePanel):
                 return True
                 
             elif self.action_panel and event.ui_element == self.action_panel.release_button.button:
+                self.logger.debug("[ProfilePanel] Release button clicked")
                 # Release the turtle
                 if self.current_index is not None and self.current_turtle:
                     self.game_state.set('release_turtle', self.current_index)

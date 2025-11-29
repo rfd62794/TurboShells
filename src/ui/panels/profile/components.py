@@ -45,7 +45,7 @@ class ProfileHeader:
             action="back",
             manager=self.manager,
             container=self.panel,
-            config={'auto_resize': True, 'min_width': 80, 'padding': 20}
+            config={'auto_resize': False, 'min_width': 80, 'padding': 20}  # Disable auto-resize
         )
         
     def show(self) -> None:
@@ -99,7 +99,7 @@ class ProfileActionPanel:
             action="release",
             manager=self.manager,
             container=self.panel,
-            config={'auto_resize': True, 'min_width': 80, 'padding': 20}
+            config={'auto_resize': False, 'min_width': 80, 'padding': 20}  # Disable auto-resize
         )
         
     def update_button_state(self, can_release: bool, text: str = "Release") -> None:
