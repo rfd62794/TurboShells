@@ -1,9 +1,12 @@
-"""Refactored Roster Panel using component-based architecture."""
+"""Refactored Roster Panel using SRP components."""
 
 import pygame
 import pygame_gui
+from pygame_gui import UIManager
+from typing import Optional, Dict, Any, List
 from .base_panel import BasePanel
 from game.game_state_interface import TurboShellsGameStateInterface
+from ..events.event_types import UIEvents, EventData
 from core.rendering.turtle_render_engine import turtle_render_engine
 from ..components.roster.roster_view_toggle import RosterViewToggle
 from ..components.roster.turtle_action_buttons import TurtleActionButtons
@@ -44,7 +47,7 @@ class RosterPanelRefactored(BasePanel):
         
         # Listen for update_ui events from turtle action buttons
         if self.event_bus:
-            self.event_bus.subscribe('update_ui', self._on_update_ui)
+            self.event_bus.subscribe(UIEvents.UPDATE_UI, self._on_update_ui)
         
     def _create_window(self) -> None:
         """Create the roster panel window using SRP components."""
@@ -426,8 +429,8 @@ class RosterPanelRefactored(BasePanel):
         print(f"[RosterPanelRefactored] UI element references cleared")
             
     def _navigate(self, state: str) -> None:
-        """Navigate to another state."""
+        """Navigate to another state using standardized events."""
         if self.event_bus:
-            self.event_bus.emit("ui:navigate", {"state": state})
+            self.event_bus.emit(UIEvents.NAVIGATE, EventData.navigate(state))
         else:
             self.game_state.set('state', state)
