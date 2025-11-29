@@ -5,6 +5,7 @@ import pygame_gui
 from pygame_gui import UIManager
 from typing import Optional, Dict, Any
 from ..base_component import BaseComponent
+from ...events.event_types import UIEvents, EventData
 
 
 class TurtleActionButtons(BaseComponent):
@@ -109,19 +110,19 @@ class TurtleActionButtons(BaseComponent):
         """Handle train button click."""
         if self.game_state:
             self.game_state.set('train_turtle', self.turtle_index)
-        self._emit_event("train_clicked", self.turtle_index)
+        self._emit_event(UIEvents.TURTLE_TRAIN, EventData.turtle_action("train", self.turtle_index))
         
     def _handle_view(self) -> None:
         """Handle view button click."""
         if self.game_state:
             self.game_state.set('view_profile', self.turtle_index)
-        self._emit_event("view_clicked", self.turtle_index)
+        self._emit_event(UIEvents.TURTLE_VIEW, EventData.turtle_action("view", self.turtle_index))
         
     def _handle_retire(self) -> None:
         """Handle retire button click."""
         if self.game_state:
             self.game_state.set('retire_turtle', self.turtle_index)
-        self._emit_event("retire_clicked", self.turtle_index)
+        self._emit_event(UIEvents.TURTLE_RETIRE, EventData.turtle_action("retire", self.turtle_index))
         
     def _handle_select(self) -> None:
         """Handle select button click."""
@@ -130,10 +131,10 @@ class TurtleActionButtons(BaseComponent):
             self.game_state.set('set_active_racer', self.turtle_index)
             # Emit to global event bus if available
             if hasattr(self, 'event_bus') and self.event_bus:
-                self.event_bus.emit('update_ui', None)
+                self.event_bus.emit(UIEvents.UPDATE_UI, EventData.turtle_action("select", self.turtle_index))
             else:
                 # Fallback to local emission
-                self._emit_event("update_ui", None)
+                self._emit_event(UIEvents.UPDATE_UI, EventData.turtle_action("select", self.turtle_index))
         
     def update_mode(self, is_retired_turtle: bool, is_select_mode: bool, 
                    is_active_racer: bool = False) -> None:
