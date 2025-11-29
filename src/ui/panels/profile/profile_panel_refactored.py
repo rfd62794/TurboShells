@@ -53,10 +53,17 @@ class ProfilePanelRefactored(BasePanel):
         """Create the profile panel window using specialized components."""
         super()._create_window()
         if not self.window:
+            self.logger.error("[ProfilePanel] Failed to create window")
             return
             
+        self.logger.debug(f"[ProfilePanel] Window created: {self.window}")
+        self.logger.debug(f"[ProfilePanel] Window rect: {self.window.rect}")
+        
         # Get the window's container for proper positioning
         container = self.window.get_container()
+        self.logger.debug(f"[ProfilePanel] Window container: {container}")
+        self.logger.debug(f"[ProfilePanel] Container type: {type(container)}")
+        
         # Create layout manager with container reference (positions will be calculated relative to container)
         self.layout = ProfileLayout(container, self.manager, container)
         
@@ -68,6 +75,8 @@ class ProfilePanelRefactored(BasePanel):
         self._create_turtle_info_section()
         self._create_stats_section()
         self._create_history_section()
+        
+        self.logger.debug("[ProfilePanel] All components created")
         
     def _create_header(self) -> None:
         """Create the header section using specialized component."""
@@ -95,7 +104,7 @@ class ProfilePanelRefactored(BasePanel):
         self.turtle_info_panel = TurtleInfoPanel(
             rect=info_rect,
             manager=self.manager,
-            container=self.window.get_container(),
+            container=self.window.get_container(),  # Use get_container() like RosterPanel
             config={
                 'image_size': (120, 120),
                 'show_status': True,
@@ -104,33 +113,74 @@ class ProfilePanelRefactored(BasePanel):
         )
         
     def _create_stats_section(self) -> None:
-        """Create the stats section using reusable component."""
+        """Create the stats section using sub-panel pattern like original."""
         stats_rect = self.layout.get_position('stats')
-        self.logger.debug(f"[ProfilePanel] Creating stats section at {stats_rect}")
-        self.stats_panel = StatsPanel(
-            rect=stats_rect,
+        container = self.window.get_container()
+        
+        # Create stats sub-panel within the window container (like original)
+        self.stats_panel = pygame_gui.elements.UIPanel(
+            relative_rect=stats_rect,
             manager=self.manager,
-            container=self.window.get_container(),
-            config={
-                'header_text': 'DETAILED STATS',
-                'show_energy': True
-            }
+            container=container,
+            object_id="#profile_stats_panel"
         )
-        self.logger.debug(f"[ProfilePanel] Stats panel created: {self.stats_panel is not None}")
+        
+        # Stats header (within stats sub-panel)
+        self.stats_header = pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect((10, 10), (stats_rect.width - 20, 25)),
+            text='DETAILED STATS',
+            manager=self.manager,
+            container=self.stats_panel
+        )
+        
+        # Stats text box (within stats sub-panel)
+        self.stats_text = pygame_gui.elements.UITextBox(
+            relative_rect=pygame.Rect((10, 40), (stats_rect.width - 20, stats_rect.height - 70)),
+            html_text='Select a turtle to view stats',
+            manager=self.manager,
+            container=self.stats_panel
+        )
+        
+        # Energy label (within stats sub-panel)
+        self.energy_label = pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect((10, stats_rect.height - 25), (stats_rect.width - 20, 20)),
+            text='',
+            manager=self.manager,
+            container=self.stats_panel
+        )
+        
+        self.logger.debug(f"[ProfilePanel] Stats section created with sub-panel pattern")
             
     def _create_history_section(self) -> None:
-        """Create the race history section using reusable component."""
+        """Create the race history section using sub-panel pattern like original."""
         history_rect = self.layout.get_position('history')
-        self.race_history_panel = RaceHistoryPanel(
-            rect=history_rect,
+        container = self.window.get_container()
+        
+        # Create history sub-panel within the window container (like original)
+        self.history_panel = pygame_gui.elements.UIPanel(
+            relative_rect=history_rect,
             manager=self.manager,
-            container=self.window.get_container(),
-            config={
-                'header_text': 'RECENT RACE HISTORY',
-                'max_races': 5,
-                'show_header': True
-            }
+            container=container,
+            object_id="#profile_history_panel"
         )
+        
+        # History header (within history sub-panel)
+        self.history_header = pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect((10, 10), (history_rect.width - 20, 25)),
+            text='RECENT RACE HISTORY (Last 5)',
+            manager=self.manager,
+            container=self.history_panel
+        )
+        
+        # History text box (within history sub-panel)
+        self.history_text = pygame_gui.elements.UITextBox(
+            relative_rect=pygame.Rect((10, 40), (history_rect.width - 20, history_rect.height - 50)),
+            html_text='No race history available',
+            manager=self.manager,
+            container=self.history_panel
+        )
+        
+        self.logger.debug(f"[ProfilePanel] History section created with sub-panel pattern")
         
     def show(self) -> None:
         """Show the profile panel and load turtle data."""
@@ -182,7 +232,7 @@ class ProfilePanelRefactored(BasePanel):
             self._show_no_turtle()
             
     def _update_ui(self) -> None:
-        """Update UI elements with current turtle data using modular components."""
+        """Update UI elements with current turtle data using sub-panel structure."""
         if not self.current_turtle:
             self._show_no_turtle()
             return
@@ -191,16 +241,44 @@ class ProfilePanelRefactored(BasePanel):
         if self.turtle_info_panel:
             self.turtle_info_panel.update_turtle_info(self.current_turtle, self.is_retired)
             
-        # Update stats panel
-        if self.stats_panel:
-            self.stats_panel.update_stats(self.current_turtle, self.is_retired)
-                
-        # Update race history panel
-        if self.race_history_panel:
-            if hasattr(self.current_turtle, 'race_history') and self.current_turtle.race_history:
-                self.race_history_panel.update_history(self.current_turtle.race_history)
+        # Update stats section (sub-panel elements)
+        if self.stats_text and self.energy_label:
+            stats_lines = [
+                f"Speed: {self.current_turtle.speed}",
+                f"Max Energy: {self.current_turtle.max_energy}",
+                f"Recovery: {self.current_turtle.recovery}",
+                f"Swim: {self.current_turtle.swim}",
+                f"Climb: {self.current_turtle.climb}",
+                f"Stamina: {self.current_turtle.stamina}",
+                f"Luck: {self.current_turtle.luck}",
+                f"Total Races: {len(self.current_turtle.race_history)}",
+                f"Total Wins: {self.current_turtle.wins}"
+            ]
+            stats_text = "\n".join(stats_lines)
+            self.stats_text.set_text(stats_text)
+            
+            # Update energy (for active turtles only)
+            if not self.is_retired:
+                energy_pct = int((self.current_turtle.current_energy / self.current_turtle.max_energy) * 100)
+                self.energy_label.set_text(f"Energy: {self.current_turtle.current_energy}/{self.current_turtle.max_energy} ({energy_pct}%)")
             else:
-                self.race_history_panel.clear()
+                self.energy_label.set_text("")
+                
+        # Update race history section (sub-panel elements)
+        if self.history_text and hasattr(self.current_turtle, 'race_history') and self.current_turtle.race_history:
+            # Show last 5 races
+            recent_races = self.current_turtle.race_history[-5:]
+            history_lines = []
+            for i, race in enumerate(recent_races):
+                position = race.get('position', 'N/A')
+                opponents = race.get('opponents', [])
+                opponent_text = f"vs {', '.join(opponents[:3])}" if opponents else "Solo Race"
+                history_lines.append(f"Race {i+1}: {position} - {opponent_text}")
+            
+            history_text = "\n".join(history_lines) if history_lines else "No recent races"
+            self.history_text.set_text(history_text)
+        elif self.history_text:
+            self.history_text.set_text("No race history available")
             
         # Update release button state through specialized action panel
         if self.action_panel:
@@ -216,10 +294,16 @@ class ProfilePanelRefactored(BasePanel):
         # Clear all modular components
         if self.turtle_info_panel:
             self.turtle_info_panel._clear_info()
-        if self.stats_panel:
-            self.stats_panel.update_stats(None)
-        if self.race_history_panel:
-            self.race_history_panel.clear()
+            
+        # Clear stats section (sub-panel elements)
+        if self.stats_text:
+            self.stats_text.set_text("Select a turtle to view stats")
+        if self.energy_label:
+            self.energy_label.set_text("")
+            
+        # Clear history section (sub-panel elements)
+        if self.history_text:
+            self.history_text.set_text("No race history available")
             
         # Disable release button through specialized action panel
         if self.action_panel:
