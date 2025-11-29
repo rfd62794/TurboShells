@@ -5,10 +5,10 @@ Dropdown component for selection from a list of options.
 import pygame
 import pygame_gui
 from typing import Optional, Dict, Any, Callable, List
-from ...base_component import BaseComponent
+from .base_input import BaseInputComponent
 
 
-class Dropdown(BaseComponent):
+class Dropdown(BaseInputComponent):
     """Dropdown selection component."""
     
     def __init__(self, rect: pygame.Rect, options: List[str], action: str,
@@ -23,28 +23,22 @@ class Dropdown(BaseComponent):
             container: pygame_gui container (optional)
             config: Configuration options
         """
-        super().__init__(rect, manager)
-        self.options = options
-        self.action = action
-        self.config = config or {}
-        self.container = container
+        super().__init__(rect, action, manager, container, config)
         
-        # Dropdown state
+        # Dropdown-specific properties
+        self.options = options
         self.selected_index = 0
         self.on_selection_change: Optional[Callable[[int, str], None]] = None
         
         # Style options
         self.placeholder = self.config.get('placeholder', 'Select an option...')
         
-        self.dropdown: Optional[pygame_gui.elements.UIDropDownMenu] = None
-        self.on_action: Optional[Callable[[str], None]] = None
-        
         if self.manager and self.options:
             self._create_dropdown()
             
     def _create_dropdown(self) -> None:
         """Create the pygame_gui dropdown."""
-        self.dropdown = pygame_gui.elements.UIDropDownMenu(
+        self.ui_element = pygame_gui.elements.UIDropDownMenu(
             options_list=self.options,
             starting_option=self.options[self.selected_index] if self.selected_index < len(self.options) else self.options[0],
             relative_rect=self.rect,
@@ -52,19 +46,13 @@ class Dropdown(BaseComponent):
             container=self.container
         )
         
-    def render(self, surface: pygame.Surface) -> None:
-        """Render dropdown (handled by pygame_gui)."""
-        # Dropdown is rendered by pygame_gui automatically
-        pass
-    
-    def handle_event(self, event: pygame.event.Event) -> bool:
-        """Handle pygame events."""
-        return self._handle_component_event(event)
+        # Store reference for backward compatibility
+        self.dropdown = self.ui_element
         
     def _handle_component_event(self, event: pygame.event.Event) -> bool:
         """Handle dropdown selection events."""
         if event.type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED:
-            if event.ui_element == self.dropdown:
+            if event.ui_element == self.ui_element:
                 # Get selected text
                 selected_text = event.text
                 
@@ -79,34 +67,29 @@ class Dropdown(BaseComponent):
                     self.on_selection_change(self.selected_index, selected_text)
                     
                 # Emit selection event
-                self._emit_event('dropdown_changed', {
-                    'action': self.action,
+                self._emit_action_event({
                     'index': self.selected_index,
                     'value': selected_text
                 })
                 
-                # Call action callback
-                if self.on_action:
-                    self.on_action(self.action)
-                    
                 return True
         return False
         
     def set_options(self, options: List[str]) -> None:
         """Update dropdown options."""
         self.options = options
-        if self.dropdown:
+        if self.ui_element:
             # Recreate dropdown with new options
-            if hasattr(self.dropdown, 'kill'):
-                self.dropdown.kill()
+            if hasattr(self.ui_element, 'kill'):
+                self.ui_element.kill()
             self._create_dropdown()
             
     def set_selected_index(self, index: int) -> None:
         """Set selected option by index."""
         if 0 <= index < len(self.options):
             self.selected_index = index
-            if self.dropdown:
-                self.dropdown.selected_option = self.options[index]
+            if self.ui_element:
+                self.ui_element.selected_option = self.options[index]
                 
     def set_selected_value(self, value: str) -> None:
         """Set selected option by value."""
@@ -126,7 +109,3 @@ class Dropdown(BaseComponent):
     def set_selection_callback(self, callback: Callable[[int, str], None]) -> None:
         """Set selection change callback."""
         self.on_selection_change = callback
-        
-    def set_action_callback(self, callback: Callable[[str], None]) -> None:
-        """Set action callback."""
-        self.on_action = callback

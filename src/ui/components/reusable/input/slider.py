@@ -5,10 +5,10 @@ Slider component for numeric value selection.
 import pygame
 import pygame_gui
 from typing import Optional, Dict, Any, Callable
-from ...base_component import BaseComponent
+from .base_input import BaseInputComponent
 
 
-class Slider(BaseComponent):
+class Slider(BaseInputComponent):
     """Slider component for numeric value selection."""
     
     def __init__(self, rect: pygame.Rect, min_value: float, max_value: float, 
@@ -24,23 +24,19 @@ class Slider(BaseComponent):
             container: pygame_gui container (optional)
             config: Configuration options
         """
-        super().__init__(rect, manager)
+        super().__init__(rect, action, manager, container, config)
+        
+        # Slider-specific properties
         self.min_value = min_value
         self.max_value = max_value
-        self.action = action
-        self.config = config or {}
-        self.container = container
-        
-        # Slider state
         self.current_value = (min_value + max_value) / 2  # Default to middle
         self.step_size = self.config.get('step_size', 1.0)
         self.show_value = self.config.get('show_value', True)
         
         # Callbacks
         self.on_value_change: Optional[Callable[[float], None]] = None
-        self.on_action: Optional[Callable[[str], None]] = None
         
-        self.slider: Optional[pygame_gui.elements.UIHorizontalSlider] = None
+        # Additional UI elements
         self.value_label: Optional[pygame_gui.elements.UILabel] = None
         
         if self.manager:
@@ -55,13 +51,16 @@ class Slider(BaseComponent):
         else:
             start_value = 50
             
-        self.slider = pygame_gui.elements.UIHorizontalSlider(
+        self.ui_element = pygame_gui.elements.UIHorizontalSlider(
             start_value=start_value,
             value_range=(0, 100),  # Use 0-100 for internal representation
             relative_rect=self.rect,
             manager=self.manager,
             container=self.container
         )
+        
+        # Store reference for backward compatibility
+        self.slider = self.ui_element
         
         # Create value label if enabled
         if self.show_value:
@@ -78,19 +77,10 @@ class Slider(BaseComponent):
                 container=self.container
             )
             
-    def render(self, surface: pygame.Surface) -> None:
-        """Render slider (handled by pygame_gui)."""
-        # Slider is rendered by pygame_gui automatically
-        pass
-    
-    def handle_event(self, event: pygame.event.Event) -> bool:
-        """Handle pygame events."""
-        return self._handle_component_event(event)
-        
     def _handle_component_event(self, event: pygame.event.Event) -> bool:
         """Handle slider value change events."""
         if event.type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
-            if event.ui_element == self.slider:
+            if event.ui_element == self.ui_element:
                 # Convert from 0-100 to actual value range
                 value_range = self.max_value - self.min_value
                 if value_range > 0:
@@ -114,15 +104,10 @@ class Slider(BaseComponent):
                     self.on_value_change(self.current_value)
                     
                 # Emit value change event
-                self._emit_event('slider_changed', {
-                    'action': self.action,
+                self._emit_action_event({
                     'value': self.current_value
                 })
                 
-                # Call action callback
-                if self.on_action:
-                    self.on_action(self.action)
-                    
                 return True
         return False
         
@@ -132,7 +117,7 @@ class Slider(BaseComponent):
         value = max(self.min_value, min(self.max_value, value))
         self.current_value = value
         
-        if self.slider:
+        if self.ui_element:
             # Convert to 0-100 range for pygame_gui
             value_range = self.max_value - self.min_value
             if value_range > 0:
@@ -140,7 +125,7 @@ class Slider(BaseComponent):
             else:
                 slider_value = 50
                 
-            self.slider.set_current_value(slider_value)
+            self.ui_element.set_current_value(slider_value)
             
         # Update value label
         if self.value_label:
@@ -162,6 +147,8 @@ class Slider(BaseComponent):
         """Set value change callback."""
         self.on_value_change = callback
         
-    def set_action_callback(self, callback: Callable[[str], None]) -> None:
-        """Set action callback."""
-        self.on_action = callback
+    def destroy(self) -> None:
+        """Clean up component resources."""
+        if self.value_label and hasattr(self.value_label, 'kill'):
+            self.value_label.kill()
+        super().destroy()

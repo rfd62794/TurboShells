@@ -5,10 +5,10 @@ Reusable Button component with auto-sizing and styling options.
 import pygame
 import pygame_gui
 from typing import Optional, Dict, Any, Callable
-from ...base_component import BaseComponent
+from .base_input import BaseInputComponent
 
 
-class Button(BaseComponent):
+class Button(BaseInputComponent):
     """Reusable button component with auto-sizing and styling options."""
     
     def __init__(self, rect: pygame.Rect, text: str, action: str, manager=None, container=None, config=None):
@@ -22,11 +22,10 @@ class Button(BaseComponent):
             container: pygame_gui container (optional)
             config: Configuration options
         """
-        super().__init__(rect, manager)
+        super().__init__(rect, action, manager, container, config)
+        
+        # Button-specific properties
         self.text = text
-        self.action = action
-        self.config = config or {}
-        self.container = container
         
         # Style options
         self.style = self.config.get('style', 'primary')  # primary, secondary, danger
@@ -34,13 +33,10 @@ class Button(BaseComponent):
         self.icon = self.config.get('icon', None)
         self.tooltip = self.config.get('tooltip', '')
         
-        # Auto-sizing options
+        # Auto-sizing options (override base defaults for buttons)
         self.auto_resize = self.config.get('auto_resize', True)
         self.min_width = self.config.get('min_width', rect.width)
         self.padding = self.config.get('padding', 20)  # Horizontal padding for text
-        
-        self.button: Optional[pygame_gui.elements.UIButton] = None
-        self.on_action: Optional[Callable[[str], None]] = None
         
         if self.manager:
             self._create_button()
@@ -52,12 +48,15 @@ class Button(BaseComponent):
         if self.auto_resize:
             button_rect = self._calculate_optimal_rect()
             
-        self.button = pygame_gui.elements.UIButton(
+        self.ui_element = pygame_gui.elements.UIButton(
             relative_rect=button_rect,
             text=self.text,
             manager=self.manager,
             container=self.container
         )
+        
+        # Store reference for backward compatibility
+        self.button = self.ui_element
         
     def _calculate_optimal_rect(self) -> pygame.Rect:
         """Calculate the optimal button size based on text content."""
@@ -85,73 +84,44 @@ class Button(BaseComponent):
         # Create new rect with same position but optimal size
         return pygame.Rect(self.rect.x, self.rect.y, optimal_width, optimal_height)
         
-    def render(self, surface: pygame.Surface) -> None:
-        """Render button (handled by pygame_gui)."""
-        # Button is rendered by pygame_gui automatically
-        pass
-    
-    def handle_event(self, event: pygame.event.Event) -> bool:
-        """Handle pygame events."""
-        return self._handle_component_event(event)
-        
     def _handle_component_event(self, event: pygame.event.Event) -> bool:
         """Handle button press events."""
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
-            if event.ui_element == self.button:
-                if self.on_action:
-                    self.on_action(self.action)
-                self._emit_event('button_press', {'action': self.action})
+            if event.ui_element == self.ui_element:
+                self._emit_action_event()
                 return True
         return False
         
     def set_text(self, text: str) -> None:
         """Update button text and resize if needed."""
         self.text = text
-        if self.button:
+        if self.ui_element:
             # Update text first
-            self.button.set_text(text)
+            self.ui_element.set_text(text)
             
             # Recreate button with new size if auto-resizing
             if self.auto_resize:
-                self._recreate_button_with_new_size()
+                self._recreate_element_with_new_size()
                 
-    def _recreate_button_with_new_size(self) -> None:
+    def _recreate_element_with_new_size(self) -> None:
         """Recreate the button with optimal size for current text."""
-        if not self.button:
+        if not self.ui_element:
             return
             
         # Store current state
-        was_enabled = self.button.is_enabled
-        old_rect = self.button.rect
+        was_enabled = self.ui_element.is_enabled
+        old_rect = self.ui_element.rect
         
         # Calculate new optimal size
         new_rect = self._calculate_optimal_rect()
         
         # Kill old button
-        if hasattr(self.button, 'kill'):
-            self.button.kill()
+        if hasattr(self.ui_element, 'kill'):
+            self.ui_element.kill()
             
         # Create new button with optimal size
-        self.button = pygame_gui.elements.UIButton(
-            relative_rect=new_rect,
-            text=self.text,
-            manager=self.manager,
-            container=self.container
-        )
+        self._create_button()
         
         # Restore enabled state
         if not was_enabled:
-            self.button.disable()
-            
-    def set_enabled(self, enabled: bool) -> None:
-        """Set button enabled state."""
-        super().set_enabled(enabled)
-        if self.button:
-            if enabled:
-                self.button.enable()
-            else:
-                self.button.disable()
-                
-    def set_action_callback(self, callback: Callable[[str], None]) -> None:
-        """Set action callback."""
-        self.on_action = callback
+            self.ui_element.disable()
