@@ -94,7 +94,7 @@ from ui.panels.shop_panel import ShopPanel
 from ui.panels.roster_panel_refactored import RosterPanelRefactored as RosterPanel
 from ui.panels.race_hud_panel import RaceHUDPanel
 from ui.panels.race_result_panel import RaceResultPanel
-from ui.panels.profile_panel_refactored import ProfilePanelRefactored as ProfilePanel
+from ui.panels.profile_panel_refactored import ProfilePanelRefactored
 from ui.panels.breeding_panel import BreedingPanel
 from ui.panels.voting_panel import VotingPanel
 from ui.data_binding import DataBindingManager
@@ -192,7 +192,7 @@ class TurboShellsGame:
         self.race_result_panel = RaceResultPanel(self.game_state_interface)
         self.ui_manager.register_panel("race_result", self.race_result_panel)
         
-        self.profile_panel = ProfilePanel("profile", "Turtle Profile", self.game_state_interface, self.ui_event_bus)
+        self.profile_panel = ProfilePanelRefactored("profile", "Turtle Profile", self.game_state_interface, self.ui_event_bus)
         self.ui_manager.register_panel("profile", self.profile_panel)
         
         self.breeding_panel = BreedingPanel(self.game_state_interface)
@@ -551,14 +551,7 @@ class TurboShellsGame:
                 return panel
         return None
 
-    def _on_ui_navigate(self, payload):
-        target_state = payload.get("state")
-        print(f"[TurboShellsGame] Received ui:navigate to '{target_state}', current state: '{self.state}'")
-        if target_state and target_state != self.state:
-            print(f"[TurboShellsGame] Updating state from '{self.state}' to '{target_state}'")
-            self.state = target_state
-        else:
-            print(f"[TurboShellsGame] Ignoring navigate event - target_state: {target_state}, current state: '{self.state}'")
+    # Removed _on_ui_navigate method - SceneController handles all navigation now
 
     def auto_save(self, trigger="manual"):
         """Auto-save game state using GameStateManager"""

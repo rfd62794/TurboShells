@@ -122,11 +122,11 @@ class ProfilePanelRefactored(BasePanel):
             container=self.visual_panel
         )
         
-    def _create_stats_section(self, container) -> None:
-        """Create the right stats section with detailed turtle attributes."""
-        # Stats panel - right side
+    def _create_stats_section(self, container, width: int) -> None:
+        """Create the stats section on the right side."""
+        # Stats panel - right side, top
         self.stats_panel = pygame_gui.elements.UIPanel(
-            relative_rect=pygame.Rect((320, 70), (360, 280)),
+            relative_rect=pygame.Rect((320, 70), (340, 250)),
             manager=self.manager,
             container=container,
             object_id="#profile_stats_panel"
@@ -142,7 +142,7 @@ class ProfilePanelRefactored(BasePanel):
         
         # Stats Text Box (will show all stats using TextBox component)
         self.stats_text = TextBox(
-            rect=pygame.Rect((10, 40), (340, 180)),
+            rect=pygame.Rect((10, 40), (320, 180)),  # Reduced width to fit container
             text="",
             manager=self.manager,
             config={'read_only': True}
@@ -178,7 +178,7 @@ class ProfilePanelRefactored(BasePanel):
         
         # History Text Box (will show race history using TextBox component)
         self.history_text = TextBox(
-            rect=pygame.Rect((10, 40), (340, 120)),
+            rect=pygame.Rect((10, 40), (280, 120)),  # Reduced width to fit container
             text="",
             manager=self.manager,
             config={'read_only': True}
