@@ -48,17 +48,18 @@ class ProfilePanelRefactored(BasePanel):
         container = self.window.get_container()
         width = self.size[0] - 40
         
-        # Create UI elements
+        # Create UI elements matching original layout
         self._create_header_section(container, width)
-        self._create_stats_section(container, width)
+        self._create_visual_section(container)  # Left panel with turtle image
+        self._create_stats_section(container)    # Right panel with detailed stats
         self._create_history_section(container, width)
         self._create_action_buttons(container, width)
         
     def _create_header_section(self, container, width: int) -> None:
-        """Create the header section with turtle name and image."""
+        """Create the header section with back button."""
         # Header panel
         header = pygame_gui.elements.UIPanel(
-            relative_rect=pygame.Rect((0, 0), (width + 40, 80)),
+            relative_rect=pygame.Rect((0, 0), (width + 40, 60)),
             manager=self.manager,
             container=container,
             object_id="#profile_header"
@@ -66,70 +67,94 @@ class ProfilePanelRefactored(BasePanel):
         
         # Back button
         self.back_button = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((10, 10), (80, 30)),
+            relative_rect=pygame.Rect((width - 100, 10), (100, 40)),
             text="Back",
             manager=self.manager,
             container=header,
             object_id="#back_button"
         )
         
-        # Turtle name label (will be updated when turtle data loads)
-        self.name_label = pygame_gui.elements.UILabel(
-            relative_rect=pygame.Rect((100, 20), (width - 120, 40)),
-            text="Select a turtle to view profile",
-            manager=self.manager,
-            container=header,
-            object_id="#turtle_name"
-        )
-        
-    def _create_stats_section(self, container, width: int) -> None:
-        """Create the stats section showing turtle attributes."""
-        # Stats panel
-        stats_panel = pygame_gui.elements.UIPanel(
-            relative_rect=pygame.Rect((0, 90), (width + 40, 200)),
+    def _create_visual_section(self, container) -> None:
+        """Create the left visual section with turtle image and basic info."""
+        # Visual panel - left side
+        self.visual_panel = pygame_gui.elements.UIPanel(
+            relative_rect=pygame.Rect((10, 70), (300, 280)),
             manager=self.manager,
             container=container,
-            object_id="#stats_panel"
+            object_id="#profile_visual_panel"
         )
         
-        # Create stat labels
-        stats = [
-            ("Speed", "speed"),
-            ("Energy", "energy"),
-            ("Stamina", "stamina"),
-            ("Luck", "luck"),
-            ("Races", "races"),
-            ("Wins", "wins")
-        ]
+        # Turtle Image (will be updated dynamically)
+        self.turtle_image = pygame_gui.elements.UIImage(
+            relative_rect=pygame.Rect((90, 30), (120, 120)),
+            image_surface=pygame.Surface((120, 120)),
+            manager=self.manager,
+            container=self.visual_panel
+        )
         
-        y_offset = 10
-        for label_text, stat_key in stats:
-            # Stat label
-            label = pygame_gui.elements.UILabel(
-                relative_rect=pygame.Rect((20, y_offset), (100, 25)),
-                text=f"{label_text}:",
-                manager=self.manager,
-                container=stats_panel,
-                object_id=f"#{stat_key}_label"
-            )
-            
-            # Stat value
-            value_label = pygame_gui.elements.UILabel(
-                relative_rect=pygame.Rect((130, y_offset), (100, 25)),
-                text="-",
-                manager=self.manager,
-                container=stats_panel,
-                object_id=f"#{stat_key}_value"
-            )
-            
-            self.stats_labels[stat_key] = value_label
-            y_offset += 30
+        # Turtle Name
+        self.name_label = pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect((10, 160), (280, 30)),
+            text="",
+            manager=self.manager,
+            container=self.visual_panel
+        )
+        
+        # Status Label  
+        self.status_label = pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect((10, 195), (280, 25)),
+            text="",
+            manager=self.manager,
+            container=self.visual_panel
+        )
+        
+        # Age Label
+        self.age_label = pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect((10, 225), (280, 25)),
+            text="",
+            manager=self.manager,
+            container=self.visual_panel
+        )
+        
+    def _create_stats_section(self, container) -> None:
+        """Create the right stats section with detailed turtle attributes."""
+        # Stats panel - right side
+        self.stats_panel = pygame_gui.elements.UIPanel(
+            relative_rect=pygame.Rect((320, 70), (360, 280)),
+            manager=self.manager,
+            container=container,
+            object_id="#profile_stats_panel"
+        )
+        
+        # Stats Header
+        stats_header = pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect((10, 10), (340, 25)),
+            text="DETAILED STATS",
+            manager=self.manager,
+            container=self.stats_panel
+        )
+        
+        # Stats Text Box (will show all stats in HTML format like original)
+        self.stats_text = pygame_gui.elements.UITextBox(
+            relative_rect=pygame.Rect((10, 40), (340, 180)),
+            html_text="",
+            manager=self.manager,
+            container=self.stats_panel
+        )
+        
+        # Energy Label (for active turtles)
+        self.energy_label = pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect((10, 230), (340, 20)),
+            text="",
+            manager=self.manager,
+            container=self.stats_panel
+        )
             
     def _create_history_section(self, container, width: int) -> None:
         """Create the race history section."""
-        # History panel
+        # History panel - bottom left
         history_panel = pygame_gui.elements.UIPanel(
-            relative_rect=pygame.Rect((0, 300), (width + 40, 180)),
+            relative_rect=pygame.Rect((10, 360), (300, 140)),
             manager=self.manager,
             container=container,
             object_id="#history_panel"
@@ -137,8 +162,8 @@ class ProfilePanelRefactored(BasePanel):
         
         # History title
         history_title = pygame_gui.elements.UILabel(
-            relative_rect=pygame.Rect((20, 10), (200, 25)),
-            text="Recent Race History:",
+            relative_rect=pygame.Rect((10, 10), (200, 25)),
+            text="RECENT RACE HISTORY",
             manager=self.manager,
             container=history_panel,
             object_id="#history_title"
@@ -146,7 +171,7 @@ class ProfilePanelRefactored(BasePanel):
         
         # History text
         self.history_text = pygame_gui.elements.UITextBox(
-            relative_rect=pygame.Rect((20, 40), (width - 40, 120)),
+            relative_rect=pygame.Rect((10, 40), (280, 90)),
             html_text="No race history yet",
             manager=self.manager,
             container=history_panel,
@@ -155,9 +180,9 @@ class ProfilePanelRefactored(BasePanel):
         
     def _create_action_buttons(self, container, width: int) -> None:
         """Create the action buttons section."""
-        # Action panel
+        # Action panel - bottom right
         action_panel = pygame_gui.elements.UIPanel(
-            relative_rect=pygame.Rect((0, 490), (width + 40, 50)),
+            relative_rect=pygame.Rect((320, 360), (360, 140)),
             manager=self.manager,
             container=container,
             object_id="#action_panel"
@@ -165,7 +190,7 @@ class ProfilePanelRefactored(BasePanel):
         
         # Release button
         self.release_button = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((width - 120, 10), (100, 30)),
+            relative_rect=pygame.Rect((260, 50), (80, 40)),
             text="Release",
             manager=self.manager,
             container=action_panel,
@@ -181,23 +206,36 @@ class ProfilePanelRefactored(BasePanel):
         
     def _load_turtle_data(self) -> None:
         """Load the current turtle's data and update UI."""
-        # Get current turtle index from game state
-        if hasattr(self.game_state.game, 'profile_turtle_index'):
-            self.current_index = self.game_state.game.profile_turtle_index
-        else:
-            self.current_index = self.game_state.get('profile_turtle_index', 0)
-            
-        # Get turtle data
-        if self.current_index is not None:
-            turtle_data = self.game_state.get('roster', [])
-            if self.current_index < len(turtle_data):
-                self.current_turtle = turtle_data[self.current_index]
-                self._update_ui()
+        # Get turtle index from game state
+        index = self.game_state.get('profile_turtle_index', 0)
+        show_retired = self.game_state.get('show_retired_view', False)
+        
+        # Get turtle from appropriate roster
+        if show_retired:
+            retired_roster = self.game_state.get('retired_roster', [])
+            if index < len(retired_roster):
+                self.current_turtle = retired_roster[index]
+                self.current_index = index
+                self.is_retired = True
             else:
                 self.current_turtle = None
-                self._show_no_turtle()
+                self.current_index = None
+                self.is_retired = False
         else:
-            self.current_turtle = None
+            roster = self.game_state.get('roster', [])
+            if index < len(roster) and roster[index]:
+                self.current_turtle = roster[index]
+                self.current_index = index
+                self.is_retired = False
+            else:
+                self.current_turtle = None
+                self.current_index = None
+                self.is_retired = False
+                
+        # Update UI with turtle data
+        if self.current_turtle:
+            self._update_ui()
+        else:
             self._show_no_turtle()
             
     def _update_ui(self) -> None:
@@ -206,28 +244,64 @@ class ProfilePanelRefactored(BasePanel):
             self._show_no_turtle()
             return
             
-        # Update name
-        if self.name_label:
-            turtle_name = self.current_turtle.get('name', 'Unknown Turtle')
-            self.name_label.set_text(f"Profile: {turtle_name}")
-            
-        # Update stats
-        stats_to_update = {
-            'speed': self.current_turtle.get('speed', 0),
-            'energy': self.current_turtle.get('energy', 0),
-            'stamina': self.current_turtle.get('stamina', 0),
-            'luck': self.current_turtle.get('luck', 0),
-            'races': len(self.current_turtle.get('race_history', [])),
-            'wins': self.current_turtle.get('wins', 0)
-        }
+        # Import turtle renderer for image
+        from core.rendering.pygame_turtle_renderer import render_turtle_pygame
         
-        for stat_key, value in stats_to_update.items():
-            if stat_key in self.stats_labels:
-                self.stats_labels[stat_key].set_text(str(value))
+        # Update turtle image
+        try:
+            turtle_img = render_turtle_pygame(self.current_turtle, size=120)
+            if self.turtle_image:
+                self.turtle_image.set_image(turtle_img)
+        except Exception as e:
+            print(f"[DEBUG] Error rendering turtle image: {e}")
+            
+        # Update name with HTML formatting like original
+        if self.name_label:
+            turtle_name = getattr(self.current_turtle, 'name', 'Unknown Turtle')
+            self.name_label.set_text(f"<b><font size=5>{turtle_name}</font></b>")
+            
+        # Update status
+        if self.status_label:
+            status = "ACTIVE" if not self.is_retired else "RETIRED"
+            status_color = "#00FF00" if not self.is_retired else "#FFFF00"
+            self.status_label.set_text(f"<font color={status_color}>[{status}]</font>")
+            
+        # Update age
+        if self.age_label:
+            age = getattr(self.current_turtle, 'age', 0)
+            self.age_label.set_text(f"Age: {age}")
+            
+        # Update detailed stats in HTML format like original
+        if self.stats_text:
+            stats_html = f"""
+            <b>Speed:</b> {getattr(self.current_turtle, 'speed', 0)}<br>
+            <b>Max Energy:</b> {getattr(self.current_turtle, 'max_energy', 0)}<br>
+            <b>Recovery:</b> {getattr(self.current_turtle, 'recovery', 0)}<br>
+            <b>Swim:</b> {getattr(self.current_turtle, 'swim', 0)}<br>
+            <b>Climb:</b> {getattr(self.current_turtle, 'climb', 0)}<br>
+            <b>Stamina:</b> {getattr(self.current_turtle, 'stamina', 0)}<br>
+            <b>Luck:</b> {getattr(self.current_turtle, 'luck', 0)}<br>
+            <b>Total Races:</b> {len(getattr(self.current_turtle, 'race_history', []))}<br>
+            <b>Total Wins:</b> {getattr(self.current_turtle, 'wins', 0)}
+            """
+            self.stats_text.set_text(stats_html)
+            
+        # Update energy (for active turtles only)
+        if self.energy_label:
+            if not self.is_retired:
+                current_energy = getattr(self.current_turtle, 'current_energy', 0)
+                max_energy = getattr(self.current_turtle, 'max_energy', 0)
+                if max_energy > 0:
+                    energy_pct = int((current_energy / max_energy) * 100)
+                    self.energy_label.set_text(f"Energy: {current_energy}/{max_energy} ({energy_pct}%)")
+                else:
+                    self.energy_label.set_text(f"Energy: {current_energy}")
+            else:
+                self.energy_label.set_text("")
                 
         # Update history
         if self.history_text:
-            race_history = self.current_turtle.get('race_history', [])
+            race_history = getattr(self.current_turtle, 'race_history', [])
             if race_history:
                 history_html = "<br>".join([
                     f"Race {race.get('number', '?')}: Position {race.get('position', '?')} - ${race.get('earnings', 0)}"
@@ -241,7 +315,7 @@ class ProfilePanelRefactored(BasePanel):
         if self.release_button:
             # Don't allow releasing the only active turtle
             active_turtles = [t for t in self.game_state.get('roster', []) if t is not None]
-            if len(active_turtles) <= 1:
+            if len(active_turtles) <= 1 and not self.is_retired:
                 self.release_button.disable()
                 self.release_button.set_text("Cannot Release")
             else:
@@ -250,12 +324,27 @@ class ProfilePanelRefactored(BasePanel):
                 
     def _show_no_turtle(self) -> None:
         """Show UI when no turtle is selected."""
+        # Clear turtle image
+        if self.turtle_image:
+            self.turtle_image.set_image(pygame.Surface((120, 120)))
+            
+        # Update name
         if self.name_label:
             self.name_label.set_text("No turtle selected")
             
-        # Clear all stats
-        for stat_label in self.stats_labels.values():
-            stat_label.set_text("-")
+        # Clear status and age
+        if self.status_label:
+            self.status_label.set_text("")
+        if self.age_label:
+            self.age_label.set_text("")
+            
+        # Clear stats
+        if self.stats_text:
+            self.stats_text.set_text("Select a turtle to view profile")
+            
+        # Clear energy
+        if self.energy_label:
+            self.energy_label.set_text("")
             
         # Clear history
         if self.history_text:
