@@ -24,7 +24,7 @@ RECOVERY_THRESHOLD = 0.5
 
 
 class Turtle:
-    def __init__(self, name, speed, energy, recovery, swim, climb, genetics=None):
+    def __init__(self, name, speed, energy, recovery, swim, climb, stamina=0, luck=0, genetics=None):
         # Identity
         self.id = str(uuid.uuid4())[:8]  # Unique ID for tracking
         self.name = name
@@ -38,6 +38,8 @@ class Turtle:
             "recovery": recovery,
             "swim": swim,
             "climb": climb,
+            "stamina": stamina,
+            "luck": luck,
         }
 
         # Dynamic Race State (Reset before every race)
@@ -90,8 +92,10 @@ class Turtle:
 
         # 1. RECOVERY LOGIC
         if self.is_resting:
-            # Recover 10% of recovery stat per tick
-            self.current_energy += self.stats["recovery"] * RECOVERY_RATE
+            # Recover 10% of recovery stat per tick, boosted by stamina
+            stamina_bonus = self.stats["stamina"] / 20.0  # Stamina adds 5% recovery per point
+            recovery_rate = RECOVERY_RATE * (1 + stamina_bonus)
+            self.current_energy += self.stats["recovery"] * recovery_rate
 
             # Check if ready to run again
             if self.current_energy >= (self.stats["max_energy"] * RECOVERY_THRESHOLD):
@@ -203,6 +207,19 @@ class Turtle:
     @property
     def climb(self):
         return self.stats["climb"]
+
+    @property
+    def stamina(self):
+        return self.stats["stamina"]
+
+    @property
+    def luck(self):
+        return self.stats["luck"]
+
+    @property
+    def wins(self):
+        """Calculate wins from race history"""
+        return sum(1 for race in self.race_history if race.get('position') == 1)
 
     # --- Genetics Methods ---
 

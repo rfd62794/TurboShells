@@ -132,6 +132,8 @@ def generate_random_turtle(level=1, use_influenced_genetics=False):
     recovery = 1
     swim = 1
     climb = 1
+    stamina = 1
+    luck = 1
 
     # Budget Logic
     # Each level gives roughly 10 points to distribute
@@ -139,7 +141,7 @@ def generate_random_turtle(level=1, use_influenced_genetics=False):
     budget = 15 + (level * 10)
 
     while budget > 0:
-        choice = random.randint(0, 4)
+        choice = random.randint(0, 6)
         if choice == 0:  # Speed
             speed += 1
             budget -= 1
@@ -155,9 +157,15 @@ def generate_random_turtle(level=1, use_influenced_genetics=False):
         elif choice == 4:  # Climb
             climb += 1
             budget -= 1
+        elif choice == 5:  # Stamina
+            stamina += 1
+            budget -= 1
+        elif choice == 6:  # Luck
+            luck += 1
+            budget -= 1
 
     # Create turtle with genetics system
-    turtle = Turtle(name, speed, energy, recovery, swim, climb)
+    turtle = Turtle(name, speed, energy, recovery, swim, climb, stamina, luck)
 
     # Apply influenced genetics if requested
     if use_influenced_genetics:

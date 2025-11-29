@@ -107,7 +107,7 @@ class TurboShellsGame:
         # This object will be passed to renderers and managers
         # Using self as the container for simplicity in MVP
         self.roster = [
-            Turtle("Starter", speed=5, energy=100, recovery=5, swim=5, climb=5),
+            Turtle("Starter", speed=5, energy=100, recovery=5, swim=5, climb=5, stamina=3, luck=3),
             None,
             None,
         ]

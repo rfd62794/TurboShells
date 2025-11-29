@@ -280,7 +280,11 @@ class ProfilePanelRefactored(BasePanel):
             <b>Max Energy:</b> {self.current_turtle.max_energy}<br>
             <b>Recovery:</b> {self.current_turtle.recovery}<br>
             <b>Swim:</b> {self.current_turtle.swim}<br>
-            <b>Climb:</b> {self.current_turtle.climb}
+            <b>Climb:</b> {self.current_turtle.climb}<br>
+            <b>Stamina:</b> {self.current_turtle.stamina}<br>
+            <b>Luck:</b> {self.current_turtle.luck}<br>
+            <b>Total Races:</b> {len(self.current_turtle.race_history)}<br>
+            <b>Total Wins:</b> {self.current_turtle.wins}
             """
             self.stats_text.set_text(stats_html)
             
