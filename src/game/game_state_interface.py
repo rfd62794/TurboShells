@@ -520,6 +520,8 @@ class TurboShellsGameStateInterface(GameStateInterface):
         # Roster Actions
         self.register_writer('train_turtle', lambda g, index: g.roster_manager.train_turtle(index),
                            DataType.SCALAR, "Train turtle at index")
+        self.register_writer('retire_turtle', lambda g, index: g.roster_manager.retire_turtle(index),
+                           DataType.SCALAR, "Retire turtle at index")
         self.register_writer('set_active_racer', lambda g, index: setattr(g, 'active_racer_index', index),
                            DataType.SCALAR, "Set active racer index")
         self.register_writer('toggle_view', lambda g, show_retired: setattr(g, 'show_retired_view', show_retired),
