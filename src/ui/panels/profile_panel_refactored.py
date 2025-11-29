@@ -8,6 +8,7 @@ from .base_panel import BasePanel
 from game.game_state_interface import TurboShellsGameStateInterface
 from ui.components.reusable.input import Button
 from ui.components.reusable.display import TextBox
+from core.enhanced_logging import get_ui_logger
 
 
 class ProfilePanelRefactored(BasePanel):
@@ -24,6 +25,7 @@ class ProfilePanelRefactored(BasePanel):
         """Initialize the refactored profile panel."""
         super().__init__(panel_id, title, event_bus)
         self.game_state = game_state
+        self.logger = get_ui_logger()
         
         # Profile data
         self.current_turtle = None
@@ -208,6 +210,7 @@ class ProfilePanelRefactored(BasePanel):
         """Show the profile panel and load turtle data."""
         if not self.manager:
             return
+        self.logger.info(f"Showing profile panel for turtle index: {self.game_state.get('profile_turtle_index', 'unknown')}")
         super().show()
         self._load_turtle_data()
         
@@ -217,6 +220,8 @@ class ProfilePanelRefactored(BasePanel):
         index = self.game_state.get('profile_turtle_index', 0)
         show_retired = self.game_state.get('show_retired_view', False)
         
+        self.logger.debug(f"Loading turtle data: index={index}, retired={show_retired}")
+        
         # Get turtle from appropriate roster
         if show_retired:
             retired_roster = self.game_state.get('retired_roster', [])
@@ -224,20 +229,24 @@ class ProfilePanelRefactored(BasePanel):
                 self.current_turtle = retired_roster[index]
                 self.current_index = index
                 self.is_retired = True
+                self.logger.info(f"Loaded retired turtle: {self.current_turtle.name}")
             else:
                 self.current_turtle = None
                 self.current_index = None
                 self.is_retired = False
+                self.logger.warning(f"Retired turtle index {index} out of range")
         else:
             roster = self.game_state.get('roster', [])
             if index < len(roster) and roster[index]:
                 self.current_turtle = roster[index]
                 self.current_index = index
                 self.is_retired = False
+                self.logger.info(f"Loaded active turtle: {self.current_turtle.name}")
             else:
                 self.current_turtle = None
                 self.current_index = None
                 self.is_retired = False
+                self.logger.warning(f"Active turtle index {index} out of range or empty")
                 
         # Update UI with turtle data
         if self.current_turtle:
@@ -260,7 +269,7 @@ class ProfilePanelRefactored(BasePanel):
             if self.turtle_image:
                 self.turtle_image.set_image(turtle_img)
         except Exception as e:
-            print(f"[DEBUG] Error rendering turtle image: {e}")
+            self.logger.error(f"Error rendering turtle image: {e}")
             
         # Update name with plain text
         if self.name_label:

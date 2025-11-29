@@ -7,6 +7,19 @@ routes input to managers, and delegates drawing to the UI layer.
 import pygame
 import pygame_gui
 import sys
+import logging
+
+# Import enhanced logging first
+from core.enhanced_logging import setup_enhanced_logging, LogConfig, get_game_logger
+
+# Set up enhanced logging
+logging_config = LogConfig(
+    level=logging.INFO,
+    log_to_file=True,
+    log_to_console=True,
+    use_colors=True
+)
+setup_enhanced_logging(logging_config)
 
 # Import settings with fallback
 try:
