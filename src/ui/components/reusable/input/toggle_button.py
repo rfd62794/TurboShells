@@ -24,7 +24,7 @@ class ToggleButton(Button):
         """
         super().__init__(rect, text, action, manager, config)
         
-        # Toggle state
+        # Toggle-specific properties
         self.is_toggled = False
         self.on_text = config.get('on_text', text) if config else text
         self.off_text = config.get('off_text', text) if config else text
@@ -40,7 +40,7 @@ class ToggleButton(Button):
     def _handle_component_event(self, event: pygame.event.Event) -> bool:
         """Handle toggle button events."""
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
-            if event.ui_element == self.button:
+            if event.ui_element == self.ui_element:
                 # Toggle state
                 self.is_toggled = not self.is_toggled
                 
@@ -52,25 +52,20 @@ class ToggleButton(Button):
                     self.on_toggle(self.is_toggled)
                     
                 # Emit toggle event
-                self._emit_event('toggle', {
-                    'action': self.action,
-                    'toggled': self.is_toggled
+                self._emit_action_event({
+                    'toggled': self.is_toggled,
+                    'on_text': self.on_text if self.is_toggled else self.off_text
                 })
                 
-                # Call regular action callback
-                if self.on_action:
-                    self.on_action(self.action)
-                    
-                self._emit_event('button_press', {'action': self.action})
                 return True
         return False
         
     def _update_appearance(self) -> None:
         """Update button appearance based on toggle state."""
-        if self.button:
+        if self.ui_element:
             # Update text
             current_text = self.on_text if self.is_toggled else self.off_text
-            self.button.set_text(current_text)
+            self.ui_element.set_text(current_text)
             
             # Update style (in a full implementation, we'd apply different colors)
             # For now, the text change is sufficient

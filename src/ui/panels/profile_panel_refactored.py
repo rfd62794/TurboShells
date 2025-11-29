@@ -261,8 +261,7 @@ class ProfilePanelRefactored(BasePanel):
             
         # Update name with HTML formatting like original
         if self.name_label:
-            turtle_name = getattr(self.current_turtle, 'name', 'Unknown Turtle')
-            self.name_label.set_text(f"<b><font size=5>{turtle_name}</font></b>")
+            self.name_label.set_text(f"<b><font size=5>{self.current_turtle.name}</font></b>")
             
         # Update status
         if self.status_label:
@@ -272,40 +271,30 @@ class ProfilePanelRefactored(BasePanel):
             
         # Update age
         if self.age_label:
-            age = getattr(self.current_turtle, 'age', 0)
-            self.age_label.set_text(f"Age: {age}")
+            self.age_label.set_text(f"Age: {self.current_turtle.age}")
             
         # Update detailed stats in HTML format like original
         if self.stats_text:
             stats_html = f"""
-            <b>Speed:</b> {getattr(self.current_turtle, 'speed', 0)}<br>
-            <b>Max Energy:</b> {getattr(self.current_turtle, 'max_energy', 0)}<br>
-            <b>Recovery:</b> {getattr(self.current_turtle, 'recovery', 0)}<br>
-            <b>Swim:</b> {getattr(self.current_turtle, 'swim', 0)}<br>
-            <b>Climb:</b> {getattr(self.current_turtle, 'climb', 0)}<br>
-            <b>Stamina:</b> {getattr(self.current_turtle, 'stamina', 0)}<br>
-            <b>Luck:</b> {getattr(self.current_turtle, 'luck', 0)}<br>
-            <b>Total Races:</b> {len(getattr(self.current_turtle, 'race_history', []))}<br>
-            <b>Total Wins:</b> {getattr(self.current_turtle, 'wins', 0)}
+            <b>Speed:</b> {self.current_turtle.speed}<br>
+            <b>Max Energy:</b> {self.current_turtle.max_energy}<br>
+            <b>Recovery:</b> {self.current_turtle.recovery}<br>
+            <b>Swim:</b> {self.current_turtle.swim}<br>
+            <b>Climb:</b> {self.current_turtle.climb}
             """
             self.stats_text.set_text(stats_html)
             
         # Update energy (for active turtles only)
         if self.energy_label:
             if not self.is_retired:
-                current_energy = getattr(self.current_turtle, 'current_energy', 0)
-                max_energy = getattr(self.current_turtle, 'max_energy', 0)
-                if max_energy > 0:
-                    energy_pct = int((current_energy / max_energy) * 100)
-                    self.energy_label.set_text(f"Energy: {current_energy}/{max_energy} ({energy_pct}%)")
-                else:
-                    self.energy_label.set_text(f"Energy: {current_energy}")
+                energy_pct = int((self.current_turtle.current_energy / self.current_turtle.max_energy) * 100)
+                self.energy_label.set_text(f"Energy: {self.current_turtle.current_energy}/{self.current_turtle.max_energy} ({energy_pct}%)")
             else:
                 self.energy_label.set_text("")
                 
         # Update history
         if self.history_text:
-            race_history = getattr(self.current_turtle, 'race_history', [])
+            race_history = self.current_turtle.race_history
             if race_history:
                 history_html = "<br>".join([
                     f"Race {race.get('number', '?')}: Position {race.get('position', '?')} - ${race.get('earnings', 0)}"

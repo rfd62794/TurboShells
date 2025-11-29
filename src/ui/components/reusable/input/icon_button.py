@@ -11,18 +11,22 @@ from .button import Button
 class IconButton(Button):
     """Button with icon support."""
     
-    def __init__(self, rect: pygame.Rect, icon: str = "", action: str = "",
+    def __init__(self, rect: pygame.Rect, text: str, icon: str = "", action: str = "",
                  manager=None, config: Optional[Dict] = None):
         """Initialize icon button.
         
         Args:
             rect: Component position and size
+            text: Button text
             icon: Icon identifier or path
             action: Action identifier
             manager: pygame_gui UIManager
             config: Configuration options
         """
-        super().__init__(rect, "", action, manager, config)
+        # Initialize with empty text first, we'll add icon later
+        super().__init__(rect, text, action, manager, config)
+        
+        # Icon-specific properties
         self.icon = icon
         self.icon_surface: Optional[pygame.Surface] = None
         self.icon_size = config.get('icon_size', 24) if config else 24
@@ -50,11 +54,11 @@ class IconButton(Button):
             
     def _update_button_text(self) -> None:
         """Update button text to include icon."""
-        if self.icon_surface and self.button:
+        if self.ui_element:
             # For now, just set text. In a full implementation,
             # we'd need to handle icon rendering separately
             display_text = f"[{self.icon}] {self.text}" if self.text else f"[{self.icon}]"
-            self.button.set_text(display_text)
+            self.ui_element.set_text(display_text)
             
     def set_icon(self, icon: str) -> None:
         """Update button icon."""
