@@ -24,6 +24,7 @@ class BettingControls(BaseComponent):
         self.btn_bet_10 = None
         self.btn_start_race = None
         self.btn_menu = None  # Add menu button
+        self.lbl_money = None  # Add money label
         
         # Create UI elements
         self._create_ui_elements()
@@ -80,6 +81,14 @@ class BettingControls(BaseComponent):
             manager=self.manager,
             container=self.container,
             visible=True  # Always visible
+        )
+        
+        # Money label - next to Menu button with small spacer
+        self.lbl_money = pygame_gui.elements.UILabel(
+            relative_rect=pygame.Rect((85, 0), (150, 30)),  # Menu (80) + spacer (5)
+            text=f"Funds: ${self.game_state.get('money', 0) if self.game_state else 0}",
+            manager=self.manager,
+            container=self.container
         )
         
     def handle_event(self, event: pygame.event.Event) -> bool:
@@ -159,6 +168,11 @@ class BettingControls(BaseComponent):
             'btn_menu': self.btn_menu
         }
         
+    def update_money(self, money: int) -> None:
+        """Update money display."""
+        if self.lbl_money:
+            self.lbl_money.set_text(f"Funds: ${money}")
+        
     def render(self, surface: pygame.Surface) -> None:
         """Render the component. pygame_gui handles rendering."""
         pass
@@ -175,3 +189,5 @@ class BettingControls(BaseComponent):
             self.btn_start_race.kill()
         if self.btn_menu:
             self.btn_menu.kill()
+        if self.lbl_money:
+            self.lbl_money.kill()

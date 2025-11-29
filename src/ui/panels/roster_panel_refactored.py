@@ -336,6 +336,8 @@ class RosterPanelRefactored(BasePanel):
         """Handle money change using component."""
         if self.header_component:
             self.header_component.update_money(new)
+        if self.betting_controls:
+            self.betting_controls.update_money(new)
             
     def _on_view_changed(self, key, old, new):
         """Handle view change."""
