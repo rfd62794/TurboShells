@@ -191,7 +191,7 @@ class RosterPanel(BasePanel):
                 
                 # Train Button
                 btn_train = pygame_gui.elements.UIButton(
-                    relative_rect=pygame.Rect((70, 310), (100, 30)),
+                    relative_rect=pygame.Rect((70, 270), (100, 30)),
                     text="Train",
                     manager=self.manager,
                     container=panel
@@ -199,7 +199,7 @@ class RosterPanel(BasePanel):
                 
                 # View Button (view profile)
                 btn_view = pygame_gui.elements.UIButton(
-                    relative_rect=pygame.Rect((70, 230), (100, 30)),
+                    relative_rect=pygame.Rect((10, 310), (50, 30)),
                     text="View",
                     manager=self.manager,
                     container=panel
@@ -207,7 +207,7 @@ class RosterPanel(BasePanel):
                 
                 # Retire Button
                 btn_retire = pygame_gui.elements.UIButton(
-                    relative_rect=pygame.Rect((70, 270), (100, 30)),
+                    relative_rect=pygame.Rect((180, 310), (50, 30)),
                     text="Retire",
                     manager=self.manager,
                     container=panel
