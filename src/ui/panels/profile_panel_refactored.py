@@ -65,13 +65,15 @@ class ProfilePanelRefactored(BasePanel):
             object_id="#profile_header"
         )
         
-        # Back button
-        self.back_button = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((width - 100, 10), (100, 40)),
+        # Back button using our auto-sizing component
+        from ..components.reusable.input_components import Button
+        self.back_button = Button(
+            rect=pygame.Rect((width - 100, 10), (80, 40)),
             text="Back",
+            action="back",
             manager=self.manager,
             container=header,
-            object_id="#back_button"
+            config={'auto_resize': True, 'min_width': 80, 'padding': 20}
         )
         
     def _create_visual_section(self, container) -> None:
@@ -188,13 +190,15 @@ class ProfilePanelRefactored(BasePanel):
             object_id="#action_panel"
         )
         
-        # Release button
-        self.release_button = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((260, 50), (80, 40)),
+        # Release button using our auto-sizing component
+        from ..components.reusable.input_components import Button
+        self.release_button = Button(
+            rect=pygame.Rect((260, 50), (80, 40)),
             text="Release",
+            action="release",
             manager=self.manager,
             container=action_panel,
-            object_id="#release_button"
+            config={'auto_resize': True, 'min_width': 80, 'padding': 20}
         )
         
     def show(self) -> None:
@@ -316,10 +320,10 @@ class ProfilePanelRefactored(BasePanel):
             # Don't allow releasing the only active turtle
             active_turtles = [t for t in self.game_state.get('roster', []) if t is not None]
             if len(active_turtles) <= 1 and not self.is_retired:
-                self.release_button.disable()
+                self.release_button.set_enabled(False)
                 self.release_button.set_text("Cannot Release")
             else:
-                self.release_button.enable()
+                self.release_button.set_enabled(True)
                 self.release_button.set_text("Release")
                 
     def _show_no_turtle(self) -> None:
@@ -352,7 +356,7 @@ class ProfilePanelRefactored(BasePanel):
             
         # Disable release button
         if self.release_button:
-            self.release_button.disable()
+            self.release_button.set_enabled(False)
             self.release_button.set_text("No Turtle")
             
     def handle_event(self, event: pygame.event.Event) -> bool:
@@ -361,8 +365,9 @@ class ProfilePanelRefactored(BasePanel):
         if super().handle_event(event):
             return True
                 
-        if event.type == pygame_gui.UI_BUTTON_PRESSED:
-            if event.ui_element == self.back_button:
+        # Handle button events through our Button components
+        if hasattr(event, 'ui_element'):
+            if event.ui_element == self.back_button.button:
                 # Navigate back to roster
                 if self.event_bus:
                     self.event_bus.emit("ui:navigate", {"state": "ROSTER"})
@@ -370,7 +375,7 @@ class ProfilePanelRefactored(BasePanel):
                     self.game_state.set('state', 'ROSTER')
                 return True
                 
-            elif event.ui_element == self.release_button:
+            elif event.ui_element == self.release_button.button:
                 # Release the turtle
                 if self.current_index is not None and self.current_turtle:
                     self.game_state.set('release_turtle', self.current_index)
