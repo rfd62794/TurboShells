@@ -96,7 +96,7 @@ class DifficultySettings:
     auto_save: bool = True
     show_tutorials: bool = True
     confirm_actions: bool = True
-    race_speed_multiplier: float = 1.0
+    race_speed_multiplier: float = 2.0  # Default to 2x speed
     economy_multiplier: float = 1.0
 
     def get_race_speed(self) -> float:

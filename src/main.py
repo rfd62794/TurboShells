@@ -118,7 +118,7 @@ class TurboShellsGame:
         self.shop_message = ""
 
         self.race_results = []
-        self.race_speed_multiplier = 1
+        self.race_speed_multiplier = 2  # Default to 2x speed
         self.active_racer_index = 0
 
         self.breeding_parents = []

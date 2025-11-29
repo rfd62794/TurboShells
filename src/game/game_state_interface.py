@@ -474,7 +474,7 @@ class TurboShellsGameStateInterface(GameStateInterface):
         # Race state
         self.register_reader('race_results', lambda g: getattr(g, 'race_results', []),
                            DataType.COLLECTION, "Recent race results")
-        self.register_reader('race_speed_multiplier', lambda g: getattr(g, 'race_speed_multiplier', 1),
+        self.register_reader('race_speed_multiplier', lambda g: getattr(g, 'race_speed_multiplier', 2),
                            DataType.SCALAR, "Race speed multiplier")
         self.register_writer('race_speed_multiplier', lambda g, v: setattr(g, 'race_speed_multiplier', max(1, v)),
                            DataType.SCALAR, "Race speed multiplier",

@@ -14,6 +14,7 @@ class RaceHUDPanel(BasePanel):
         # Instead we manage multiple elements
         self.panel_bottom = None
         self.lbl_header = None
+        # Progress elements - removed
         self.lbl_progress = None
         self.progress_bar = None
         
@@ -74,22 +75,7 @@ class RaceHUDPanel(BasePanel):
             container=self.panel_bottom
         )
         
-        # Progress Bar
-        bar_x = start_x + (btn_width + 10)*3 + 40
-        bar_width = screen_w - bar_x - 40
-        
-        self.lbl_progress = pygame_gui.elements.UILabel(
-            relative_rect=pygame.Rect((bar_x, 10), (200, 20)),
-            text="Progress",
-            manager=self.manager,
-            container=self.panel_bottom
-        )
-        
-        self.progress_bar = pygame_gui.elements.UIProgressBar(
-            relative_rect=pygame.Rect((bar_x, 35), (bar_width, 30)),
-            manager=self.manager,
-            container=self.panel_bottom
-        )
+        # Progress elements removed
         
         # Set initial state
         self._update_header()
@@ -130,42 +116,7 @@ class RaceHUDPanel(BasePanel):
 
     def update(self, time_delta: float) -> None:
         super().update(time_delta)
-        if self.visible:
-            # Update progress bar - get from race manager
-            race_roster = None
-            if hasattr(self.game_state, 'race_manager') and hasattr(self.game_state.race_manager, 'race_roster'):
-                race_roster = self.game_state.race_manager.race_roster
-                if race_roster and len(race_roster) > 0:
-                    print(f"[DEBUG] RaceHUD: Found race roster with {len(race_roster)} turtles")
-                else:
-                    print(f"[DEBUG] RaceHUD: Race roster exists but is empty")
-            else:
-                print(f"[DEBUG] RaceHUD: No race_manager or race_roster found")
-                print(f"[DEBUG] Has race_manager: {hasattr(self.game_state, 'race_manager')}")
-                if hasattr(self.game_state, 'race_manager'):
-                    print(f"[DEBUG] Has race_roster: {hasattr(self.game_state.race_manager, 'race_roster')}")
-                
-            if race_roster and len(race_roster) > 0:
-                # Get player turtle (first in roster)
-                player = race_roster[0]
-                if hasattr(player, 'race_distance'):
-                    # Use correct track length from settings
-                    from settings import TRACK_LENGTH_LOGIC
-                    progress = min(1.0, player.race_distance / TRACK_LENGTH_LOGIC)
-                    if self.progress_bar:
-                        self.progress_bar.set_current_progress(progress)
-                        # Debug progress updates
-                        if int(progress * 100) % 10 == 0:  # Log every 10% progress
-                            print(f"[DEBUG] Race progress: {progress:.1%} ({player.race_distance:.1f}/{TRACK_LENGTH_LOGIC})")
-                    else:
-                        print(f"[DEBUG] RaceHUD: No progress bar available")
-                else:
-                    print(f"[DEBUG] RaceHUD: Player turtle has no race_distance attribute")
-            else:
-                print(f"[DEBUG] No race roster found for progress bar update")
-            
-            # Update header text periodically or on change
-            # self._update_header() # Only if needed
+        # Progress bar removed - no updates needed
 
     def _on_speed_changed(self, key, old, new):
         self._update_header()
