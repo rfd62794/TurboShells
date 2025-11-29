@@ -47,12 +47,13 @@ class HeaderComponent(BaseComponent):
             container=self.top_bar
         )
         
-        # Menu button
+        # Menu button - position on left side, aligned with Start Race button
+        # Start Race is at container_width - 490, so align Menu at similar position
         self.btn_menu = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((self.rect.width - 100, 10), (100, 40)),
+            relative_rect=pygame.Rect((20, 10), (60, 25)),  # Left side positioning
             text="Menu",
             manager=self.manager,
-            container=self.top_bar
+            container=None  # Window level
         )
         
     def handle_event(self, event: pygame.event.Event) -> bool:
