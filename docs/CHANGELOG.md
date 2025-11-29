@@ -66,6 +66,11 @@
   - **Documentation**: Comprehensive test documentation and examples
   - **Maintainability**: Modular test structure supporting future panel additions
 
+#### **📚 Documentation Alignment for Phase 5** - ✅ **COMPLETED**
+- **WINDSURF.md Refresh**: Persona, workflow expectations, and PyPro operating checklist clarified for incoming AI assistants.
+- **docs/README.md Update**: Quick navigation reorganized to highlight legacy view intent vs. pygame_gui implementation references.
+- **UI Layout Truth Source**: `docs/UI_LAYOUT.md` explicitly marked as the authoritative coordinate set with panel mapping notes for the migration.
+
 #### **🌊 Pond/Glade Environment System** - 🔄 **IN PROGRESS**
 - **Ambient Environment**: Peaceful pond and glade scenes with dynamic weather
 - **Wildlife Integration**: Natural ecosystem with ambient creatures and plants

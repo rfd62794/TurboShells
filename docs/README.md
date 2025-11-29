@@ -1,8 +1,8 @@
 # TurboShells Documentation
 
-**Version:** 2.0 (SRP Architecture & Advanced Systems)  
-**Date:** November 22, 2025  
-**Status:** Production-Ready with Advanced Architecture
+**Version:** 3.0 (pygame_gui Transition Focus)  
+**Date:** November 28, 2025  
+**Status:** Phase 5 – Legacy Views honored, pygame_gui rollout in progress
 
 ---
 
@@ -14,100 +14,80 @@ This documentation provides comprehensive coverage of the TurboShells project, f
 
 ## 🎯 **Quick Navigation**
 
-### **📋 Project Management**
-- **[TODO.md](TODO.md)** - Development roadmap and remaining tasks
-- **[CHANGELOG.md](CHANGELOG.md)** - Version history and release notes
-- **[GDD.md](GDD.md)** - Game Design Document main index
+### 1. 📋 Project & Phase Tracking
+- **[TODO.md](TODO.md)** – Live roadmap & Phase 5 objectives.
+- **[CHANGELOG.md](CHANGELOG.md)** – Primary release + documentation log.
+- **[phases/](phases/)** – Detailed phase briefs (refactor plans, migration notes).
 
-### **🎮 Game Design Documentation**
-- **📁 [gdd/](gdd/)** - Complete Game Design Documentation
-  - **[gdd/README.md](gdd/README.md)** - GDD folder index and overview
-  - **[gdd/GDD_Overview.md](gdd/GDD_Overview.md)** - Executive summary and concept
-  - **[gdd/GDD_Gameplay.md](gdd/GDD_Gameplay.md)** - Detailed gameplay mechanics
-  - **[gdd/GDD_UI.md](gdd/GDD_UI.md)** - User interface specifications
-  - **[gdd/GDD_Technical.md](gdd/GDD_Technical.md)** - Technical architecture overview
-  - **[gdd/GDD_Vision.md](gdd/GDD_Vision.md)** - Future expansion roadmap
-  - **[gdd/Design_Voting_System.md](gdd/Design_Voting_System.md)** - Voting system specification
-  - **[gdd/Design_Voting_Implementation.md](gdd/Design_Voting_Implementation.md)** - Voting implementation guide
+### 2. 🎮 Legacy View Intent (UX Source of Truth)
+- **[UI_LAYOUT.md](UI_LAYOUT.md)** – Canonical coordinates for each historic view.
+- **[gdd/GDD_UI.md](gdd/GDD_UI.md)** – Narrative UX goals per screen.
+- **[docs/ui/](ui/)** – Archived view renderers/specs; treat as blueprints for pygame_gui parity.
 
-### **🔧 Technical Documentation**
-- **📁 [technical/](technical/)** - Complete Technical Documentation
-  - **[technical/README.md](technical/README.md)** - Technical docs index and overview
-  - **[technical/SDD.md](technical/SDD.md)** - Software Design Document
-  - **[technical/ARCHITECTURE.md](technical/ARCHITECTURE.md)** - Technical architecture
-  - **[technical/SVG_Technical_Specification.md](technical/SVG_Technical_Specification.md)** - SVG generation specs
-  - **[technical/SVG_Analysis.md](technical/SVG_Analysis.md)** - SVG library analysis
+### 3. 🧩 PyGame GUI Implementation
+- **[technical/SDD.md](technical/SDD.md)** – Current architecture (window manager, panels, managers).
+- **[technical/ARCHITECTURE.md](technical/ARCHITECTURE.md)** – Module relationships.
+- **[technical/README.md](technical/README.md)** – Entry point to component system references.
 
-### **📝 Reference Documents**
-- **[UI_LAYOUT.md](UI_LAYOUT.md)** - UI layout specifications and coordinates
-- **[KEYBOARD.md](KEYBOARD.md)** - Keyboard controls and shortcuts
-- **[ERRORS.md](ERRORS.md)** - Error handling and troubleshooting
+### 4. 🧠 Design & Systems References
+- **[gdd/](gdd/)** – Full game design canon (overview, gameplay, economy, voting, vision).
+- **[GDD.md](GDD.md)** – Quick gateway into the design set.
+- **[technical/SVG_*.md](technical/)** – Rendering + asset notes.
+
+### 5. 🛠️ Operational Guides
+- **[KEYBOARD.md](KEYBOARD.md)** – Hotkeys.
+- **[STYLE_GUIDE.md](STYLE_GUIDE.md)** / **[CODING_STANDARDS.md](CODING_STANDARDS.md)** – Code style policies.
+- **[DEVELOPMENT_WORKFLOW.md](DEVELOPMENT_WORKFLOW.md)** – Commit/test conventions.
+- **[ERRORS.md](ERRORS.md)** – Troubleshooting log.
 
 ---
 
-## 🚀 **Project Status: VERSION 2.0 COMPLETE ✅**
+## 🚀 **Project Status: Version 3.0 (Phase 5) In Progress**
 
-### **Major Achievements (v2.0)**
-- **SRP Architecture**: Complete modular reorganization with 15+ focused modules
-- **Advanced Genetics**: 19-trait genetic system with inheritance and mutation
-- **Direct Rendering**: Procedural PIL-based rendering with genetic integration
-- **Design Voting**: Complete voting system with genetic democracy
-- **Modern Architecture**: Clean separation of concerns and maintainable codebase
+### 🎯 Current Objectives
+- **pygame_gui Migration:** Roster, Shop, Breeding, Race HUD mapped to panels using `UIManager` + `WindowManager`.
+- **Terrain Upgrade:** Race track visuals receive segment-aware rendering without breaking original lane layout.
+- **Pond/Glade Foundations:** Overworld exploration hooks prepared.
+- **Data Preservation:** Phase 4 work complete; continue validating migrations as new UI surfaces emerge.
 
-### **Core Features (v1.0)**
-- Complete turtle lifecycle management
-- Full racing system with betting mechanics
-- Comprehensive economy with shop and breeding
-- Component-based UI architecture
-- Mode-aware interfaces and navigation
+### ✅ Recent Milestones
+- SRP-aligned module decomposition (+15 focused modules).
+- 19-trait genetics + breeding lineage tracking shipped.
+- Direct rendering pipeline and voting loops stabilized.
+- Monitoring + profiling overlays active in main loop.
 
 ---
 
 ## 📊 **Documentation Statistics**
 
-### **Game Design Documents (9 files)**
-- Core GDD documents: 6 files
-- System design documents: 2 files
-- Index and navigation: 1 file
+### **Legacy View Specs**
+- `docs/UI_LAYOUT.md` + `docs/gdd/GDD_UI.md`
+- Additional layout callouts inside `docs/ui/views/*`
 
-### **Technical Documents (5 files)**
-- Software design: 1 file
-- Architecture: 1 file
-- SVG specifications: 2 files
-- Index and navigation: 1 file
-
-### **Project Management (3 files)**
-- TODO and roadmap: 1 file
-- Version history: 1 file
-- Main index: 1 file
+### **pygame_gui Migration References**
+- `src/core/ui/window_manager.py` – size + rect calculations
+- `src/ui/ui_manager.py`, `src/ui/panels/*` – new panel implementations
+- `docs/phases/Phase_26_*` – Refactor playbook for component system
 
 ---
 
 ## 🎯 **Documentation Usage**
 
-### **For New Developers**
-1. **Start Here**: [GDD.md](GDD.md) - Game design overview
-2. **Technical Overview**: [technical/README.md](technical/README.md) - Technical architecture
-3. **Current Tasks**: [TODO.md](TODO.md) - Development roadmap
-4. **Version History**: [CHANGELOG.md](CHANGELOG.md) - Release notes
+### **For New Engineers**
+1. Read `WINDSURF.md` (persona + workflow).
+2. Review legacy layouts: `docs/UI_LAYOUT.md`, `docs/gdd/GDD_UI.md`.
+3. Inspect current pygame_gui panels: `src/ui/panels/`, `docs/phases/Phase_26_*`.
+4. Align with roadmap: `docs/TODO.md`.
 
-### **For Game Designers**
-1. **Design Overview**: [gdd/README.md](gdd/README.md) - Complete GDD index
-2. **Gameplay Mechanics**: [gdd/GDD_Gameplay.md](gdd/GDD_Gameplay.md) - Detailed mechanics
-3. **UI Specifications**: [gdd/GDD_UI.md](gdd/GDD_UI.md) - Interface design
-4. **Future Vision**: [gdd/GDD_Vision.md](gdd/GDD_Vision.md) - Long-term roadmap
+### **For Systems / UI Designers**
+1. Canonical UX: `docs/gdd/GDD_UI.md` + `docs/UI_LAYOUT.md`.
+2. Visual intent: `docs/ui/views/*` (historic render narratives).
+3. Migration notes: `docs/phases/Phase_26_UI_Architecture_Refactoring.md`.
 
-### **For System Architects**
-1. **Technical Overview**: [technical/README.md](technical/README.md) - Technical docs index
-2. **Software Design**: [technical/SDD.md](technical/SDD.md) - Implementation details
-3. **Architecture**: [technical/ARCHITECTURE.md](technical/ARCHITECTURE.md) - System structure
-4. **SVG Specs**: [technical/SVG_Technical_Specification.md](technical/SVG_Technical_Specification.md) - Rendering details
-
-### **For Project Managers**
-1. **Project Status**: [TODO.md](TODO.md) - Current roadmap and priorities
-2. **Version History**: [CHANGELOG.md](CHANGELOG.md) - Release tracking
-3. **Design Overview**: [GDD.md](GDD.md) - High-level design summary
-4. **Technical Status**: [technical/README.md](technical/README.md) - Architecture overview
+### **For Architects & Tooling**
+1. Architecture: `docs/technical/ARCHITECTURE.md`.
+2. SDD + component descriptions: `docs/technical/SDD.md`.
+3. Monitoring & overlays: `docs/technical/README.md`, `src/core/monitoring_*`.
 
 ---
 
@@ -159,17 +139,15 @@ docs/
 ## 🎯 **Quick Reference**
 
 ### **Current Development Status**
-- **Overall Progress**: 85% complete with major architectural achievements
-- **Architecture**: SRP-based modular design with 15+ focused modules
-- **Genetics System**: 19-trait advanced genetics with inheritance and mutation
-- **Rendering**: Procedural PIL-based rendering with genetic integration
-- **Voting**: Design voting with genetic democracy and player rewards
-- **Completed Systems**: Profile View, Genetics Modularization, Direct Rendering, Design Voting
+- Architecture baseline solid; UI layer mid-migration.
+- Genetics/economy/breeding stacks stable.
+- pygame_gui panel set expanding; component system rollout ongoing.
 
-### **Current Development Priorities**
-- **High Priority**: Pond/Glade Screen (Phase 13), Save System persistence
-- **Medium Priority**: AI Community Store (Phase 15), Enhanced UI animations, Sound Effects
-- **Low Priority**: Advanced Genetics (Phase 14), Achievements, Statistics, Tournament Mode
+### **Current Priorities (Phase 5)**
+1. **Legacy View Parity:** Each pygame_gui panel must match coordinates/behavior from `UI_LAYOUT.md` (except upgraded race terrain visuals).
+2. **Race Terrain Upgrade:** Implement colored segments + overlays while keeping HUD geometry intact.
+3. **Pond/Glade Prep:** Document layout + data needs for overworld screen.
+4. **Documentation Hygiene:** Keep `docs/` synchronized with UI changes to avoid legacy drift.
 
 ---
 

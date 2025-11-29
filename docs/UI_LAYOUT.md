@@ -1,5 +1,16 @@
 # UI Layout Guide: Turbo Shells
-**Resolution:** 800 x 600 px
+
+Legacy view specifications that remain the UX source of truth during the pygame_gui migration. Unless explicitly overridden (e.g., upgraded race terrain rendering), new panels must respect these coordinates.
+
+| Screen | Legacy Status | pygame_gui Panel | Notes |
+| --- | --- | --- | --- |
+| Stable / Roster | Finalized layout below | `RosterPanel`, `MainMenuPanelRefactored` | Use WindowManager ratios to map these rects at modern resolutions. |
+| Race HUD & Track | Layout below; terrain visuals upgrading | `RaceHUDPanel` | Track rects unchanged; only add colored terrain overlays. |
+| Shop | Layout below | `ShopPanel` | TurtleCard parity required. |
+| Breeding | Layout below | `BreedingPanel` | Highlight selected parents per original spec. |
+| Future: Pond / Glade | Concept only | (TBD) | Maintain header/footer dimensions when defined. |
+
+**Base Resolution:** 800 x 600 px  
 **Padding:** Standard padding is 20px.
 
 ## 1. Global Header (Top Bar)
