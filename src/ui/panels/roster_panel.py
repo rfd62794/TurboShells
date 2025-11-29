@@ -205,29 +205,21 @@ class RosterPanel(BasePanel):
                     container=panel
                 )
                 
+                # Retire Button
+                btn_retire = pygame_gui.elements.UIButton(
+                    relative_rect=pygame.Rect((70, 270), (100, 30)),
+                    text="Retire",
+                    manager=self.manager,
+                    container=panel
+                )
+                
                 # Select Button (for race selection)
                 btn_select = pygame_gui.elements.UIButton(
-                    relative_rect=pygame.Rect((70, 350), (100, 30)),
+                    relative_rect=pygame.Rect((70, 310), (100, 30)),
                     text="Select",
                     manager=self.manager,
                     container=panel,
                     visible=False
-                )
-                
-                # Rest Button
-                btn_rest = pygame_gui.elements.UIButton(
-                    relative_rect=pygame.Rect((10, 270), (50, 30)),
-                    text="Rest",
-                    manager=self.manager,
-                    container=panel
-                )
-                
-                # Retire Button
-                btn_retire = pygame_gui.elements.UIButton(
-                    relative_rect=pygame.Rect((180, 270), (50, 30)),
-                    text="Retire",
-                    manager=self.manager,
-                    container=panel
                 )
                 
                 self.slots.append({
@@ -237,9 +229,8 @@ class RosterPanel(BasePanel):
                     'txt_stats': txt_stats,
                     'btn_train': btn_train,
                     'btn_view': btn_view,
-                    'btn_select': btn_select,
-                    'btn_rest': btn_rest,
                     'btn_retire': btn_retire,
+                    'btn_select': btn_select,
                     'index': i
                 })
                 
@@ -311,13 +302,11 @@ class RosterPanel(BasePanel):
                 # Buttons visibility
                 if show_retired:
                     slot['btn_train'].hide()
-                    slot['btn_rest'].hide()
                     slot['btn_retire'].hide()
                     slot['btn_select'].hide()
                 else:
                     if select_mode:
                         slot['btn_train'].hide()
-                        slot['btn_rest'].hide()
                         slot['btn_retire'].hide()
                         slot['btn_select'].show()
                         if i == active_racer_idx:
@@ -328,7 +317,6 @@ class RosterPanel(BasePanel):
                             slot['panel'].set_relative_position((slot['panel'].relative_rect.x, 10))
                     else:
                         slot['btn_train'].show()
-                        slot['btn_rest'].show()
                         slot['btn_retire'].show()
                         slot['btn_select'].hide()
                         slot['panel'].set_relative_position((slot['panel'].relative_rect.x, 10))
@@ -337,7 +325,6 @@ class RosterPanel(BasePanel):
                 slot['txt_stats'].set_text("")
                 slot['img'].set_image(pygame.Surface((100, 100))) # Clear image
                 slot['btn_train'].hide()
-                slot['btn_rest'].hide()
                 slot['btn_retire'].hide()
                 slot['btn_select'].hide()
 
@@ -422,11 +409,6 @@ class RosterPanel(BasePanel):
                     elif event.ui_element == slot['btn_view']:
                         print(f"[DEBUG] ✓ MATCHED View button for slot {slot['index']}")
                         self.game_state.set('view_profile', slot['index'])
-                        return True
-                    elif event.ui_element == slot['btn_rest']:
-                        print(f"[DEBUG] ✓ MATCHED Rest button for slot {slot['index']}")
-                        self.game_state.set('rest_turtle', slot['index'])
-                        self._update_slot_content()
                         return True
                     elif event.ui_element == slot['btn_retire']:
                         print(f"[DEBUG] ✓ MATCHED Retire button for slot {slot['index']}")
