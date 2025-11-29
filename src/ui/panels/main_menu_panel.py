@@ -1,8 +1,8 @@
 """
-Refactored Main Menu Panel using only reusable components.
+Main Menu Panel using reusable components.
 
-This replaces the monolithic MainMenuPanel with a clean component-based approach
-that follows SRP and uses the reusable component library.
+This uses a clean component-based approach that follows SRP 
+and uses the reusable component library.
 """
 
 import pygame
@@ -14,11 +14,11 @@ from ..components.reusable import Panel, MoneyDisplay, Container, Button
 from game.game_state_interface import TurboShellsGameStateInterface
 
 
-class MainMenuPanelRefactored(BasePanel):
+class MainMenuPanel(BasePanel):
     """Main Menu Panel built entirely from reusable components."""
     
     def __init__(self, game_state_interface: TurboShellsGameStateInterface, event_bus=None):
-        """Initialize refactored main menu panel.
+        """Initialize main menu panel.
         
         Args:
             game_state_interface: Game state interface for data access

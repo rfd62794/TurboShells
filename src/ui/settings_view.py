@@ -1,5 +1,5 @@
 """
-Refactored Settings View using SRP-compliant components.
+Settings View using SRP-compliant components.
 
 Demonstrates the new architecture by integrating TabManager, UIRenderer, 
 EventHandler, and LayoutManager components.
@@ -32,9 +32,9 @@ class UIElement:
     enabled: bool = True
 
 
-class SettingsViewRefactored:
+class SettingsView:
     """
-    Refactored settings view using SRP-compliant component architecture.
+    Settings view using SRP-compliant component architecture.
     
     This class now acts as a coordinator, delegating responsibilities
     to specialized components while maintaining the public interface.
@@ -42,7 +42,7 @@ class SettingsViewRefactored:
     
     def __init__(self, screen_rect: pygame.Rect):
         """
-        Initialize refactored settings view.
+        Initialize settings view.
         
         Args:
             screen_rect: Screen rectangle for positioning

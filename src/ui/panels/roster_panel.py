@@ -1,4 +1,4 @@
-"""Refactored Roster Panel using SRP components."""
+"""Roster Panel using SRP components."""
 
 import pygame
 import pygame_gui
@@ -15,10 +15,10 @@ from ..components.roster.header_component import HeaderComponent
 from ..components.roster.navigation_component import NavigationComponent
 
 
-class RosterPanelRefactored(BasePanel):
-    """Refactored Roster Panel using component-based architecture.
+class RosterPanel(BasePanel):
+    """Roster Panel using component-based architecture.
     
-    Now follows SRP by delegating responsibilities to specialized components.
+    Follows SRP by delegating responsibilities to specialized components.
     """
     
     def __init__(self, game_state_interface: TurboShellsGameStateInterface, event_bus=None):
@@ -51,10 +51,10 @@ class RosterPanelRefactored(BasePanel):
         
     def _create_window(self) -> None:
         """Create the roster panel window using SRP components."""
-        print(f"[RosterPanelRefactored] _create_window() called")
+        print(f"[RosterPanel] _create_window() called")
         super()._create_window()
         if not self.window:
-            print(f"[RosterPanelRefactored] _create_window() failed - no window")
+            print(f"[RosterPanel] _create_window() failed - no window")
             return
             
         if self.manager and self.manager.window_resolution:
@@ -66,7 +66,7 @@ class RosterPanelRefactored(BasePanel):
         width = self.size[0] - 40
         
         # Clear any existing UI elements
-        print(f"[RosterPanelRefactored] Clearing existing UI elements")
+        print(f"[RosterPanel] Clearing existing UI elements")
         self._clear_ui_elements()
         
         # Create header component (money + menu)
@@ -110,7 +110,7 @@ class RosterPanelRefactored(BasePanel):
             container=container,
             object_id="#roster_slots_container"
         )
-        print(f"[RosterPanelRefactored] Created slots container")
+        print(f"[RosterPanel] Created slots container")
         
         # Create turtle slots using original structure
         self._populate_slots()
@@ -119,7 +119,7 @@ class RosterPanelRefactored(BasePanel):
         self._update_slot_content()
         self._update_visibility()
         
-        print(f"[RosterPanelRefactored] Window creation completed")
+        print(f"[RosterPanel] Window creation completed")
         
     def _populate_slots(self):
         """Populate slots using original structure but with componentized buttons."""
@@ -224,7 +224,7 @@ class RosterPanelRefactored(BasePanel):
         select_mode = self.game_state.get('select_racer_mode', False)
         active_racer_idx = self.game_state.get('active_racer_index', 0)
         
-        print(f"[DEBUG] RosterPanelRefactored _update_slot_content() called")
+        print(f"[DEBUG] RosterPanel _update_slot_content() called")
         
         # Get appropriate roster with exact original logic (lines 255-264)
         if show_retired:
@@ -232,7 +232,7 @@ class RosterPanelRefactored(BasePanel):
         else:
             turtles = list(self.game_state.get('roster', []))
             
-        print(f"[DEBUG] RosterPanelRefactored update: {len(turtles)} turtles")
+        print(f"[DEBUG] RosterPanel update: {len(turtles)} turtles")
         
         # Pad to exactly 3 slots (matches original line 263-264)
         while len(turtles) < 3:
@@ -256,7 +256,7 @@ class RosterPanelRefactored(BasePanel):
             sprite_surface = turtle_render_engine.get_turtle_sprite_surface(turtle, (100, 100))
             if sprite_surface:
                 slot['img'].set_image(sprite_surface)
-                print(f"[DEBUG] RosterPanelRefactored: Set sprite surface for {turtle.name}")
+                print(f"[DEBUG] RosterPanel: Set sprite surface for {turtle.name}")
             else:
                 # Fallback to simple colored rectangle (matches original lines 291-298)
                 surf = pygame.Surface((100, 100), pygame.SRCALPHA)
@@ -266,7 +266,7 @@ class RosterPanelRefactored(BasePanel):
                 text_rect = text.get_rect(center=(50, 50))
                 surf.blit(text, text_rect)
                 slot['img'].set_image(surf)
-                print(f"[DEBUG] RosterPanelRefactored: Used fallback surface for {turtle.name}")
+                print(f"[DEBUG] RosterPanel: Used fallback surface for {turtle.name}")
         except Exception as e:
             print(f"[ERROR] Failed to render turtle {turtle.name}: {e}")
             # Create fallback surface (matches original lines 303-309)
@@ -369,12 +369,12 @@ class RosterPanelRefactored(BasePanel):
         self._update_slot_content()
             
     def show(self):
-        print(f"[RosterPanelRefactored] SHOW() CALLED!")
+        print(f"[RosterPanel] SHOW() CALLED!")
         super().show()
-        print(f"[RosterPanelRefactored] AFTER SUPER().SHOW()")
+        print(f"[RosterPanel] AFTER SUPER().SHOW()")
         self._update_visibility()
         self._update_slot_content()
-        print(f"[RosterPanelRefactored] SHOW() COMPLETED")
+        print(f"[RosterPanel] SHOW() COMPLETED")
     
     def hide(self):
         super().hide()
@@ -394,7 +394,7 @@ class RosterPanelRefactored(BasePanel):
         
     def _clear_ui_elements(self):
         """Clear all existing UI elements to prevent duplicates."""
-        print(f"[RosterPanelRefactored] _clear_ui_elements() called")
+        print(f"[RosterPanel] _clear_ui_elements() called")
         
         # Clean up SRP components
         if self.header_component:
@@ -426,7 +426,7 @@ class RosterPanelRefactored(BasePanel):
             self.container_slots.kill()
             self.container_slots = None
         
-        print(f"[RosterPanelRefactored] UI element references cleared")
+        print(f"[RosterPanel] UI element references cleared")
             
     def _navigate(self, state: str) -> None:
         """Navigate to another state using string events for compatibility."""

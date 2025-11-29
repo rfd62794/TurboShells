@@ -13,7 +13,6 @@ import os
 # Add the src directory to Python path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
 
-from ui.panels.main_menu_panel_refactored import MainMenuPanelRefactored
 from ui.panels.main_menu_panel import MainMenuPanel
 
 
@@ -55,7 +54,7 @@ def test_main_menu_functionality():
     event_bus = MockEventBus()
     
     # Create both versions for comparison
-    refactored_panel = MainMenuPanelRefactored(game_state, event_bus)
+    refactored_panel = MainMenuPanel(game_state, event_bus)
     original_panel = MainMenuPanel(game_state, event_bus)
     
     # Set up managers
@@ -211,7 +210,7 @@ def test_component_architecture():
     game_state = MockGameState()
     event_bus = MockEventBus()
     
-    panel = MainMenuPanelRefactored(game_state, event_bus)
+    panel = MainMenuPanel(game_state, event_bus)
     panel.manager = manager
     panel._create_window()
     

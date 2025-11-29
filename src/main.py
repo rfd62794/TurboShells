@@ -89,12 +89,12 @@ from ui.events.ui_event_bus import UIEventBus
 from ui.events.event_types import UIEvents
 from ui.scene_controller import SceneController
 from ui.panels.settings_panel import SettingsPanel
-from ui.panels.main_menu_panel_refactored import MainMenuPanelRefactored as MainMenuPanel
+from ui.panels.main_menu_panel import MainMenuPanel
 from ui.panels.shop_panel import ShopPanel
-from ui.panels.roster_panel_refactored import RosterPanelRefactored as RosterPanel
+from ui.panels.roster_panel import RosterPanel
 from ui.panels.race_hud_panel import RaceHUDPanel
 from ui.panels.race_result_panel import RaceResultPanel
-from ui.panels.profile.profile_panel_refactored import ProfilePanelRefactored
+from ui.panels.profile.profile_panel import ProfilePanel
 from ui.panels.breeding_panel import BreedingPanel
 from ui.panels.voting_panel import VotingPanel
 from ui.data_binding import DataBindingManager
@@ -192,7 +192,7 @@ class TurboShellsGame:
         self.race_result_panel = RaceResultPanel(self.game_state_interface)
         self.ui_manager.register_panel("race_result", self.race_result_panel)
         
-        self.profile_panel = ProfilePanelRefactored("profile", "Turtle Profile", self.game_state_interface, self.ui_event_bus)
+        self.profile_panel = ProfilePanel("profile", "Turtle Profile", self.game_state_interface, self.ui_event_bus)
         self.ui_manager.register_panel("profile", self.profile_panel)
         
         self.breeding_panel = BreedingPanel(self.game_state_interface)

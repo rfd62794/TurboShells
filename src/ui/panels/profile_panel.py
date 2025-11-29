@@ -13,7 +13,7 @@ from ...components.reusable.turtle_info_panel import TurtleInfoPanel
 from core.rich_logging import get_ui_rich_logger
 
 
-class ProfilePanelRefactored(BasePanel):
+class ProfilePanel(BasePanel):
     """Profile Panel using specialized components built from reusable components.
     
     Architecture:
