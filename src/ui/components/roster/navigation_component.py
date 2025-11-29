@@ -20,7 +20,8 @@ class NavigationComponent(BaseComponent):
         self.on_navigate = on_navigate
         
         # UI elements
-        self.btn_race = None
+        # Race button removed - now handled by BettingControls component
+        # self.btn_race = None
         
         # Create UI elements
         self._create_ui_elements()
@@ -30,30 +31,23 @@ class NavigationComponent(BaseComponent):
         if not self.manager or not self.container:
             return
             
-        # Race button (matches original positioning exactly)
-        self.btn_race = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((self.rect.width - 440, 0), (100, 30)),
-            text="Race",
-            manager=self.manager,
-            container=self.container
-        )
+        # Race button removed - now handled by BettingControls component
+        # self.btn_race = pygame_gui.elements.UIButton(
+        #     relative_rect=pygame.Rect((self.rect.width - 440, 0), (100, 30)),
+        #     text="Race",
+        #     manager=self.manager,
+        #     container=self.container
+        # )
         
     def handle_event(self, event: pygame.event.Event) -> bool:
         """Handle events for navigation component."""
-        if event.type == pygame_gui.UI_BUTTON_PRESSED:
-            if event.ui_element == self.btn_race:
-                print(f"[DEBUG] ✓ MATCHED Race button")
-                if self.game_state:
-                    self.game_state.set('select_racer_mode', False)
-                if self.on_navigate:
-                    self.on_navigate('RACE')
-                return True
+        # Race button handling removed - now handled by BettingControls component
         return False
         
     def get_elements(self) -> Dict[str, Any]:
         """Get UI element references."""
         return {
-            'btn_race': self.btn_race
+            # Race button removed - now handled by BettingControls component
         }
         
     def render(self, surface: pygame.Surface) -> None:
@@ -62,5 +56,5 @@ class NavigationComponent(BaseComponent):
         
     def destroy(self) -> None:
         """Clean up UI elements."""
-        if self.btn_race:
-            self.btn_race.kill()
+        # Race button cleanup removed - now handled by BettingControls component
+        pass
