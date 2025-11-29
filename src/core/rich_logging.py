@@ -135,7 +135,7 @@ class RichLogger:
             logger.add(
                 rich_handler,
                 level=self.config.level,
-                format=f"<level>{self.config.level}</level> | <component>[{self.component_name}]</component> | <level>{'{message}'}</level>",
+                format=f"<level>{self.config.level}</level> | <cyan>[{self.component_name}]</cyan> | <level>{{message}}</level>",
                 colorize=True,
                 backtrace=True,
                 diagnose=True
@@ -145,7 +145,7 @@ class RichLogger:
             logger.add(
                 sys.stderr,
                 level=self.config.level,
-                format=f"<green>{datetime.now().strftime('%H:%M:%S')}</green> | <level>{self.config.level: <8}</level> | <cyan>[{self.component_name}]</cyan> | <level>{'{message}'}</level>",
+                format=f"<green>{datetime.now().strftime('%H:%M:%S')}</green> | <level>{self.config.level: <8}</level> | <cyan>[{self.component_name}]</cyan> | <level>{{message}}</level>",
                 colorize=True,
                 backtrace=True,
                 diagnose=True
@@ -206,12 +206,8 @@ class RichLogger:
     def _log(self, level: str, message: str, **kwargs):
         """Internal logging method."""
         if LOGURU_AVAILABLE:
-            # Use Loguru's structured logging
-            extra = kwargs.get('extra', {})
-            extra['component'] = self.component_name
-            
-            # Log with bound logger
-            bound_logger = self.logger.bind(**extra)
+            # Use Loguru's structured logging with bound component
+            bound_logger = self.logger.bind(component=self.component_name)
             getattr(bound_logger, level.lower())(message)
         else:
             # Fallback to standard logging
