@@ -137,7 +137,7 @@ class ProfilePanelRefactored(BasePanel):
         
         # Release button using our auto-sizing component
         self.release_button = Button(
-            rect=pygame.Rect((260, 50), (80, 40)),
+            rect=pygame.Rect((240, 50), (80, 40)),  # Moved 20px left from (260, 50)
             text="Release",
             action="release",
             manager=self.manager,
