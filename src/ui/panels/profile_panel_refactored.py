@@ -1,4 +1,4 @@
-"""Refactored Profile Panel using SRP components."""
+"""Refactored Profile Panel using modular reusable components."""
 
 import pygame
 import pygame_gui
@@ -7,12 +7,14 @@ from typing import Optional, Dict, Any, List
 from .base_panel import BasePanel
 from game.game_state_interface import TurboShellsGameStateInterface
 from ui.components.reusable.input import Button
-from ui.components.reusable.display import TextBox
+from ui.components.reusable.stats_panel import StatsPanel
+from ui.components.reusable.race_history_panel import RaceHistoryPanel
+from ui.components.reusable.turtle_info_panel import TurtleInfoPanel
 from core.rich_logging import get_ui_rich_logger
 
 
 class ProfilePanelRefactored(BasePanel):
-    """Refactored Profile Panel using component-based architecture.
+    """Refactored Profile Panel using modular component architecture.
     
     Follows SRP by separating concerns:
     - BasePanel: Window management and lifecycle
@@ -30,20 +32,23 @@ class ProfilePanelRefactored(BasePanel):
         # Profile data
         self.current_turtle = None
         self.current_index = None
+        self.is_retired = False
         
         # UI components will be created in _create_window
         self.back_button = None
         self.release_button = None
-        self.name_label = None
-        self.stats_labels = {}
-        self.history_text = None
+        
+        # Modular components
+        self.turtle_info_panel = None
+        self.stats_panel = None
+        self.race_history_panel = None
         
         # Panel configuration
         self.size = (700, 550)
         self.position = (50, 25)
         
     def _create_window(self) -> None:
-        """Create the profile panel window using SRP components."""
+        """Create the profile panel window using modular components."""
         super()._create_window()
         if not self.window:
             return
@@ -52,12 +57,12 @@ class ProfilePanelRefactored(BasePanel):
         container = self.window.get_container()
         width = self.size[0] - 40
         
-        # Create UI elements matching original layout
+        # Create UI elements using modular components
         self._create_header_section(container, width)
-        self._create_visual_section(container)  # Left panel with turtle image
-        self._create_stats_section(container)    # Right panel with detailed stats
-        self._create_history_section(container, width)
-        self._create_action_buttons(container, width)
+        self._create_turtle_info_section(container)  # Left panel with turtle image
+        self._create_stats_section(container)        # Right panel with detailed stats
+        self._create_history_section(container)       # Bottom left with race history
+        self._create_action_buttons(container, width) # Bottom right with actions
         
     def _create_header_section(self, container, width: int) -> None:
         """Create the header section with back button."""
@@ -70,7 +75,6 @@ class ProfilePanelRefactored(BasePanel):
         )
         
         # Back button using our auto-sizing component
-        from ..components.reusable.input import Button
         self.back_button = Button(
             rect=pygame.Rect((width - 100, 10), (80, 40)),
             text="Back",
@@ -80,110 +84,46 @@ class ProfilePanelRefactored(BasePanel):
             config={'auto_resize': True, 'min_width': 80, 'padding': 20}
         )
         
-    def _create_visual_section(self, container) -> None:
-        """Create the left visual section with turtle image and basic info."""
-        # Visual panel - left side
-        self.visual_panel = pygame_gui.elements.UIPanel(
-            relative_rect=pygame.Rect((10, 70), (300, 280)),
+    def _create_turtle_info_section(self, container) -> None:
+        """Create the left turtle info section using modular component."""
+        # Turtle info panel - left side
+        self.turtle_info_panel = TurtleInfoPanel(
+            rect=pygame.Rect((10, 70), (300, 280)),
             manager=self.manager,
             container=container,
-            object_id="#profile_visual_panel"
+            config={
+                'image_size': (120, 120),
+                'show_status': True,
+                'show_age': True
+            }
         )
         
-        # Turtle Image (will be updated dynamically)
-        self.turtle_image = pygame_gui.elements.UIImage(
-            relative_rect=pygame.Rect((90, 30), (120, 120)),
-            image_surface=pygame.Surface((120, 120)),
-            manager=self.manager,
-            container=self.visual_panel
-        )
-        
-        # Turtle Name
-        self.name_label = pygame_gui.elements.UILabel(
-            relative_rect=pygame.Rect((10, 160), (280, 30)),
-            text="",
-            manager=self.manager,
-            container=self.visual_panel
-        )
-        
-        # Status Label  
-        self.status_label = pygame_gui.elements.UILabel(
-            relative_rect=pygame.Rect((10, 195), (280, 25)),
-            text="",
-            manager=self.manager,
-            container=self.visual_panel
-        )
-        
-        # Age Label
-        self.age_label = pygame_gui.elements.UILabel(
-            relative_rect=pygame.Rect((10, 225), (280, 25)),
-            text="",
-            manager=self.manager,
-            container=self.visual_panel
-        )
-        
-    def _create_stats_section(self, container, width: int) -> None:
-        """Create the stats section on the right side."""
-        # Stats panel - right side, top
-        self.stats_panel = pygame_gui.elements.UIPanel(
-            relative_rect=pygame.Rect((320, 70), (340, 250)),
+    def _create_stats_section(self, container) -> None:
+        """Create the stats section using modular component."""
+        # Stats panel - right side
+        self.stats_panel = StatsPanel(
+            rect=pygame.Rect((320, 70), (340, 250)),
             manager=self.manager,
             container=container,
-            object_id="#profile_stats_panel"
-        )
-        
-        # Stats Header
-        stats_header = pygame_gui.elements.UILabel(
-            relative_rect=pygame.Rect((10, 10), (340, 25)),
-            text="DETAILED STATS",
-            manager=self.manager,
-            container=self.stats_panel
-        )
-        
-        # Stats Text Box (will show all stats using TextBox component)
-        self.stats_text = TextBox(
-            rect=pygame.Rect((10, 40), (320, 180)),  # Reduced width to fit container
-            text="",
-            manager=self.manager,
-            config={'read_only': True}
-        )
-        self.stats_text.container = self.stats_panel
-        
-        # Energy Label (for active turtles)
-        self.energy_label = pygame_gui.elements.UILabel(
-            relative_rect=pygame.Rect((10, 230), (340, 20)),
-            text="",
-            manager=self.manager,
-            container=self.stats_panel
+            config={
+                'header_text': 'DETAILED STATS',
+                'show_energy': True
+            }
         )
             
-    def _create_history_section(self, container, width: int) -> None:
-        """Create the race history section."""
+    def _create_history_section(self, container) -> None:
+        """Create the race history section using modular component."""
         # History panel - bottom left
-        history_panel = pygame_gui.elements.UIPanel(
-            relative_rect=pygame.Rect((10, 360), (300, 140)),
+        self.race_history_panel = RaceHistoryPanel(
+            rect=pygame.Rect((10, 360), (300, 140)),
             manager=self.manager,
             container=container,
-            object_id="#history_panel"
+            config={
+                'header_text': 'RECENT RACE HISTORY',
+                'max_races': 5,
+                'show_header': True
+            }
         )
-        
-        # History title
-        history_title = pygame_gui.elements.UILabel(
-            relative_rect=pygame.Rect((10, 10), (200, 25)),
-            text="RECENT RACE HISTORY",
-            manager=self.manager,
-            container=history_panel,
-            object_id="#history_title"
-        )
-        
-        # History Text Box (will show race history using TextBox component)
-        self.history_text = TextBox(
-            rect=pygame.Rect((10, 40), (280, 120)),  # Reduced width to fit container
-            text="",
-            manager=self.manager,
-            config={'read_only': True}
-        )
-        self.history_text.container = history_panel
         
     def _create_action_buttons(self, container, width: int) -> None:
         """Create the action buttons section."""
@@ -196,7 +136,6 @@ class ProfilePanelRefactored(BasePanel):
         )
         
         # Release button using our auto-sizing component
-        from ..components.reusable.input import Button
         self.release_button = Button(
             rect=pygame.Rect((260, 50), (80, 40)),
             text="Release",
@@ -255,73 +194,25 @@ class ProfilePanelRefactored(BasePanel):
             self._show_no_turtle()
             
     def _update_ui(self) -> None:
-        """Update UI elements with current turtle data."""
+        """Update UI elements with current turtle data using modular components."""
         if not self.current_turtle:
             self._show_no_turtle()
             return
             
-        # Import turtle renderer for image
-        from core.rendering.pygame_turtle_renderer import render_turtle_pygame
-        
-        # Update turtle image
-        try:
-            turtle_img = render_turtle_pygame(self.current_turtle, size=120)
-            if self.turtle_image:
-                self.turtle_image.set_image(turtle_img)
-        except Exception as e:
-            self.logger.error(f"Error rendering turtle image: {e}")
+        # Update turtle info panel
+        if self.turtle_info_panel:
+            self.turtle_info_panel.update_turtle_info(self.current_turtle, self.is_retired)
             
-        # Update name with plain text
-        if self.name_label:
-            self.name_label.set_text(f"{self.current_turtle.name}")
-            
-        # Update status
-        if self.status_label:
-            status = "ACTIVE" if not self.is_retired else "RETIRED"
-            self.status_label.set_text(f"[{status}]")
-            
-        # Update age
-        if self.age_label:
-            self.age_label.set_text(f"Age: {self.current_turtle.age}")
-            
-        # Update detailed stats using plain text
-        if self.stats_text:
-            stats_lines = [
-                f"Speed: {self.current_turtle.speed}",
-                f"Max Energy: {self.current_turtle.max_energy}",
-                f"Recovery: {self.current_turtle.recovery}",
-                f"Swim: {self.current_turtle.swim}",
-                f"Climb: {self.current_turtle.climb}",
-                f"Stamina: {self.current_turtle.stamina}",
-                f"Luck: {self.current_turtle.luck}",
-                f"Total Races: {len(self.current_turtle.race_history)}",
-                f"Total Wins: {self.current_turtle.wins}"
-            ]
-            stats_text = "\n".join(stats_lines)
-            self.stats_text.set_text(stats_text)
-            
-        # Update energy (for active turtles only)
-        if self.energy_label:
-            if not self.is_retired:
-                energy_pct = int((self.current_turtle.current_energy / self.current_turtle.max_energy) * 100)
-                self.energy_label.set_text(f"Energy: {self.current_turtle.current_energy}/{self.current_turtle.max_energy} ({energy_pct}%)")
-            else:
-                self.energy_label.set_text("")
+        # Update stats panel
+        if self.stats_panel:
+            self.stats_panel.update_stats(self.current_turtle, self.is_retired)
                 
-        # Update history
-        if self.history_text:
-            race_history = self.current_turtle.race_history
-            if race_history:
-                history_lines = []
-                for race in race_history[-5:]:  # Show last 5 races
-                    race_num = race.get('number', '?')
-                    position = race.get('position', '?')
-                    earnings = race.get('earnings', 0)
-                    history_lines.append(f"Race {race_num}: Position {position} - ${earnings}")
-                history_text = "\n".join(history_lines)
+        # Update race history panel
+        if self.race_history_panel:
+            if hasattr(self.current_turtle, 'race_history') and self.current_turtle.race_history:
+                self.race_history_panel.update_history(self.current_turtle.race_history)
             else:
-                history_text = "No race history yet"
-            self.history_text.set_text(history_text)
+                self.race_history_panel.clear()
             
         # Update release button state
         if self.release_button:
@@ -336,36 +227,13 @@ class ProfilePanelRefactored(BasePanel):
                 
     def _show_no_turtle(self) -> None:
         """Show UI when no turtle is selected."""
-        # Clear turtle image
-        if self.turtle_image:
-            self.turtle_image.set_image(pygame.Surface((120, 120)))
-            
-        # Update name
-        if self.name_label:
-            self.name_label.set_text("No turtle selected")
-            
-        # Clear status and age
-        if self.status_label:
-            self.status_label.set_text("")
-        if self.age_label:
-            self.age_label.set_text("")
-            
-        # Clear stats
-        if self.stats_text:
-            self.stats_text.set_text("Select a turtle to view profile")
-            
-        # Clear energy
-        if self.energy_label:
-            self.energy_label.set_text("")
-            
-        # Clear history
-        if self.history_text:
-            self.history_text.set_text("Select a turtle to view profile")
-            
-        # Disable release button
-        if self.release_button:
-            self.release_button.set_enabled(False)
-            self.release_button.set_text("No Turtle")
+        # Clear all modular components
+        if self.turtle_info_panel:
+            self.turtle_info_panel._clear_info()
+        if self.stats_panel:
+            self.stats_panel.update_stats(None)
+        if self.race_history_panel:
+            self.race_history_panel.clear()
             
     def handle_event(self, event: pygame.event.Event) -> bool:
         """Handle pygame events for the profile panel."""
