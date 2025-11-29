@@ -20,8 +20,8 @@ class HeaderComponent(BaseComponent):
         
         # UI elements
         self.lbl_money = None
-        self.btn_menu = None
         self.top_bar = None
+        # Menu button removed - now in betting controls
         
         # Create UI elements
         self._create_ui_elements()
@@ -47,24 +47,11 @@ class HeaderComponent(BaseComponent):
             container=self.top_bar
         )
         
-        # Menu button - position on left side, aligned with Start Race button
-        # Start Race is at container_width - 490, so align Menu at similar position
-        self.btn_menu = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((20, 10), (60, 25)),  # Left side positioning
-            text="Menu",
-            manager=self.manager,
-            container=None  # Window level
-        )
+        # Menu button removed - now in betting controls
         
     def handle_event(self, event: pygame.event.Event) -> bool:
         """Handle events for header component."""
-        if event.type == pygame_gui.UI_BUTTON_PRESSED:
-            if event.ui_element == self.btn_menu:
-                print(f"[DEBUG] ✓ MATCHED Menu button")
-                if self.game_state:
-                    self.game_state.set('select_racer_mode', False)
-                    # Navigate to menu - this would need to be handled by parent
-                return True
+        # Menu button handling removed - now in betting controls
         return False
         
     def update_money(self, money: int) -> None:
@@ -76,8 +63,8 @@ class HeaderComponent(BaseComponent):
         """Get UI element references."""
         return {
             'lbl_money': self.lbl_money,
-            'btn_menu': self.btn_menu,
             'top_bar': self.top_bar
+            # Menu button removed - now in betting controls
         }
         
     def render(self, surface: pygame.Surface) -> None:
@@ -90,5 +77,4 @@ class HeaderComponent(BaseComponent):
             self.top_bar.kill()
         if self.lbl_money:
             self.lbl_money.kill()
-        if self.btn_menu:
-            self.btn_menu.kill()
+        # Menu button cleanup removed - now in betting controls

@@ -23,6 +23,7 @@ class BettingControls(BaseComponent):
         self.btn_bet_5 = None
         self.btn_bet_10 = None
         self.btn_start_race = None
+        self.btn_menu = None  # Add menu button
         
         # Create UI elements
         self._create_ui_elements()
@@ -72,6 +73,15 @@ class BettingControls(BaseComponent):
             visible=False
         )
         
+        # Menu button - position far left of Start Race
+        self.btn_menu = pygame_gui.elements.UIButton(
+            relative_rect=pygame.Rect((container_width - 540, 0), (80, 30)),  # Far left of Start Race
+            text="Menu",
+            manager=self.manager,
+            container=self.container,
+            visible=True  # Always visible
+        )
+        
     def handle_event(self, event: pygame.event.Event) -> bool:
         """Handle events for betting controls."""
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
@@ -92,6 +102,11 @@ class BettingControls(BaseComponent):
                 active_racer_idx = self.game_state.get('active_racer_index', -1)
                 if active_racer_idx >= 0:
                     self.game_state.set('start_race', active_racer_idx)
+                return True
+            elif event.ui_element == self.btn_menu:
+                print(f"[DEBUG] ✓ MATCHED Menu button!")
+                self.game_state.set('select_racer_mode', False)
+                # Navigate to menu - this would need to be handled by parent
                 return True
         return False
         
@@ -139,7 +154,8 @@ class BettingControls(BaseComponent):
             'btn_bet_0': self.btn_bet_0,
             'btn_bet_5': self.btn_bet_5,
             'btn_bet_10': self.btn_bet_10,
-            'btn_start_race': self.btn_start_race
+            'btn_start_race': self.btn_start_race,
+            'btn_menu': self.btn_menu
         }
         
     def render(self, surface: pygame.Surface) -> None:
@@ -156,3 +172,5 @@ class BettingControls(BaseComponent):
             self.btn_bet_10.kill()
         if self.btn_start_race:
             self.btn_start_race.kill()
+        if self.btn_menu:
+            self.btn_menu.kill()
