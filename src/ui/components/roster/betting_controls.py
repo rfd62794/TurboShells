@@ -73,9 +73,9 @@ class BettingControls(BaseComponent):
             visible=False
         )
         
-        # Menu button - position far left of Start Race
+        # Menu button - position on absolute left side
         self.btn_menu = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect((container_width - 540, 0), (80, 30)),  # Far left of Start Race
+            relative_rect=pygame.Rect((0, 0), (80, 30)),  # Absolute left side (x=0)
             text="Menu",
             manager=self.manager,
             container=self.container,
@@ -106,7 +106,8 @@ class BettingControls(BaseComponent):
             elif event.ui_element == self.btn_menu:
                 print(f"[DEBUG] ✓ MATCHED Menu button!")
                 self.game_state.set('select_racer_mode', False)
-                # Navigate to menu - this would need to be handled by parent
+                # Navigate to menu using the same pattern as other components
+                self.game_state.set('state', 'MENU')
                 return True
         return False
         
