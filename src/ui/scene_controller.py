@@ -3,6 +3,7 @@
 from typing import Dict, Optional
 
 from settings import STATE_MENU
+from .events.event_types import UIEvents
 
 
 class SceneController:

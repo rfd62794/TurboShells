@@ -110,19 +110,19 @@ class TurtleActionButtons(BaseComponent):
         """Handle train button click."""
         if self.game_state:
             self.game_state.set('train_turtle', self.turtle_index)
-        self._emit_event(UIEvents.TURTLE_TRAIN, EventData.turtle_action("train", self.turtle_index))
+        self._emit_event("train_clicked", self.turtle_index)
         
     def _handle_view(self) -> None:
         """Handle view button click."""
         if self.game_state:
             self.game_state.set('view_profile', self.turtle_index)
-        self._emit_event(UIEvents.TURTLE_VIEW, EventData.turtle_action("view", self.turtle_index))
+        self._emit_event("view_clicked", self.turtle_index)
         
     def _handle_retire(self) -> None:
         """Handle retire button click."""
         if self.game_state:
             self.game_state.set('retire_turtle', self.turtle_index)
-        self._emit_event(UIEvents.TURTLE_RETIRE, EventData.turtle_action("retire", self.turtle_index))
+        self._emit_event("retire_clicked", self.turtle_index)
         
     def _handle_select(self) -> None:
         """Handle select button click."""
@@ -131,10 +131,10 @@ class TurtleActionButtons(BaseComponent):
             self.game_state.set('set_active_racer', self.turtle_index)
             # Emit to global event bus if available
             if hasattr(self, 'event_bus') and self.event_bus:
-                self.event_bus.emit(UIEvents.UPDATE_UI, EventData.turtle_action("select", self.turtle_index))
+                self.event_bus.emit('update_ui', None)
             else:
                 # Fallback to local emission
-                self._emit_event(UIEvents.UPDATE_UI, EventData.turtle_action("select", self.turtle_index))
+                self._emit_event("update_ui", None)
         
     def update_mode(self, is_retired_turtle: bool, is_select_mode: bool, 
                    is_active_racer: bool = False) -> None:
@@ -156,16 +156,16 @@ class TurtleActionButtons(BaseComponent):
             return
             
         if self._is_retired_turtle:
-            # Retired turtles: no action buttons
+            # Retired turtles: only View button visible
             self.btn_train.hide()
-            self.btn_view.hide()
+            self.btn_view.show()  # Keep View button for retired turtles
             self.btn_retire.hide()
             self.btn_select.hide()
         else:
             # Active turtles
             if self._is_select_mode:
                 self.btn_train.hide()
-                self.btn_view.hide()
+                self.btn_view.show()  # Keep View button even in select mode
                 # Keep retire button visible even in select mode
                 self.btn_retire.show()
                 self.btn_select.show()

@@ -56,6 +56,7 @@ from pygame_gui.windows.ui_confirmation_dialog import UIConfirmationDialog
 
 from ui.ui_manager import UIManager
 from ui.events.ui_event_bus import UIEventBus
+from ui.events.event_types import UIEvents
 from ui.scene_controller import SceneController
 from ui.panels.settings_panel import SettingsPanel
 from ui.panels.main_menu_panel_refactored import MainMenuPanelRefactored as MainMenuPanel

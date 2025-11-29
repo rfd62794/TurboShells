@@ -104,6 +104,13 @@ class BaseComponent(ABC):
         """Update component and children. Override in subclasses."""
         for child in self.children:
             child.update(dt)
+    
+    def handle_event(self, event: pygame.event.Event) -> bool:
+        """Handle pygame events. Override in subclasses."""
+        for child in self.children:
+            if child.handle_event(event):
+                return True
+        return False
             
     def destroy(self) -> None:
         """Clean up component and children."""

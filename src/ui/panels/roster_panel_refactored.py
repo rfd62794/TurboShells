@@ -47,7 +47,7 @@ class RosterPanelRefactored(BasePanel):
         
         # Listen for update_ui events from turtle action buttons
         if self.event_bus:
-            self.event_bus.subscribe(UIEvents.UPDATE_UI, self._on_update_ui)
+            self.event_bus.subscribe('update_ui', self._on_update_ui)
         
     def _create_window(self) -> None:
         """Create the roster panel window using SRP components."""
@@ -429,8 +429,8 @@ class RosterPanelRefactored(BasePanel):
         print(f"[RosterPanelRefactored] UI element references cleared")
             
     def _navigate(self, state: str) -> None:
-        """Navigate to another state using standardized events."""
+        """Navigate to another state using string events for compatibility."""
         if self.event_bus:
-            self.event_bus.emit(UIEvents.NAVIGATE, EventData.navigate(state))
+            self.event_bus.emit("ui:navigate", {"state": state})
         else:
             self.game_state.set('state', state)
