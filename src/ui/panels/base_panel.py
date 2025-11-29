@@ -13,7 +13,7 @@ class BasePanel:
     - Dynamic sizing and positioning
     """
     
-    def __init__(self, panel_id: str, title: str, event_bus: Optional[Any] = None, use_window_manager: bool = False):
+    def __init__(self, panel_id: str, title: str, event_bus: Optional[Any] = None, use_window_manager: bool = False, auto_close_event: bool = True):
         """Initialize base panel.
         
         Args:
@@ -21,6 +21,7 @@ class BasePanel:
             title: Display title for the panel
             event_bus: Event bus for communication
             use_window_manager: Whether to use window manager for dynamic sizing
+            auto_close_event: Whether to emit ui:panel_closed event on window close
         """
         self.panel_id = panel_id
         self.title = title
@@ -29,6 +30,7 @@ class BasePanel:
         self.visible = False
         self.event_bus = event_bus
         self.use_window_manager = use_window_manager
+        self.auto_close_event = auto_close_event
         
         # Window manager integration
         if self.use_window_manager:
