@@ -40,6 +40,7 @@ class RosterPanelRefactored(BasePanel):
         self.game_state.observe('show_retired_view', self._on_view_changed)
         self.game_state.observe('select_racer_mode', self._on_mode_changed)
         self.game_state.observe('current_bet', self._on_bet_changed)
+        self.game_state.observe('active_racer_index', self._on_active_racer_changed)
         
     def _create_window(self) -> None:
         """Create the roster panel window using SRP components."""
@@ -351,6 +352,11 @@ class RosterPanelRefactored(BasePanel):
         """Handle bet change using component."""
         if self.betting_controls:
             self.betting_controls.update_bet_feedback(new)
+            
+    def _on_active_racer_changed(self, key, old, new):
+        """Handle active racer change - update UI immediately."""
+        print(f"[DEBUG] Active racer changed from {old} to {new}")
+        self._update_slot_content()
             
     def show(self):
         print(f"[RosterPanelRefactored] SHOW() CALLED!")
