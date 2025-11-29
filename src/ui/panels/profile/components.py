@@ -141,15 +141,15 @@ class ProfileLayout:
         
     def _calculate_positions(self) -> Dict[str, pygame.Rect]:
         """Calculate component positions within the container."""
-        # Use fixed dimensions based on the panel size (700x550)
-        width = 700 - 40  # Account for padding
+        # Use relative positioning within the container (window)
+        # These coordinates are relative to the container's top-left corner
         
         return {
-            'header': pygame.Rect((0, 0), (width + 40, 60)),
-            'turtle_info': pygame.Rect((10, 70), (300, 280)),
-            'stats': pygame.Rect((320, 70), (340, 250)),
-            'history': pygame.Rect((10, 360), (300, 140)),
-            'actions': pygame.Rect((320, 360), (360, 140))
+            'header': pygame.Rect((0, 0), (660, 60)),           # Top header
+            'turtle_info': pygame.Rect((10, 70), (300, 280)),    # Left panel
+            'stats': pygame.Rect((320, 70), (330, 250)),         # Right panel (reduced width)
+            'history': pygame.Rect((10, 360), (300, 140)),      # Bottom left
+            'actions': pygame.Rect((320, 360), (330, 140))       # Bottom right (reduced width)
         }
         
     def get_position(self, component_name: str) -> pygame.Rect:

@@ -106,6 +106,7 @@ class ProfilePanelRefactored(BasePanel):
     def _create_stats_section(self) -> None:
         """Create the stats section using reusable component."""
         stats_rect = self.layout.get_position('stats')
+        self.logger.debug(f"[ProfilePanel] Creating stats section at {stats_rect}")
         self.stats_panel = StatsPanel(
             rect=stats_rect,
             manager=self.manager,
@@ -115,6 +116,7 @@ class ProfilePanelRefactored(BasePanel):
                 'show_energy': True
             }
         )
+        self.logger.debug(f"[ProfilePanel] Stats panel created: {self.stats_panel is not None}")
             
     def _create_history_section(self) -> None:
         """Create the race history section using reusable component."""
