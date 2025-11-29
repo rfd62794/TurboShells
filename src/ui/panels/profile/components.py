@@ -94,12 +94,12 @@ class ProfileActionPanel:
         
         # Release button using reusable Button component
         self.release_button = Button(
-            rect=pygame.Rect((240, 50), (80, 40)),  # Positioned 20px from left
+            rect=pygame.Rect((180, 50), (140, 40)),  # Moved left and wide enough for "Cannot Release"
             text="Release",
             action="release",
             manager=self.manager,
             container=self.panel,
-            config={'auto_resize': False, 'min_width': 80, 'padding': 20}  # Disable auto-resize
+            config={'auto_resize': False, 'min_width': 140, 'padding': 20}  # Keep disabled, but larger width
         )
         
     def update_button_state(self, can_release: bool, text: str = "Release") -> None:
