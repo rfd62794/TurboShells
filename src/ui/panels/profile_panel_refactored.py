@@ -8,7 +8,7 @@ from .base_panel import BasePanel
 from game.game_state_interface import TurboShellsGameStateInterface
 from ui.components.reusable.input import Button
 from ui.components.reusable.display import TextBox
-from core.enhanced_logging import get_ui_logger
+from core.rich_logging import get_ui_rich_logger
 
 
 class ProfilePanelRefactored(BasePanel):
@@ -25,7 +25,7 @@ class ProfilePanelRefactored(BasePanel):
         """Initialize the refactored profile panel."""
         super().__init__(panel_id, title, event_bus)
         self.game_state = game_state
-        self.logger = get_ui_logger()
+        self.logger = get_ui_rich_logger()
         
         # Profile data
         self.current_turtle = None

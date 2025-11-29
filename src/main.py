@@ -9,17 +9,34 @@ import pygame_gui
 import sys
 import logging
 
-# Import enhanced logging first
-from core.enhanced_logging import setup_enhanced_logging, LogConfig, get_game_logger
+# Import Rich logging system (Loguru + Rich)
+from core.rich_logging import setup_rich_logging, RichLogConfig, get_game_rich_logger, check_dependencies, install_dependencies
 
-# Set up enhanced logging
-logging_config = LogConfig(
-    level=logging.INFO,
+# Check dependencies first
+if not check_dependencies():
+    print("Installing missing dependencies...")
+    install_dependencies()
+    print("Please restart the game after installation.")
+    sys.exit(1)
+
+# Set up Rich logging
+rich_config = RichLogConfig(
+    level="INFO",
     log_to_file=True,
     log_to_console=True,
-    use_colors=True
+    enable_rich_console=True,
+    rich_theme="game",
+    show_path=False,
+    show_time=True,
+    show_level=True,
+    rotation="10 MB",
+    retention="7 days"
 )
-setup_enhanced_logging(logging_config)
+setup_rich_logging(rich_config)
+
+# Get game logger
+game_logger = get_game_rich_logger()
+game_logger.info("🎮 TurboShells starting with Rich logging system!")
 
 # Import settings with fallback
 try:

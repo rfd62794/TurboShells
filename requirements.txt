@@ -3,6 +3,10 @@ pygame_gui>=0.6.9
 numpy>=1.24.0
 neat-python>=0.92
 
+# Rich Logging System
+loguru>=0.7.0
+rich>=13.0.0
+
 # Visual Genetics System
 drawsvg>=1.6.0
 svgwrite>=1.4.3
