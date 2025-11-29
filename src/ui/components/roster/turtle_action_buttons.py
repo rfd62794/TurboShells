@@ -14,7 +14,7 @@ class TurtleActionButtons(BaseComponent):
     """
     
     def __init__(self, rect: pygame.Rect, turtle_index: int, manager: Optional[UIManager] = None,
-                 game_state=None, container=None):
+                 game_state=None, container=None, event_bus=None):
         """Initialize turtle action buttons.
         
         Args:
@@ -23,10 +23,12 @@ class TurtleActionButtons(BaseComponent):
             manager: pygame_gui UIManager instance
             game_state: Game state interface for actions
             container: pygame_gui container for buttons
+            event_bus: Event bus for publishing events
         """
         super().__init__(rect, manager, container)
         self.turtle_index = turtle_index
         self.game_state = game_state
+        self.event_bus = event_bus  # Store event bus reference
         self.container = container
         
         # UI elements
@@ -123,9 +125,19 @@ class TurtleActionButtons(BaseComponent):
         
     def _handle_select(self) -> None:
         """Handle select button click."""
+        print(f"[DEBUG] Select button clicked for turtle index: {self.turtle_index}")
         if self.game_state:
+            # Follow original pattern exactly
             self.game_state.set('set_active_racer', self.turtle_index)
-        self._emit_event("select_clicked", self.turtle_index)
+            print(f"[DEBUG] Set active_racer to {self.turtle_index}")
+            # Emit to global event bus if available
+            if hasattr(self, 'event_bus') and self.event_bus:
+                self.event_bus.emit('update_ui', None)
+                print(f"[DEBUG] Emitted update_ui to global event bus")
+            else:
+                # Fallback to local emission
+                self._emit_event("update_ui", None)
+                print(f"[DEBUG] Emitted update_ui locally")
         
     def update_mode(self, is_retired_turtle: bool, is_select_mode: bool, 
                    is_active_racer: bool = False) -> None:

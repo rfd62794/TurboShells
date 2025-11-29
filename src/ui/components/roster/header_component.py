@@ -19,7 +19,7 @@ class HeaderComponent(BaseComponent):
         self.game_state = game_state
         
         # UI elements
-        self.lbl_money = None
+        self.lbl_money = None  # Money label removed - moved to betting controls
         self.top_bar = None
         # Menu button removed - now in betting controls
         
@@ -39,13 +39,13 @@ class HeaderComponent(BaseComponent):
             object_id="#roster_header"
         )
         
-        # Money label
-        self.lbl_money = pygame_gui.elements.UILabel(
-            relative_rect=pygame.Rect((20, 15), (200, 30)),
-            text=f"Funds: ${self.game_state.get('money', 0) if self.game_state else 0}",
-            manager=self.manager,
-            container=self.top_bar
-        )
+        # Money label removed - moved to betting controls
+        # self.lbl_money = pygame_gui.elements.UILabel(
+        #     relative_rect=pygame.Rect((20, 15), (200, 30)),
+        #     text=f"Funds: ${self.game_state.get('money', 0) if self.game_state else 0}",
+        #     manager=self.manager,
+        #     container=self.top_bar
+        # )
         
         # Menu button removed - now in betting controls
         
@@ -55,16 +55,14 @@ class HeaderComponent(BaseComponent):
         return False
         
     def update_money(self, money: int) -> None:
-        """Update money display."""
-        if self.lbl_money:
-            self.lbl_money.set_text(f"Funds: ${money}")
+        """Update money display - no longer needed, moved to betting controls."""
+        pass
             
     def get_elements(self) -> Dict[str, Any]:
         """Get UI element references."""
         return {
-            'lbl_money': self.lbl_money,
             'top_bar': self.top_bar
-            # Menu button removed - now in betting controls
+            # Money label and Menu button removed - now in betting controls
         }
         
     def render(self, surface: pygame.Surface) -> None:
@@ -75,6 +73,4 @@ class HeaderComponent(BaseComponent):
         """Clean up UI elements."""
         if self.top_bar:
             self.top_bar.kill()
-        if self.lbl_money:
-            self.lbl_money.kill()
-        # Menu button cleanup removed - now in betting controls
+        # Money label cleanup removed - now in betting controls
