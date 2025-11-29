@@ -6,6 +6,8 @@ from pygame_gui import UIManager
 from typing import Optional, Dict, Any, List
 from .base_panel import BasePanel
 from game.game_state_interface import TurboShellsGameStateInterface
+from ui.components.reusable.input import Button
+from ui.components.reusable.display import TextBox
 
 
 class ProfilePanelRefactored(BasePanel):
@@ -136,13 +138,14 @@ class ProfilePanelRefactored(BasePanel):
             container=self.stats_panel
         )
         
-        # Stats Text Box (will show all stats in HTML format like original)
-        self.stats_text = pygame_gui.elements.UITextBox(
-            relative_rect=pygame.Rect((10, 40), (340, 180)),
-            html_text="",
+        # Stats Text Box (will show all stats using TextBox component)
+        self.stats_text = TextBox(
+            rect=pygame.Rect((10, 40), (340, 180)),
+            text="",
             manager=self.manager,
-            container=self.stats_panel
+            config={'read_only': True}
         )
+        self.stats_text.container = self.stats_panel
         
         # Energy Label (for active turtles)
         self.energy_label = pygame_gui.elements.UILabel(
@@ -171,14 +174,14 @@ class ProfilePanelRefactored(BasePanel):
             object_id="#history_title"
         )
         
-        # History text
-        self.history_text = pygame_gui.elements.UITextBox(
-            relative_rect=pygame.Rect((10, 40), (280, 90)),
-            html_text="No race history yet",
+        # History Text Box (will show race history using TextBox component)
+        self.history_text = TextBox(
+            rect=pygame.Rect((10, 40), (340, 120)),
+            text="",
             manager=self.manager,
-            container=history_panel,
-            object_id="#history_text"
+            config={'read_only': True}
         )
+        self.history_text.container = history_panel
         
     def _create_action_buttons(self, container, width: int) -> None:
         """Create the action buttons section."""
@@ -273,20 +276,21 @@ class ProfilePanelRefactored(BasePanel):
         if self.age_label:
             self.age_label.set_text(f"Age: {self.current_turtle.age}")
             
-        # Update detailed stats in HTML format like original
+        # Update detailed stats using plain text
         if self.stats_text:
-            stats_html = f"""
-            <b>Speed:</b> {self.current_turtle.speed}<br>
-            <b>Max Energy:</b> {self.current_turtle.max_energy}<br>
-            <b>Recovery:</b> {self.current_turtle.recovery}<br>
-            <b>Swim:</b> {self.current_turtle.swim}<br>
-            <b>Climb:</b> {self.current_turtle.climb}<br>
-            <b>Stamina:</b> {self.current_turtle.stamina}<br>
-            <b>Luck:</b> {self.current_turtle.luck}<br>
-            <b>Total Races:</b> {len(self.current_turtle.race_history)}<br>
-            <b>Total Wins:</b> {self.current_turtle.wins}
-            """
-            self.stats_text.set_text(stats_html)
+            stats_lines = [
+                f"Speed: {self.current_turtle.speed}",
+                f"Max Energy: {self.current_turtle.max_energy}",
+                f"Recovery: {self.current_turtle.recovery}",
+                f"Swim: {self.current_turtle.swim}",
+                f"Climb: {self.current_turtle.climb}",
+                f"Stamina: {self.current_turtle.stamina}",
+                f"Luck: {self.current_turtle.luck}",
+                f"Total Races: {len(self.current_turtle.race_history)}",
+                f"Total Wins: {self.current_turtle.wins}"
+            ]
+            stats_text = "\n".join(stats_lines)
+            self.stats_text.set_text(stats_text)
             
         # Update energy (for active turtles only)
         if self.energy_label:
@@ -300,13 +304,16 @@ class ProfilePanelRefactored(BasePanel):
         if self.history_text:
             race_history = self.current_turtle.race_history
             if race_history:
-                history_html = "<br>".join([
-                    f"Race {race.get('number', '?')}: Position {race.get('position', '?')} - ${race.get('earnings', 0)}"
-                    for race in race_history[-5:]
-                ])
+                history_lines = []
+                for race in race_history[-5:]:  # Show last 5 races
+                    race_num = race.get('number', '?')
+                    position = race.get('position', '?')
+                    earnings = race.get('earnings', 0)
+                    history_lines.append(f"Race {race_num}: Position {position} - ${earnings}")
+                history_text = "\n".join(history_lines)
             else:
-                history_html = "<i>No race history yet</i>"
-            self.history_text.set_text(history_html)
+                history_text = "No race history yet"
+            self.history_text.set_text(history_text)
             
         # Update release button state
         if self.release_button:
