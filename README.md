@@ -1,219 +1,178 @@
 # 🐢 Turbo Shells
 
-**Turbo Shells** is a personal passion project and portfolio piece - a minimal management simulation game built with Python and PyGame. The goal is simple: breed the ultimate racing turtle.
+[![Python 3.12](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org/downloads/)
+[![Rust](https://img.shields.io/badge/Rust-Core-orange.svg)](https://www.rust-lang.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Status: Portfolio Demo](https://img.shields.io/badge/Status-Portfolio%20Demo-purple.svg)]()
 
-> This project demonstrates clean, maintainable game development practices and serves as a portfolio showcase of Python game development skills.
+**Turbo Shells** is a turtle racing management simulation featuring **procedural genetics**, **automated racing physics**, and a **hybrid Python/Rust architecture**. Breed the ultimate racing turtle through strategic selection and Mendelian inheritance.
 
-In this game, you don't control the racer—you manage the *racer*. Balance your economy, train your turtles to improve their stats, and make high-stakes decisions on when to retire a champion to breed the next generation.
+<!-- TODO: Add hero GIF when available -->
+<!-- ![Race Simulation](assets/screenshots/race_simulation.gif) -->
+
+---
+
+## 🎯 Portfolio Highlights
+
+### Procedural Generation — No Sprites Required
+Every turtle is **generated on-the-fly** from its genetic code. Shell size, color, pattern, limb shape, and 19 other traits are computed procedurally — zero external sprite files needed.
+
+### NEAT-Inspired Genetics
+This project evolved from a **Self-Learning Pong simulation** using NEAT (NeuroEvolution of Augmenting Topologies). The genetic systems here apply similar evolutionary principles to visual trait inheritance:
+- **Mendelian inheritance** (dominant/recessive traits)
+- **Mutation rates** with configurable intensity
+- **Genetic similarity** calculations for breeding optimization
+
+### Hybrid Python/Rust Architecture
+Performance-critical genetics and simulation logic are implemented in **Rust** via PyO3 bindings, while the UI remains in Python/pygame for rapid iteration:
+
+```
+┌─────────────────────────────────────┐
+│  Python (UI, pygame-ce)             │
+│    ↓                                │
+│  turboshells-core (Rust, PyO3)      │
+│    • 20 gene definitions            │
+│    • Mutation system                │
+│    • Mendelian inheritance          │
+│    • Race physics simulation        │
+└─────────────────────────────────────┘
+```
+
+---
 
 ## 🎮 Features
 
-* **Strategic Roster Management:** You are limited to **3 Active Turtles**. You must make hard choices about who to keep and who to release.
-* **Sacrificial Breeding:** Combine two retired champions to create a new offspring with inherited stats and mutations. The parents are gone forever, so the baby *must* be worth it.
-* **Automated Racing Physics:** Turtles don't just run; they manage **Energy**. If they sprint too hard, they hit exhaustion and must stop to recover.
-* **Procedural Tracks:** Races feature random combinations of Grass, Water (Swim check), and Rocks (Climb check).
-* **Betting System:** Grind for cash by betting on your own turtles.
-* **Responsive UI:** Dynamic layout system with perfect centering and window resizing support.
-* **Settings Interface:** Professional settings menu with adaptive layout for all screen sizes.
+* **Strategic Roster Management:** Limited to **3 Active Turtles** — make hard choices about who to keep.
+* **Sacrificial Breeding:** Combine two retired champions. Parents are gone forever; the offspring must be worth it.
+* **Physics-Based Racing:** Turtles manage **Energy**. Sprint too hard → exhaustion → forced recovery.
+* **Procedural Tracks:** Random terrain (Grass, Water, Rocks) with stat-specific modifiers.
+* **19-Trait Genetic System:** Shell pattern, colors, limb shape, body markings — all heritable.
+* **Betting Economy:** Risk your earnings on race outcomes.
 
-## 🛠️ Installation & Setup
+<!-- TODO: Add feature screenshots when available -->
+<!--
+| Roster View | Shop | Breeding |
+|-------------|------|----------|
+| ![Roster](assets/screenshots/roster_view.png) | ![Shop](assets/screenshots/shop_view.png) | ![Breeding](assets/screenshots/breeding_view.png) |
+-->
+
+---
+
+## 🛠️ Built With
+
+| Layer | Technology | Purpose |
+|-------|------------|---------|
+| **Core Logic** | Rust + PyO3 | Genetics, physics, race simulation |
+| **Game Engine** | pygame-ce | Rendering, input, window management |
+| **UI Framework** | pygame_gui | Panels, buttons, responsive layout |
+| **Logging** | Rich + Loguru | Beautiful terminal output |
+| **Data** | JSON + Cryptography | Save/load with optional encryption |
+
+---
+
+## 🚀 Quick Start
 
 ### Prerequisites
-* **Python 3.12** (required for Rust core support)
+* **Python 3.12** (required for Rust core)
 * `pip` (Python package manager)
-* Rust toolchain (optional, for building turboshells-core)
+* Rust toolchain (optional, for building from source)
 
-### Quick Setup (Recommended)
-
-For the best development experience, use our automated setup script:
+### Installation
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/YourUsername/TurboShells.git
 cd TurboShells
 
-# Run the setup script
-python setup_dev.py
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the game
+python run_game.py
 ```
 
-This will automatically:
-- Create a Python virtual environment
-- Install all dependencies
-- Set up development tools (Black, Pylint, PyTest)
-- Configure pre-commit hooks
-- Run initial tests
-
-### Manual Setup
-
-If you prefer manual setup:
-
-1. **Clone or Download** this repository.
-2. **Create Virtual Environment:**
-    ```bash
-    python -m venv venv
-    
-    # Activate (Windows)
-    venv\Scripts\activate
-    
-    # Activate (macOS/Linux)
-    source venv/bin/activate
-    ```
-3. **Install Dependencies:**
-    ```bash
-    pip install -r requirements.txt
-    ```
-4. **Install Development Tools:**
-    ```bash
-    pip install -e .[dev]
-    ```
-5. **Set up Pre-commit Hooks:**
-    ```bash
-    pre-commit install
-    ```
-6. **Run the Game:**
-    ```bash
-    python main.py
-    ```
-
-### Development Tools
-
-This project includes a comprehensive development setup with professional code quality tools:
-
-#### 🎨 Code Quality Tools
-- **Black**: Automatic code formatter for consistent style (88 character line length)
-- **Pylint**: Code quality and error checking with game-development-friendly rules
-- **isort**: Import statement organizer
-- **mypy**: Static type checking (optional)
-
-#### 🧪 Testing Framework
-- **PyTest**: Testing framework with comprehensive test suite
-- **pytest-cov**: Coverage reporting with HTML output
-- **pytest-mock**: Mocking support for isolated testing
-- **pytest-xdist**: Parallel testing for faster test runs
-
-#### 📊 Code Analysis
-- **Coverage**: Advanced coverage measurement and reporting
-- **Bandit**: Security vulnerability scanning
-- **Memory Profiler**: Memory usage analysis
-- **Line Profiler**: Performance profiling
-
-#### 📚 Documentation
-- **Sphinx**: Documentation generation
-- **ReadTheDocs Theme**: Professional documentation styling
-
-#### 🔧 Development Workflow
-- **Pre-commit**: Automatic quality checks before commits
-- **Build Tools**: Package building and publishing utilities
-
-#### Running Development Tools
+### Building the Rust Core (Optional)
 
 ```bash
-# Code formatting
-python -m black src/ tests/
-
-# Import sorting
-python -m isort src/ tests/
-
-# Code linting
-python -m pylint src/
-
-# Type checking (optional)
-python -mypy src/
-
-# Run all tests
-python -m pytest tests/ -v
-
-# Run tests with coverage
-python -m pytest tests/ --cov=. --cov-report=html --cov-report=term-missing
-
-# Run tests in parallel
-python -m pytest tests/ -n auto
-
-# Security scanning
-python -m bandit -r src/
-
-# Performance profiling
-python -m memory_profiler src/main.py
+cd turboshells-core
+pip install maturin
+maturin build --release
+pip install target/wheels/*.whl
 ```
 
-#### Quality Gates
-
-The project enforces several quality standards:
-- **Code Formatting**: All code must be Black-formatted
-- **Linting**: Pylint score of 8.0+ for new code
-- **Test Coverage**: Minimum 70% coverage for core modules
-- **Documentation**: All public functions must have docstrings
-
-#### IDE Configuration
-
-For optimal development experience, configure your IDE with:
-- **Python Interpreter**: Point to your virtual environment
-- **Code Formatting**: Enable Black integration
-- **Linting**: Enable Pylint integration
-- **Testing**: Configure PyTest test discovery
-- **Debugging**: Set breakpoints in `src/main.py`
+---
 
 ## 🕹️ How to Play
 
-### The Core Loop
-1.  **Start:** You begin with one basic turtle and $50.
-2.  **Train:** Use your turtle's **Energy** to train stats (Speed, Swim, Climb) in the menu.
-3.  **Race:** Enter races to earn money. Betting allows you to increase profits.
-4.  **Expand:** Use money to buy new stock from the **Shop**.
-5.  **Breed:** Retire old turtles to the "Breeding Pool." Combine two retirees to create a generic superior baby.
+1. **Start** with one basic turtle and $50
+2. **Train** your turtle's stats (Speed, Swim, Climb, Stamina)
+3. **Race** to earn money through betting
+4. **Expand** your roster from the Shop
+5. **Breed** retired champions to create genetically superior offspring
 
 ### Controls
-* **Mouse (Primary):** Navigate menus, select turtles, and interact with buttons (Stable, Shop, Breeding, Race HUD speed controls).
-* **Keyboard (Shortcuts, current MVP):**
-    * **Race Speed:** `1`, `2`, `3` to set 1x / 2x / 4x.
-    * **Menu Navigation:** `M` (Menu), `R` (Race), `S` (Shop), `B` (Breeding).
-    * **Stable Actions:** `Q/W/E` (Train slots 1–3), `Z/X/C` (Rest slots 1–3), `4/5/6` (Retire slots 1–3).
-    * **Breeding:** Number keys select parents, `Enter` breeds (if 2 selected and space in roster).
+| Action | Key |
+|--------|-----|
+| Race Speed | `1` / `2` / `3` (1x / 2x / 4x) |
+| Navigate | `M` Menu, `R` Race, `S` Shop, `B` Breeding |
 
-## 📊 The Stats System
+---
 
-Every turtle has unique DNA that affects performance:
+## 📊 The Genetic System
 
-| Stat | Effect |
-| :--- | :--- |
-| **Speed** | Base movement speed on flat ground. |
-| **Energy** | The gas tank. Drains while moving. |
-| **Recovery** | How fast the turtle recovers when exhausted (stopped). |
-| **Swim** | Speed multiplier in Water segments. |
-| **Climb** | Speed multiplier in Rock segments. |
+Every turtle carries DNA controlling 19+ visual and performance traits:
+
+| Category | Traits |
+|----------|--------|
+| **Shell** | Base color, pattern type, pattern color, density, opacity, size |
+| **Body** | Base color, pattern type, markings |
+| **Limbs** | Shape (flippers/feet/fins), length, color |
+| **Head** | Size, color |
+| **Eyes** | Color, size |
+
+Breeding combines parent genetics with configurable mutation rates, producing unique offspring every time.
+
+---
 
 ## 📂 Project Structure
 
-```text
+```
 TurboShells/
-├── main.py            # Entry point and game loop (TurboShellsGame)
-├── settings.py        # Global constants (screen, colors, rewards, costs)
-├── entities.py        # Shared Turtle class + physics/energy logic
-├── game_state.py      # Turtle generation & breeding helpers (no PyGame)
-├── managers/          # Game logic managers
-│   ├── roster_manager.py    # Stable actions (train, rest, retire)
-│   ├── race_manager.py      # Race loop, track terrain, rewards
-│   ├── shop_manager.py      # Shop inventory, buying, refreshing
-│   ├── breeding_manager.py  # Breeding selection and child creation
-│   └── settings_manager.py  # Settings system with responsive UI
-├── ui/
-│   ├── layouts/       # UI positioning and layout data
-│   │   └── positions.py     # All UI rects and positions
-│   ├── components/    # Reusable UI components
-│   │   ├── button.py        # Button and ToggleButton classes
-│   │   └── turtle_card.py   # TurtleCard component
-│   ├── views/         # Screen-specific rendering
-│   │   ├── menu_view.py     # Stable/Main Menu rendering
-│   │   ├── race_view.py     # Race and Race Results rendering
-│   │   ├── shop_view.py     # Shop rendering
-│   │   ├── breeding_view.py # Breeding rendering
-│   │   └── settings_view.py # Settings interface with responsive layout
-│   └── renderer.py    # Thin delegator that calls the views
-├── simulation.py      # Headless race simulator using entities.Turtle
-├── docs/
-│   ├── ARCHITECTURE.md # Technical architecture
-│   ├── GDD.md          # Full Game Design Document
-│   ├── GDD_Lite.md     # Condensed GDD
-│   ├── TODO.md         # Roadmap & checklist
-│   └── UI_LAYOUT.md    # UI layout coordinates
-└── README.md          # This file
+├── src/                    # Python source
+│   ├── main.py             # Game entry point
+│   ├── core/               # Core systems (monitoring, data, rust_bridge)
+│   ├── game/               # Game logic (entities, simulation, race_track)
+│   ├── genetics/           # Python genetics (fallback)
+│   ├── managers/           # Game state managers
+│   └── ui/                 # pygame_gui panels and views
+├── turboshells-core/       # Rust library
+│   └── src/
+│       ├── genetics/       # Rust genetics implementation
+│       └── simulation/     # Rust physics and race engine
+├── docs/                   # 60+ documentation files
+├── tests/                  # 80+ test files
+└── tools/                  # Development utilities
+```
+
+---
+
+## 🔮 Future Direction
+
+The Rust core migration is the foundation for:
+- **Advanced adaptation systems** — environmental fitness, natural selection
+- **Population-scale simulations** — parallel evolution with `rayon`
+- **Cross-platform builds** — native performance on all platforms
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🙏 Acknowledgments
+
+- **NEAT-Python** — Inspiration for the genetic architecture
+- **pygame-ce** — Modern pygame fork with active development
+- **PyO3** — Seamless Python/Rust interoperability
