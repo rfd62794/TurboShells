@@ -10,7 +10,7 @@ from .race_view import (
 from .shop_view import draw_shop as draw_shop_view
 from .breeding_view import draw_breeding as draw_breeding_view
 from .profile_view import draw_profile as draw_profile_view
-from .voting_interface import draw_voting as draw_voting_view
+from .voting_view import draw_voting as draw_voting_view
 
 
 class Renderer:
