@@ -6,7 +6,7 @@ from pygame_gui import UIManager
 from typing import Optional, Dict, Any, List
 from .base_panel import BasePanel
 from game.game_state_interface import TurboShellsGameStateInterface
-from .profile.components import ProfileHeader, ProfileActionPanel, ProfileLayout
+from .profile.components import ProfileHeader, ProfileActionPanel, ProfileLayout  # Import directly to avoid __init__.py circular import
 from ..components.reusable.stats_panel import StatsPanel
 from ..components.reusable.race_history_panel import RaceHistoryPanel
 from ..components.reusable.turtle_info_panel import TurtleInfoPanel
