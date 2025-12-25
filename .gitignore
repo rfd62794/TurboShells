@@ -22,3 +22,11 @@ Thumbs.db
 
 *.log
 *.pytest_cache
+
+# Rust build artifacts
+turboshells-core/target/
+turboshells-core/Cargo.lock
+turboshells-core/*.whl
+*.so
+*.pyd
+*.dll
