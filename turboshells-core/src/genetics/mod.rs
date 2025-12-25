@@ -36,19 +36,19 @@ impl PyGenetics {
     }
     
     /// Generate random genetics
-    pub fn generate_random(&self, py: Python) -> PyResult<PyObject> {
+    pub fn generate_random<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyDict>> {
         let genetics = self.definitions.generate_random();
         self.genetics_to_pydict(py, &genetics)
     }
     
     /// Get default genetics
-    pub fn get_defaults(&self, py: Python) -> PyResult<PyObject> {
+    pub fn get_defaults<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyDict>> {
         let genetics = self.definitions.get_defaults();
         self.genetics_to_pydict(py, &genetics)
     }
     
     /// Inherit genetics from two parents (Mendelian 50/50)
-    pub fn inherit(&self, py: Python, parent1: &PyDict, parent2: &PyDict) -> PyResult<PyObject> {
+    pub fn inherit<'py>(&self, py: Python<'py>, parent1: &Bound<'py, PyDict>, parent2: &Bound<'py, PyDict>) -> PyResult<Bound<'py, PyDict>> {
         let p1 = self.pydict_to_genetics(parent1)?;
         let p2 = self.pydict_to_genetics(parent2)?;
         let child = self.inheritance.inherit(&p1, &p2);
@@ -56,7 +56,7 @@ impl PyGenetics {
     }
     
     /// Inherit with blending for continuous traits
-    pub fn inherit_blended(&self, py: Python, parent1: &PyDict, parent2: &PyDict) -> PyResult<PyObject> {
+    pub fn inherit_blended<'py>(&self, py: Python<'py>, parent1: &Bound<'py, PyDict>, parent2: &Bound<'py, PyDict>) -> PyResult<Bound<'py, PyDict>> {
         let p1 = self.pydict_to_genetics(parent1)?;
         let p2 = self.pydict_to_genetics(parent2)?;
         let child = self.inheritance.inherit_blended(&p1, &p2);
@@ -64,14 +64,14 @@ impl PyGenetics {
     }
     
     /// Apply mutations with specified rate
-    pub fn mutate(&self, py: Python, genetics: &PyDict, rate: f32) -> PyResult<PyObject> {
+    pub fn mutate<'py>(&self, py: Python<'py>, genetics: &Bound<'py, PyDict>, rate: f32) -> PyResult<Bound<'py, PyDict>> {
         let genes = self.pydict_to_genetics(genetics)?;
         let mutated = self.mutation.mutate(&genes, rate);
         self.genetics_to_pydict(py, &mutated)
     }
     
     /// Calculate genetic similarity (0.0 to 1.0)
-    pub fn similarity(&self, genetics1: &PyDict, genetics2: &PyDict) -> PyResult<f32> {
+    pub fn similarity(&self, genetics1: &Bound<'_, PyDict>, genetics2: &Bound<'_, PyDict>) -> PyResult<f32> {
         let g1 = self.pydict_to_genetics(genetics1)?;
         let g2 = self.pydict_to_genetics(genetics2)?;
         Ok(self.inheritance.calculate_similarity(&g1, &g2))
@@ -80,7 +80,7 @@ impl PyGenetics {
 
 impl PyGenetics {
     /// Convert Python dict to Rust HashMap
-    fn pydict_to_genetics(&self, dict: &PyDict) -> PyResult<HashMap<String, GeneValue>> {
+    fn pydict_to_genetics(&self, dict: &Bound<'_, PyDict>) -> PyResult<HashMap<String, GeneValue>> {
         let mut genetics = HashMap::new();
         
         for (key, value) in dict.iter() {
@@ -111,7 +111,7 @@ impl PyGenetics {
     }
     
     /// Convert Rust HashMap to Python dict
-    fn genetics_to_pydict(&self, py: Python, genetics: &HashMap<String, GeneValue>) -> PyResult<PyObject> {
+    fn genetics_to_pydict<'py>(&self, py: Python<'py>, genetics: &HashMap<String, GeneValue>) -> PyResult<Bound<'py, PyDict>> {
         let dict = PyDict::new(py);
         
         for (key, value) in genetics {
@@ -128,6 +128,6 @@ impl PyGenetics {
             }
         }
         
-        Ok(dict.into())
+        Ok(dict)
     }
 }

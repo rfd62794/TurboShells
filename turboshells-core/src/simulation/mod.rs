@@ -12,7 +12,6 @@ pub use race::Race;
 
 use pyo3::prelude::*;
 use pyo3::types::PyDict;
-use std::collections::HashMap;
 use crate::types::TurtleStats;
 
 /// Python-exposed Turtle class
@@ -94,7 +93,7 @@ impl PyTurtle {
     }
     
     /// Get stats as dict
-    pub fn get_stats(&self, py: Python) -> PyResult<PyObject> {
+    pub fn get_stats<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyDict>> {
         let dict = PyDict::new(py);
         dict.set_item("speed", self.inner.stats.speed)?;
         dict.set_item("max_energy", self.inner.stats.max_energy)?;
@@ -103,7 +102,7 @@ impl PyTurtle {
         dict.set_item("climb", self.inner.stats.climb)?;
         dict.set_item("stamina", self.inner.stats.stamina)?;
         dict.set_item("luck", self.inner.stats.luck)?;
-        Ok(dict.into())
+        Ok(dict)
     }
 }
 
@@ -140,8 +139,7 @@ impl PyRace {
     }
     
     /// Get current positions as list of (name, distance)
-    pub fn get_positions(&self, py: Python) -> PyResult<PyObject> {
-        let positions: Vec<(String, f32)> = self.inner.get_positions();
-        Ok(positions.into_py(py))
+    pub fn get_positions(&self) -> Vec<(String, f32)> {
+        self.inner.get_positions()
     }
 }
