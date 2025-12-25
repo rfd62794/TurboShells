@@ -1,6 +1,6 @@
 import pygame
 from settings import *
-import ui.layout as layout
+from ..layout import *
 from .menu_view import draw_menu as draw_main_menu_view
 from .roster_view import draw_roster as draw_menu_view
 from .race_view import (
