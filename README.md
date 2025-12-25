@@ -19,8 +19,9 @@ In this game, you don't control the racer—you manage the *racer*. Balance your
 ## 🛠️ Installation & Setup
 
 ### Prerequisites
-* Python 3.8+ installed.
-* `pip` (Python package manager).
+* **Python 3.12** (required for Rust core support)
+* `pip` (Python package manager)
+* Rust toolchain (optional, for building turboshells-core)
 
 ### Quick Setup (Recommended)
 

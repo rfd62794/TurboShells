@@ -9,7 +9,7 @@ description = "A turtle racing and breeding game with genetics simulation"
 authors = [{name = "TurboShells Dev"}]
 license = {text = "MIT"}
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.12"
 dependencies = [
     "pygame-ce>=2.5",
 ]
@@ -38,7 +38,7 @@ dev = [
 
 [tool.black]
 line-length = 88
-target-version = ['py38', 'py39', 'py310', 'py311']
+target-version = ['py312']
 include = '\.pyi?$'
 extend-exclude = '''
 /(
