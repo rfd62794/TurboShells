@@ -94,7 +94,7 @@ from ui.panels.shop_panel import ShopPanel
 from ui.panels.roster_panel import RosterPanel
 from ui.panels.race_hud_panel import RaceHUDPanel
 from ui.panels.race_result_panel import RaceResultPanel
-from ui.panels.profile.profile_panel import ProfilePanel
+from ui.panels.profile_panel import ProfilePanel
 from ui.panels.breeding_panel import BreedingPanel
 from ui.panels.voting_panel import VotingPanel
 from ui.data_binding import DataBindingManager
