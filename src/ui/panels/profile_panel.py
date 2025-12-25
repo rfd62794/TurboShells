@@ -4,12 +4,12 @@ import pygame
 import pygame_gui
 from pygame_gui import UIManager
 from typing import Optional, Dict, Any, List
-from ..base_panel import BasePanel
+from .base_panel import BasePanel
 from game.game_state_interface import TurboShellsGameStateInterface
-from .components import ProfileHeader, ProfileActionPanel, ProfileLayout
-from ...components.reusable.stats_panel import StatsPanel
-from ...components.reusable.race_history_panel import RaceHistoryPanel
-from ...components.reusable.turtle_info_panel import TurtleInfoPanel
+from .profile.components import ProfileHeader, ProfileActionPanel, ProfileLayout
+from ..components.reusable.stats_panel import StatsPanel
+from ..components.reusable.race_history_panel import RaceHistoryPanel
+from ..components.reusable.turtle_info_panel import TurtleInfoPanel
 from core.rich_logging import get_ui_rich_logger
 
 
