@@ -1,0 +1,21 @@
+[package]
+name = "turboshells-core"
+version = "0.1.0"
+edition = "2021"
+description = "Rust core library for TurboShells turtle racing game"
+authors = ["TurboShells Team"]
+
+[lib]
+name = "turboshells_core"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.23", features = ["extension-module"] }
+rand = "0.8"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+uuid = { version = "1.0", features = ["v4"] }
+
+[profile.release]
+opt-level = 3
+lto = true
