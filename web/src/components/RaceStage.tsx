@@ -272,7 +272,35 @@ function drawTurtle(turtle: TurtleState, size: number): Container {
     }
 
     // Finished indicator
-    if (turtle.finished) {
+    // Finished indicator (Rank based visualization)
+    if (turtle.finished && turtle.rank) {
+        let ringColor = 0xFFFFFF; // Default finish
+        let ringWidth = 2;
+
+        switch (turtle.rank) {
+            case 1:
+                ringColor = 0xFFD700; // Gold
+                ringWidth = 4;
+                // Winner Glow / Sunburst
+                g.circle(0, 0, size * 0.9);
+                g.fill({ color: 0xFFD700, alpha: 0.3 });
+                g.circle(0, 0, size * 0.75);
+                g.stroke({ width: 2, color: 0xFFD700, alpha: 0.6 });
+                break;
+            case 2:
+                ringColor = 0xC0C0C0; // Silver
+                ringWidth = 3;
+                break;
+            case 3:
+                ringColor = 0xCD7F32; // Bronze
+                ringWidth = 2;
+                break;
+        }
+
+        g.circle(0, 0, size * 0.65);
+        g.stroke({ width: ringWidth, color: ringColor });
+    } else if (turtle.finished) {
+        // Fallback if rank not yet assigned (rare)
         g.circle(0, 0, size * 0.6);
         g.stroke({ width: 2, color: 0xFFD700 });
     }
