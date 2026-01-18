@@ -214,7 +214,12 @@ class RaceEngine:
         if not self.turtles:
             return segments
         
-        min_distance = min(t.race_distance for t in self.turtles if not t.finished)
+        # Handle case where all turtles finished (no unfinished turtles to track)
+        unfinished = [t for t in self.turtles if not t.finished]
+        if not unfinished:
+            return segments  # Race complete, no terrain needed
+        
+        min_distance = min(t.race_distance for t in unfinished)
         segment_length = 100.0
         
         for i in range(lookahead):
