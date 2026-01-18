@@ -1,0 +1,80 @@
+/**
+ * Race View Page
+ * 
+ * Contains the RaceStage (PixiJS) and RaceHUD overlay.
+ */
+
+import { useNavigate } from 'react-router-dom';
+import { RaceStage } from '../components';
+import { RaceHUD } from '../components/hud/RaceHUD';
+import { useRaceSocket } from '../hooks';
+import { useGameStore } from '../stores';
+import '../styles/retro.css';
+
+export default function RaceView() {
+    const navigate = useNavigate();
+    const { money, currentBet, raceSpeedMultiplier, setSpeedMultiplier } = useGameStore();
+
+    const {
+        status,
+        snapshot,
+        prevSnapshot,
+        trackLength,
+        error,
+        startRace,
+        stopRace,
+    } = useRaceSocket({
+        url: 'ws://localhost:8765/ws/race',
+        autoReconnect: true,
+    });
+
+    const handleBack = () => {
+        stopRace();
+        navigate('/roster');
+    };
+
+    return (
+        <div className="race-view">
+            {/* Race HUD Overlay */}
+            <RaceHUD
+                snapshot={snapshot}
+                bet={currentBet}
+                money={money}
+                speedMultiplier={raceSpeedMultiplier}
+                onSpeedChange={setSpeedMultiplier}
+                onBack={handleBack}
+                connectionStatus={status}
+            />
+
+            {/* PixiJS Race Stage */}
+            <main className="race-stage-container">
+                <RaceStage
+                    snapshot={snapshot}
+                    prevSnapshot={prevSnapshot}
+                    trackLength={trackLength}
+                    width={800}
+                    height={400}
+                />
+            </main>
+
+            {/* Race Controls */}
+            <footer className="race-controls pygame-panel">
+                <button
+                    className="pygame-btn"
+                    onClick={startRace}
+                    disabled={status !== 'connected' || snapshot?.finished === false}
+                >
+                    🏁 Start Race
+                </button>
+                <button
+                    className="pygame-btn"
+                    onClick={stopRace}
+                    disabled={status !== 'connected'}
+                >
+                    ⏹️ Stop
+                </button>
+                {error && <span className="error">{error}</span>}
+            </footer>
+        </div>
+    );
+}
