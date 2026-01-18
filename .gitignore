@@ -3,7 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.pyc
-
+.pytest_cache/
 
 # Virtual environments
 venv/
@@ -13,6 +13,7 @@ env/
 
 # IDE files
 .vscode/
+.idea/
 *.swp
 *.swo
 
@@ -20,8 +21,9 @@ env/
 .DS_Store
 Thumbs.db
 
+# Logs
 *.log
-*.pytest_cache
+logs/
 
 # Rust build artifacts
 turboshells-core/target/
@@ -30,3 +32,19 @@ turboshells-core/*.whl
 *.so
 *.pyd
 *.dll
+
+# Web build artifacts
+web/node_modules/
+web/dist/
+web/.vite/
+web/*.local
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+turboshells.db
+
+# Data directories (keep structure, ignore contents)
+data/
+!data/.gitkeep
