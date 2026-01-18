@@ -228,7 +228,6 @@ class RaceOrchestrator:
             except Exception as e:
                 if logger:
                     logger.error(
-                        "Failed to save race result",
+                        f"Failed to save race result for {turtle.name}: {repr(e)}",
                         turtle_name=turtle.name,
-                        error=repr(e),
                     )

@@ -70,7 +70,7 @@ export function TurtleCard({
                         onSetRacer();
                     }}
                 >
-                    {isActiveRacer ? 'Leave Race' : 'Join Race'}
+                    {isActiveRacer ? 'Selected' : 'Select As Main'}
                 </button>
             )}
         </div>
