@@ -155,7 +155,7 @@ export function useRaceSocket(
             setError('WebSocket connection error');
             console.error('[useRaceSocket] Error:', e);
         };
-    }, [url, autoReconnect, reconnectDelay, snapshot]);
+    }, [url, autoReconnect, reconnectDelay]);
 
     const disconnect = useCallback(() => {
         if (reconnectTimeoutRef.current) {
