@@ -5,6 +5,14 @@ __pycache__/
 *.pyc
 .pytest_cache/
 
+# Python distribution/packaging
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+*.whl
+
 # Virtual environments
 venv/
 env/
