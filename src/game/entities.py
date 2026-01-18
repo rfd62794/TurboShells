@@ -29,7 +29,9 @@ class Turtle:
         self.id = str(uuid.uuid4())[:8]  # Unique ID for tracking
         self.name = name
         self.age = 0
+        self.age = 0
         self.is_active = True  # True = Roster, False = Retired
+        self.is_npc = False    # True = Generated Bot, do not persist
 
         # Stats (The DNA)
         self.stats = {

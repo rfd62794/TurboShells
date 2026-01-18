@@ -45,6 +45,7 @@ export function RaceStage({
     useEffect(() => {
         if (!containerRef.current) return;
 
+        let isMounted = true;
         const app = new Application();
 
         const initApp = async () => {
@@ -56,9 +57,15 @@ export function RaceStage({
                 roundPixels: false, // Critical for smooth sub-pixel movement
             });
 
+            if (!isMounted) {
+                // Component unmounted during init
+                app.destroy(true, { children: true });
+                return;
+            }
+
             if (containerRef.current) {
-                // Remove existing canvas if present (Strict Mode fix)
-                if (containerRef.current.firstChild) {
+                // Double-safety: Clear container
+                while (containerRef.current.firstChild) {
                     containerRef.current.removeChild(containerRef.current.firstChild);
                 }
                 containerRef.current.appendChild(app.canvas);
@@ -80,6 +87,7 @@ export function RaceStage({
         initApp();
 
         return () => {
+            isMounted = false;
             if (appRef.current) {
                 appRef.current.destroy(true, { children: true });
                 appRef.current = null;

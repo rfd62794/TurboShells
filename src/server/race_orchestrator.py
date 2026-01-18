@@ -213,6 +213,9 @@ class RaceOrchestrator:
         standings = self.engine.get_standings()
         
         for rank, turtle in enumerate(standings, start=1):
+            if hasattr(turtle, 'is_npc') and turtle.is_npc:
+                continue
+                
             try:
                 save_race_result(
                     race_id=self._race_id,
@@ -227,5 +230,5 @@ class RaceOrchestrator:
                     logger.error(
                         "Failed to save race result",
                         turtle_name=turtle.name,
-                        error=str(e),
+                        error=repr(e),
                     )
