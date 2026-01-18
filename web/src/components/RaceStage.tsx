@@ -57,6 +57,10 @@ export function RaceStage({
             });
 
             if (containerRef.current) {
+                // Remove existing canvas if present (Strict Mode fix)
+                if (containerRef.current.firstChild) {
+                    containerRef.current.removeChild(containerRef.current.firstChild);
+                }
                 containerRef.current.appendChild(app.canvas);
             }
 

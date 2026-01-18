@@ -204,14 +204,7 @@ export const useGameStore = create<GameState & GameActions>()(
                         turtle_ids: selectedRacers,
                     };
 
-                    const res = await fetch(`${API_BASE}/races/end_current_and_start_new`, { // Using the specific endpoint or typical one?
-                        // Wait, backend route is POST /api/races? Or POST /api/races/start? 
-                        // Looking at roster.py/race.py... I'll assume POST /api/races is likely the create race endpoint.
-                        // But actually user request implies: "sends START_RACE command... to FastAPI"
-                        // Let's check src/server/routes/race.py logic if needed. 
-                        // For now I'll standardise on POST /api/races/start or similar.
-                        // Actually, I'll inspect the backend routes first to be sure. 
-                        // But for this patch I will assume /api/races is the endpoint to create a race.
+                    const res = await fetch(`${API_BASE}/races/start`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
