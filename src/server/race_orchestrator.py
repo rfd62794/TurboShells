@@ -16,6 +16,7 @@ from typing import TYPE_CHECKING, Callable, Awaitable
 from src.engine.race_engine import RaceEngine
 from src.engine.models import RaceConfig, RaceSnapshot
 from src.engine.logging_config import get_logger
+from src.engine.persistence import save_race_result
 
 if TYPE_CHECKING:
     from src.game.entities import Turtle
@@ -67,6 +68,7 @@ class RaceOrchestrator:
         self._running = False
         self._task: asyncio.Task | None = None
         self._latest_snapshot: RaceSnapshot | None = None
+        self._race_id: str = str(int(time.time() * 1000))  # Unique race ID
         
         self._broadcast_interval = 1.0 / broadcast_hz
         self._physics_interval = 1.0 / physics_hz
@@ -156,6 +158,9 @@ class RaceOrchestrator:
                 winner_name=winner.name if winner else "DRAW",
                 total_ticks=self.engine.current_tick,
             )
+        
+        # Save race results to database
+        await self._save_race_results()
     
     def get_sync_data(self) -> dict:
         """Get data for syncing a late-joining client.
@@ -171,3 +176,34 @@ class RaceOrchestrator:
             "current_tick": self.engine.current_tick,
             "snapshot": self._latest_snapshot.model_dump() if self._latest_snapshot else None,
         }
+    
+    async def _save_race_results(self) -> None:
+        """Save race results to the database.
+        
+        Called at the end of a race to persist all turtle results.
+        """
+        if not self._latest_snapshot:
+            return
+        
+        elapsed_ms = self._latest_snapshot.elapsed_ms
+        
+        # Get finish order from engine
+        standings = self.engine.get_standings()
+        
+        for rank, turtle in enumerate(standings, start=1):
+            try:
+                save_race_result(
+                    race_id=self._race_id,
+                    turtle=turtle,
+                    rank=rank,
+                    final_distance=turtle.race_distance,
+                    final_time_ms=elapsed_ms if turtle.finished else 0,
+                    finished=turtle.finished,
+                )
+            except Exception as e:
+                if logger:
+                    logger.error(
+                        "Failed to save race result",
+                        turtle_name=turtle.name,
+                        error=str(e),
+                    )

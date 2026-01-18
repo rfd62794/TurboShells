@@ -18,7 +18,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.engine.logging_config import configure_logging, get_logger
+from src.engine.persistence import init_db
 from src.server.routes import race_router
+from src.server.routes.roster import router as roster_router
 from src.server.routes.race import manager
 
 logger = get_logger(__name__)
@@ -40,6 +42,9 @@ async def lifespan(app: FastAPI):
     
     if logger:
         logger.info("TurboShells server starting")
+    
+    # Initialize database
+    init_db()
     
     await manager.start_zombie_cleanup_loop(interval_seconds=60.0)
     
@@ -68,6 +73,7 @@ app.add_middleware(
 )
 
 app.include_router(race_router)
+app.include_router(roster_router)
 
 
 @app.get("/")
