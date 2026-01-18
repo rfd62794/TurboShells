@@ -50,6 +50,7 @@ class RaceEngine:
         turtles: list[Turtle],
         config: RaceConfig | None = None,
         track: list[str] | None = None,
+        course_id: str = "default",
     ):
         """Initialize the race engine.
         
@@ -57,9 +58,11 @@ class RaceEngine:
             turtles: List of Turtle entities to race
             config: Optional race configuration
             track: Optional pre-generated track (list of terrain types)
+            course_id: Unique identifier for the track/course
         """
         self.turtles = turtles
         self.config = config or RaceConfig()
+        self.course_id = course_id
         self.current_tick = 0
         self.start_time: float | None = None
         self._finished = False
@@ -201,6 +204,7 @@ class RaceEngine:
         return RaceSnapshot(
             tick=self.current_tick,
             elapsed_ms=elapsed_ms,
+            course_id=self.course_id,
             track_length=self.config.track_length,
             turtles=turtle_states,
             terrain_ahead=terrain_ahead,

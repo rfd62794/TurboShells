@@ -17,7 +17,7 @@ function App() {
   const {
     status,
     snapshot,
-    prevSnapshot,
+    snapshotBuffer,
     trackLength,
     error,
     startRace,
@@ -41,8 +41,7 @@ function App() {
 
       <main className="race-container">
         <RaceStage
-          snapshot={snapshot}
-          prevSnapshot={prevSnapshot}
+          snapshotBuffer={snapshotBuffer}
           trackLength={trackLength}
           width={800}
           height={400}

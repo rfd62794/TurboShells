@@ -8,12 +8,13 @@
 import { useEffect, useRef } from 'react';
 import { Application, Graphics, Container, Text, TextStyle } from 'pixi.js';
 import { parseGenome, buildTurtleLayers } from '../lib/paperDoll';
-import { lerp, getInterpolationFactor } from '../lib/interpolation';
-import type { RaceSnapshot, TurtleState } from '../types';
+import { lerp } from '../lib/interpolation';
+import type { TurtleState } from '../types';
+
+import type { BufferedSnapshot } from '../hooks/useRaceSocket';
 
 export interface RaceStageProps {
-    snapshot: RaceSnapshot | null;
-    prevSnapshot: RaceSnapshot | null;
+    snapshotBuffer: BufferedSnapshot[];
     trackLength: number;
     width?: number;
     height?: number;
@@ -23,11 +24,14 @@ const DEFAULT_WIDTH = 800;
 const DEFAULT_HEIGHT = 400;
 const TRACK_MARGIN = 50;
 const TURTLE_SIZE = 30;
-const BROADCAST_INTERVAL_MS = 33.33;
+// No longer need fixed broadcast interval for buffered interpolation
+// const BROADCAST_INTERVAL_MS = 33.33; 
+
+// Buffer delay in milliseconds (Server Authority "Memory")
+const RENDER_DELAY_MS = 100;
 
 export function RaceStage({
-    snapshot,
-    prevSnapshot,
+    snapshotBuffer,
     trackLength,
     width = DEFAULT_WIDTH,
     height = DEFAULT_HEIGHT,
@@ -35,7 +39,6 @@ export function RaceStage({
     const containerRef = useRef<HTMLDivElement>(null);
     const appRef = useRef<Application | null>(null);
     const turtleContainerRef = useRef<Container | null>(null);
-    const lastSnapshotTimeRef = useRef<number>(0);
     const animationFrameRef = useRef<number>(0);
 
     // Initialize PixiJS application
@@ -50,6 +53,7 @@ export function RaceStage({
                 height,
                 backgroundColor: 0x1a1a1a,
                 antialias: true,
+                roundPixels: false, // Critical for smooth sub-pixel movement
             });
 
             if (containerRef.current) {
@@ -79,50 +83,95 @@ export function RaceStage({
         };
     }, [width, height]);
 
-    // Track when new snapshot arrives
-    useEffect(() => {
-        if (snapshot) {
-            lastSnapshotTimeRef.current = performance.now();
-        }
-    }, [snapshot?.tick]);
-
-    // Animation loop for interpolation
+    // Animation loop for BUFFERED interpolation
     useEffect(() => {
         const animate = () => {
-            if (!snapshot || !turtleContainerRef.current) {
+            if (!turtleContainerRef.current) {
                 animationFrameRef.current = requestAnimationFrame(animate);
                 return;
             }
 
+            // Calculate "Render Time" (100ms in the past)
             const now = performance.now();
-            const timeSinceSnapshot = now - lastSnapshotTimeRef.current;
-            const t = getInterpolationFactor(timeSinceSnapshot, BROADCAST_INTERVAL_MS);
+            const renderTime = now - RENDER_DELAY_MS;
 
-            // Clear turtle container
-            turtleContainerRef.current.removeChildren();
+            // Find bracketing snapshots in buffer
+            // We need: prev.receivedAt <= renderTime < next.receivedAt
+            let prevSnapshot: BufferedSnapshot | null = null;
+            let nextSnapshot: BufferedSnapshot | null = null;
 
-            // Map turtle positions to screen coordinates
-            const trackWidth = width - TRACK_MARGIN * 2;
+            // Iterate backwards to find the latest snapshot that is older than renderTime
+            // Buffer is sorted by receivedAt (oldest first)
+            for (let i = snapshotBuffer.length - 1; i >= 0; i--) {
+                const s = snapshotBuffer[i];
+                if (s.receivedAt <= renderTime) {
+                    prevSnapshot = s;
+                    // The next one in the array (if exists) is our target
+                    if (i + 1 < snapshotBuffer.length) {
+                        nextSnapshot = snapshotBuffer[i + 1];
+                    }
+                    break;
+                }
+            }
 
-            snapshot.turtles.forEach((turtle, index) => {
-                const prevTurtle = prevSnapshot?.turtles.find((pt) => pt.id === turtle.id);
-                const prevX = prevTurtle?.x ?? turtle.x;
-                const interpolatedX = lerp(prevX, turtle.x, t);
+            // Fallback: If we haven't received enough data yet (buffer underflow),
+            // or if we are way behind, just use the latest available snapshot?
+            // "Loose Jitter" fix: Strict adherence to buffer. If undefined, hold position.
 
-                const screenX = TRACK_MARGIN + (interpolatedX / trackLength) * trackWidth;
-                const screenY = 80 + index * 60;
+            // If we have a valid bracket, interpolate
+            if (prevSnapshot && nextSnapshot) {
+                const totalDuration = nextSnapshot.receivedAt - prevSnapshot.receivedAt;
+                const elapsed = renderTime - prevSnapshot.receivedAt;
+                // Clamp t between 0 and 1 to prevent severe overshoots
+                const t = Math.max(0, Math.min(1, elapsed / totalDuration));
 
-                const turtleGraphics = drawTurtle(turtle, TURTLE_SIZE);
-                turtleGraphics.position.set(screenX, screenY);
-                turtleContainerRef.current!.addChild(turtleGraphics);
-            });
+                // Clear and redraw
+                turtleContainerRef.current.removeChildren();
+                const trackWidth = width - TRACK_MARGIN * 2;
+
+                nextSnapshot.turtles.forEach((turtle, index) => {
+                    // Find corresponding turtle in prevSnapshot
+                    const prevTurtle = prevSnapshot!.turtles.find(pt => pt.id === turtle.id);
+
+                    // If turtle existed in previous frame, lerp. Else snap.
+                    // Also handle course change / teleportation check if needed (but buffer flush handles that)
+                    const prevX = prevTurtle ? prevTurtle.x : turtle.x;
+                    const interpolatedX = lerp(prevX, turtle.x, t);
+
+                    const screenX = TRACK_MARGIN + (interpolatedX / trackLength) * trackWidth;
+                    const screenY = 80 + index * 60;
+
+                    const turtleGraphics = drawTurtle(
+                        // Create a synthetic state for rendering (interpolated)
+                        { ...turtle, current_energy: lerp(prevTurtle?.current_energy ?? turtle.current_energy, turtle.current_energy, t) },
+                        TURTLE_SIZE
+                    );
+                    turtleGraphics.position.set(screenX, screenY);
+                    turtleContainerRef.current!.addChild(turtleGraphics);
+                });
+            } else if (snapshotBuffer.length > 0) {
+                // Optimization: If only 1 snapshot or waiting for next, draw latest (or hold)
+                // For now, drawing latest in buffer to avoid blank screen, but purely static
+                // This effectively "pauses" until buffer fills
+                const latest = snapshotBuffer[snapshotBuffer.length - 1];
+                turtleContainerRef.current.removeChildren();
+                const trackWidth = width - TRACK_MARGIN * 2;
+
+                latest.turtles.forEach((turtle, index) => {
+                    const screenX = TRACK_MARGIN + (turtle.x / trackLength) * trackWidth;
+                    const screenY = 80 + index * 60;
+                    const turtleGraphics = drawTurtle(turtle, TURTLE_SIZE);
+                    turtleGraphics.position.set(screenX, screenY);
+                    turtleContainerRef.current!.addChild(turtleGraphics);
+                });
+            }
 
             animationFrameRef.current = requestAnimationFrame(animate);
         };
 
         animationFrameRef.current = requestAnimationFrame(animate);
         return () => cancelAnimationFrame(animationFrameRef.current);
-    }, [snapshot, prevSnapshot, trackLength, width]);
+    }, [snapshotBuffer, trackLength, width]); // Dependency is solely the buffer now
 
     return <div ref={containerRef} className="race-stage" />;
 }

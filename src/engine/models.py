@@ -60,6 +60,7 @@ class RaceSnapshot(BaseModel):
     
     tick: int = Field(ge=0, description="Current simulation tick (monotonic)")
     elapsed_ms: float = Field(ge=0, description="Total elapsed race time in milliseconds")
+    course_id: str = Field(default="default", description="Identifier for the current course/track")
     track_length: float = Field(gt=0, description="Total track length (logical units)")
     turtles: list[TurtleState] = Field(description="All turtle states")
     terrain_ahead: list[TerrainSegment] = Field(

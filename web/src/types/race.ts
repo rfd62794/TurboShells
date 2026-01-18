@@ -42,6 +42,7 @@ export interface TerrainSegment {
 export interface RaceSnapshot {
     tick: number;
     elapsed_ms: number;
+    course_id: string;
     track_length: number;
     turtles: TurtleState[];
     terrain_ahead: TerrainSegment[];

@@ -25,8 +25,8 @@ export interface RaceSocketState {
     status: 'connecting' | 'connected' | 'disconnected' | 'error';
     /** Latest race snapshot */
     snapshot: RaceSnapshot | null;
-    /** Previous snapshot for interpolation */
-    prevSnapshot: RaceSnapshot | null;
+    /** Buffer of recent snapshots for interpolated rendering */
+    snapshotBuffer: BufferedSnapshot[];
     /** Track length from sync data */
     trackLength: number;
     /** Error message if connection failed */
@@ -48,6 +48,10 @@ export interface RaceSocketActions {
 
 const DEFAULT_URL = 'ws://localhost:8765/ws/race';
 
+export interface BufferedSnapshot extends RaceSnapshot {
+    receivedAt: number;
+}
+
 export function useRaceSocket(
     options: UseRaceSocketOptions = {}
 ): RaceSocketState & RaceSocketActions {
@@ -59,7 +63,7 @@ export function useRaceSocket(
 
     const [status, setStatus] = useState<RaceSocketState['status']>('disconnected');
     const [snapshot, setSnapshot] = useState<RaceSnapshot | null>(null);
-    const [prevSnapshot, setPrevSnapshot] = useState<RaceSnapshot | null>(null);
+    const [snapshotBuffer, setSnapshotBuffer] = useState<BufferedSnapshot[]>([]);
     const [trackLength, setTrackLength] = useState<number>(1500);
     const [error, setError] = useState<string | null>(null);
 
@@ -111,7 +115,21 @@ export function useRaceSocket(
                 // Handle race snapshot
                 if ('tick' in data) {
                     const raceSnapshot = data as RaceSnapshot;
-                    setPrevSnapshot(snapshot);
+                    const now = performance.now();
+
+                    setSnapshotBuffer(prevBuffer => {
+                        // Buffer Flush Logic: If course_id changes, clear old history
+                        if (prevBuffer.length > 0 && prevBuffer[prevBuffer.length - 1].course_id !== raceSnapshot.course_id) {
+                            console.log('[useRaceSocket] Course changed, flushing buffer');
+                            return [{ ...raceSnapshot, receivedAt: now }];
+                        }
+
+                        // Add new snapshot and keep last 20 (~600ms history at 30Hz)
+                        const newBuffer = [...prevBuffer, { ...raceSnapshot, receivedAt: now }];
+                        return newBuffer.slice(-20);
+                    });
+
+                    // Keep these for backward compatibility / direct status checks
                     setSnapshot(raceSnapshot);
                 }
             } catch (e) {
@@ -185,7 +203,7 @@ export function useRaceSocket(
     return {
         status,
         snapshot,
-        prevSnapshot,
+        snapshotBuffer,
         trackLength,
         error,
         startRace,
