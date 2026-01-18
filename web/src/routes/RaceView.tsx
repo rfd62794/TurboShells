@@ -23,6 +23,7 @@ export default function RaceView() {
         error,
         startRace,
         stopRace,
+        setSpeed,
     } = useRaceSocket({
         url: 'ws://localhost:8765/ws/race',
         autoReconnect: true,
@@ -33,6 +34,12 @@ export default function RaceView() {
         navigate('/roster');
     };
 
+    // Wrapper that updates both local state and sends to server
+    const handleSpeedChange = (speed: 1 | 2 | 4) => {
+        setSpeedMultiplier(speed);  // Update local Zustand state
+        setSpeed(speed);             // Send to server via WebSocket
+    };
+
     return (
         <div className="race-view">
             {/* Race HUD Overlay */}
@@ -41,7 +48,7 @@ export default function RaceView() {
                 bet={currentBet}
                 money={money}
                 speedMultiplier={raceSpeedMultiplier}
-                onSpeedChange={setSpeedMultiplier}
+                onSpeedChange={handleSpeedChange}
                 onBack={handleBack}
                 connectionStatus={status}
             />

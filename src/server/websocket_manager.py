@@ -188,6 +188,18 @@ class ConnectionManager:
         """
         return await self.broadcast(snapshot.to_broadcast_json())
     
+    async def broadcast_json(self, data: dict) -> int:
+        """Broadcast a JSON-serializable dict to all clients.
+        
+        Args:
+            data: Dictionary to serialize and broadcast
+            
+        Returns:
+            Number of clients successfully sent to
+        """
+        import json
+        return await self.broadcast(json.dumps(data))
+    
     async def cleanup_zombies(self) -> int:
         """Remove zombie connections that have been inactive.
         

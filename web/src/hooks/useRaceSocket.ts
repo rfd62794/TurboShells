@@ -38,6 +38,8 @@ export interface RaceSocketActions {
     startRace: () => void;
     /** Stop the current race */
     stopRace: () => void;
+    /** Set race speed (1, 2, or 4) */
+    setSpeed: (speed: 1 | 2 | 4) => void;
     /** Send a ping to keep connection alive */
     ping: () => void;
     /** Manually reconnect */
@@ -161,6 +163,10 @@ export function useRaceSocket(
         send({ action: 'stop' });
     }, [send]);
 
+    const setSpeed = useCallback((speed: 1 | 2 | 4) => {
+        send({ action: 'set_speed', speed });
+    }, [send]);
+
     const ping = useCallback(() => {
         send({ action: 'ping' });
     }, [send]);
@@ -184,6 +190,7 @@ export function useRaceSocket(
         error,
         startRace,
         stopRace,
+        setSpeed,
         ping,
         reconnect,
     };

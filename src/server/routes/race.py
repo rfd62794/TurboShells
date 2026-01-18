@@ -167,6 +167,17 @@ async def handle_client_command(client, message: dict) -> None:
             await _current_orchestrator.stop()
             _current_orchestrator = None
     
+    elif action == "set_speed":
+        speed = message.get("speed", 1)
+        if _current_orchestrator and speed in (1, 2, 4):
+            _current_orchestrator.set_speed(speed)
+            await manager.broadcast_json({
+                "type": "speed_changed",
+                "speed": speed,
+            })
+            if logger:
+                logger.info("Speed set by client", speed=speed, client_id=client.client_id)
+    
     elif action == "ping":
         await manager.send_to_client(
             client,
