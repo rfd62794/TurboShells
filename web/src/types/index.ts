@@ -3,3 +3,4 @@
  */
 
 export * from './race';
+export type { RosterTurtle, RaceHistoryEntry } from '../hooks/useRoster';

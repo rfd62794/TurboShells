@@ -5,7 +5,7 @@
  */
 
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-import { lazy, Suspense } from 'react';
+import React, { lazy, Suspense } from 'react';
 
 // Lazy load routes for code splitting
 const MainMenu = lazy(() => import('./MainMenu'));
@@ -24,7 +24,7 @@ const LoadingScreen = () => (
 );
 
 // Wrap lazy components
-const withSuspense = (Component: React.LazyExoticComponent<() => JSX.Element>) => (
+const withSuspense = (Component: React.LazyExoticComponent<() => React.ReactElement>) => (
     <Suspense fallback={<LoadingScreen />}>
         <Component />
     </Suspense>
