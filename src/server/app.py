@@ -19,7 +19,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from src.engine.logging_config import configure_logging, get_logger
 from src.engine.persistence import init_db
-from src.server.routes import race_router
+from src.server.routes import race_router, race_api_router
 from src.server.routes.roster import router as roster_router
 from src.server.routes.race import manager
 
@@ -73,6 +73,7 @@ app.add_middleware(
 )
 
 app.include_router(race_router)
+app.include_router(race_api_router)
 app.include_router(roster_router)
 
 

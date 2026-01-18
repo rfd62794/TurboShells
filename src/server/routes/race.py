@@ -13,11 +13,14 @@ import json
 import asyncio
 from typing import TYPE_CHECKING
 
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect, HTTPException
+from pydantic import BaseModel
 
 from src.server.websocket_manager import ConnectionManager
 from src.server.race_orchestrator import RaceOrchestrator
 from src.engine.logging_config import get_logger
+from src.engine.persistence import get_turtle_by_id, db_to_turtle
+
 
 if TYPE_CHECKING:
     from src.game.entities import Turtle
@@ -25,6 +28,11 @@ if TYPE_CHECKING:
 logger = get_logger(__name__)
 
 router = APIRouter(prefix="/ws", tags=["websocket"])
+api_router = APIRouter(prefix="/api/races", tags=["races"])
+
+class StartRaceRequest(BaseModel):
+    turtle_ids: list[str]
+    course_id: str = "classic_100m"
 
 manager = ConnectionManager(zombie_timeout_seconds=300.0)
 
@@ -39,6 +47,48 @@ def get_manager() -> ConnectionManager:
 def get_orchestrator() -> RaceOrchestrator | None:
     """Dependency to get the current race orchestrator."""
     return _current_orchestrator
+
+
+@api_router.post("/start")
+async def start_race(request: StartRaceRequest):
+    """Start a new race with specific turtles."""
+    global _current_orchestrator
+
+    # Check if race exists and is running
+    if _current_orchestrator and _current_orchestrator.is_running:
+        raise HTTPException(status_code=400, detail="Race already in progress")
+
+    # Fetch turtles from DB
+    race_turtles = []
+    for tid in request.turtle_ids:
+        db_turtle = get_turtle_by_id(tid)
+        if not db_turtle:
+             logger.warning(f"Turtle not found for race: {tid}")
+             continue
+        # Convert to game entity
+        entity = db_to_turtle(db_turtle)
+        race_turtles.append(entity)
+    
+    if not race_turtles:
+        raise HTTPException(status_code=400, detail="No valid turtles found for race")
+
+    # Create Orchestrator
+    try:
+        _current_orchestrator = RaceOrchestrator(
+            turtles=race_turtles,
+            manager=manager,
+            physics_hz=60,
+            broadcast_hz=30,
+            track_length=1500.0, # Could be dynamic based on course_id later
+        )
+        await _current_orchestrator.start()
+        
+        logger.info(f"Race started via API with {len(race_turtles)} turtles")
+        return {"status": "started", "race_id": "new_race", "turtle_count": len(race_turtles)}
+        
+    except Exception as e:
+        logger.error(f"Failed to start race: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 async def create_demo_race() -> RaceOrchestrator:
