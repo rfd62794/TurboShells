@@ -8,7 +8,19 @@ Exports:
     ConnectionManager: WebSocket connection lifecycle manager
 """
 
-from src.server.app import app
-from src.server.websocket_manager import ConnectionManager
+# Lazy imports to avoid requiring FastAPI at module import time
+# This allows tests to import specific components without full stack
 
-__all__ = ["app", "ConnectionManager"]
+def get_app():
+    """Get the FastAPI app instance (lazy load)."""
+    from src.server.app import app
+    return app
+
+
+def get_connection_manager():
+    """Get the ConnectionManager class (lazy load)."""
+    from src.server.websocket_manager import ConnectionManager
+    return ConnectionManager
+
+
+__all__ = ["get_app", "get_connection_manager"]
