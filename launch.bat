@@ -2,13 +2,13 @@
 title TurboShells Launcher
 echo.
 echo  ====================================
-echo   🐢 TurboShells Web - Quick Start
+echo   TurboShells Web - Quick Start
 echo  ====================================
 echo.
 
-:: Start Backend
+:: Start Backend (using venv python)
 echo [1/3] Starting Python backend (port 8765)...
-start "TurboShells Backend" cmd /k "cd /d c:\Github\TurboShells && uvicorn src.server.app:app --port 8765 --reload"
+start "TurboShells Backend" cmd /k "cd /d c:\Github\TurboShells && .venv\Scripts\python -m uvicorn src.server.app:app --port 8765 --reload"
 
 :: Wait for backend to initialize
 echo [2/3] Waiting for backend to initialize...
