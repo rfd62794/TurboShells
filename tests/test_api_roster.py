@@ -12,13 +12,19 @@ from src.server.app import app
 from src.engine.persistence import TurtleDB, get_engine
 from src.server.routes.roster import TurtleResponse
 
+from sqlmodel.pool import StaticPool
+
 # --- Test Database Setup ---
 # We override the dependency or database engine for tests
 TEST_DB_URL = "sqlite:///:memory:"
 
 @pytest.fixture(name="engine")
 def fixture_engine():
-    engine = create_engine(TEST_DB_URL, connect_args={"check_same_thread": False})
+    engine = create_engine(
+        TEST_DB_URL, 
+        connect_args={"check_same_thread": False}, 
+        poolclass=StaticPool
+    )
     SQLModel.metadata.create_all(engine)
     return engine
 
