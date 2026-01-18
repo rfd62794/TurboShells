@@ -2,14 +2,18 @@
  * TurboShells Race Frontend
  * 
  * Main application component that connects to the WebSocket server
- * and renders the race stage.
+ * and renders the race stage. Loads saved roster from database on mount.
  */
 
 import { RaceStage } from './components';
-import { useRaceSocket } from './hooks';
+import { useRaceSocket, useRoster } from './hooks';
 import './App.css';
 
 function App() {
+  // Fetch saved roster from database
+  const { turtles: savedTurtles, history, loading, refresh } = useRoster();
+
+  // WebSocket connection for live racing
   const {
     status,
     snapshot,
@@ -59,8 +63,38 @@ function App() {
           </div>
         )}
 
+        {/* Saved Roster Panel */}
+        <div className="roster-panel">
+          <h3>
+            🗄️ Saved Roster
+            <button onClick={refresh} className="refresh-btn" title="Refresh">
+              🔄
+            </button>
+          </h3>
+          {loading ? (
+            <div className="loading">Loading...</div>
+          ) : savedTurtles.length === 0 ? (
+            <div className="empty">No turtles saved yet. Complete a race!</div>
+          ) : (
+            <ul className="roster-list">
+              {savedTurtles.map((turtle) => (
+                <li key={turtle.turtle_id}>
+                  <span className="name">{turtle.name}</span>
+                  <span className="stats">
+                    🏃 {turtle.speed.toFixed(0)} | ⚡ {turtle.max_energy.toFixed(0)}
+                  </span>
+                  <span className="record">
+                    {turtle.total_wins}/{turtle.total_races} wins
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        {/* Live Standings */}
         <div className="standings">
-          <h3>Standings</h3>
+          <h3>Live Standings</h3>
           <ol>
             {snapshot?.turtles
               .slice()
@@ -78,6 +112,24 @@ function App() {
               ))}
           </ol>
         </div>
+
+        {/* Race History */}
+        {history.length > 0 && (
+          <div className="history-panel">
+            <h3>📊 Recent History</h3>
+            <ul>
+              {history.slice(0, 5).map((entry) => (
+                <li key={entry.id}>
+                  <span className="rank">#{entry.rank}</span>
+                  <span className="name">{entry.turtle_name}</span>
+                  <span className="time">
+                    {(entry.final_time_ms / 1000).toFixed(1)}s
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </main>
 
       <footer className="controls">
