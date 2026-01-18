@@ -8,12 +8,18 @@ import os
 from sqlmodel import SQLModel, create_engine, Session, select
 from src.engine.persistence import TurtleDB, RaceResultDB, turtle_to_db
 
+from sqlmodel.pool import StaticPool
+
 # Use in-memory SQLite for tests
 TEST_DB_URL = "sqlite:///:memory:"
 
 @pytest.fixture(name="engine")
 def fixture_engine():
-    engine = create_engine(TEST_DB_URL, connect_args={"check_same_thread": False})
+    engine = create_engine(
+        TEST_DB_URL, 
+        connect_args={"check_same_thread": False}, 
+        poolclass=StaticPool
+    )
     SQLModel.metadata.create_all(engine)
     return engine
 
@@ -83,7 +89,7 @@ def test_race_result_persistence(session):
     # Save result
     result = RaceResultDB(
         race_id="race-123",
-        turtle_id=turtle.id,
+        turtle_db_id=turtle.id,
         rank=1,
         final_distance=1000.0,
         final_time_ms=5000.0,
@@ -95,4 +101,4 @@ def test_race_result_persistence(session):
 
     assert result.id is not None
     assert result.rank == 1
-    assert result.turtle_id == turtle.id
+    assert result.turtle_db_id == turtle.id

@@ -230,7 +230,7 @@ def save_race_result(
         # Create race result
         result = RaceResultDB(
             race_id=race_id,
-            turtle_id=db_turtle.id,
+            turtle_db_id=db_turtle.id,
             rank=rank,
             final_distance=final_distance,
             final_time_ms=final_time_ms,
