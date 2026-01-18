@@ -1,0 +1,275 @@
+/**
+ * Retro CSS Design System
+ * 
+ * Replicates the PyGame UI aesthetic using CSS.
+ * Uses Press Start 2P font for that authentic retro feel.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+:root {
+    --bg-dark: #1a1a1a;
+    --bg-medium: #2d2d2d;
+    --bg-light: #3a3a3a;
+    --accent-green: #228B22;
+    --accent-green-light: #33cc33;
+    --accent-gold: #ffd700;
+    --accent-red: #ff4444;
+    --text-primary: #ffffff;
+    --text-secondary: #aaaaaa;
+
+    /* pygame_gui border colors */
+    --border-light: #4a4a4a;
+    --border-dark: #1a1a1a;
+}
+
+/* Retro Typography */
+.retro-text {
+    font-family: 'Press Start 2P', cursive;
+    text-shadow: 2px 2px #000;
+    letter-spacing: -0.5px;
+}
+
+/* pygame_gui Panel Recreation */
+.pygame-panel {
+    background: var(--bg-medium);
+    border-top: 3px solid var(--border-light);
+    border-left: 3px solid var(--border-light);
+    border-right: 3px solid var(--border-dark);
+    border-bottom: 3px solid var(--border-dark);
+    border-radius: 2px;
+}
+
+/* pygame_gui Button Recreation */
+.pygame-btn {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.65rem;
+    padding: 0.5rem 1rem;
+    color: var(--text-primary);
+    background: linear-gradient(180deg, #3a3a3a 0%, #2d2d2d 100%);
+    border-top: 2px solid var(--border-light);
+    border-left: 2px solid var(--border-light);
+    border-right: 2px solid var(--border-dark);
+    border-bottom: 2px solid var(--border-dark);
+    cursor: pointer;
+    transition: all 0.1s;
+}
+
+.pygame-btn:hover:not(:disabled) {
+    background: linear-gradient(180deg, #4a4a4a 0%, #3a3a3a 100%);
+}
+
+.pygame-btn:active:not(:disabled) {
+    border-top: 2px solid var(--border-dark);
+    border-left: 2px solid var(--border-dark);
+    border-right: 2px solid var(--border-light);
+    border-bottom: 2px solid var(--border-light);
+    transform: translateY(1px);
+}
+
+.pygame-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Page Layouts */
+.main-menu,
+.roster-view,
+.race-view,
+.breeding-lab,
+.shop-view,
+.settings-view {
+    min-height: 100vh;
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Main Menu Specific */
+.main-menu .menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    background: linear-gradient(135deg, var(--accent-green) 0%, #1a5a1a 100%);
+}
+
+.main-menu .title {
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.main-menu .menu-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.main-menu .menu-panel {
+    padding: 2rem;
+    min-width: 400px;
+}
+
+.main-menu .menu-panel h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 1rem;
+}
+
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.menu-btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    font-size: 0.8rem;
+}
+
+.menu-btn .hint {
+    font-size: 0.5rem;
+    color: var(--text-secondary);
+}
+
+.main-menu .menu-footer {
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.5rem;
+    color: var(--text-secondary);
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+/* Money Badge */
+.money-badge {
+    padding: 0.5rem 1rem;
+    background: var(--bg-dark);
+    border: 2px solid var(--accent-gold);
+    color: var(--accent-gold);
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.7rem;
+}
+
+/* Roster View Specific */
+.roster-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+}
+
+.roster-content {
+    flex: 1;
+    padding: 1rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.betting-controls {
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.betting-controls h3 {
+    font-size: 0.8rem;
+    margin: 0;
+}
+
+.bet-slider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.bet-slider input[type="range"] {
+    width: 150px;
+}
+
+.active-racer {
+    flex: 1;
+}
+
+.start-btn {
+    padding: 0.75rem 2rem;
+}
+
+.view-toggle {
+    font-size: 0.7rem;
+}
+
+.turtle-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.empty-state {
+    padding: 2rem;
+    text-align: center;
+}
+
+/* Race View Specific */
+.race-stage-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 6rem 2rem 2rem;
+}
+
+.race-controls {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+/* Coming Soon Placeholder */
+.coming-soon {
+    font-size: 1.2rem;
+    color: var(--accent-gold);
+    margin-bottom: 1rem;
+}
+
+/* Loading Screen */
+.loading-screen {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: var(--bg-dark);
+    color: var(--text-primary);
+}
+
+.loading-spinner {
+    font-size: 3rem;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Pixel Art Mode for images */
+.pixelated {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}

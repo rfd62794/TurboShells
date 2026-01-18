@@ -1,0 +1,97 @@
+.turtle-card {
+    width: 160px;
+    padding: 0.75rem;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.turtle-card:hover {
+    transform: translateY(-2px);
+}
+
+.turtle-card.selected {
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+.turtle-card.active-racer {
+    border-color: var(--accent-green);
+    background: linear-gradient(135deg, #2d2d2d 0%, #1a3d1a 100%);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.turtle-name {
+    font-size: 0.75rem;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.racer-badge {
+    font-size: 1rem;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.genome-preview {
+    font-size: 2rem;
+    text-align: center;
+    padding: 0.5rem;
+    background: #1a1a1a;
+    border-radius: 4px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.25rem;
+    font-size: 0.65rem;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.25rem;
+    background: #1a1a1a;
+    border-radius: 2px;
+}
+
+.stat .label {
+    color: var(--text-secondary);
+    font-size: 0.5rem;
+}
+
+.stat .value {
+    color: var(--accent-green);
+    font-weight: bold;
+}
+
+.record {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.6rem;
+    color: var(--text-secondary);
+}
+
+.win-rate {
+    color: var(--accent-gold);
+}
+
+.set-racer-btn {
+    width: 100%;
+    margin-top: 0.5rem;
+    padding: 0.4rem;
+    font-size: 0.65rem;
+}
