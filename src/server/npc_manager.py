@@ -14,6 +14,8 @@ from src.engine.logging_config import get_logger
 
 logger = get_logger(__name__)
 
+from src.genetics import VisualGenetics
+
 class NPCManager:
     def __init__(self, cache_size: int = 100):
         self.cache_size = cache_size
@@ -25,12 +27,27 @@ class NPCManager:
             "Glitch", "Vector", "Ping", "Packet", "Socket"
         ]
         
+        # Initialize genetics system for random aesthetic generation
+        try:
+            self.genetics_system = VisualGenetics()
+        except Exception as e:
+            logger.warning(f"Failed to initialize VisualGenetics for NPCs: {e}")
+            self.genetics_system = None
+        
         # Initial population
         self._replenish_pool()
         
     def _create_npc(self) -> Turtle:
         """Generate a single fresh NPC."""
         name = f"{random.choice(self._npc_names)} {random.randint(1, 99)}"
+        
+        # Generate unique look
+        genetics = None
+        if self.genetics_system:
+            try:
+                genetics = self.genetics_system.generate_random_genetics()
+            except Exception as e:
+                logger.warning(f"Genetics generation failed: {e}")
         
         # Randomize stats around a balanced baseline
         # Speed: 8-12 (Avg 10)
@@ -42,7 +59,8 @@ class NPCManager:
             energy=random.uniform(80.0, 120.0),
             recovery=random.uniform(3.0, 7.0),
             swim=5.0,
-            climb=5.0
+            climb=5.0,
+            genetics=genetics  # Apply the generated look
         )
         
         # Format ID specifically for NPCs
