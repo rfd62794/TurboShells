@@ -42,8 +42,18 @@ export default function RosterView() {
         toggleRacer(turtleId);
     };
 
+    const handleStartRace = async () => {
+        try {
+            await startRace();
+            navigate('/race');
+        } catch (e) {
+            console.error("Failed to start race:", e);
+        }
+    };
+
     return (
         <div className="roster-view">
+            {/* ... header ... */}
             <header className="roster-header pygame-panel">
                 <button className="back-btn pygame-btn" onClick={() => navigate('/menu')}>
                     ← Back
@@ -59,6 +69,7 @@ export default function RosterView() {
                 <section className="betting-controls pygame-panel">
                     <h3 className="retro-text">Race Setup</h3>
 
+                    {/* ... BetSlider ... */}
                     <div className="bet-slider-wrapper">
                         <BetSlider
                             currentBet={currentBet}
@@ -69,14 +80,14 @@ export default function RosterView() {
                     </div>
 
                     <div className="active-racers-list">
-                        <div className="retro-label">Lineup ({selectedRacers.length}/4):</div>
+                        <div className="retro-label">Champion Selection:</div>
                         {selectedRacers.length === 0 ? (
-                            <span className="hint">Select turtles from roster</span>
+                            <span className="hint">Select 1 turtle to race</span>
                         ) : (
                             <ul className="racer-names">
                                 {selectedRacers.map(id => {
                                     const turtle = turtles.find(t => t.turtle_id === id);
-                                    return <li key={id}>🐢 {turtle?.name}</li>;
+                                    return <li key={id}>🐢 {turtle?.name} (Player)</li>;
                                 })}
                             </ul>
                         )}
@@ -84,7 +95,7 @@ export default function RosterView() {
 
                     <button
                         className="pygame-btn start-btn"
-                        onClick={startRace}
+                        onClick={handleStartRace}
                         disabled={selectedRacers.length === 0 || isLoading}
                     >
                         {isLoading ? 'Starting...' : '🏁 Start Race'}

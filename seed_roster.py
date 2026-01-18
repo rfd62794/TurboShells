@@ -16,13 +16,17 @@ from src.engine.persistence import turtle_to_db
 
 def seed():
     print("Initializing DB...")
+    # Force drop of all tables to ensure schema freshness
+    from sqlmodel import SQLModel
+    SQLModel.metadata.drop_all(engine)
     init_db()
     
     with Session(engine) as session:
-        print("Wiping existing data...")
-        session.exec(delete(RaceResultDB))
-        session.exec(delete(TurtleDB))
-        session.commit()
+        print("Wiping existing data (Clean Schema)...")
+        # No need to delete rows, table was dropped
+        # session.exec(delete(RaceResultDB)) 
+        # session.exec(delete(TurtleDB))
+        # session.commit()
         
         print("Creating starter archetypes...")
         starters = [
