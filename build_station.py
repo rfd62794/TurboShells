@@ -17,6 +17,11 @@ import sys
 import shutil
 from pathlib import Path
 
+# Ensure stdout uses UTF-8 on Windows for emoji support
+import io
+if sys.platform == "win32":
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+
 REQUIRED_PYTHON = "3.12"
 
 
