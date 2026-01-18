@@ -115,7 +115,7 @@ def get_engine():
 @contextmanager
 def get_session():
     """Get a database session context manager."""
-    session = Session(engine)
+    session = Session(engine, expire_on_commit=False)
     try:
         yield session
         session.commit()
