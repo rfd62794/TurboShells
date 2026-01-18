@@ -5,6 +5,7 @@
  */
 
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import { RaceStage } from '../components';
 import { RaceHUD } from '../components/hud/RaceHUD';
 import { useRaceSocket } from '../hooks';
@@ -39,6 +40,14 @@ export default function RaceView() {
         setSpeedMultiplier(speed);  // Update local Zustand state
         setSpeed(speed);             // Send to server via WebSocket
     };
+
+    // Auto-sync speed when connected
+    // This ensures persistence across race sessions
+    useEffect(() => {
+        if (status === 'connected') {
+            setSpeed(raceSpeedMultiplier);
+        }
+    }, [status, raceSpeedMultiplier, setSpeed]);
 
     return (
         <div className="race-view">
