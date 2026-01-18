@@ -68,9 +68,32 @@ export function parseGenome(genome: any): ParsedGenome {
         // Map limb shape (string?) or int to pattern Type
         // If VisualGenetics sends strings, we'd need parsing. Assuming fallback for now.
 
-        // Color: 'shell_base_color' might be hex string "#FF0000"
-        if (genome.shell_base_color) {
-            result.color = String(genome.shell_base_color).replace('#', '');
+        // Color Handling: Support Hex String OR RGB Tuple/Array
+        const rawColor = genome.shell_base_color;
+        if (rawColor) {
+            if (Array.isArray(rawColor) && rawColor.length >= 3) {
+                // Convert [R, G, B] to Hex String
+                const r = rawColor[0];
+                const g = rawColor[1];
+                const b = rawColor[2];
+                // basic rgb to hex
+                const toHex = (c: number) => c.toString(16).padStart(2, '0');
+                result.color = `${toHex(r)}${toHex(g)}${toHex(b)}`;
+            } else {
+                // Assume string
+                const strColor = String(rawColor);
+                // Handle tuple string "(r, g, b)" from Python
+                if (strColor.includes(',')) {
+                    const rgb = strColor.replace(/[()\[\]\s]/g, '').split(',').map(Number);
+                    if (rgb.length >= 3) {
+                        const toHex = (c: number) => c.toString(16).padStart(2, '0');
+                        result.color = `${toHex(rgb[0])}${toHex(rgb[1])}${toHex(rgb[2])}`;
+                    }
+                } else {
+                    // Standard Hex
+                    result.color = strColor.replace('#', '');
+                }
+            }
         }
 
         return result;

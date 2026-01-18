@@ -82,11 +82,13 @@ export function RaceHUD({
                 <div className="race-status">
                     <span className="tick">Tick: {snapshot.tick}</span>
                     <span className="time">{(snapshot.elapsed_ms / 1000).toFixed(1)}s</span>
-                    {snapshot.finished && snapshot.winner_id && (
-                        <div className="winner-banner retro-text">
-                            🏆 Winner: {snapshot.turtles.find(t => t.id === snapshot.winner_id)?.name}
-                        </div>
-                    )}
+                </div>
+            )}
+
+            {/* Winner Banner (Centered Overlay) */}
+            {snapshot && snapshot.finished && snapshot.winner_id && (
+                <div className="winner-banner retro-text">
+                    🏆 Winner: {snapshot.turtles.find(t => t.id === snapshot.winner_id)?.name}
                 </div>
             )}
 
