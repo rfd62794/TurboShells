@@ -18,7 +18,7 @@ export default function RaceView() {
     const {
         status,
         snapshot,
-        prevSnapshot,
+        snapshotBuffer,
         trackLength,
         error,
         startRace,
@@ -56,8 +56,7 @@ export default function RaceView() {
             {/* PixiJS Race Stage */}
             <main className="race-stage-container">
                 <RaceStage
-                    snapshot={snapshot}
-                    prevSnapshot={prevSnapshot}
+                    snapshotBuffer={snapshotBuffer}
                     trackLength={trackLength}
                     width={800}
                     height={400}
