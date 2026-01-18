@@ -130,10 +130,9 @@ export const useGameStore = create<GameState & GameActions>()(
             toggleRacer: (id: string) => set((state) => {
                 const isSelected = state.selectedRacers.includes(id);
                 if (isSelected) {
-                    return { selectedRacers: state.selectedRacers.filter(r => r !== id) };
+                    return { selectedRacers: [] }; // Deselect
                 } else {
-                    if (state.selectedRacers.length >= 4) return state; // Max 4
-                    return { selectedRacers: [...state.selectedRacers, id] };
+                    return { selectedRacers: [id] }; // Select ONLY this one (exclusive)
                 }
             }),
             toggleShowRetired: () => set((state) => ({ showRetired: !state.showRetired })),

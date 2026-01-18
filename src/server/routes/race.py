@@ -58,6 +58,8 @@ async def start_race(request: StartRaceRequest):
     if _current_orchestrator and _current_orchestrator.is_running:
         raise HTTPException(status_code=400, detail="Race already in progress")
 
+    import random
+    
     # Fetch turtles from DB
     race_turtles = []
     for tid in request.turtle_ids:
@@ -71,6 +73,29 @@ async def start_race(request: StartRaceRequest):
     
     if not race_turtles:
         raise HTTPException(status_code=400, detail="No valid turtles found for race")
+
+    # NPC Filler Logic (Target 3-5 racers)
+    target_count = random.randint(3, 5)
+    needed = target_count - len(race_turtles)
+    
+    if needed > 0:
+        from src.game.entities import Turtle
+        npc_names = ["SpeedyBot", "ShellShock", "TurboNPC", "SlowPoke", "MechaTurtle", "DriftKing"]
+        
+        for i in range(needed):
+            # Generate random stats around average (10 speed, 100 energy)
+            name = f"{random.choice(npc_names)} {random.randint(1, 99)}"
+            npc = Turtle(
+                name=name,
+                speed=random.uniform(8.0, 12.0),
+                energy=random.uniform(80.0, 120.0),
+                recovery=random.uniform(3.0, 7.0),
+                swim=5.0,
+                climb=5.0
+            )
+            # Flag as NPC just in case we need it later
+            npc.id = f"npc-{i}-{random.randint(1000,9999)}" 
+            race_turtles.append(npc)
 
     # Create Orchestrator
     try:
