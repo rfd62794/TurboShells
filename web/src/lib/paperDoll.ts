@@ -28,7 +28,8 @@ export const LIMB_SHAPES = ['flippers', 'feet', 'fins'] as const;
  * @param genome - Genome string like "B1-S2-P0-CFF0000"
  * @returns Parsed genome with numeric indices and hex color
  */
-export function parseGenome(genome: string): ParsedGenome {
+export function parseGenome(genome: any): ParsedGenome {
+    // Default fallback
     const result: ParsedGenome = {
         bodyType: 0,
         shellType: 0,
@@ -36,28 +37,43 @@ export function parseGenome(genome: string): ParsedGenome {
         color: '228B22', // Default forest green
     };
 
-    const parts = genome.split('-');
+    if (!genome) return result;
 
-    for (const part of parts) {
-        if (!part) continue;
+    // Handle legacy string format "B1-S2-P0-CFF0000"
+    if (typeof genome === 'string') {
+        if (!genome.includes('-')) return result; // Empty/Invalid string
 
-        const prefix = part[0];
-        const value = part.slice(1);
+        const parts = genome.split('-');
+        for (const part of parts) {
+            if (!part) continue;
+            const prefix = part[0];
+            const value = part.slice(1);
 
-        switch (prefix) {
-            case 'B':
-                result.bodyType = parseInt(value, 10) || 0;
-                break;
-            case 'S':
-                result.shellType = parseInt(value, 10) || 0;
-                break;
-            case 'P':
-                result.patternType = parseInt(value, 10) || 0;
-                break;
-            case 'C':
-                result.color = value || '228B22';
-                break;
+            switch (prefix) {
+                case 'B': result.bodyType = parseInt(value, 10) || 0; break;
+                case 'S': result.shellType = parseInt(value, 10) || 0; break;
+                case 'P': result.patternType = parseInt(value, 10) || 0; break;
+                case 'C': result.color = value || '228B22'; break;
+            }
         }
+        return result;
+    }
+
+    // Handle object format (VisualGenetics dictionary)
+    if (typeof genome === 'object') {
+        // Mapping from VisualGenetics keys to simplified PaperDoll indices
+        // Assuming keys like 'body_pattern_type', 'shell_pattern_type', 'limb_shape'
+        if (genome.body_pattern_type !== undefined) result.bodyType = Number(genome.body_pattern_type) || 0;
+        if (genome.shell_pattern_type !== undefined) result.shellType = Number(genome.shell_pattern_type) || 0;
+        // Map limb shape (string?) or int to pattern Type
+        // If VisualGenetics sends strings, we'd need parsing. Assuming fallback for now.
+
+        // Color: 'shell_base_color' might be hex string "#FF0000"
+        if (genome.shell_base_color) {
+            result.color = String(genome.shell_base_color).replace('#', '');
+        }
+
+        return result;
     }
 
     return result;
