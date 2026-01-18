@@ -64,13 +64,13 @@ export function TurtleCard({
 
             {onSetRacer && (
                 <button
-                    className="pygame-btn set-racer-btn"
+                    className={`pygame-btn set-racer-btn ${isActiveRacer ? 'active' : ''}`}
                     onClick={(e) => {
                         e.stopPropagation();
                         onSetRacer();
                     }}
                 >
-                    {isActiveRacer ? '✓ Racing' : 'Select'}
+                    {isActiveRacer ? 'Leave Race' : 'Join Race'}
                 </button>
             )}
         </div>
