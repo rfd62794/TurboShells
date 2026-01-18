@@ -5,7 +5,7 @@
  */
 
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { RaceStage } from '../components';
 import { RaceHUD } from '../components/hud/RaceHUD';
 import { useRaceSocket } from '../hooks';
@@ -42,12 +42,58 @@ export default function RaceView() {
     };
 
     // Auto-sync speed when connected
-    // This ensures persistence across race sessions
     useEffect(() => {
         if (status === 'connected') {
             setSpeed(raceSpeedMultiplier);
         }
     }, [status, raceSpeedMultiplier, setSpeed]);
+
+    // Payout Logic
+    const {
+        selectedRacers,
+        addMoney,
+        setBet
+    } = useGameStore();
+
+    // Track processed race ID to prevent double payouts
+    const lastProcessedRaceRef = React.useRef<string | null>(null);
+
+    useEffect(() => {
+        if (!snapshot?.finished || !snapshot.winner_id) return;
+
+        // Prevent double payout for the same race
+        // We use a combination of course_id and tick to identify unique race completion?
+        // Or just check if we already processed this specific winner instance
+        // Best proxy: course_id + tick? Or just reset when !finished.
+
+        // Simpler: If finished and we haven't paid for this session:
+        // But snapshot persists. 
+        // Let's use a ref that resets when !finished.
+    }, [snapshot]);
+
+    // Better approach:
+    // When snapshot transitions from !finished to finished.
+    const prevFinished = React.useRef(false);
+
+    useEffect(() => {
+        const isFinished = snapshot?.finished ?? false;
+
+        if (isFinished && !prevFinished.current) {
+            // Race JUST finished
+            if (snapshot?.winner_id && selectedRacers.includes(snapshot.winner_id)) {
+                // WINNER!
+                if (currentBet > 0) {
+                    const winnings = currentBet * 3; // 3:1 Odds
+                    addMoney(winnings);
+                    console.log(`[Payout] User won ${winnings}!`);
+                    // Optional: Trigger confetti here?
+                }
+            }
+            // Reset bet after race? Or keep for replay? Keeping makes re-betting easier.
+        }
+
+        prevFinished.current = isFinished;
+    }, [snapshot, selectedRacers, currentBet, addMoney]);
 
     return (
         <div className="race-view">
