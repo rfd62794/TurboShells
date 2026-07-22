@@ -1,0 +1,85 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0f0f0f;
+  --bg-card: #1a1a1a;
+  --bg-raised: #252525;
+  --border: #333;
+  --border-bright: #555;
+  --green: #22c55e;
+  --green-dim: #166534;
+  --gold: #eab308;
+  --red: #ef4444;
+  --text: #f0f0f0;
+  --muted: #888;
+  --font: 'Press Start 2P', monospace;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 10px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+#root { min-height: 100vh; display: flex; flex-direction: column; }
+
+button {
+  font-family: var(--font);
+  cursor: pointer;
+  border: 2px solid var(--border-bright);
+  background: var(--bg-raised);
+  color: var(--text);
+  padding: 8px 14px;
+  font-size: 9px;
+  transition: all 0.1s;
+  line-height: 1.4;
+}
+button:hover:not(:disabled) { border-color: var(--green); color: var(--green); }
+button:active:not(:disabled) { transform: translateY(1px); }
+button:disabled { opacity: 0.4; cursor: not-allowed; }
+button.primary { background: var(--green-dim); border-color: var(--green); color: var(--green); }
+button.primary:hover:not(:disabled) { background: var(--green); color: #000; }
+button.danger { border-color: var(--red); color: var(--red); }
+
+.card {
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  padding: 16px;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  border-bottom: 2px solid var(--border);
+  background: var(--bg-card);
+}
+
+.topbar h1 { flex: 1; font-size: 11px; text-align: center; }
+.topbar .money { color: var(--gold); font-size: 10px; }
+
+.content { flex: 1; padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; }
+
+.back { padding: 6px 10px; font-size: 8px; }
+
+.grid { display: flex; flex-wrap: wrap; gap: 12px; }
+
+.empty { padding: 24px; text-align: center; color: var(--muted); }
+
+.label { color: var(--muted); font-size: 8px; }
+.gold { color: var(--gold); }
+.green { color: var(--green); }
+.red { color: var(--red); }
+
+.stat-bar-wrap { height: 6px; background: var(--bg); border: 1px solid var(--border); }
+.stat-bar-fill { height: 100%; transition: width 0.3s; }
