@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useGameStore } from '../stores';
 import { supabase } from '../lib/supabase';
-import { createShopTurtle, shopPriceForTurtle } from '../lib/turtleFactory';
+import { shopPriceForTurtle } from '../lib/turtleFactory';
 import type { RosterTurtle } from '../types';
 import '../styles/retro.css';
 import './Shop.css';

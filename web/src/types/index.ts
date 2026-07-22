@@ -46,7 +46,7 @@ export interface SyncData {
     type: 'sync';
     track_length: number;
     current_tick: number;
-    snapshot: RaceSnapshot | null;
+    snapshot: unknown;
 }
 
 export interface ServerMessage {

@@ -3,7 +3,7 @@ import { useEffect, useRef, useCallback } from 'react';
 import confetti from 'canvas-confetti';
 import { useGameStore } from '../stores';
 import { RaceEngine, generateNpcTurtle } from '../lib/raceEngine';
-import type { RaceTurtle, RaceSnapshot } from '../types';
+import type { RaceTurtle } from '../types';
 import type { RosterTurtle } from '../types';
 import { supabase } from '../lib/supabase';
 import '../styles/retro.css';
@@ -13,9 +13,6 @@ const TRACK_LENGTH = 1200;
 
 function TurtleRaceBar({ turtle, trackLength }: { turtle: RaceTurtle; trackLength: number }) {
     const pct = Math.min(100, (turtle.race_distance / trackLength) * 100);
-    const colors: Record<string, string> = {
-        grass: '#228B22', water: '#1a6abf', rocks: '#888', sand: '#c8a84b', mud: '#7a5c2e', boost: '#ffd700',
-    };
     return (
         <div className={`race-turtle-row ${turtle.finished ? 'finished' : ''} ${turtle.is_npc ? 'npc' : 'player'}`}>
             <span className="race-name">{turtle.is_npc ? '🤖' : '🐢'} {turtle.name}</span>
