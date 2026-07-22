@@ -56,3 +56,4 @@ turboshells.db
 # Data directories (keep structure, ignore contents)
 data/
 !data/.gitkeep
+.env

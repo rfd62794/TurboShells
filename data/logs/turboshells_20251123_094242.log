@@ -1,3 +1,0 @@
-2025-11-23 09:42:42,101 - core.config - INFO - Configuration loaded successfully
-2025-11-23 09:42:42,103 - core.audio_manager - INFO - Loaded audio settings: Master Volume 0.5, Enabled True
-2025-11-23 09:42:42,582 - core.audio_manager - INFO - Audio system initialized successfully
