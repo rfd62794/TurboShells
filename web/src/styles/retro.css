@@ -273,3 +273,75 @@
     image-rendering: pixelated;
     image-rendering: crisp-edges;
 }
+
+/* BetSlider */
+.bet-slider-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.bet-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.retro-label {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.55rem;
+    color: var(--text-secondary);
+}
+
+.bet-value {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.7rem;
+    color: var(--accent-gold);
+}
+
+.retro-range {
+    width: 100%;
+    accent-color: var(--accent-green);
+    cursor: pointer;
+}
+
+.bet-limits {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.5rem;
+    color: var(--text-secondary);
+}
+
+.error-text {
+    color: var(--accent-red);
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.55rem;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+.blink {
+    animation: blink 1s step-end infinite;
+}
+
+/* Active racer list */
+.active-racers-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    font-size: 0.6rem;
+}
+
+.racer-names {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    color: var(--accent-green-light);
+    font-size: 0.6rem;
+}
+
+.bet-slider-wrapper { flex: 1; }
+.back-btn { padding: 0.4rem 0.8rem; }

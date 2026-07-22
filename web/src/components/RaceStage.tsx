@@ -9,9 +9,14 @@ import { useEffect, useRef } from 'react';
 import { Application, Graphics, Container, Text, TextStyle } from 'pixi.js';
 import { parseGenome, buildTurtleLayers } from '../lib/paperDoll';
 import { lerp } from '../lib/interpolation';
-import type { TurtleState } from '../types';
+import type { RaceTurtle } from '../lib/raceEngine';
 
-import type { BufferedSnapshot } from '../hooks/useRaceSocket';
+type TurtleState = RaceTurtle & { x: number; y: number; angle: number };
+
+export interface BufferedSnapshot {
+    receivedAt: number;
+    turtles: TurtleState[];
+}
 
 export interface RaceStageProps {
     snapshotBuffer: BufferedSnapshot[];

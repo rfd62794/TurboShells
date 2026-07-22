@@ -95,3 +95,22 @@
     padding: 0.4rem;
     font-size: 0.65rem;
 }
+
+.set-racer-btn.active {
+    background: linear-gradient(180deg, var(--accent-green) 0%, #1a5a1a 100%);
+    border-color: var(--accent-green-light);
+}
+
+.retired-badge {
+    font-size: 0.45rem;
+    font-family: 'Press Start 2P', cursive;
+    color: var(--accent-red);
+}
+
+.gen-badge {
+    color: var(--accent-gold) !important;
+}
+
+.turtle-card.retired {
+    opacity: 0.6;
+}

@@ -1,9 +1,3 @@
-/**
- * Roster View Page
- * 
- * Replicates PyGame's RosterPanel with turtle grid and betting controls.
- */
-
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useGameStore } from '../stores';
@@ -25,43 +19,25 @@ export default function RosterView() {
         toggleRacer,
         setBet,
         toggleShowRetired,
-        startRace,
         isLoading,
         errorMessage,
     } = useGameStore();
 
-    useEffect(() => {
-        fetchRoster();
-    }, [fetchRoster]);
+    useEffect(() => { fetchRoster(); }, [fetchRoster]);
 
-    const activeTurtles = turtles.filter(t =>
-        showRetired || t.total_races === 0 || t.total_wins > 0
-    );
+    const displayTurtles = showRetired ? turtles : turtles.filter(t => !t.is_retired);
 
-    const handleToggleRacer = (turtleId: string) => {
-        toggleRacer(turtleId);
-    };
-
-    const handleStartRace = async () => {
-        try {
-            await startRace();
-            navigate('/race');
-        } catch (e) {
-            console.error("Failed to start race:", e);
-        }
+    const handleStartRace = () => {
+        if (selectedRacers.length === 0) return;
+        navigate('/race');
     };
 
     return (
         <div className="roster-view">
-            {/* ... header ... */}
             <header className="roster-header pygame-panel">
-                <button className="back-btn pygame-btn" onClick={() => navigate('/menu')}>
-                    ← Back
-                </button>
+                <button className="back-btn pygame-btn" onClick={() => navigate('/menu')}>← Back</button>
                 <h1 className="retro-text">Turtle Roster</h1>
-                <div className="money-badge">
-                    <span>${money.toLocaleString()}</span>
-                </div>
+                <div className="money-badge">${money.toLocaleString()}</div>
             </header>
 
             <main className="roster-content">
@@ -69,7 +45,6 @@ export default function RosterView() {
                 <section className="betting-controls pygame-panel">
                     <h3 className="retro-text">Race Setup</h3>
 
-                    {/* ... BetSlider ... */}
                     <div className="bet-slider-wrapper">
                         <BetSlider
                             currentBet={currentBet}
@@ -80,14 +55,14 @@ export default function RosterView() {
                     </div>
 
                     <div className="active-racers-list">
-                        <div className="retro-label">Champion Selection:</div>
+                        <div className="retro-label">Selected Racer:</div>
                         {selectedRacers.length === 0 ? (
                             <span className="hint">Select 1 turtle to race</span>
                         ) : (
                             <ul className="racer-names">
                                 {selectedRacers.map(id => {
-                                    const turtle = turtles.find(t => t.turtle_id === id);
-                                    return <li key={id}>🐢 {turtle?.name} (Player)</li>;
+                                    const turtle = turtles.find(t => t.id === id);
+                                    return <li key={id}>🐢 {turtle?.name}</li>;
                                 })}
                             </ul>
                         )}
@@ -98,42 +73,38 @@ export default function RosterView() {
                         onClick={handleStartRace}
                         disabled={selectedRacers.length === 0 || isLoading}
                     >
-                        {isLoading ? 'Starting...' : '🏁 Start Race'}
+                        {isLoading ? 'Loading...' : '🏁 Start Race'}
                     </button>
-                    {/* Error Display */}
+
                     {errorMessage && <div className="error-message blink">{errorMessage}</div>}
                 </section>
 
                 {/* View Toggle */}
                 <div className="view-toggle">
                     <label>
-                        <input
-                            type="checkbox"
-                            checked={showRetired}
-                            onChange={toggleShowRetired}
-                        />
-                        Show Retired Turtles
+                        <input type="checkbox" checked={showRetired} onChange={toggleShowRetired} />
+                        {' '}Show Retired Turtles
                     </label>
                 </div>
 
                 {/* Turtle Grid */}
                 <section className="turtle-grid">
-                    {activeTurtles.length === 0 ? (
+                    {isLoading ? (
+                        <div className="empty-state pygame-panel"><p>Loading roster...</p></div>
+                    ) : displayTurtles.length === 0 ? (
                         <div className="empty-state pygame-panel">
                             <p>No turtles in roster!</p>
-                            <button className="pygame-btn" onClick={() => navigate('/shop')}>
-                                Visit Shop →
-                            </button>
+                            <button className="pygame-btn" onClick={() => navigate('/shop')}>Visit Shop →</button>
                         </div>
                     ) : (
-                        activeTurtles.map(turtle => (
+                        displayTurtles.map(turtle => (
                             <TurtleCard
-                                key={turtle.turtle_id}
+                                key={turtle.id}
                                 turtle={turtle}
-                                isSelected={selectedTurtleId === turtle.turtle_id}
-                                isActiveRacer={selectedRacers.includes(turtle.turtle_id)}
-                                onSelect={() => selectTurtle(turtle.turtle_id)}
-                                onSetRacer={() => handleToggleRacer(turtle.turtle_id)}
+                                isSelected={selectedTurtleId === turtle.id}
+                                isActiveRacer={selectedRacers.includes(turtle.id)}
+                                onSelect={() => selectTurtle(turtle.id)}
+                                onSetRacer={() => toggleRacer(turtle.id)}
                             />
                         ))
                     )}

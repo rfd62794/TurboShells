@@ -1,6 +1,2 @@
-/**
- * Store exports.
- */
-
-export { useGameStore, selectMoney, selectTurtles, selectRaceSnapshot } from './gameStore';
-export type { GameState, GameActions, GameLocation } from './gameStore';
+export { useGameStore } from './gameStore';
+export type { GameState, GameActions } from './gameStore';
